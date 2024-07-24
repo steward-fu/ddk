@@ -1,0 +1,90 @@
+// These are declarations for procedures that exist in the HLA
+// standard library, but are "shrouded" in the sense that there
+// aren't corresponding declarations in the stdlib.hhf file (these
+// routines generally get called by HLA generated code, and nothing
+// else; however, as we have to simulate "HLA generated code" here,
+// we have to manually provide these declarations):
+
+procedure BuildExcepts; @external("BuildExcepts__hla_");
+//procedure HardwareException; @external( "HardwareException__hla_" );
+//procedure DefaultExceptionHandler; @external( "DefaultExceptionHandler__hla_");
+procedure shorthwExcept; @external( "shorthwExcept__hla_" );
+procedure shortDfltExcept; @external( "shortDfltExcept__hla_");
+
+
+// The following are forward/external declarations for procedures
+// that are normally created by the HLA compiler when you write
+// a "main program." As we are not using an HLA main program here,
+// we have to manually create these procedures.
+
+procedure HWexcept; @external( "HWexcept__hla_" );
+procedure DfltExHndlr; @external( "DfltExHndlr__hla_" );
+procedure QuitMain; @external( "QuitMain__hla_" );
+
+// The following is a Win32 API function this code calls:
+
+procedure ExitProcess( rtnCode:dword ); @external( "_ExitProcess@4" );
+
+// The following are some global, public, variables that the
+// HLA exception handling run-time system expect the compiler
+// to create for the HLA main program. Once again, as we are not
+// writing an HLA main program here, we have to manually supply
+// these objects:
+
+static
+	MainPgmVMT:			dword:= &QuitMain;
+
+	MainPgmCoroutine: 	dword[ 5 ]; @external( "MainPgmCoroutine__hla_" );
+	MainPgmCoroutine: 	dword;	@nostorage;
+						dword	&MainPgmVMT, 0, 0;
+	SaveSEHPointer: 	dword;	@nostorage;
+						dword	0, 0;
+						
+// HLA main programs provide a "QuitMain" external label that
+// exception handling code can when the exception causes the
+// program to abort. This label immediately terminates program
+// execution. As we are not writing an HLA main program, the HLA
+// compiler does not provide this code for us, we have to supply
+// it manually. You can do anything you want here, as long as you
+// cause the *whole* program to terminate execution. This particular
+// example simply calls ExitProcess and returns a termination code
+// of one (which you can change to anything you want; non-zero usually
+// indicates successful completion of the application, but this label
+// normally gets called when the application aborts because of some
+// exception, so returning zero isn't typical in this particular case.
+
+procedure QuitMain;
+begin QuitMain;
+
+	ExitProcess( 1 );
+	
+end QuitMain;
+
+// HWexcept is where the OS would normally transfer control
+// when an x86 exception occurs. This procedure is normally
+// written by the HLA compiler and simply jumps to an
+// appropriate handler in the HLA Standard Library.
+
+procedure HWexcept;
+begin HWexcept;
+
+	//jmp HardwareException;
+	jmp shorthwExcept;
+	
+end HWexcept;
+
+// DfltExHndlr is where the exception handling code transfers
+// control when an HLA exception occurs. This is normally
+// written by the compiler (to allow the compiler to choose
+// between the full and short forms of the default exception
+// handler). NOTE: the following code invokes the *full*
+// exception handler (lots of meaningful messages, at the
+// expense of the space needed for all those messages).
+
+procedure DfltExHndlr;
+begin DfltExHndlr;
+
+	//jmp DefaultExceptionHandler;
+	jmp shortDfltExcept;
+	
+end DfltExHndlr;

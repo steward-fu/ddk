@@ -1,0 +1,144 @@
+//Icz tutorial #16 *Event Object*
+program aEventObject;
+
+#include("w.hhf");
+
+readonly
+	ClassName : string := "Win32ASMEventClass";
+	AppName : string := "Win32 ASM Event Object Example";
+	SuccessString : string := "The calculation is completed!";
+	StopString : string := "The thread is stoped.";
+	
+const
+	IDR_MENU := 10000;
+	IDM_START_THREAD := 10002;
+	IDM_STOP_THREAD := 10003;
+	IDM_EXIT := 10005;
+	WM_FINISH := w.WM_USER + $100;
+		
+static
+	hInstance : dword;
+	CommandLine :string;
+	hwin : dword;
+	hMenu : dword;
+	ThreadID : dword;
+	ExitCode : dword;
+	hEventStart : dword;
+	EventStop : boolean := false;
+
+procedure ThreadProc(p : dword); @noframe;
+
+begin ThreadProc;
+	push(ecx);
+	w.WaitForSingleObject(hEventStart,w.INFINITE);
+	mov(4294967295,ecx); //maximal 32-bit unsigned number = 4294967295
+	
+	while(ecx <> 0)do
+		if(EventStop <> true) then
+			add(eax,eax);
+			dec(ecx);
+		else
+		 	w.MessageBox(hwin,StopString,AppName,w.MB_OK);
+		 	mov(false,EventStop);
+		 	jmp ThreadProc;
+		endif;
+	endwhile;
+		w.PostMessage(hwin,WM_FINISH,NULL,NULL);
+		w.EnableMenuItem(hMenu,IDM_START_THREAD,w.MF_ENABLED);
+		w.EnableMenuItem(hMenu,IDM_STOP_THREAD,w.MF_GRAYED);
+		jmp ThreadProc;	
+		pop(ecx);
+		ret();
+end ThreadProc;
+		
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin WndProc;
+
+	if(uMsg = w.WM_CREATE) then
+		w.CreateEvent(NULL,false,false,NULL);
+		mov(eax,hEventStart);
+		w.CreateThread(NULL,NULL,&ThreadProc,NULL,NULL,&ThreadID);
+		w.CloseHandle(eax);
+	elseif(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(0);
+	elseif(uMsg = w.WM_COMMAND) then
+		mov(wParam,eax);
+		if(lParam = 0) then
+			if(ax = IDM_START_THREAD) then
+				w.SetEvent(hEventStart);
+				w.EnableMenuItem(hMenu,IDM_START_THREAD,w.MF_GRAYED);
+		        w.EnableMenuItem(hMenu,IDM_STOP_THREAD,w.MF_ENABLED);
+			elseif(ax = IDM_STOP_THREAD) then
+				mov(true,EventStop);
+				w.EnableMenuItem(hMenu,IDM_START_THREAD,w.MF_ENABLED);
+				w.EnableMenuItem(hMenu,IDM_STOP_THREAD,w.MF_GRAYED);
+			else
+				w.DestroyWindow(hWnd);
+			endif;
+		endif;	
+	elseif(uMsg = WM_FINISH) then
+		w.MessageBox(NULL,SuccessString,AppName,w.MB_OK);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	//hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_WINDOW + 1  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( IDR_MENU, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(	NULL, ClassName,AppName, 
+		w.WS_OVERLAPPEDWINDOW, 
+		w.CW_USEDEFAULT,w.CW_USEDEFAULT,w.CW_USEDEFAULT,w.CW_USEDEFAULT,
+		NULL,NULL,hInstance, NULL); 			
+	
+	mov ( eax, hwin ); 
+	
+	w.ShowWindow ( hwin, CmdShow );
+	w.UpdateWindow ( hwin ); 
+	w.GetMenu(hwin);
+		mov(eax,hMenu);
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.TranslateMessage ( msg ) ; 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+	
+begin aEventObject;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.GetCommandLine();
+		mov(eax,CommandLine);
+    WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aEventObject;

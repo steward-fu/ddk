@@ -1,0 +1,123 @@
+// Iczelion's tutorial #25: Simple Bitmap
+program aSimpleBitmap;
+#include("w.hhf");
+
+const
+	IDB_MAIN := 1;
+	
+readonly
+	ClassName : string := "SimpleWin32ASMBitmapClass";
+	AppName : string := "Win32ASM Simple Bitmap Example";
+	
+storage
+	hInstance : dword;
+	hBitmap : dword;
+	CommandLine :string;
+
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	hdc : dword;
+	hMemDC : dword;
+	ps : w.PAINTSTRUCT;
+	rect : w.RECT;
+	
+begin WndProc;
+	
+	if(uMsg = w.WM_CREATE) then
+		w.LoadBitmap(hInstance, val IDB_MAIN);
+		mov(eax,hBitmap);
+	elseif(uMsg = w.WM_PAINT) then
+		w.BeginPaint(hWnd,ps);
+			mov(eax, hdc);
+		w.CreateCompatibleDC(hdc);
+			mov(eax,hMemDC);
+		w.SelectObject(hMemDC,hBitmap);
+		w.GetClientRect(hWnd,rect);
+		w.BitBlt(hdc,0,0,&rect.right,&rect.bottom,hMemDC,0,0,w.SRCCOPY);
+		w.DeleteDC(hMemDC);
+		w.EndPaint(hWnd,&ps);
+	elseif(uMsg = w.WM_DESTROY) then
+		w.DeleteObject(hBitmap);
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_WINDOW + 1  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		NULL, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW, 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance, 
+		NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	w.ShowWindow ( hwnd, CmdShow );
+	w.UpdateWindow ( hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.TranslateMessage ( msg ) ; 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+	
+begin aSimpleBitmap;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.GetCommandLine();
+		mov(eax,CommandLine);
+    WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aSimpleBitmap;
+
+	
+
+
+	
+
+
+
+	
+

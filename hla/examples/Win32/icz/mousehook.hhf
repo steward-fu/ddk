@@ -1,0 +1,5 @@
+static
+
+InstallHook : procedure(p0:dword); @stdcall;@returns("eax");external("__imp_InstallHook");
+UninstallHook : procedure; @stdcall;@returns("eax");external("__imp_UninstallHook");
+MouseProc : procedure(p0:dword;p1:dword;p2:dword); @stdcall;@returns("eax");external("__imp_MouseProc");

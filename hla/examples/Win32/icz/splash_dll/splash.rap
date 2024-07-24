@@ -1,0 +1,60 @@
+[Project]
+Assembler=hla
+Type=Win App
+Description=SplashScreenDLL
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,1,0,0
+1=4,O,c:\masm32\bin\RC.EXE /v,1
+2=3,O,$B\HLA.EXE -v -c,11
+3=7,O,c:\masm32\bin\LINK.EXE  /SECTION:".bss|S" /SUBSYSTEM:WINDOWS /DLL /ENTRY:DLLEntry  /DEF:$6  user32.lib kernel32.lib gdi32.lib,3,4
+4=0,0,,5
+5=
+6=
+11=
+12=5,O,$B\HLA.EXE -v -w,11
+13=
+14=0,0,,5
+15=
+16=
+[MakeFiles]
+0=splash.rap
+1=splash.rc
+2=splash.asm
+3=splash.obj
+4=splash.res
+5=splash.exe
+6=splash.def
+7=splash.dll
+8=splash.txt
+9=splash.lib
+10=splash.mak
+11=splash.hla
+[Files]
+1=splash.hla
+2=splash.rc
+3=splash.def
+[Version-Inc]
+Options=52
+[Size]
+1=0,0,0,0,1565
+3=0,0,0,0,19
+2=0,0,0,0,38
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Find]
+1="MoveWindow"
+2="BITMAP"

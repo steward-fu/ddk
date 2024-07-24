@@ -1,0 +1,51 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=FillPaths Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,nmake build,
+2=0,O,nmake buildall,
+3=0,O,nmake compilerc,
+4=0,O,nmake syntax,
+5=0,C,nmake run,
+6=
+[MakeFiles]
+0=FillPaths.rap
+1=FillPaths.rc
+2=FillPaths.asm
+3=FillPaths.obj
+4=FillPaths.res
+5=FillPaths.exe
+6=FillPaths.def
+7=FillPaths.dll
+8=FillPaths.txt
+9=FillPaths.lib
+10=FillPaths.mak
+11=FillPaths.hla
+[Files]
+1=FillPaths.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

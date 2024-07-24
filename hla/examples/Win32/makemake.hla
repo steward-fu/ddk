@@ -1,0 +1,234 @@
+/*
+Hello, 
+
+Several C compilers provide a -MM option that causes them to emit
+the names of all files that the specified .c file depends on. Does
+anyone know if there is a utility for doing the same for assembly
+files?
+-- 
+Randy Yates
+DSP Engineer
+
+*/
+
+program MakeMake;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+
+type
+		FileTime:
+			record
+			
+				LowDateTime: dword;
+				HighDateTime:dword;
+				
+			endrecord;
+
+	Win32FindData:
+		record
+
+		    FileAttributes:	dword; 
+    		CreationTime:	FileTime; 
+    		LastAccessTime:	FileTime; 
+    		LastWriteTime:	FileTime; 
+			FileSizeHigh:	dword; 
+			FileSizeLow:	dword; 
+			Reserved0:		dword; 
+			dwReserved1:	dword; 
+			FileName:		char[ 260 ]; 
+			AlternateFileName: char[ 14 ]; 
+			
+		endrecord;
+
+
+	// External declarations for Windows API calls:
+
+	procedure FindFirstFile( var WFD:Win32FindData; FileName:string );
+		@returns( "eax" ); // File Handle.
+		external( "_FindFirstFileA@8" );
+	
+	procedure FindNextFile( var WFD:Win32FindData; handle:dword );
+		@returns( "al" ); // Boolean result, true=got a file.
+		external( "_FindNextFileA@8" );
+		
+	procedure FindClose( handle:dword );
+		external( "_FindClose@4" );
+		
+
+	// These macros preserve registers that might get tweaked
+	// by Windows API calls.
+	
+	#macro pusha2;
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( esi );
+		push( edi );
+	#endmacro;
+	
+	#macro popa2;
+		pop( edi );
+		pop( esi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+	#endmacro;
+
+
+	// The following iterator returns a string (in EAX) that corresponds
+	// to a filename.  The parameter passed to this iterator is a filename,
+	// one that typically contains wildcard characters (i.e., "*" and "?" ).
+	// This iterator returns a list of filenames that match the, possibly
+	// ambiguous, filename passed as a parameter.  This iterator fails
+	// when there are no more matching filenames.
+	
+	iterator FileInList( FileList:string ); @nodisplay;
+	var
+		handle:		dword;
+		FileData:	Win32FindData;
+		
+	begin FileInList;
+	
+		// Find the first matching file (if one exists).
+		// Save the handle for use by FindNextFile.
+		
+		pusha2;
+		FindFirstFile( FileData, FileList );
+		popa2;
+		mov( eax, handle );
+		
+		// If we matched at least one filename, return
+		// the corresponding string and call the
+		// FindNextFile routine to match any additional
+		// filenames.
+		
+		if( eax <> w.INVALID_HANDLE_VALUE ) then
+		
+			repeat
+			
+				// FindFirstFile & FindNextFile return
+				// zero-terminated strings.  Convert these
+				// to HLA compatible strings and return
+				// the converted string:
+				
+				lea( eax, FileData.FileName );
+				str.a_cpyz( eax );
+				
+				// Return the converted string to the FOREACH
+				// loop and then free the storage associated
+				// with the string.
+				
+				push( eax );	// Save, so we can free string on return
+				yield();		// Return string to FOREACH loop.
+				pop( eax );		// Free the storage used by the string.
+				strfree( eax );
+			
+				// Get the next filename in the list:
+				
+				pusha2;	
+				FindNextFile( FileData, handle );
+				popa2;
+				
+			until( al = false );
+			
+			// When we've processed all the filenames in the list,
+			// call FindClose to free the handle and other resources.
+			
+			pusha2;
+			FindClose( handle );
+			popa2;
+			
+		endif;
+	
+	end FileInList;
+	
+	
+	
+	
+	
+var
+	FindData:	Win32FindData;
+	filename:	string;
+	source:		dword;
+	inputLine:	string;
+	makeStmt:	string;
+	incStr:		string; 
+	
+begin MakeMake;
+
+
+	// Preallocate storage to hold each input line of
+	// text we read from the file (max 256 chars/line).
+	
+	mov( stralloc( 256 ), inputLine );
+	
+	// Preallocate storage to hold a makefile dependency.
+	
+	mov( stralloc( 1024 ), makeStmt );
+	
+	// Preallocate storage to hold an include file name.
+	
+	mov( stralloc( 256 ), incStr );
+	
+	
+	// Simple foreach loop that opens each HLA file
+	// in the current directory and searches for all
+	// #INCLUDE statements in that file.  It then
+	// builds the makefile dependency line for that
+	// file.
+	
+	foreach FileInList( "*.HLA" ) do
+	
+		// EAX currently points at the filename (also note
+		// that this filename is only good for this particular
+		// loop iteration):
+		
+		mov( eax, filename );
+		str.cpy( filename, makeStmt );
+		str.cat( ": ", makeStmt );
+		
+		
+		mov( fileio.open( filename, fileio.r ), source );
+		if( source <> w.INVALID_HANDLE_VALUE ) then
+		
+			while( !fileio.eof( source )) do
+			
+				fileio.gets( source, inputLine );
+				
+				// Pattern to match a "#include" statement:
+				
+				pat.match( inputLine );
+				
+					pat.matchToiStr( "#include" );
+					pat.upToChar( '(' );
+					pat.oneChar( '(' );
+					pat.upToChar( '"' );
+					pat.oneChar( '"' );
+					pat.upToChar( '"' );
+					pat.extract( incStr );
+					
+					// We've got a winner!  Concatenate
+					// the string to the end of the make command.
+					
+					str.cat( incStr, makeStmt );
+					str.cat( " ", makeStmt );
+					
+				  pat.if_failure
+				  
+				  	// Just ignore the line if no #include.
+				  
+				pat.endmatch;
+				
+			endwhile;
+			fileio.close( source );
+			
+			// Emit the makefile dependency line:
+			
+			stdout.put( makeStmt, nl );
+			
+		endif;			
+				
+	endfor;	
+	
+end MakeMake;

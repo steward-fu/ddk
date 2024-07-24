@@ -1,0 +1,438 @@
+// MouseEyes.hla-
+//
+//	A program that demonstrates the use of the mouse and capturing the mouse,
+// even in non-client areas.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit MouseEyes;
+
+// Set the following to true to display interesting information
+// about the bitmap file this program opens. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+#includeonce( "math.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+static
+	MousePosn	:w.POINT;
+	
+readonly
+
+	ClassName	:string := "MouseEyesWinClass";		// Window Class Name
+	AppCaption	:string := "MouseEyes Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, 		&QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   		&Paint				],
+			MsgProcPtr_t:[ w.WM_MOUSEMOVE, 		&MouseMove			],			
+			MsgProcPtr_t:[ w.WM_NCMOUSEMOVE, 	&NCMouseMove		],			
+			MsgProcPtr_t:[ w.WM_LBUTTONDOWN, 	&LButtonDown		],
+			MsgProcPtr_t:[ w.WM_LBUTTONUP, 		&LButtonUp			],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Tell the application to quit:
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// MouseMove:
+//
+//	This procedure handles the w.WM_MOUSEMOVE message (mouse movement within the client window).
+
+procedure MouseMove( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc: dword;
+begin MouseMove;
+	
+	movsx( (type word lParam), eax );
+	mov( eax, MousePosn.x );
+	movsx( (type word lParam[2]), eax );
+	mov( eax, MousePosn.y );
+		
+	// Force a redraw of the window.
+		
+	w.InvalidateRect( hwnd, NULL, true );
+	xor( eax, eax );
+	
+end MouseMove;
+
+
+
+
+// NCMouseMove:
+//
+//	This procedure handles the w.WM_NCMOUSEMOVE message (mouse movement outside the client window).
+
+procedure NCMouseMove( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc: dword;
+begin NCMouseMove;
+	
+	// The coordinates we've received are screen coordinates:
+	
+	movsx( (type word lParam), eax );
+	mov( eax, MousePosn.x );
+	movsx( (type word lParam[2]), eax );
+	mov( eax, MousePosn.y );
+
+	// The coordinates we've received are screen window coordinates.
+	// We need to convert them to client coordinates.
+	
+	w.ScreenToClient( hwnd, MousePosn );
+	
+	// Force a redraw of the window:
+	
+	w.InvalidateRect( hwnd, NULL, true );
+	xor( eax, eax );
+	
+end NCMouseMove;
+
+
+// LButtonDown:
+//
+//	This procedure handles the w.WM_LBUTTONDOWN message, which this
+// program uses to capture the mouse.
+
+procedure LButtonDown( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonDown;
+	
+	w.SetCapture( hwnd );
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonDown;
+
+
+// LButtonUp:
+//
+//	This procedure handles the w.WM_LBUTTONUP message which
+// this program uses to release the mouse.
+
+procedure LButtonUp( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonUp;
+	
+	w.ReleaseCapture();
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonUp;
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+
+var
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	clientRect	:w.RECT;
+	Diameter	:dword;
+	smallRadius	:int32;
+	newRadius	:int32;
+	eyeR		:int32;
+	OuterX		:int32;
+	OuterY		:int32;
+	x			:int32;
+	y			:int32;
+	r			:real64;
+	xSave		:real64;
+	ySave		:real64;
+	
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+	// Get the coordinates of the client rectangle area so we know
+	// where to draw our "eyes":
+	
+	w.GetClientRect( hwnd, clientRect );
+	
+		// Draw two circles within the window.
+		// Draw the largest pair of circles that will
+		// fit side-by-side in the window.
+		// The largest diameter for the circles will be
+		// min( clientRect.right/2, clientRect.bottom)
+		// because the two circles are side-by-side.
+		
+		mov( clientRect.right, eax );
+		shr( 1, eax );
+		mov( clientRect.bottom, ebx );
+		if( eax > ebx ) then
+	
+			mov( ebx, eax ); 
+
+		endif;
+		
+		// EAX contains the diameter. Compute the center point (i.e., radius) of
+		// the (outer) circle by dividing this value in half. For the first circle,
+		// the x and y coordinates are both the same.
+		
+		mov( eax, Diameter );
+		shr( 1, eax );
+		mov( eax, OuterX );
+		mov( eax, OuterY );
+		
+		// Compute the radius of the smaller (eyeball) circle as 1/4th the larger Diameter.
+		
+		shr( 2, eax );
+		mov( eax, smallRadius );
+		neg( eax );
+		add( OuterX, eax );
+		mov( eax, eyeR );
+	
+		// Draw the two circles:
+		
+		Ellipse( 0, 0, Diameter, Diameter );
+		mov( Diameter, eax );
+		shl( 1, eax );
+		Ellipse( Diameter, 0, eax, Diameter );
+		
+		// Compute the coordinates for the "eyeball".
+		// r = sqrt( (MousePosn.x - OuterX)**2 + (MousePosn.y-OuterY)**2 )
+		
+		fild( MousePosn.x );
+		fild( OuterX );
+		fsub;
+		fst( xSave );
+		fld( st0 );
+		fmul;
+		fild( MousePosn.y );
+		fild( OuterY );
+		fsub;
+		fst( ySave );
+		fld( st0 );
+		fmul;
+		fadd;
+		fsqrt;
+		fst( r );
+		
+		// sin(theta) = y/r
+		
+		fld( ySave );
+		fdivr;
+
+		// sin(theta) is on the stack now.
+		// Compute y-coordinate of intersection as y=rnew*sin(theta)
+		// where rnew is the radius of our circle and sin(theta) is from the above.
+		
+		fild( eyeR );
+		fmul;
+		fistp( y );
+		
+		// Compute the x-coordinate as x=rnew*cos(theta)
+		// cos(theta) = x/r
+		
+		fld( xSave );
+		fld( r );
+		fdiv;
+		fild( eyeR );
+		fmul;
+		fistp( x );
+		
+		// Draw a filled ellipse centered around this point:
+
+		SelectObject( w.GetStockObject( w.BLACK_BRUSH) );
+		
+		mov( x, eax );			// The smaller circle's position
+		add( OuterX, eax );		// was computed relative to (0,0),	
+		mov( eax, ebx );		// need to offset it to the (OuterX,OuterY)
+		mov( y, ecx );
+		add( OuterY, ecx );
+		mov( ecx, edx );
+
+		sub( smallRadius, eax );	// Move the smaller circle
+		sub( smallRadius, ecx );	// to just inside the larger one.
+		add( smallRadius, ebx );
+		add( smallRadius, edx );
+		Ellipse( eax, ecx, ebx, edx );
+
+
+		// Do the computations over for the second eyeball.
+		// Work is just about the same, the only difference
+		// is the fact that we have a different point as the
+		// center of the second eyeball:
+		
+		mov( Diameter, eax );	// Compute the x-coordinate of the center
+		add( eax, OuterX );		// of the second eyeball.
+				
+		fild( MousePosn.x );	// Everything from here on is the same.
+		fild( OuterX );
+		fsub;
+		fst( xSave );
+		fld( st0 );
+		fmul;
+		fild( MousePosn.y );
+		fild( OuterY );
+		fsub;
+		fst( ySave );
+		fld( st0 );
+		fmul;
+		fadd;
+		fsqrt;
+		fst( r );
+		
+		// sin(theta) = y/r
+		
+		fld( ySave );
+		fdivr;
+
+		// sin(theta) is on the stack now.
+		// Compute y-coordinate of intersection as y=rnew*sin(theta)
+		// where rnew is the radius of our circle and sin(theta) is from the above.
+		
+		fild( eyeR );
+		fmul;
+		fistp( y );
+		
+		// Compute the x-coordinate as x=rnew*cos(theta)
+		// cos(theta) = x/r
+		
+		fld( xSave );
+		fld( r );
+		fdiv;
+		fild( eyeR );
+		fmul;
+		fistp( x );
+		
+		// Draw an ellipse centered around this point:
+
+		SelectObject( w.GetStockObject( w.BLACK_BRUSH) );
+		
+		mov( x, eax );
+		add( OuterX, eax );
+		mov( eax, ebx );
+
+		mov( y, ecx );
+		add( OuterY, ecx );
+		mov( ecx, edx );
+
+		sub( smallRadius, eax );
+		sub( smallRadius, ecx );
+		add( smallRadius, ebx );
+		add( smallRadius, edx );
+		Ellipse( eax, ecx, ebx, edx );
+				
+		
+		 
+				
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;				
+end MouseEyes;
+ 

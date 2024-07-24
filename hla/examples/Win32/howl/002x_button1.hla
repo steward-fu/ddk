@@ -1,0 +1,342 @@
+// button1-
+//
+//	This is a simple application that demonstrates placing a single button on
+// a form and capturing the button click event. Pressing the button terminates
+// the application and closes the app's window.
+//
+// This version of the program implements the button manually, without using the
+// wForm..endwForm macro (the HOWL declarative language).
+
+program button1;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?compileAll		:= true;
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+
+#includeOnce( "howl.hhf" )
+
+
+const
+	applicationName := "Button #1";
+	formX			:= w.CW_USEDEFAULT;	// Let Windows position this guy
+	formY			:= w.CW_USEDEFAULT;
+	formW			:= 600;
+	formH			:= 600;
+
+
+
+	
+
+type
+
+	// Create a new class for our main application window.
+	// All application forms must be derived from wForm_t:
+		
+	mainAppWindow_t:
+		class inherits( wForm_t );
+		
+			// We have to add VAR declarations for all our widgets
+			// here. So include a definition for the wPushButton
+			// we're going to create:
+			
+			var
+				button	:wPushButton_p;
+				
+		
+			// We need to override these (actually, onClose is the
+			// only one that is important):
+			
+			override method onClose;
+			override method onCreate;
+			
+			// Every main application window must have a
+			// constructor with the following prototype:
+			
+			procedure create_mainAppWindow
+			(
+			        caption :string;
+			        exStyle :dword;
+			        style   :dword;
+			        parent  :dword;
+			        x       :dword;
+			        y       :dword;
+			        width   :dword;
+			        height  :dword;
+			        bkgClr  :dword;
+			        visible :boolean
+			);
+			
+		endclass;
+		
+		mainAppWindow_p	:pointer to mainAppWindow_t;
+
+// Must have the following declarations in all (manually written) HOWL apps:
+	
+static
+    vmt( mainAppWindow_t );
+    mainAppWindow: mainAppWindow_t;
+    pmainAppWindow: mainAppWindow_p := &mainAppWindow;	
+
+
+
+// Here is the onClick event handler for the button we're adding to the form.
+// For this app, the onClick handler simply quits the program.
+
+proc onClick:widgetProc;
+begin onClick;
+
+	// Quit the app:
+	
+	w.PostQuitMessage( 0 );
+
+end onClick;
+
+
+
+// Here is the constructor we must supply for the mainAppWindow class:
+
+procedure mainAppWindow_t.create_mainAppWindow
+(
+        caption :string;
+        exStyle :dword;
+        style   :dword;
+        parent  :dword;
+        x       :dword;
+        y       :dword;
+        width   :dword;
+        height  :dword;
+        bkgClr  :dword;
+        visible :boolean
+);
+var
+    main               :mainAppWindow_p;
+
+begin create_mainAppWindow;
+
+    push( eax );
+    push( ebx );
+    push( ecx );
+    push( edx );
+	
+	// Standad main form initialization:
+	//
+	// If a class procedure call (not typical), then allocate storage
+	// for this object:
+	
+	// Standad main form initialization:
+	//
+	// If a class procedure call (not typical), then allocate storage
+	// for this object:
+	
+    if( esi = NULL ) then
+        mem.alloc( @size( mainAppWindow_t ));
+        mov( eax, esi );
+        mov( true, cl );
+    else
+        mov( this.wBase_private.onHeap, cl );
+    endif;
+	
+	// Call the wForm_t constructor to do all the default initialization:
+	
+    (type wForm_t [esi]).create_wForm
+    (
+        "mainAppWindow",
+        caption,
+        exStyle,
+        style,
+        parent,
+        x,
+        y,
+        width,
+        height,
+        bkgClr,
+        visible
+    );
+	
+	// Initialize the VMT pointer:
+	
+    mov( &mainAppWindow_t._VMT_, this._pVMT_ );
+	
+	// Retrieve the onHeap value from above and store it into
+	// the onHeap data field:
+	
+    mov( cl, this.wBase_private.onHeap );
+	
+
+	// Preserve "this" because we're about to make an object call
+	// that will overwrite this' value:
+	
+    mov( esi, main );
+	
+	// We need to create a button and store the pointer to the
+	// new button object in the this.button field on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button",				// Button name
+		"Quit",					// Caption
+		this.handle,			// parent window handle
+		450,					// x position 
+		525,					// y position 
+		125,					// width 
+		25,						// height 
+		&onClick				// "on click" event handler 
+	);
+	mov( esi, eax );			// Save ptr to new button		
+	mov( main, esi );			// Retrieve ptr to main app's object
+	mov( eax, this.button );	// Save button pointer.
+	this.insertWidget( eax );	// Add button to wForm's widget list.
+	
+    this.onCreate();			// Be nice, call this guy (even if empty).
+    pop( edx );
+    pop( ecx );
+    pop( ebx );
+    pop( eax );
+
+end create_mainAppWindow;	
+	
+	
+	
+	
+	
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following is mostly boilerplate code for all apps (about the only thing
+// you would change is the size of the main app's form)
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+   
+// The following gets called immediately after the main application
+// window is created. It must be provided, even if it does nothing.
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+end onCreate;
+
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+	// Create the main application window:
+	
+	mainAppWindow.create_mainAppWindow
+	(
+		applicationName,		// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		formX,					// Form x-coordinate 
+		formY,					// Form y-coordinate
+		formW,					// Width
+		formH,					// Height
+		howl.bkgColor_g,		// Background color
+		true					// Make visible on creation 
+	);
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException
+( 
+	theException	:dword in eax;
+	raiseAdrs		:dword in ebx;
+	filename		:string in ecx;
+	userCode		:dword in edx;
+	lineNum			:uns32 in edi 
+);
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must 
+// call the HowlMainApp procedure.
+
+begin button1;
+
+	// Set up the background and transparent colors that the
+	// form will use when registering the window_t class:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, howl.bkgColor_g );
+	or( $FF00_0000, eax );
+	mov( eax, howl.transparent_g );
+	w.CreateSolidBrush( howl.bkgColor_g );
+	mov( eax, howl.bkgBrush_g );
+
+	// Start the HOWL Framework Main Program:
+	
+	HowlMainApp();
+	
+	// Delete the brush we created earlier:
+	
+	w.DeleteObject( howl.bkgBrush_g );			
+				
+end button1;
+ 

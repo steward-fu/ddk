@@ -1,0 +1,314 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>Windows&nbsp;XP Service Pack 1 DDK Release Notes</TITLE>
+</HEAD>
+<BODY link="#0000ff" vlink="#800080" bgcolor="#ffffff">
+<!---------------------------Title----------------------------------->
+<FONT FACE="Verdana, Arial, Helvetica" SIZE=2>
+<B><FONT FACE="Verdana" SIZE=+2> Late-Breaking News for the Microsoft&reg; Windows&reg;&nbsp;XP Service Pack 1 DDK</FONT></B>
+
+</UL>
+
+<!----------------------Installation Issues---------------------------->
+<P><B><FONT face="Verdana, Arial, Helvetica" size="+1">Installation Issues</FONT></B>
+<UL>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>DDK Directory Structure</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The structure of the DDK directories have significantly changed from that used in Windows 2000.  This change results from the Window DDK's inclusion of all the tools, headers, and libraries necessary to build drivers, and also to allow support for multiple build environments.</FONT></P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Drivers should continue to reference ntddk.h or wdm.h in the same way they always have (that is, simply by specifying "#include <wdm.h>").  The build environment will automatically set the appropriate include and library file paths.  Drivers may find that some header files have been moved from their technology specific directories (such as \network\inc) to a higher-level DDK directory (such as \inc\wxp).    Moving these files to the higher-level include path, makes it unnecessary to specify the specific include path for these files.
+</FONT></P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4><I>Dirs</I> Files</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The method of generating Dirs files has changed. The Dirs are now created by the DDK setup program during the installation of the kit. If the Dirs need to be recreated after installation of the kit, a command line utility (MakeDirs) is supplied in the <DDKRoot>\bin\x86 directory. The uninstall program will also update the Dirs if a Basic Uninstall is selected. </FONT></P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Additional Driver Security Support</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">This release of the Windows DDK has added a number of additional features to assist driver writers in writing more reliable and secure drivers.  These new features include:</FONT></P>
+
+<UL>
+<LI>Additional detailed technical information in the DDK documentation on how driver can implement security for device objects.<br>
+<LI>A new set of string handling functions, which provide safer replacements of the standard C runtime string functions.  Use of these functions can substantially lessen the possibility of buffer overflow bugs in drivers.  The functions can be used on all versions of Windows.  Prototypes and descriptions of these new functions can be found in NtStrSafe.h<br>
+<LI>A new function, IoCreateDeviceSecure, that allows non-WDM drivers to easily create secure device objects.  To use this function, which is supported on all versions of Windows, drivers should include WdmSec.h and optionally link with the static library WdmSec.lib.  Please refer to the DDK documentation on the function IoCreateDeviceSecure for more information.<br>
+</UL>
+
+
+<P>
+</UL>
+
+<!-------------------------Changes to the DDK Build Environment---------------------->
+<P><B><FONT size="+1" face="Verdana, Arial, Helvetica">Changes to the DDK Build Environment</FONT></B>
+<UL>
+<P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Changes to Support Conditional Compilation Based on Build Environment</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The environment variable DDK_TARGET_OS has been introduced to allow conditional testing in the 'sources' file to determine if a driver is being built in the Windows 2000 or Windows XP Service Pack 1 build environments.  This variable is set to "Win2k" or "WinXP" respectively.  See %ddkroot%\src\general\cancel\sys\sources for an example of it's usage.</FONT><P>
+
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Changes to the Windows 2000 Build Environment</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Additional headers have been added to more completely match the headers shipped for the Windows XP Service Pack 1 environment.  This was necessary to allow some of the samples to compile when built in the Windows 2000 build environment.  The Windows 2000 Build Environment has been updated to include Windows 2000 Service Pack 3 headers and libraries.</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">When creating the Windows 2000 build environment using the Start Menu icon (or manually running %ddkroot%\bin\w2k\set2k.bat), the environment variable BUILD_OPTIONS is set in order to exclude many samples from default compilation under this environment.  This has a couple of effects and limitations (which apply only to the Windows 2000 environment).</FONT><br>
+
+<UL>
+<LI>build -cZ from the root of the DDK now results in a clean build with no errors or warnings.<br>
+<LI>When doing the above, not all samples are built.<br>
+<LI>This does not prevent cd'ing into an arbitrary sample directory and attempting to build it.  When doing so, samples that do not work correctly in the Windows 2000 build environment will still produce errors and/or warnings.<br>
+</UL>
+
+
+
+<P>
+</UL>
+
+<!-------------------------Compiling and Linking---------------------->
+<P><B><FONT size="+1" face="Verdana, Arial, Helvetica">Compiling and Linking</FONT></B>
+<UL>
+<P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Tested Platforms and Compilers</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">As was the case for the Windows XP DDK a complete set of tools is supplied with the Windows XP Service Pack 1 DDK for building drivers. Microsoft Visual C++ is no longer required to be installed to use the DDK.</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Please use the included tools to build Windows 2000 or Windows XP device drivers.  Do not use compilers, linkers or other build tools from other development products such as Visual Studio .NET to build Windows 2000 or Windows XP device drivers.  This version of the Windows DDK does not support using a version of Microsoft Visual C++ other than the one supplied with the DDK.  Attempts to use in incorrect version of Visual C++ will result in the following error message from the compiler:</FONT><P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica" size="2">error C1189: #error :  Compiler version  not supported by Windows DDK</FONT></B><P>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Some Windows Millennium (Me) drivers may require Visual C++ version 6.0 to be installed for use regardless of the platform being used to build the drivers. Later versions of Visual C++ will not work in the Windows Me build environment.</FONT><P>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The DDK toolset has not been fully tested for use other than driver development. The DDK toolset is not complete in respect to developing all types of applications.
+</FONT><P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Updated Setenv.bat</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The &ltBaseDir&gt\setenv64.bat has been merged into
+a &ltBaseDir&gt\setenv.bat. All build environments are still supported with the &ltBaseDir&gt\setenv.bat but the 
+command line has been updated. The new command line is: <B>SetEnv &ltDirectory&gt [fre|chk] [64] [WXP|W2K]</B>. 
+<I>Directory</I> is the install location of the DDK, <I>fre</I> or <I>chk</I> are the build types and <I>64</I> 
+is to select the building of the 64 bit platform. If the <I>64</I> option is used, <I>fre</I> or <I>chk</I> are required.  <I>WXP</I> or <I>W2K</I> select the desired target platform.
+</FONT><P>
+
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Building Binary Compatible Drivers</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Drivers should typically be built in the build environment of the earliest operating system that the drivers will support.  Therefore, a driver that will need to run on Windows 2000 and Windows XP should typically be built within the Windows 2000 build environment.</FONT><P>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Some drivers, however, may wish to use additional features that are available on the newer operating system, when they run on that operating system.  Such drivers may do this by carefully utilizing functions such as IoIsWdmVersionAvailable() and MmGetSystemRoutineAddress(), or similar technology specific functions.</FONT><P>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">Extreme care and thorough testing will be required to determine if a driver built for a later operating system will work properly on an earlier operating system.  This may not always be possible.  </FONT><P>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">One problem that you may encounter when building a driver in the Windows XP Checked Build Environment, and running that driver on Windows 2000, concerns functions that are only exported by the Windows XP or Windows XP Service Pack 1 version of NTOSKRNL.  If your driver calls one of these functions, it may crash or fail to load when run on any platform other than Windows XP or Windows XP Service Pack 1.  The Free Build of your driver is not typically affected, as these newly exported functions typically resolve to intrinsics when optimizations are enabled in the Free Build.  This problem may be avoided by defining the value <b>USE_LIBCNTPR=1</b> in your driver's sources file.</FONT><P>
+
+
+
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Change In Definition of KeNumberProcessors</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">The kernel variable <B>KeNumberProcessors</B> indicates the number of active CPUs in the system on which a driver is running.  The definition for this variable was changed in the Windows XP versions of ntddk.h and wdm.h from a pointer to a value. The Windows 2000 definition of this variable required that KeNumberProcessors be dereferenced (e.g. *KeNumberProcessors).  As a result of the change in the defintion of this variable, drivers built in the Windows XP Service Pack 1 build environment need not (and in fact must not) dereference this variable (e.g. KeNumberProcessors).</P>
+
+<P>Drivers that fail to use KeNumberProcessors correctly will get an "illegal indirection" error at compile time.</P>
+
+<P>Note that regardless of the declaration used, drivers that properly reference KeNumberProcessors according to the environment in which they are built will work properly on both Windows 2000 and Windows XP.  Therefore, a driver that properly references KeNumberProcessors and that is built in the Windows 2000 build environment, will get the proper value for this variable when the driver is run on either Windows 2000 or Windows XP Service Pack 1.</FONT></P>
+
+
+
+<P><b><font face="Verdana, Arial, Helvetica"><h4>Windows 9x Development Platform</h4></font></b></P>
+<P><font face="Verdana, Arial, Helvetica" size="2">Using Windows 9x as a development platform for WDM drivers is not supported.  Drivers that target Windows XP or Windows 2000, with or without Windows 9x as an additional target, should be developed on a machine running Windows XP or Windows 2000.</font></P>
+
+
+<P><b><font face="Verdana, Arial, Helvetica"><h4>New Slist Implementation</h4></font></b></P>
+<P><font face="Verdana, Arial, Helvetica" size="2">Additional optimizations were added in Windows XP to the  implementation of singly linked lists (<B>Slists</B>).  The Windows 2000 implementation of Slists also remains on Windows XP Service Pack 1 to enable drivers built on Windows 2000 to run unchanged on Windows XP Service Pack 1.  The functions affected are ExInterlockedPopEntrySList() and ExInterlockedPushEntrySList() as well as ExAllocateFromPagedLookasideList(),ExFreeToPagedLookasideList(),ExAllocateFromNPagedLookasideList(), and ExFreeToNPagedLookasideList().</font></P>
+
+</P>The Windows XP Service Pack 1 implementation of these functions, by default, <I>is not binary compatible</I> with the implementation on Windows 2000.  If your driver uses SLists and needs to run on Windows 2000, you should build your driver in the Windows 2000 build environment.  Optionally, you can build your driver on Windows XP Service Pack 1 and use the Windows 2000 Slist implementation by defining  the symbol _WIN2K_COMPAT_SLIST_USAGE at compile time, prior to including any other DDK header files.</P>
+
+
+
+
+<P><b><font face="Verdana, Arial, Helvetica"><h4>Identifying Obsolete Functions In Your Driver</h4></font></b></P>
+<P><font face="Verdana, Arial, Helvetica" size="2">The Windows DDK has a very useful feature that driver developers can enable.  When the environment variable DEPRECATE_DDK_FUNCTIONS is defined, the compiler will generate a warning message whenever particular obsolete functions or macros from ntddk.h are referenced.  Such obsolete functions are clearly marked in the DDK documentation.</font></P>
+
+<P><font face="Verdana, Arial, Helvetica" size="2">The compiler warning message shows both the line in your source file that invoked the obsolete function, and the line in ntddk.h where the function is declared.  An example of an error message you'll get is:</font></P>
+
+<P><B><font face="Verdana, Arial, Helvetica" size="2">\test\mydriver.c(1785) : error C4996: 'RtlExtendedIntegerMultiply' was declared deprecated</font></B></P>
+
+<P><B><font face="Verdana, Arial, Helvetica" size="2">\winddk\WinXP\inc\ddk\wxp\ntddk.h(3106) : error see declaration of 'RtlExtendedntegerMultiply'</font></B></P>
+
+<P><font face="Verdana, Arial, Helvetica" size="2">Each of the functions that have been declared deprecated in ntddk.h have comments that indicate what, if any, function or mechanism you should use instead of the obsolete function.  You can find this same information in the DDK Documentation.  Continuing the example above, if you look at line 3106 of ntddk.h you'll find the following declaration, instructing you to use native 64-bit math instead of RTL functions for this purpose:</font></P>
+
+
+<UL>
+<P><B>
+<font face="Verdana, Arial, Helvetica" size="2">DECLSPEC_DEPRECATED_DDK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Use native __int64 math</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">NTSYSAPI</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">LARGE_INTEGER</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">NTAPI</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">RtlExtendedIntegerMultiply (</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LARGE_INTEGER Multiplicand,</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LONG Multiplier</font><br>
+<font face="Verdana, Arial, Helvetica" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</font><br>
+</B>
+</UL>
+
+<P><font face="Verdana, Arial, Helvetica" size="2">The goal of this feature is to help developers easily discover functions in their drivers that have been obsoleted.  All the functions that have been declared deprecated in the DDK have been obsolete at least since Windows 2000.   Only a subset of functions that are obsolete have been actually declared as deprecated.  There may other obsolete functions, both in ntddk.h and in other header files that have not yet been declared deprecated.  Please refer to the DDK documentation as the ultimate guide regarding which functions are obsolete and which are presently supported.</font></P>
+
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Predefined Paths</H4></FONT></B></P>
+<P><font face="Verdana, Arial, Helvetica" size="2">The Windows DDK, by default, will not use any pre-defined Include or Library paths (as specified by the %include% and %lib% environment variables).  This is due to the stand alone nature of the DDK and to avoid possible conflicts with other installed source or compiler programs.  Any drivers that need to alter the search path for include files should use the Includes= directive in the <b>SOURCES</b> file.</font></P>
+
+</FONT>
+
+
+</UL>
+<!---------------------------WDM Audio Drivers---------------------->
+<P><B><FONT face="Verdana, Arial, Helvetica" size="+1">WDM Audio Drivers</FONT></B>
+<UL>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">This Windows&reg;&nbsp;XP Service Pack 1 DDK should be used for all WDM audio driver development. Please rebuild your driver with this DDK to take advantage of recent changes and fixes. As of this release, this DDK supports Windows 98 Second Edition, Windows Me, Windows 2000, and Windows XP. This DDK does not support nor do we recommend the development of WDM audio drivers for the original Windows 98 release. The code samples that are listed below will work interchangeably on the supported operating systems with the INF files that are provided with the samples: 
+
+<P>
+<UL>
+<LI>ac97 - A sample audio driver that runs on an Intel motherboard with an integrated AC97 controller. This sample shows how to write a WDM audio adapter driver that implements WavePci support for a PCI add-in card with scatter/gather DMA capabilities. Included with this sample driver are additional subdirectories containing sample code that works in conjunction with the driver. The subdirectories are named as follows: 
+	<UL>
+	<LI>cpl - This sample shows how to write a control panel application. It requires that both the proppage 		sample DLL and the ac97 sample driver be installed. 
+	<LI>driver - This is the sample audio driver for the AC97 controller. 
+	<LI>INFViewer - This subdirectory contains an HTML version of the driver's INF file with hot-linked references 		to INF sections and keyword definitions in order to facilitate easy exploration. 
+	<LI>proppage - This sample shows how to write a property-page DLL that gets loaded by the device manager when 	a user elects to display the properties of your device. In addition to displaying the default property sheets, 	the device manager also displays the property sheet that is defined in the sample. This sample DLL requires 	that the ac97 sample driver be installed. 
+	</ul>
+
+
+<LI>ddksynth - Kernel-mode DLS synthesizer. This sample can be adapted for a MIDI output device as well. 
+<LI>dmusuart - MPU-401 miniport driver for processing DirectMusic and MIDI input and output streams. This is the source code for the built-in DMusUART miniport driver in portcls.sys. Hardware vendors can adapt this sample to write their own custom miniport drivers. 
+<LI>fmsynth - FM-synth miniport driver for MIDI. This sample driver provides an interface to a device that implements OPL3-style synthesis. This is the source code for the built-in FMSynth miniport driver in portcls.sys. Hardware vendors can adapt this sample to write their own custom miniport drivers. 
+<LI>gfx - The two GFX samples appear in the DDK for Windows XP SP1, Windows .NET Server, and later. These samples implement support for a simple GFX (global effects) filter: 
+	<UL>
+	<LI>driver - This sample GFX driver performs a simple data transformation on a stereo audio stream that is 		played through a pair of USB speakers. 
+	<LI>GFXProp - This sample implements a property page that the user accesses through the Windows Multimedia 		control panel in order to configure the GFX filter. 
+	</UL>
+
+
+<LI>mpu401 - Stand-alone sample adapter driver. This adapter driver implements standard functionality for an MPU-401 MIDI interface device. The source code for this sample is quite small because it uses only the system-supplied miniport drivers that are implemented in portcls.sys. 
+<LI>msvad - Microsoft Virtual Audio Device. This is a collection of samples that all use the same "virtual audio device" in lieu of an actual hardware-based adapter driver. Each of these samples highlights a different facet of the WDM audio driver architecture: 
+	<UL>
+	<LI>ac3 - Demonstrates support for a non-PCM audio data format. 
+	<LI>drmmult - Demonstrates support for multiple-stream audio with SAP-protected content. For information about SAP (secure audio path), see the Platform SDK documentation. 
+	<LI>drmsimp - Demonstrates support for a single audio stream with SAP-protected content. 
+	<LI>ds2dhw - Demonstrates support for hardware-accelerated two-dimensional mixing for DirectSound. 
+	<LI>multstr - Demonstrates support for playback of multiple streams of PCM audio data. 
+	<LI>pcmex - Demonstrates support for a PCM audio format that is defined by the WAVEFORMATEXTENSIBLE structure. 
+	<LI>simple - A skeleton reference implementation of an audio adapter driver upon which the other msvad sample drivers are built. 
+	</UL>
+
+
+<LI>sb16 - Sound Blaster 16 sample. This sample implements an audio adapter driver for an SB-compatible adapter card on an ISA bus. 
+<LI>stdunk - Standard <B>IUnknown</B> sample. Skeleton implementation of a standard <B>IUnknown</B> interface that conforms to the port-class model for using COM in the kernel. 
+</UL>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">For details, see the readme documentation that accompanies each of these samples in the DDK.</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">To install the portion of the Windows DDK that contains the WDM audio driver samples, follow these instructions:</FONT>
+<UL>
+<LI>Run the Windows DDK setup application. 
+<LI>From the list of component groups that the setup application displays, first select "WDM Samples" under "Windows DDK"; then select "Audio Samples". 
+</UL>
+<P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">When setup completes, you will find the audio driver samples in the src\wdm\audio subdirectory under the main directory of your DDK installation.
+</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">This DDK release includes documentation for developing drivers to run in Windows 98/Me, but it no longer provides build environments for Windows 98/Me. If you require the Windows 98/Me build environments and the related tools for these environments, refer to the DDK CD-ROM for Windows XP or earlier. 
+</FONT><P>
+
+<P>
+
+</ul>
+
+<!-------------------------Windows 2000 to Windows XP Service Pack 1 Compatibility---------------------->
+<P><B><FONT size="+1" face="Verdana, Arial, Helvetica">Windows 2000 to Windows XP Service Pack 1 Compatibility</FONT></B>
+<UL>
+<P>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Windows XP Service Pack 1 Memory Manger</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">A change has been made in the memory manager for Windows XP that affect how functions such as ZwMapViewOfSection and MmMapLockedPagesSpecifyCache work.</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">In the past (on Windows NT 4.0 and Windows 2000), it was up to the driver writer to ensure that the same physical page was not mapped with different caching attributes. In other words, it was possible to map the same physical page with different caching attributes. This is an error, and can cause internal processor corruption leading to undefined results.</FONT><P>
+
+<P><FONT face="Verdana, Arial, Helvetica" size="2">In Windows XP Service Pack 1, the memory manager catches this problem: That is, when mapping the same physical page, the page must always be mapped with the same caching attribute. If conflicting attributes are specified by the caller of the 
+above APIs, the Windows XP Service Pack 1 memory manager automatically tries to determine and use the correct attribute.  If the correct attribute cannot be determined then ZwMapViewOfSection returns STATUS_CONFLICTING_ADDRESSES and MmMapLockedPagesSpecifyCache returns NULL.</FONT><p>
+
+<P>
+</UL>
+
+
+
+
+
+
+
+
+<!-------------------------------Sample Issues-------------------------->
+<P><B><FONT face="Verdana, Arial, Helvetica" size="+1">Sample Issues</FONT></B>
+<UL>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Building the Samples on Windows 9x</H4></FONT></B>
+<P><FONT face="Verdana, Arial, Helvetica" size="2">It is suggested that you disable virus protection when building samples on Windows 98, Windows 98 SE
+and Windows ME.
+</FONT></P>
+
+<b><font face="Verdana, Arial, Helvetica"><h4>Signed Sample Installation</h4></font></b>
+<font face="Verdana, Arial, Helvetica" size="2">
+The samples moufiltr and kbdfiltr include INFs that demonstrate the proper use of the 'CatalogFile=' directive.  The catalog files (CAT) included in these samples are not true catalog files, therefore installation of the input samples moufiltr and kbfiltr does not work.  
+To temporarily fix, please edit moufiltr.inf and kbfiltr.inf.  
+From the version section of each INF, remove the line that begins with 'CatalogFile='.  
+Prior to distributing your drivers that use the 'CatalogFile=' INF directive, you will need to obtain a true catalog file from WHQL.</font>
+<b><font face="Verdana, Arial, Helvetica"><h4>Win9x WDM Symbol Generation</h4></font></b>
+<font face="Verdana, Arial, Helvetica" size="2">
+Many of the WDM samples in this DDK can also be used on Windows 98 and Windows 98 SE.
+To create symbols in the SYM format needed by the Win9x debuggers place the keyword 'MAP_SYM=1' in the <i>sources</i> file for the sample.</font>
+<b><font face="Verdana, Arial, Helvetica"><h4>IME Warnings Under the Japanese System Locale</h4></font></b>
+<font face="Verdana, Arial, Helvetica" size="2">
+
+When the system locale has been set to Japanese, the following three warnings occur: 
+<PRE>
+<font face="Courier New, Times New Roman, Times Roman" size="2">cht\chajei\..\ime.rc(37) : warning RC4093: unescaped newline in character constant in inactive code
+cht\phon\..\ime.rc(37) : warning RC4093: unescaped newline in character constant in inactive code
+cht\quick\..\ime.rc(37) : warning RC4093: unescaped newline in character constant in inactive code
+</font></PRE>
+These warnings appear in both the free and checked builds.  These warnings do not cause any problems in the resulting drivers.
+</FONT>
+
+<b><font face="Verdana, Arial, Helvetica"><h4>Scanners &amp; Cameras</h4></font></b>
+<font face="Verdana, Arial, Helvetica" size="2">When compiling drivers that include <i>usbscan.h</i>, be sure to specify that the structures defined in <i>usbscan.h</i> are packed on 8 byte boundaries. One way to accomplish this for Microsoft compilers is to insert "<font face="Courier New">#pragma pack(8)</font>" or "<font face="Courier New">#pragma pack(push,8)</font>" at the beginning of <i>usbscan.h</i>.</font>
+
+
+<P><b><font face="Verdana, Arial, Helvetica"><h4>Building DDK Sample Drivers In Windows 2000 Build Environment</h4></font></b></P>
+<P><font face="Verdana, Arial, Helvetica" size="2">Unless specifically labeled otherwise, the sample drivers provided with the Windows DDK are designed to support Windows XP Service Pack 1 and to be built within the Windows XP Service Pack 1 build environment.  Some samples in the DDK build correctly in other (e.g. Windows 2000) build environments.  Other samples utilize features, data structures, or functions that are specific to Windows XP Service Pack 1 and therefore will only build properly in the Windows XP Service Pack 1 build environment.</font></P>
+
+<P><font face="Verdana, Arial, Helvetica" size="2">Due to the reorganization of the \inc paths and directory structure, and due to the change in compiler versions between Windows 2000 and Windows XP Service Pack 1, some samples from the Windows 2000 DDK may build with errors in the Windows DDK's Windows 2000 build environment.  This is the expected behavior.</font></P>
+
+
+</FONT>
+</UL>
+
+<!----------------------Tool Issues---------------------------->
+<P><B><FONT face="Verdana, Arial, Helvetica" size="+1">Tool Issues</FONT></B>
+<UL>
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>Old Tools</H4></FONT></B>
+<font face="Verdana, Arial, Helvetica" size="2">The older tools in the DDK have moved.  Many of the tools that were previously located in the DDK \bin directory have been moved to individual directories located under the DDK's \tools directory.  Several of the older tools, such as drivers.exe, objdir.exe, and kernprof.exe, can be found in the DDK's \tools\other\ directory.</font>
+
+
+<P><B><FONT face="Verdana, Arial, Helvetica"><H4>New Tools</H4></FONT></B>
+<font face="Verdana, Arial, Helvetica" size="2">Many new tools are now available.  In response to developer's requests, we are making many more tools available in the DDK.  These tools can all be found in sub-directories of the DDK's \tools directory.  Specifically, be sure to check out the PnP Driver Test utility (\tools\pnpdtest\), the sleeper tool for testing driver power management states (\tools\acpi\sleeper\), and the DeviceTree tool that displays the complete system's PnP device tree (\tools\devicetree\).  Descriptions of each tool appear in the tool's directory.</font>
+
+</UL>
+
+
+</ul>
+
+
+
+	
+
+<P align="center"><A href="relnote.htm#top"><FONT face="Verdana" size="2">Top of page</FONT></A>
+<P>
+<TABLE cellspacing="0" border="0" width="624">
+	<TR>
+		<td height="2" valign="middle" bgcolor="Aqua"><P></P></td>
+	</TR>
+
+
+</TABLE><FONT face="MS Sans Serif" size="1">
+<P>&copy; Copyright 2002 Microsoft Corporation.  All rights reserved.</FONT></P>
+</BODY>
+</HTML>

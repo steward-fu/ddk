@@ -1,0 +1,860 @@
+program UCRcs61Pgm2;
+#include( "stdlib.hhf" );
+
+// Windows "terminate program" API call.
+
+procedure ExitProcess( ErrCode:uns32 ); @external( "_ExitProcess@4" );
+
+
+
+const
+
+	// Program-defined exceptions:
+	
+	DivideByZero 	:= 1024;
+	Overflow		:= DivideByZero + 1;
+	
+
+
+type
+	baseType:enum{binary, decimal, hexadecimal};
+
+
+	// BinToStr-
+	//
+	// Converts the L.O. eight bits of the "binnum"
+	// parameter to a string of characters and stores
+	// those characters in the dest string.
+	//
+	// Assertion: dest points at a predeclared string
+	// with enough room to hold at least ten bytes.
+
+	// Macro that does the conversion.
+	// Note: p is a dummy parameter to
+	// allow procedure-like calling sequence.
+
+	#macro AL4ToBin( p[] );
+		movzx( (type byte binnum), eax );
+		and( $f, al );
+		mul( %0010_0000_0100_0000_1000_0001, eax );
+		and( $0101_0101, eax );
+		or( $3030_3030, eax );
+		bswap( eax );
+		mov( eax, [ebx+ecx] );
+	#endmacro
+
+	procedure BinToStr( binnum:dword; dest:string ); 
+		@nodisplay;
+		
+		 
+
+	begin BinToStr;
+
+		push( eax );
+		push( ebx );
+		push( ecx );
+		push( edx );
+
+		// Set ECX to five if the caller wants
+		// an underscore in the middle of the
+		// number, set it to four otherwise.
+
+		conv.getUnderscores();
+		lea( ecx, [eax+4] );
+
+		// Assume they want an underscore in the
+		// middle of the number.
+
+		mov( dest, ebx );
+		mov( '_', (type char [ebx+4]) ); 
+
+		// Compute and store away the length of
+		// the string.
+
+		add( 8, al );
+		mov( eax, (type str.strRec [ebx]).length);
+
+
+		// Zero terminate the string.
+		// Note that this outputs two zeros
+		// because we're not sure yet whether
+		// the string is eight or nine chars long.
+
+		mov( 0, (type word [ebx+8]) );
+
+		// Okay, convert the H.O. four bits
+		// of binnum to four digits and save
+		// in the string:
+
+		AL4ToBin();
+
+		// Adjust ECX to store away the H.O. four chars:
+
+		mov( 0, cl );
+
+		// Okay, convert bits 4..7 of binnum to a string
+		// of four characters and output them to the string.
+
+		shr( 4, (type byte binnum) );
+		AL4ToBin();
+
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		pop( eax );
+
+	end BinToStr;
+
+
+
+	// NumToStr-
+	//
+	//	Creates a string out of the number using the
+	//	specified base.
+	//
+	//	This procedure returns the size of the converted
+	//	string in the EAX register.
+
+	procedure NumToStr( number:int32; base:baseType; var dest:string ); 
+		@returns( "eax" );
+		@nodisplay;
+
+	begin NumToStr;
+
+		push( ebx );
+
+		// Allocate storage for a new string
+		// and store the pointer away into
+		// the dest variable.
+
+		stralloc( 16 );
+		mov( dest, ebx );
+		mov( eax, [ebx] );
+
+		// Convert the number to a string
+		// in the appropriate base:
+
+		movzx( base, ebx );
+		switch( ebx )
+
+			case( binary )
+				
+				BinToStr( number, (type string eax) );
+				
+			case( decimal )
+			
+				conv.i32ToStr( number, 1, ' ', (type string eax) );
+				
+			case( hexadecimal )
+			
+				conv.h8ToStr( (type byte number), 2, '0', (type string eax) );
+				
+			default
+			
+				raise( ex.ConversionError );
+				
+		endswitch;
+
+		// Get the string length and return it in EAX:
+
+		mov( dest, ebx );
+		mov( [ebx], ebx );
+		mov( (type str.strRec [ebx]).length, eax );
+		pop( ebx );
+
+	end NumToStr;
+
+
+	procedure ComputeTable
+	( 
+		LowBnds:	int32; 
+		HiBnds:		int32; 
+		base: 		baseType;
+		funcName:	string;
+		function:	thunk 
+
+	);  @nodisplay;
+
+			procedure TableHeader
+			(
+				funcName:	string;
+				cellWidth:	int32; 
+				start:		int32; 
+				stop:		int32; 
+				base:		baseType 
+			
+			);	@nodisplay;
+
+
+				// PutEquals- Outputs a line of "=" and "+" characters
+				// above and below the table header line.
+
+				procedure PutEquals; @nodisplay; @noframe;
+				begin PutEquals;
+
+					push( eax );
+					stdout.putc( '+' );
+					mov( ebp::start, eax );
+					for( dec( eax ); eax <= ebp::stop; inc( eax )) do
+					
+						stdout.putc( '=' );
+						stdout.putcSize( '=', ebp::cellWidth, '=' );
+						stdout.put( "=+" );
+
+					endfor;
+					stdout.newln();
+					pop( eax );
+					ret();
+
+				end PutEquals;
+
+			var
+				s:	string;
+
+			begin TableHeader;
+
+				push( eax );
+				push( ebx );
+				push( ecx );
+				push( edx );
+
+				PutEquals();
+
+				// Roughly center the function name in the
+				// first cell.
+
+				mov( cellWidth, eax );
+				mov( funcName, ebx );
+				sub( (type str.strRec [ebx]).length, eax );
+				if( @nz ) then
+
+					shr( 1, eax );
+					mov( eax, ecx );
+					adc( 0, eax );
+					stdout.put( "| ", ' ':eax, funcName, ' ':ecx, " |" );
+					
+				else
+				
+					stdout.put( "| ", funcName, " |" );
+					
+				endif; 
+				
+				// Output the table header values:
+
+				for( mov( start, edx); edx <= stop; inc( edx )) do
+
+					NumToStr( edx, base, s );
+					stdout.put( " ", s:cellWidth, " |" );
+					strfree( s );
+
+				endfor;
+				stdout.newln();
+				PutEquals();
+
+				pop( edx );
+				pop( ecx );
+				pop( ebx );
+				pop( eax );
+
+			end TableHeader;
+
+
+			// PutLines- Outputs a line of "-" and "+" characters
+			// below the current line.
+
+			procedure PutLines( start:int32; stop:int32; cellWidth:int32 );
+				@nodisplay;
+
+			begin PutLines;
+
+				push( eax );
+				stdout.putc( '+' );
+				mov( start, eax );
+				for( dec( eax ); eax <= stop; inc( eax )) do
+								
+					stdout.putc( '-' );
+					stdout.putcSize( '-', cellWidth, '-' );
+					stdout.put( "-+" );
+
+				endfor;
+				stdout.newln();
+				pop( eax );
+
+			end PutLines;
+
+
+	var
+		theResult:	string;
+		cellWidth:	int32;
+
+	begin ComputeTable;
+
+		// Get the length of the function name and use this
+		// as our initial maximum cell width.
+
+		mov( funcName, edi );
+		mov( (type str.strRec [edi]).length, edi );
+
+		// Run through all the calculations once just so we can
+		// compute the maximum cell width:
+
+		for( mov( LowBnds, ebx); ebx <= HiBnds; inc( ebx )) do
+
+			for( mov( LowBnds, ecx ); ecx <= HiBnds; inc( ecx )) do
+
+				try
+				
+					function();
+					NumToStr( eax, base, theResult );
+					mov( theResult, edx );
+					mov( (type str.strRec [edx]).length, eax );
+					strfree( theResult );
+
+				exception( DivideByZero )
+
+					mov( 2, eax );
+					
+				exception( Overflow );
+				
+					mov( 2, eax );
+
+				endtry;
+
+				if( eax > edi ) then
+
+					mov( eax, edi );
+
+				endif;
+
+			endfor;
+
+		endfor;
+
+		mov( edi, cellWidth );
+
+		// Print out the table header:
+
+		TableHeader( funcName, edi, LowBnds, HiBnds, base );
+
+		// Run through all the calculations again.  This time,
+		// let's print the results.
+
+		for( mov( LowBnds, ebx); ebx <= HiBnds; inc( ebx )) do
+
+			NumToStr( ebx, base, theResult );
+			stdout.put( "| ", theResult:cellWidth, " :" );
+			strfree( theResult );
+
+			for( mov( LowBnds, ecx ); ecx <= HiBnds; inc( ecx )) do
+
+				try
+
+					function();
+					NumToStr( eax, base, theResult );
+					stdout.put( ' ', theResult:cellWidth, " |" );
+					strfree( theResult );
+
+				exception( DivideByZero )
+
+					stdout.put( ' ', "**":cellWidth, " |" );
+					
+				exception( Overflow )
+				
+					stdout.put( ' ', "**":cellWidth, " |" );
+
+				endtry;
+				if( eax > edi ) then
+
+					mov( eax, edi );
+
+				endif;
+
+			endfor;
+			stdout.newln();
+			PutLines( LowBnds, HiBnds, cellWidth );
+
+		endfor;
+
+
+	end ComputeTable;
+
+
+	// GetRange-
+	//
+	//	This routine reads two integers from the user
+	//	(for use as a range of values) and verifies that
+	//	the lower bound is greater than the upper bound.
+
+	procedure GetRange( var low:int32; var high:int32 ); @nodisplay;
+
+
+		// GetAnInt-
+		//
+		//	Reads a legal eight-bit integer from the user
+		//  and returns this value in eax.
+		
+		procedure GetAnInt( prompt:string); @nodisplay;
+		begin GetAnInt;
+
+			// Repeat until the user gets it right.
+			
+			forever
+			
+				stdout.put( prompt, ':' );
+				try
+
+					stdin.geti8();
+					movsx( al, eax );
+
+				  unprotected
+
+					break;
+
+				  exception( ex.ConversionError )
+
+					stdout.put
+					( 
+						"Illegal characters in number, please reenter" 
+						nl 
+					);
+
+				  exception( ex.ValueOutOfRange )
+
+					stdout.put
+					(
+						"Input value is out of range, please reenter"
+						nl
+					);
+
+				  anyexception
+
+					// If some other error occured, print a nebulous
+					// error and quit.
+					
+					xor( eax, eax );
+					break;
+
+				endtry;
+
+			endfor;
+
+		end GetAnInt;
+
+		
+	begin GetRange;
+	
+		push( eax );
+		push( ebx );
+		push( ecx );
+
+		// Repeat until low_range < hi_range
+		
+		forever
+
+			GetAnInt( "Enter the lower range" );
+			mov( low, ebx );
+			mov( eax, ecx );
+			mov( eax, [ebx] );
+
+			GetAnInt( "Enter the upper range" );
+			mov( high, ebx );
+			mov( eax, [ebx]);
+
+			breakif( eax >= ecx );
+
+			stdout.put
+			( 
+				"The low range value (", 
+				(type int32 ecx),
+				") must be less than the high range value (",
+				(type int32 eax),
+				")"
+				nl
+			);
+
+		endfor;
+
+		pop( ecx );
+		pop( ebx );
+		pop( eax );
+	
+	end GetRange;
+
+
+	// GetChar-
+	//
+	//	Reads a character from the user and verifies that
+	//  the character is within a specified set.  Note that
+	//	upper and lower case alphabetic characters are treated
+	//	as identical by this routine.  However, when calling this
+	//	routine, only pass lower case characters.
+
+	procedure GetChar( LegalChars: cset ); @nodisplay;
+	var
+		LclCset: 	cset;
+		TstMember: 	cset;
+
+	begin GetChar;
+
+		forever		// Repeat until the user enters a legal char.
+
+			cs.empty( TstMember );
+
+			// Display a prompt of legal chars:
+
+			stdout.putc( '(' );
+			cs.cpy( LegalChars, LclCset );
+			cs.isEmpty( LclCset );
+			if( al = false ) then
+
+				// Display a list of legal characters:
+				
+				repeat
+
+					cs.extract( LclCset );
+					
+					// Convert lower case to upper case.
+					
+					if( al >= 'a' ) then
+
+						if( al <= 'z' ) then
+
+							cs.unionChar( al, TstMember );
+							and( $5f, al );	// lc->UC conversion.
+
+						endif;
+
+					endif;
+					stdout.putc( al );
+					
+					// Construct a set with only upper case
+					// versions of any alphabetic chars in
+					// the set:
+					
+					cs.unionChar( al, TstMember );
+					
+					// If there are any characters left,
+					// output a comma to separate the chars.
+					
+					if( !cs.isEmpty( LclCset ) ) then
+
+						stdout.putc( ',' );
+
+					endif;
+
+				until( al );
+
+			endif;
+			stdout.put( "): " );
+
+			// Okay, read the character from the user and
+			// verify that it is legal:
+
+			stdin.flushInput();
+			stdin.getc();
+			push( eax );
+			cs.member( al, TstMember );
+			cmp( al, true );
+			pop( eax );
+			breakif( @e );
+
+			stdout.put( "Illegal character, please reenter " );
+
+		endfor;
+
+		// Convert user input to upper case and also
+		// convert to 32 bits.
+
+		if( al >= 'a' ) then
+
+			if( al <= 'z' ) then
+
+				and( $5f, al );
+
+			endif;
+
+		endif;
+		movzx( al, eax );
+
+	end GetChar;
+
+
+
+
+var
+	i:			int32;
+	s:			string;
+	lowRange:	int32;
+	highRange:	int32;
+	base:		baseType;
+
+begin UCRcs61Pgm2;
+
+	stdout.put
+	(
+		nl
+		nl 
+		"----------------------------------------------" nl
+		"Randy's Amazing Math Table Generation Program!" nl
+		"----------------------------------------------" nl
+		nl
+	);
+
+	repeat
+
+		// Get the base from the user:
+
+		stdout.put
+		( 
+			"Would you like the values displayed in B)inary, "nl
+			"D)ecimal, or H)exadecimal? "
+		);
+		GetChar( {'b', 'd', 'h'} );
+		if( al = 'B' ) then
+
+			mov( binary, base );
+
+		elseif( al = 'D' ) then
+
+			mov( decimal, base );
+
+		elseif( al = 'H' ) then
+
+			mov( hexadecimal, base );
+
+		else
+
+			stdout.put( "Programming error in RAMTGP" nl );
+			ExitProcess( 1 );
+
+		endif;
+
+
+		// Get the range of values from the user:
+
+		GetRange( lowRange, highRange );
+
+
+		// Get the choice of function from the user:
+
+		stdout.put
+		(
+			"Function: A)dd, S)ub, M)ul, D)iv, mO)d, aN)d, oR), X)or: "
+		);
+		GetChar( {'a', 's', 'm', 'd', 'o', 'n', 'r', 'x'} );
+		stdout.newln();
+
+		switch( eax )
+
+			// Do addition.  Raise an exception if eight-bit overflow
+			// occurs during the addition.
+			
+			case( 'A' )
+	
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"ADD", 
+					thunk#{ 
+						mov( bl, al );
+						add( cl, al );
+						if( @o ) then
+						
+							raise( Overflow );
+							
+						endif;
+					}#
+				);
+
+			// Do subtraction.	Raise an exception if eight-bit overflow
+			// occurs during the subtraction.
+			
+			case( 'S' )
+
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"SUB", 
+					thunk#{ 
+						mov( bl, al );
+						add( cl, al );
+						if( @o ) then
+						
+							raise( Overflow );
+							
+						endif;
+					}#
+				);
+
+
+			// Do multiplication. Raise an exception if eight-bit overflow
+			// occurs during the multiplication.
+			
+			case( 'M' )
+
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"MUL", 
+					thunk#{ 
+						mov( bx, ax );
+						intmul( cx, ax );
+						if(
+						#{
+							jo true;		// 16-bit overflow.
+							cmp( ax, 127 );	// Check for 8-bit overflow.
+							jg true;
+							cmp( ax, -128 );
+							jnl false;
+						}#) then 
+						
+							raise( Overflow );
+							
+						endif;
+					}#
+				);
+
+
+			// Do division.	Raise an exception if eight-bit overflow
+			// occurs during the division or if a divide by zero
+			// would occur.
+			
+			case( 'D' )
+
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"DIV", 
+					thunk#{ 
+						mov( ebx, eax );
+						cdq();
+						if( ecx = 0 ) then		// Check for divide by zero.
+
+							raise( DivideByZero );
+
+						endif;
+						idiv( ecx, edx:eax );
+						if
+						(#{
+							cmp( eax, 127 );	// Check for 8-bit overflow.
+							jg true;
+							cmp( eax, -128 );
+							jnl false;
+						}#) then
+							raise( Overflow );
+							
+						endif;
+					}#
+				);
+
+
+			// Do modulus (remainder).  See remarks for division.
+			
+			case( 'O' )
+
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"MOD", 
+					thunk#{ 
+						mov( ebx, eax );
+						cdq();
+						if( ecx = 0 ) then
+
+							raise( DivideByZero );
+
+						endif;
+						idiv( ecx, edx:eax );
+						mov( edx, eax );
+						if
+						(#{
+							cmp( eax, 127 );
+							jg true;
+							cmp( eax, -128 );
+							jnl false;
+						}#) then
+							raise( Overflow );
+							
+						endif;
+					}#
+				);
+
+
+			// Do a bitwise AND.
+			
+			case( 'N' )
+	
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"AND", 
+					thunk#{ 
+						mov( ebx, eax );
+						and( ecx, eax );
+						
+					}#
+				);
+
+
+			// Do a bitwise OR.
+			
+			case( 'R' )
+	
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"OR", 
+					thunk#{ 
+						mov( ebx, eax );
+						or( ecx, eax );
+					}#
+				);
+
+
+			// Do a bitwise XOR.
+			
+			case( 'X' )
+	
+				ComputeTable
+				( 
+					lowRange, 
+					highRange, 
+					base,
+					"XOR", 
+					thunk#{ 
+						mov( ebx, eax );
+						xor( ecx, eax );
+					}#
+				);
+
+			default
+
+				stdout.put( "Programming error in RAMTGP (Illegal case)" nl );
+				ExitProcess( 1 );
+
+		endswitch;
+
+
+		// Ask the user if they want to play again:
+
+		stdout.put( nl "Would you like me to generate another table? " );
+		GetChar( {'y', 'n'} );
+
+	until( al = 'N' );
+	stdout.put( nl "Okay, goodbye" nl );
+
+end UCRcs61Pgm2;

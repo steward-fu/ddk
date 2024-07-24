@@ -1,0 +1,537 @@
+// FofX.hla-
+//
+//	Program that demonstrates the use of Polyline to plot a set of function
+//  values. Demonstrates drawing curves via Polyline.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit FofX;
+
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+#linker( "winmain.lib" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+
+// The following constant defintion defines how many functions we're going
+// to plot with this program:
+
+const
+	numFuncs := 4;
+
+
+// The following data type is used to hold the pertinent values needed to
+// plot a single function - including the function's address and pen type.
+
+type
+	plotRec:
+		record
+			f			:procedure( x:uns32); @returns( "eax" );
+			lineType	:dword;
+			lineWidth	:dword;
+			lineColor	:w.COLORREF;
+		endrecord;
+
+// The following table has one entry for each of the functions we're
+// going to plot. It specifies the function to call and the pen info.
+// The number of entries in this table must match the numFuncs constant
+// value (this table must be maintained manually!).
+
+readonly
+	plotInfo : plotRec[ numFuncs ] :=
+		[
+			plotRec:[ &sin,	w.PS_SOLID, 0, RGB( $F0, $70, $F0) ],
+			plotRec:[ &cos,	w.PS_SOLID, 0, RGB( $00, $C0, $C0) ],
+			plotRec:[ &tan,	w.PS_SOLID, 0, RGB( $C0, $C0, $00) ],
+			plotRec:[ &log,	w.PS_SOLID, 0, RGB( $FF, $C0, $80) ]
+		];
+
+
+static
+	ClientX				:uns32;
+	ClientY				:uns32;
+
+	pens				:dword[ numFuncs ]; // Pens used for each plot.
+	axisPen				:dword;
+
+	
+readonly
+
+	ClassName	:string := "FofXWinClass";			// Window Class Name
+	AppCaption	:string := "F(x) Program";			// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			MsgProcPtr_t:[ w.WM_SIZE,  	 &Size				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - Just for fun, let's set the background color to a dark gray
+//			to demonstrate how we use the initWC procedure:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	mov( w.COLOR_GRAYTEXT+1, wc.hbrBackground );
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Handle any application exceptions that come along (clean up
+// before aborting program):
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	push( eax );
+
+	// Delete the pens we created in the Create procedure:
+
+	#for( i := 0 to numFuncs-1 )
+
+		w.DeleteObject( pens[ i*4 ] );
+
+	#endfor
+	w.DeleteObject( axisPen );
+
+	pop( eax );
+	raise( eax );
+
+end appException;
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+// Here are the functions we're going to plot:
+//
+//
+// sin- plots the sine of the angle (in degrees) passed as the parameter:
+
+procedure sin( x:uns32 ); @returns( "eax" );
+var
+	WinHt	:uns32;
+begin sin;
+
+	// Note: fsin wants radians, so convert x to radians as
+	// radians = degrees*pi/180:
+
+	fild( x );
+	fld( 180.0 );
+	fdiv();
+	fldpi();
+	fmul();
+
+	// Compute the sine of the angle:
+
+	fsin();
+	
+	// Sine produces a result between -1..+1, scale to within 90% of
+	// the top and bottom of our window:
+
+	mov( ClientY, eax );
+	shr( 1, eax );
+	mov( eax, WinHt );
+	fild( WinHt );
+	fmul();
+	fld( 0.9 );
+	fmul();
+	fild( WinHt );
+	fadd();
+
+	// Return an integer result as our Y-axis value:
+
+	fistp( WinHt );
+	mov( WinHt, eax );
+
+end sin;
+
+
+// cos- plots the cosine of the angle (in degrees) passed as the parameter:
+
+procedure cos( x:uns32 ); @returns( "eax" );
+var
+	WinHt	:uns32;
+begin cos;
+
+	// See sin for comments. Same exact code except we use fcos rather than
+	// fsin to compute the function result.
+
+	fild( x );
+	fld( 180.0 );
+	fdiv();
+	fldpi();
+	fmul();
+	fcos();
+	mov( ClientY, eax );
+	shr( 1, eax );
+	mov( eax, WinHt );
+	fild( WinHt );
+	fmul();
+	fld( 0.9 );
+	fmul();
+	fild( WinHt );
+	fadd();
+	fistp( WinHt );
+	mov( WinHt, eax );
+
+end cos;
+
+// tan- plots the tangent of the angle (in degrees) passed as the parameter:
+
+procedure tan( x:uns32 ); @returns( "eax" );
+var
+	WinHt	:uns32;
+begin tan;
+
+	// See "sin" for comments. Same code except we use fsincos and fdiv
+	// to compute the tangent:
+
+	fild( x );
+	fld( 180.0 );
+	fdiv();
+	fldpi();
+	fmul();
+	fsincos();
+	fdiv();
+	mov( ClientY, eax );
+	shr( 1, eax );
+	mov( eax, WinHt );
+	fild( WinHt );
+	fmul();
+	fld( 0.1 );
+	fmul();
+	fild( WinHt );
+	fadd();
+	fistp( WinHt );
+	mov( WinHt, eax );
+
+end tan;
+
+
+// log- Well, this isn't really a log function. It computes a combination
+//      of log and sin the produces a nice looking curve.
+
+procedure log( x:uns32 ); @returns( "eax" );
+var
+	WinHt	:uns32;
+begin log;
+
+	if( x = 0 ) then
+
+		xor( eax, eax );
+
+	else
+
+		fild( x );
+		math.log();
+		fsin();
+
+		// Scale to within 90% of our window height (note that the fsin
+		// instruction returns a value between -1..+1).
+
+		fild( ClientY );
+		fmul();
+		fld( 0.9 );
+		fmul();
+		fistp( WinHt );
+		mov( WinHt, eax );
+
+	endif;
+
+end log;
+
+
+// The Create procedure creates all the pens we're going to use
+// in this application to plot the various functions
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+begin Create;
+
+	// Create pens for each of the functions:
+
+	#for( i := 0 to numFuncs-1 )
+
+		w.CreatePen
+		( 
+			plotInfo.lineType [ i*@size( plotRec ) ],
+			plotInfo.lineWidth[ i*@size( plotRec ) ],
+			plotInfo.lineColor[ i*@size( plotRec ) ]
+		);
+		mov( eax, pens[ i*4 ] );
+
+	#endfor
+
+	// Create a thicker, gray, pen for drawing the axis:
+
+	w.CreatePen( w.PS_SOLID, 2, RGB( $20, $20, $20) );
+	mov( eax, axisPen );
+
+end Create;
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Delete the pens we created in the Create procedure:
+
+	#for( i := 0 to numFuncs-1 )
+
+		w.DeleteObject( pens[ i*4 ] );
+
+	#endfor
+	w.DeleteObject( axisPen );
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	oldPen		:dword;
+	polyLinePts	:dword;
+
+begin Paint;
+
+	// We need to allocate a dynamic array to hold the points we're going
+	// to plot. The ClientX global specifies the number of array elements.
+	// Note that we must allocate this storage before pushing any registers
+	// (or anything else) onto the stack. We rely upon the activation record
+	// clean-up on return to deallocate this storage.
+
+	intmul( @size( w.POINT ), ClientX, eax );
+	talloc( eax );
+	mov( eax, polyLinePts );
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Draw an axis in the window:
+
+		SelectObject( axisPen ); // Select the gray pen.
+		mov( eax, oldPen );      // Save, so we can restore later
+
+		MoveToEx( 1, 0, NULL );	 // Draw the vertical axis
+		LineTo( 1, ClientY );
+
+		mov( ClientY, ebx );	 // Draw the horizontal axis.
+		shr( 1, ebx );
+		MoveToEx( 0, ebx, NULL );
+		LineTo( ClientX, ebx );
+
+		// For each of the functions, generate an array of points (the
+		// polyline) and plot those points:
+
+		mov( polyLinePts, ebx );
+		for( mov( 0, edi ); edi < numFuncs; inc( edi )) do
+
+			for( mov( 0, esi ); esi < ClientX; inc( esi )) do
+
+				intmul( @size( plotRec ), edi, eax );
+				plotInfo.f[eax]( esi );
+				mov( esi, (type w.POINT [ebx]).x[ esi*8 ] );
+				mov( eax, (type w.POINT [ebx]).y[ esi*8 ] );
+				
+			endfor; 
+			SelectObject( pens[ edi*4 ] );
+			Polyline( [ebx], ClientX );
+			 
+		endfor;
+
+		// Restore original pen:
+
+		SelectObject( oldPen );
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//	Basically, it just saves the window's size so
+//	the Paint procedure knows when a line goes out of
+//	bounds.
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientY );
+	
+	xor( eax, eax ); // return success.
+	
+
+end Size;
+				
+end FofX;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

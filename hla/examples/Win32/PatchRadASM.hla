@@ -1,0 +1,97 @@
+// This is a short utility that patches RadASM's
+// radasm.ini and hla.ini files as needed to set
+// paths correctly when running RadASM.
+// This program assumes that RadASM has been installed
+// in the ...\hla directory and that the command line
+// parameter specifies the path to the ...\hla subdirectory.
+
+program patchRadASM;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+static
+	hladir		:str.strvar(300);
+	
+	procedure PatchAFile( fname:string );
+	var
+		origHandle	:dword;
+		newHandle	:dword;
+		
+	static
+		filename	:str.strvar(300);
+		origFilename:str.strvar(300);
+		inputLine	:str.strvar(4096);
+		
+		procedure readln( handle:dword; input:string );
+		begin readln;
+		
+			push( eax );
+			push( ebx );
+			push( ecx );
+			mov( input, ebx );
+			xor( ecx, ecx );
+			while( !fileio.eof( handle )) do
+			
+				fileio.getc( handle );
+				breakif( al == stdio.lf );
+				if( al <> stdio.cr ) then
+				
+					mov( al, [ebx] );
+					inc( ecx );
+					
+				endif;
+				inc( ebx );
+				
+			endwhile;
+			mov( 0, (type char [ebx]));
+			mov( input, ebx );
+			mov( ecx, (type str.strRec [ebx]).length );
+			pop( ecx );
+			pop( ebx );
+			pop( eax );
+			
+		end readln;
+		
+		
+	begin PatchAFile;
+	
+		str.put( filename, hladir, "\RadASM\", fname );
+		str.put( origFilename, hladir, "\RadASM\", fname, ".orig" );
+		w.MoveFile( filename, origFilename );
+		fileio.open( origFilename, fileio.r );
+		mov( eax, origHandle );
+		fileio.openNew( filename );
+		mov( eax, newHandle );
+		while( !fileio.eof( origHandle )) do
+		
+			readln( origHandle, inputLine );
+			if( str.prefix( inputLine, "$A=" )) then
+			
+				fileio.put( newHandle, "$A=", hladir, nl );
+			
+			else
+			
+				fileio.put( newHandle, inputLine, nl );
+				
+			endif;
+			
+		endwhile;
+		fileio.close( origHandle );
+		fileio.close( newHandle );
+	
+	end PatchAFile;
+	
+begin patchRadASM;
+
+	mov( hladir, ebx );
+	w.GetCurrentDirectory( 300, [ebx] );
+	mov( eax, (type str.strRec [ebx]).length );
+	stdout.put( "HLADIR=",hladir, nl ); 
+	PatchAFile( "hla.ini" );
+	PatchAFile( "radasm_hla.ini" );
+	PatchAFile( "bat_hla.ini" );
+	PatchAFile( "make_hla.ini" );
+	PatchAFile( "nmake_hla.ini" );
+	
+	
+end patchRadASM;

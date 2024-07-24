@@ -1,0 +1,53 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Mouse Points Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,nmake build,
+2=0,O,nmake buildall,
+3=0,O,nmake compilerc,
+4=0,O,nmake syntax,
+5=0,C,nmake run,
+6=
+[MakeFiles]
+0=MousePts.rap
+1=MousePts.rc
+2=MousePts.asm
+3=MousePts.obj
+4=MousePts.res
+5=MousePts.exe
+6=MousePts.def
+7=MousePts.dll
+8=MousePts.txt
+9=MousePts.lib
+10=MousePts.mak
+11=MousePts.hla
+[Files]
+1=MousePts.hla
+2=wpa.hhf
+3=makefile
+4=
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+4=
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

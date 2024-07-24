@@ -1,0 +1,617 @@
+
+program helloworld;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?compileAll		:= true;
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+
+#includeOnce( "howl.hhf" )
+
+
+const
+	applicationName := "Hello World";
+	formX			:= w.CW_USEDEFAULT;	// Let Windows position this guy
+	formY			:= w.CW_USEDEFAULT;
+	formW			:= 630;
+	formH			:= 650;
+
+
+static
+	align( 4 );
+	bkgBrush_g	:dword;
+	bkgColor_g	:dword;
+	
+
+proc onClick1:widgetProc; @forward;
+proc onQuit:widgetProc; @forward;
+
+
+// Form declaration.
+// We've got an empty form with no widgets, so this is fairly trivial:
+	
+wForm( mainAppWindow );
+
+	wMainMenu;
+	
+		wSubMenu( menu_1, "menu" );
+	
+			// Open and save are dummy entries for now.
+			
+			wMenuItem( dummy1, false, "dummy", onClick1 );
+			wMenuSeparator; 
+			wMenuItem( menu_exit, false, "Exit", onQuit );
+			
+		endwSubMenu; 
+		 		 	
+	endwMainMenu;
+
+	wTab( tab1, "tab1", NULL, bkgColor_g );
+
+	wBitmap
+	(
+		bitmap1,							// bitmap name
+		"myImage",							// bitmap resource value
+		10,									// x
+		10,									// y
+		200,								// width
+		200,								// height
+		bkgColor_g							// background color 
+	)
+	
+	wCheckBox
+	(
+		checkBox1,				// Field name in mainWindow object
+		"Check Box #1 abcdefg",	// Caption for push button
+		10,						// x position 
+		40,						// y position 
+		125,					// width 
+		25,						// height 
+		onClick1				// "on click" event handler 
+	)
+	
+	wCheckBox3
+	(
+		checkBox3,				// Field name in mainWindow object
+		"Check Box #3 abcdefg",	// Caption for push button
+		10,						// x position 
+		70,						// y position 
+		125,					// width 
+		25,						// height 
+		onClick1				// "on click" event handler 
+	)
+	
+	wCheckBoxLT
+	(
+		checkBoxLT,				// Field name in mainWindow object
+		"Check Box LT abcdefg",	// Caption for push button
+		10,						// x position 
+		100,					// y position 
+		125,					// width 
+		25,						// height 
+		onClick1				// "on click" event handler 
+	)
+	
+	wCheckBox3LT
+	(
+		checkBox3LT,				// Field name in mainWindow object
+		"Check Box 3LT abcdefg",	// Caption for push button
+		10,							// x position 
+		130,						// y position 
+		125,						// width 
+		25,							// height 
+		onClick1					// "on click" event handler 
+	)
+	
+	wComboBox
+	( 								
+		comboBox1,					// Drag list box name
+		"",							// Initial string
+		10,							// x
+		170,						// y
+		200,						// width
+		500,						// height
+		true,						// Sort
+		NULL						// onClick handler
+	)
+	wComboBox
+	( 								
+		comboBox2,					// Drag list box name
+		"",							// Initial string
+		10,							// x
+		200,						// y
+		200,						// width
+		500,						// height
+		true,						// Sort
+		NULL,						// onClick handler
+		"item1",
+		"item2",
+		"item3"
+	)
+	
+	wComboBox
+	( 								
+		comboBox3,					// List box name
+		"",							// Initial text
+		10,							// x
+		230,						// y
+		200,						// width
+		500,						// height
+		false,						// sort
+		NULL,						// onClick handler
+		""							// Put an empty string at the bottom
+	)
+	
+	
+	wDragListBox
+	( 								
+		dragListBox1,					// List box name
+		10,							// x
+		260,						// y
+		200,						// width
+		40,							// height
+		NULL						// onClick handler
+	)
+	
+	
+	wDragListBox
+	( 								
+		dragListBox2,					// List box name
+		10,							// x
+		310,						// y
+		200,						// width
+		40,							// height
+		NULL,						// onClick handler
+		""							// Put an empty string at the bottom
+	)
+	
+	
+	wDragListBox
+	( 								
+		dragListBox3,					// List box name
+		10,							// x
+		360,						// y
+		200,						// width
+		50,							// height
+		NULL,						// onClick handler
+		"item1",
+		"item2"
+	)
+	
+	wEditBox
+	(
+		editBox1,							// editBox name
+		"",									// Initial text string
+		10,									// x
+		420,								// y
+		200,								// width
+		25,									// height
+		0,									// style
+		onClick1							// on change handler 
+	)
+	
+	wEllipse
+	(
+		ellipse1,
+		10,
+		450,
+		30,
+		30,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 ),
+		bkgColor_g
+	)
+	
+	wIcon
+	(
+		icon1,								// icon name
+		mov( w.IDI_APPLICATION, eax),		// icon resource value
+		50,									// x
+		450,								// y
+		32,									// width
+		32,									// height
+		bkgColor_g							// background color 
+	)
+	
+	wGroupBox
+	( 
+		groupBox1,
+		"Group Box",
+		90,
+		450,
+		120,
+		30
+	)
+	
+	wLabel
+	(
+		label1,
+		"Hello World, test string",
+		10,
+		490,
+		200,
+		25,
+		w.DT_LEFT,
+		RGB( 0, 0, 0 ),
+		bkgColor_g
+	)
+	
+	wListBox
+	( 								
+		listBox1,					// List box name
+		10,							// x
+		520,						// y
+		50,							// width
+		30,							// height
+		false,						// sorted
+		NULL						// onClick handler
+	)
+	
+	wListBox
+	( 								
+		listBox2,					// List box name
+		70,							// x
+		520,						// y
+		50, 						// width
+		50,							// height
+		false,						// sorted
+		NULL,						// onClick handler
+		"asdf"
+	)
+	
+	wListBox
+	( 								
+		listBox3,					// List box name
+		130,						// x
+		520,						// y
+		50, 						// width
+		60,							// height
+		false,						// sorted
+		NULL,						// onClick handler
+		"asdf",
+		"zxcv"
+	)
+	
+	//////////////////////////////////////////
+	
+	wPasswdBox
+	(
+		passwdBox1,							// editBox name
+		"",									// Initial text string
+		210,								// x
+		10,									// y
+		50,									// width
+		25,									// height
+		0,									// style
+		NULL								// on change handler 
+	)
+	
+	wPie
+	(
+		pie1,
+		270,
+		7,
+		30,
+		30,
+		45.0,
+		135.0,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 ),
+		bkgColor_g
+	)
+	
+	wPolygon
+	(
+		polygon1,
+		300,
+		10,
+		30,
+		30,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 ),
+		bkgColor_g
+	)
+	
+	wPolygon
+	(
+		polygon2,
+		300,
+		10,
+		30,
+		30,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 ),
+		bkgColor_g,
+		0,0,
+		0,28,
+		28,0
+	)
+	
+	wProgressBar
+	(
+		progressBar1,
+		340,
+		10,
+		50,
+		25
+	)		
+	
+	wPushButton
+	(
+		button,				// Field name in mainWindow object
+		"Quit",				// Caption for push button
+		490,				// x position 
+		550,				// y position 
+		125,				// width 
+		25,					// height 
+		onQuit				// "on click" event handler 
+	)
+	
+	wRadioButton
+	(
+		radioButton,		// Field name in mainWindow object
+		"Radio Button",		// Caption for push button
+		0,					// Style
+		400,				// x position 
+		10,					// y position 
+		105,				// width 
+		25					// height 
+	)
+	
+	wRadioButtonLT
+	(
+		radioButtonLT,		// Field name in mainWindow object
+		"Radio Button",		// Caption for push button
+		0,					// Style
+		515,				// x position 
+		10,					// y position 
+		105,				// width 
+		25					// height 
+	)
+	
+	wRectangle
+	(
+		rectangle1,
+		210,
+		40,
+		20,
+		20,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 )
+	)
+	
+	wRoundRect
+	(
+		roundRect1,
+		240,
+		40,
+		20,
+		20,
+		5,
+		5,
+		RGB( 0, 0, 0 ),
+		RGB( 255, 255, 255 ),
+		bkgColor_g
+	)
+	
+	wScrollBar
+	(
+		scrollBar1,
+		270,
+		40,
+		100,
+		25,
+		w.SBS_HORZ
+	)
+	
+	
+	wTab( tab2, "tab2", NULL, bkgColor_g );
+	
+	wPushButton
+	(
+		button2,			// Field name in mainWindow object
+		"Quit",				// Caption for push button
+		490,				// x position 
+		550,				// y position 
+		125,				// width 
+		25,					// height 
+		onQuit				// "on click" event handler 
+	)
+	
+	
+	wTextEdit
+	(
+		TextEdit1,							// text editor name
+		"",									// Initial text string
+		10,									// x
+		10,									// y
+		100,								// width
+		560,								// height
+		0,									// style
+		NULL								// on change handler 
+	)
+	
+	wTimer
+	(
+		timer1,
+		500,
+		wTimer_t.oneShot
+	)
+			
+	wTrackBar
+	(
+		trackBar1,
+		120,
+		10,
+		100,
+		40,
+		w.TBS_HORZ
+	)
+	
+	wUpDown
+	(
+		upDown1,					// upDown name
+		NULL,						// No buddy
+		0,							// alignment
+		120,						// x
+		60,							// y
+		25,							// width
+		30,							// height
+		0,							// lower range
+		100,						// upper range
+		50							// initial position
+	)
+			
+	
+
+endwForm
+
+
+// Must include the following macro invocation to emit the code that the
+// wForm macro generated:
+
+mainAppWindow_implementation();
+	
+
+
+
+proc onQuit:widgetProc;
+begin onQuit;
+
+	w.PostQuitMessage( 0 );
+
+end onQuit;
+
+proc onClick1:widgetProc;
+begin onClick1;
+end onClick1;
+
+// The following gets called immediately after the main application
+// window is created. It must be provided, even if it does nothing.
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+end onCreate;
+
+
+
+
+	
+	
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following is mostly boilerplate code for all apps (about the only thing
+// you would change is the size of the main app's form)
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+   
+
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+	// Create the main application window:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, bkgColor_g );
+	w.CreateSolidBrush( eax );
+	mov( eax, bkgBrush_g );
+	mainAppWindow.create_mainAppWindow
+	(
+		applicationName,		// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		formX,					// x-coordinate for window. 
+		formY,					// y-coordinate for window.
+		formW,					// Width
+		formH,					// Height
+		bkgColor_g,				// Background color
+		true					// Make visible on creation 
+	);
+	mov( esi, pmainAppWindow );	// Save pointer to main window object.
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	w.DeleteObject( bkgBrush_g );	
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must simply
+// call the HowlMainApp procedure.
+
+begin helloworld;
+
+	HowlMainApp();			
+				
+end helloworld;
+ 

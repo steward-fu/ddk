@@ -1,0 +1,273 @@
+// Iczelion's tutorial #14: Processes
+//
+//	To compile this program use the command line:
+//
+//	hla -w tut14.hla tut14.rc comdlg32.lib
+
+
+program processes;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "strings.hhf" )	// Defines HLA string routines.
+#include( "memory.hhf" )	// Defines "NULL" among other things.
+#include( "args.hhf" )		// Command line parameter stuff.
+#include( "conv.hhf" )
+
+
+const
+	IDM_CREATE_PROCESS	:= 1;
+	IDM_TERMINATE		:= 2;
+	IDM_EXIT			:= 3;
+
+readonly
+
+	ClassName		:string := "Win32ASMProcessClass";
+	AppName			:string := "Win32 ASM Process Example";
+	MenuName		:string := "FirstMenu";
+	programname		:string := "msgbox.exe";
+
+
+
+static
+	hInstance		:dword;
+	hMenu			:dword;
+	ExitCode		:dword;
+	CommandLine		:string;
+	processInfo		:w.PROCESS_INFORMATION;
+	
+	
+	
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( lParam:dword; wParam:dword; uMsg:uns32; hWnd:dword );
+	@nodisplay;
+	
+VAR
+	startInfo	:w.STARTUPINFO;
+	
+begin WndProc;
+
+		
+	// If the WM_DESTROY message comes along, then we've
+	// got to post a message telling the event loop that
+	// it's time to quit the program.  The return value in
+	// EAX must be false (zero).  The GetMessage function
+	// will return this value to the event loop which is
+	// the indication that it's time to quit.
+	
+	if( uMsg = w.WM_DESTROY ) then
+	
+		w.PostQuitMessage( 0 );
+		
+	elseif( uMsg = w.WM_INITMENUPOPUP ) then
+	
+		w.GetExitCodeProcess( processInfo.hProcess, ExitCode );
+		if( eax ) then
+		
+			if( ExitCode = w.STILL_ACTIVE ) THEN
+				
+				w.EnableMenuItem( hMenu, IDM_CREATE_PROCESS, w.MF_GRAYED );
+				w.EnableMenuItem( hMenu, IDM_TERMINATE, w.MF_ENABLED );
+				
+			else
+			
+				w.EnableMenuItem( hMenu, IDM_CREATE_PROCESS, w.MF_ENABLED );
+				w.EnableMenuItem( hMenu, IDM_TERMINATE, w.MF_GRAYED );
+				
+			endif;
+			
+		else
+		
+			w.EnableMenuItem( hMenu, IDM_CREATE_PROCESS, w.MF_ENABLED );
+			w.EnableMenuItem( hMenu, IDM_TERMINATE, w.MF_GRAYED );
+
+		endif;
+		
+	elseif( uMsg = w.WM_COMMAND ) then
+		
+		mov( wParam, eax );
+		if( lParam = 0 ) then
+		
+			if( ax = IDM_CREATE_PROCESS ) then
+			
+				if( processInfo.hProcess <> 0 ) then
+				
+					w.CloseHandle( processInfo.hProcess );
+					mov( 0, processInfo.hProcess );
+					
+				endif;
+				w.GetStartupInfo( startInfo );
+				w.CreateProcess
+				(
+					programname,
+					NULL,
+					NULL, NULL,
+					false,
+					w.NORMAL_PRIORITY_CLASS,
+					NULL,
+					NULL,
+					startInfo,
+					processInfo
+				);
+				w.CloseHandle( processInfo.hThread );
+				
+			elseif( ax = IDM_TERMINATE ) then
+			
+				w.GetExitCodeProcess( processInfo.hProcess, ExitCode );
+				if( ExitCode = w.STILL_ACTIVE ) then
+				
+					w.TerminateProcess( processInfo.hProcess, 0 );
+					
+				endif;
+				w.CloseHandle( processInfo.hProcess );
+				mov( 0, processInfo.hProcess );
+				
+				
+			else
+				w.DestroyWindow( hWnd );
+
+			endif;
+			
+		endif;		
+			
+	else
+	
+		// If a WM_DESTROY message doesn't come along,
+		// let the default window handler process the
+		// message.  Whatever (non-zero) value this function
+		// returns is the return result passed on to the
+		// event loop.
+		
+		w.DefWindowProc( hWnd, uMsg, wParam, lParam );
+		exit WndProc;
+		
+	endif;
+	sub( eax, eax );
+	
+end WndProc;
+
+
+	
+// WinMain-
+//
+// This is the "main" windows program.  It sets up the
+// window and then enters an "event loop" processing
+// whatever messages are passed along to that window.
+// Since our code is the only code that calls this function,
+// we'll use the Pascal calling conventions for the parameters.
+
+procedure WinMain
+(
+	hInst:dword;
+	hPrevInst:	dword;
+	CmdLine:	string;
+	CmdShow:	dword
+);	@nodisplay;
+
+var
+	wc:		w.WNDCLASSEX;
+	msg:	w.MSG;
+	hwnd:	dword;
+	
+begin WinMain;
+
+	
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	
+	mov( hInstance, wc.hInstance );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( MenuName, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+	
+	w.CreateWindowEx
+	( 
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		300,
+		200,
+		NULL,
+		NULL,
+		hInst,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+	mov( msg.wParam, eax );
+	
+
+end WinMain;
+
+	
+begin processes;
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+	// Get a copy of the command line string passed to this code:
+	
+	mov( arg.cmdLn(), CommandLine );
+	
+
+	
+	WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	
+	// WinMain returns a return code in EAX, exit the program
+	// and pass along that return code.
+	
+	w.ExitProcess( eax );	
+
+end processes;

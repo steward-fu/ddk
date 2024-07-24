@@ -1,0 +1,998 @@
+/*
+** entab-
+**
+**	Replaces spaces in a file with the corresponding number of tabs.
+**
+**	Usage:
+**
+**	entab {-? -r -v -! -b -tN} filelist...
+**
+**	-?		Display help message
+**	-r		Recursively walks through directories
+**	-v		Verify mode (don't process files that look like binary files)
+**	-!      Verbose mode (lists each file it processes)
+**	-b		Only process spaces at the beginning of a line
+**			 (does not generate any tabs after the first non-space char
+**			  is encountered).
+**	-tN		Tab width (N is an integer value).  Default is
+**				set by constant below (usually 8).
+*/
+
+program entab;
+
+#include ("stdlib.hhf")
+#include ("filter.hhf" )
+
+?@nodisplay := true;
+?@noalignstack := true;
+
+const
+	maxFiles	:= 64;
+
+	// defaultTab specifies the default number of spaces to
+	// use for each tab position.
+
+	defaultTab	:= 8;
+	
+static
+	spaces		:uns32;
+	tab			:uns32;
+	curColumn	:uns32;
+	argc		:uns32;
+	stdoutHndl	:dword;
+	fileCnt		:uns32;
+	files		:string[maxFiles];
+
+	recursive	:boolean := false;
+	verbose		:boolean := false;
+	verify		:boolean := false;
+	bolnOnly	:boolean := false;
+
+
+// doEntab -
+//
+//	This is the code responsible for the actual entab operation.
+
+procedure doEntab
+( 
+	startBuf	:dword in eax; 
+	endBuf		:dword in edx;
+	outHandle	:dword 
+);
+var
+	bytesWritten	:dword;
+	buffer			:byte[8192];
+
+static
+	atBOLN		:boolean := true;
+
+begin doEntab;
+
+	push( ebx );
+	push( esi );
+	push( edi );
+
+	mov( eax, esi );	// Pointer to next character to process.
+	mov( edx, edi );	// Points just beyond last character to process.
+	xor( ebx, ebx );	// Index into "buffer" array for output
+	
+	// Process each character in the input buffer:
+
+	while( esi < edi ) do
+
+		mov( [esi], al );
+		mov( spaces, ecx );
+		if( al = stdio.tab ) then
+
+			// If we've got some spaces outstanding and we haven't
+			// hit a tabstop, output the spaces to the file before
+			// outputting the tab character.
+
+			while( ecx <> 0 ) do
+
+				mov( ' ', buffer[ ebx ] );
+				dec( ecx );
+				inc( ebx );
+
+			endwhile;
+
+			// If we've got some character other than a tab,
+			// emit that character to the output buffer here.
+
+			mov( al, buffer[ ebx ] );
+			inc( ebx );
+
+			// Reset the tab column and number of spaces we've seen.
+
+			mov( 0, spaces );
+			mov( 0, curColumn );
+
+			
+		elseif( al = ' ' && ( atBOLN || !bolnOnly )) then
+
+			// If the number of consecutive spaces since the
+			// last tab column equals the width of a tab
+			// column, then emit a tab character.
+
+			mov( curColumn, edx );
+			inc( edx );
+			inc( ecx );
+			if( edx >= tab ) then
+
+				mov( stdio.tab, buffer[ ebx ] );
+				inc( ebx );
+				xor( edx, edx );
+				xor( ecx, ecx );
+
+			endif;
+			mov( edx, curColumn );
+			mov( ecx, spaces );
+
+		else
+
+			// If we've got some spaces outstanding and we haven't
+			// hit a tabstop, output the spaces to the file before
+			// outputting the current character.
+
+			while( ecx <> 0 ) do
+
+				mov( ' ', buffer[ ebx ] );
+				dec( ecx );
+				inc( ebx );
+
+			endwhile;
+			mov( 0, spaces );
+
+			// If we've got an EOLN character, set the
+			// atBOLN flag to true, otherwise set it false.
+
+			mov( false, atBOLN );
+			if( al = stdio.lf || al = stdio.cr ) then
+
+				mov( true, atBOLN );
+
+			endif;
+
+			// The current character is something other than
+			// a space.  If we've got any space characters
+			// saved up, emit them here.
+
+			// If we've got some character other than a tab,
+			// emit that character to the output buffer here.
+
+			mov( al, buffer[ ebx ] );
+			inc( curColumn );
+			inc( ebx );
+
+			// If the position pointer increments beyond the
+			// next tab stop, then reset the curColumn value
+			// to zero (curColumn counts the number of characters
+			// into the current tab stop):
+
+			mov( curColumn, edx );
+			if( edx >= tab ) then
+
+				mov( 0, curColumn );
+
+			endif;
+
+		endif;
+
+		// Advance to the next character in the input buffer:
+
+		inc( esi );
+		
+		// If we had a carriage return or line feed, reset the
+		// column counter back to zero (under DOS/Windows, technically
+		// a linefeed shouldn't reset the counter, however, it's more
+		// likely that we'll find Unix text files under Windows than
+		// we'll find a Windows text file that uses the linefeed in
+		// a text file to move the cursor down one position without
+		// also resetting the column to the beginning of the line).
+
+		if( al = stdio.cr || al = stdio.lf ) then
+
+			mov( 0, curColumn );
+
+		endif;
+
+		// Once the buffer has greater than 4096 characters,
+		// write the buffer to the standard output device.
+		// The buffer really only needs to be 4096+63 bytes long
+		// since this loop processes one character at at time and
+		// the maximum expansion for a tab is 64 characters.
+
+		if( ebx >= 4096 ) then
+
+			WriteFile
+			(
+				outHandle,
+				buffer,
+				ebx,
+				bytesWritten,
+				0
+			);
+			xor( ebx, ebx );
+			
+		endif;
+
+	endwhile;
+
+	// Once we're done processing the input, write any leftover bytes
+	// in the output buffer to the standard output device:
+
+	if( ebx <> 0 ) then
+
+		WriteFile
+		(
+			outHandle,
+			buffer,
+			ebx,
+			bytesWritten,
+			0
+		);
+			
+	endif;
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end doEntab;
+
+
+// processFile-
+//
+//	This procedure opens the input and output files,
+//	reads the data, calls doEntab to perform the entab
+//	operation, and then closes the file.
+
+procedure processFile( filename:string );
+var
+	inHandle	:dword;
+	outHandle	:dword;
+	mapHandle	:dword;
+	bytesRead	:dword;
+	baseAdrs	:dword;
+	filesize	:qword;
+	tempFile	:string;
+	pathName	:string;
+	pathPtr 	:dword;
+	byteCnt		:dword;
+	fileBuf		:char[264];
+	pathBuf 	:char[264];
+	buffer		:byte[4096];
+
+begin processFile;
+
+	mov( 0, curColumn );
+	if( filename = NULL ) then
+
+		// If there was no filename specified on the command line,
+		// then we need to read our input from the standard input
+		// device.  Handle that situation here:
+
+		GetStdHandle( w.STD_INPUT_HANDLE );
+		mov( eax, inHandle );
+		forever
+
+			// Read up to 4096 bytes at a shot from the
+			// standard input device:
+
+			ReadFile
+			(
+				inHandle,
+				buffer,
+				4096,
+				bytesRead,
+				0
+			);
+
+			// If there was an error, or we didn't read anything,
+			// stop processing:
+
+			breakif( eax = 0 || bytesRead = 0 );
+
+			// If we read at least one byte, all the doEntab
+			// procedure to process the bytes we read:
+
+			lea( eax, buffer );
+			mov( eax, edx );
+			add( bytesRead, edx );
+			doEntab( eax, edx, stdoutHndl );
+			
+		endfor;
+		CloseHandle( inHandle );
+		exit processFile; 
+			
+	endif;
+
+	// If we drop down here, then we've been given a filename
+	// to process.  Map that textfile to memory and pass that
+	// memory block to the doEntab procedure:
+
+	CreateFile
+	( 
+		filename,
+		w.GENERIC_READ,
+		0,
+		0,
+		w.OPEN_EXISTING,
+		0,
+		0
+	);
+	mov( eax, inHandle );
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+
+		/*
+		** If the user has specified verify mode, then make a quick
+		** pass over the file to see if it contains "funny" characters
+		** that would suggest that it's a binary, rather than text, file.
+		*/
+
+		if( verify ) then
+
+			repeat
+
+				ReadFile( inHandle, buffer, 4096, byteCnt, 0 );
+				lea( esi, buffer );
+				for( mov( byteCnt, ecx ); ecx > 0; dec( ecx )) do
+
+					mov( [esi+ecx-1], al );
+					if( al = 0 || al > 127 ) then
+
+						stdout.put
+						( 
+							"'", 
+							filename, 
+							"' appears to be a binary file, skipping"
+							nl
+						);
+						CloseHandle( inHandle );
+						exit processFile;
+
+					endif;
+
+				endfor;
+
+			until( byteCnt = 0 );
+			SetFilePointer( inHandle, 0, 0, w.FILE_BEGIN );
+
+		endif;
+
+
+		/*
+		** Technically, we should check for an error on return
+		** from GetFullPathName.  However, the maximum path length
+		** (with ANSI characters) is 254, so our buffer should be
+		** large enough to hold the longest string.
+		*/
+
+		GetFullPathName( filename, 260, pathBuf, pathPtr );
+
+		/*
+		** We don't care about the actual filename component, we
+		** just want the pathname component, so store a zero
+		** over the first character of the filename component:
+		*/
+
+		mov( pathPtr, eax );
+		mov( #0, (type char [eax]) );
+
+		/*
+		** Convert the zString to an HLA string for our convenience:
+		*/
+
+		lea( eax, pathBuf );
+		mov( str.a_cpyz( eax ), pathName );
+		
+		/*
+		** Generate a temporary filename in the same directory
+		** as the file we're converting:
+		*/
+		 
+		GetTempFileName( pathName, "ent", 0, fileBuf );
+		lea( eax, fileBuf );
+		mov( str.a_cpyz( eax ), tempFile );
+
+		/*
+		** Open the temporary file for output:
+		*/
+
+		CreateFile
+		(
+			tempFile,
+			w.GENERIC_WRITE,
+			0,
+			NULL,
+			w.CREATE_ALWAYS,
+			0,
+			0
+		);
+		mov( eax, outHandle );
+
+
+		// Get the size of the file and make sure it's between
+		// one and 1 gigabytes long:
+
+		GetFileSizeEx( inHandle, filesize );
+		mov( (type dword filesize), eax );
+		if( (type dword filesize[4]) = 0 && eax <= 1024*1024*1024 ) then
+
+			// Note: if the file's length is zero, don't
+			// do anything:
+
+			if( eax <> 0 ) then
+
+				CreateFileMapping
+				(
+				  inHandle,
+				  0,
+				  w.PAGE_READONLY,
+				  0,
+				  NULL
+				);
+				if( eax <> NULL ) then
+
+					mov( eax, mapHandle );
+					MapViewOfFile
+					(
+					  eax,	
+					  w.FILE_MAP_READ,		
+					  0,			
+					  (type dword filesize)
+					);
+					if( eax <> NULL ) then
+
+						// Okay, we've successfully mapped
+						// the file into memory.  Pass the
+						// addresses of the beginning and end
+						// of the buffer to the doEntab routine
+						// where the real work will get done:
+
+						mov( eax, baseAdrs );
+						mov( (type dword filesize), edx );
+						add( eax, edx );
+						doEntab( eax, edx, outHandle );
+						UnmapViewOfFile( baseAdrs );
+
+					else // MapViewOfFile failed
+
+						stdout.put
+						(
+							"entab(1): could not map file '",
+							filename,
+							"'" nl
+						);
+						CloseHandle( mapHandle );
+						CloseHandle( inHandle );
+						CloseHandle( outHandle );
+				 		DeleteFile( tempFile );
+						strfree( tempFile );
+						strfree( pathName );
+						ExitProcess( 1 );
+
+					endif;
+					CloseHandle( mapHandle );
+
+				else // CreateFileMapping failed.
+
+					stdout.put
+					(
+						"entab(2): could not map file '", 
+						filename, 
+						"'" nl 
+					);
+					CloseHandle( inHandle );
+					CloseHandle( outHandle );
+			 		DeleteFile( tempFile );
+					strfree( tempFile );
+					strfree( pathName );
+					ExitProcess( 1 );
+
+				endif;
+
+			endif;
+			CloseHandle( inHandle );
+			CloseHandle( outHandle );
+	 		DeleteFile( filename );
+		 	MoveFile( tempFile, filename );
+			strfree( tempFile );
+			strfree( pathName );
+
+
+		else // The file is too big to map into memory.
+
+
+			// This is cheap!  Really ought to just open
+			// the file as a regular file and process it
+			// by reading 4096 bytes at a time (just like the
+			// stdin handler, earlier).  OTOH, how many 1GB
+			// *text* files do we really expect to process?
+			// So failing on a file this large is probably
+			// a good idea since it's very unlikely the file will
+			// be a true text file.
+
+			stdout.put
+			( 
+				"entab(3): cannot process file '", 
+				filename,
+				"', too big" nl 
+			);
+			CloseHandle( inHandle );
+			CloseHandle( outHandle );
+	 		DeleteFile( tempFile );
+			strfree( tempFile );
+			strfree( pathName );
+			ExitProcess( 1 );
+
+		endif;
+
+	else // CreatFile failed.
+
+		stdout.put
+		(
+			"entab(4): error opening file '",
+			filename,
+			"'" nl
+		);
+		ExitProcess( 1 );
+
+	endif;
+
+end processFile;
+
+
+
+
+// FileInList-
+//
+// This iterator returns a string (in EAX) that corresponds
+// to a filename.  The parameter passed to this iterator is a filename,
+// one that typically contains wildcard characters (i.e., "*" and "?" ).
+// This iterator returns a list of filenames that match the, possibly
+// ambiguous, filename passed as a parameter.  This iterator fails
+// when there are no more matching filenames.
+//
+// Because the yield operation in an iterator doesn't share the
+// normal call/return semantics of a procedure, this procedure
+// preserves ECX and EDX across a yield/resume to prevent nasty
+// suprises in the calling code.
+
+iterator FileInList( FileList:string );
+var
+	handle		:dword;
+	_ecx		:dword;
+	_edx		:dword;
+	curFile		:string;
+	FileData	:Win32FindData;
+	
+begin FileInList;
+
+	// Save ECX and EDX for when we yield to the iterator.
+	// Preserve EAX acro
+
+	mov( ecx, _ecx );
+	mov( edx, _edx );
+
+	// Find the first matching file (if one exists).
+	// Save the handle for use by FindNextFile.
+	
+	FindFirstFile( FileList, FileData );
+	mov( eax, handle );
+	
+	// If we matched at least one filename, return
+	// the corresponding string and call the
+	// FindNextFile routine to match any additional
+	// filenames.
+	
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+	
+		repeat
+		
+			// FindFirstFile & FindNextFile return
+			// zero-terminated strings.  Convert these
+			// to HLA compatible strings and return
+			// the converted string:
+			
+			lea( eax, FileData.FileName );
+			str.a_cpyz( eax );
+			mov( eax, curFile );
+			
+			// Return the converted string to the FOREACH
+			// loop and then free the storage associated
+			// with the string.	 Note that this iterator
+			// does not return directory names, only real files.
+			
+			mov( FileData.FileAttributes, eax );
+			test( w.FILE_ATTRIBUTE_DIRECTORY, eax );
+			if( @z ) then
+
+				mov( curFile, eax );
+				mov( _ecx, ecx );
+				mov( _edx, edx );
+				yield();		// Return string to FOREACH loop.
+				mov( edx, _edx );
+				mov( ecx, _ecx );
+
+			endif;
+			strfree( curFile );
+		
+			// Get the next filename in the list:
+			
+			FindNextFile( handle, FileData );
+			
+		until( al = false );
+		
+		// When we've processed all the filenames in the list,
+		// call FindClose to free the handle and other resources.
+		
+		FindClose( handle );
+		
+	endif;
+	mov( _ecx, ecx );	// Restore last values of ECX/EDX returned by
+	mov( _edx, edx );	// yield (or original entry, if loop didn't iterate)
+	pop( eax );			// Return original EAX value upon encountering foreach.
+
+end FileInList;
+
+
+/*
+** DirInCD-
+**
+**	This iterator returns a list of directory names found in
+** the current directory.
+*/
+
+iterator DirInCD;
+var
+	handle		:dword;
+	_ecx		:dword;
+	_edx		:dword;
+	dirName		:string;
+	FileData	:Win32FindData;
+	
+begin DirInCD;
+
+	// Preserve registers:
+
+	push( eax );
+	mov( ecx, _ecx );
+	mov( edx, _edx );
+
+	// Find the first matching file (if one exists).
+	// Save the handle for use by FindNextFile.
+	
+	FindFirstFile( "*", FileData );
+	mov( eax, handle );	
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+	
+		repeat
+		
+			mov( FileData.FileAttributes, eax );
+			and( w.FILE_ATTRIBUTE_DIRECTORY, eax );
+			if( @nz ) then
+
+				// FindFirstFile & FindNextFile return
+				// zero-terminated strings.  Convert these
+				// to HLA compatible strings and return
+				// the converted string:
+				
+				lea( eax, FileData.FileName );
+				str.a_cpyz( eax );
+				mov( eax, dirName );
+				
+				// Return the converted string to the FOREACH
+				// loop and then free the storage associated
+				// with the string.  Do not, however, return
+				// the "." and ".." directory entries.
+				
+				if
+				( 
+						(type char [eax]) <> '.'	
+					||	(
+								(type char [eax+1]) <> #0
+							&&	(
+										(type char [eax+1]) <> '.'
+									||	(type char [eax+2]) <> #0
+								)
+						)
+				) then
+
+
+					mov( dirName, eax );
+					mov( _ecx, ecx );
+					mov( _edx, edx );
+					yield();		// Return string to FOREACH loop.
+					mov( edx, _edx );
+					mov( ecx, _ecx );
+
+
+				endif;
+				strfree( dirName );
+
+			endif;
+			
+			// Get the next directory in the list:
+			
+			FindNextFile( handle, FileData );
+			
+		until( al = false );
+		
+		// When we've processed all the filenames in the list,
+		// call FindClose to free the handle and other resources.
+		
+		FindClose( handle );
+		
+	endif;
+	mov( _ecx, ecx );
+	mov( _edx, edx );
+	pop( eax );
+
+end DirInCD;
+
+
+
+/*
+** processAFilename-
+**
+** Given a filename (possibly ambiguous, with wildcards),
+** this procedure processes that particular file.  If the
+** filename is ambiguous (contains wildcard characters) then
+** this function processes all the files that match the
+** ambiguous filename specification.
+*/
+
+procedure processAFilename( filename:string );
+begin processAFilename;
+
+	foreach FileInList( filename ) do
+
+		mov( eax, ecx );
+		if( verbose ) then
+
+			stdout.put( "Processing file: ", (type string ecx), nl );
+
+		endif;
+		processFile( ecx );
+
+	endfor;
+
+end processAFilename;
+
+
+// processRecursive-
+//
+// This procedure recursively walks a directory tree starting
+// at the directory node specified by the 'pathName' parameter
+// (typically, the pathName is the string "." to process all the
+// directories starting with the current directory).  In each
+// directory this procedure (recursively) encounters, this
+// procedure calls "processAFilename" to process all the files
+// whose name is matched by the "filename" parameter.  Note that
+// filename may be an ambiguous filename (i.e., it may contain
+// wildcard characters). 
+
+procedure processRecursive( pathName:string; filename:string );
+var
+	dir			:string;
+	curDir		:char[260];
+
+begin processRecursive;
+
+
+	GetCurrentDirectory( 256, curDir );
+	SetCurrentDirectory( pathName );
+
+	/*
+	** Process the file(s) in the current directory first:
+	*/
+
+	processAFilename( filename );
+
+	/*
+	** If the recursive option was specified, process all the
+	** files in the subdirectories (contained within the current
+	** subdirectory) as well
+	*/
+
+	if( recursive ) then
+
+		foreach DirInCD() do
+
+			if( verbose ) then
+
+				stdout.put
+				( 
+					"Processing directory: '", 
+					(type string eax), 
+					"'" nl 
+				);
+
+			endif;
+			processRecursive( eax, filename );
+
+		endfor;
+
+	endif;
+	lea( eax, curDir );
+	SetCurrentDirectory( (type string eax) );
+
+end processRecursive;
+
+
+
+/*
+** Usage-
+**
+**	Must supply a "Usage" function that displays a short
+**	message describing the use of this filter program if
+**	there is a command line error.
+*/
+
+procedure Usage;
+begin Usage;
+
+	stdout.put
+	( 
+		"Usage: entab  {-r -v -b -tN} filelist..." nl
+		"       -?  Display this message and quit" nl 
+		"       -r  Recursively process files in subdirectories" nl
+		"       -b  Process tabs at the beginning of the line (only)" nl
+		"       -v  Verify mode (skip suspected binary files)" nl
+		"       -!  Verbose mode (displays files it processes)" nl
+		"		-tN Tab width in characters (N is an integer in the" nl
+		"              range 1..64, default is ", defaultTab, ")" nl
+		nl
+		"       filelist is a list of filenames (which may contain" nl
+		"       wildcard characters)  If no filenames are present," nl
+		"       then this program reads its input from the standard" nl
+		"       input device" nl
+	);
+
+end Usage;
+
+
+
+const
+	ebxStr :text := "(type string ebx)";
+
+begin entab;
+
+	// Miscellaneous initialization:
+
+	mov( false, recursive );
+	mov( defaultTab, tab );
+	mov( false, verbose );
+	mov( false, bolnOnly );
+
+	GetStdHandle( w.STD_OUTPUT_HANDLE );
+	mov( eax, stdoutHndl );
+
+	// Move all the command line arguments into a local array for
+	// processing:
+
+	mov( arg.c(), argc );
+	xor( esi, esi );
+	for( mov( 1, ecx ); ecx < argc; inc( ecx )) do
+
+		arg.v( ecx );
+		if( (type char [eax]) = '-' ) then
+
+			mov( eax, ebx );
+			str.lower( (type string eax) );
+			if( str.eq( ebxStr, "-r" )) then
+
+				mov( true, recursive );
+
+			elseif( str.eq( ebxStr, "-b" )) then
+
+				mov( true, bolnOnly );
+
+			elseif( str.eq( ebxStr, "-v" )) then
+
+				mov( true, verify );
+
+			elseif( str.eq( ebxStr, "-!" )) then
+			
+				mov( true, verbose );
+
+			elseif( str.eq( ebxStr, "-?" )) then
+			
+				Usage();
+				ExitProcess( 1 );
+
+			elseif( (type char [ebx]) = '-' && (type char [ebx+1]) = 't' ) then
+
+				push( esi );
+				try
+
+					lea( esi, [ebx+2] );
+					conv.atoh32( [esi] );
+					mov( eax, tab );
+					if( edx <> 0 || eax not in 1..64 ) then
+
+						stdout.put( ebxStr, " is too big" nl );
+						Usage();
+						ExitProcess( 1 );
+
+					endif;
+
+				  anyexception
+
+					stdout.put
+					( 
+						"Error processing option '", 
+						ebxStr, 
+						"' -- Bad numeric value" nl 
+					);
+					Usage();
+					ExitProcess( 1 );
+
+				endtry;
+				pop( esi );
+
+			else
+
+				stdout.put( "Error: unexpected option: '", ebxStr, "'" nl );
+				Usage();
+				ExitProcess( 1 );
+
+			endif;
+
+		else
+
+			mov( eax, files[ esi*4 ]);
+			inc( esi );
+
+		endif;
+
+	endfor;
+	mov( esi, fileCnt );
+
+	if( verbose ) then
+
+		if( recursive ) then
+
+			stdout.put( "-r option active" nl );
+
+		endif;
+		stdout.put( "-t", tab, " is the tab width specification" nl );
+
+	endif;
+
+	// Okay, process all the filenames found on the command line:
+
+	if( esi <> 0 ) then
+
+		for( mov( 0, edi ); edi < fileCnt; inc( edi )) do
+
+			// Process the current command line parameter if it isn't
+			// a command line option beginning with a '-':
+
+			if( verbose ) then
+
+				if( recursive ) then
+
+					stdout.put( "(Recursively) " );
+
+				endif;
+				stdout.put( "Processing ", files[ edi*4 ], nl );
+
+			endif;
+			processRecursive( ".", files[ edi*4 ] );
+			strfree( files[ edi*4 ] );
+
+		endfor;
+
+	else
+
+		processFile( NULL );
+
+	endif;
+
+
+	
+end entab;
+
+
+       

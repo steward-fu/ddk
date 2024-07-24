@@ -1,0 +1,278 @@
+// Ellipses.hla-
+//
+//	Simple Application the demonstrates drawing ellipses.
+
+unit Ellipses;
+#include( "rand.hhf" )
+#include( "w.hhf" )
+#include( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+
+static
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+	
+	
+readonly
+
+	ClassName	:string := "EllipsesWinClass";	// Window Class Name
+	AppCaption	:string := "Ellipses Program";	// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_SIZE,	 &Size				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+			
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG );  
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+static
+	hBrush		:dword;						// Brush handle.
+	blackBrush	:dword;						// Handle for the stock white brush
+	nullPen		:dword;						// Handle for the null pen.
+	oldPen		:dword;						// Handle for the original pen
+	lastRGB		:w.COLORREF;				// Last color we used
+	theRect		:w.RECT;					// Rectangle Coordinates
+	
+begin Paint;
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Create a null pen so we don't have an outline on our ellipse:
+	
+	w.CreatePen( w.PS_NULL, 0, 0 );
+	mov( eax, nullPen );
+	
+	// Get the stock black brush object so we outline the rectangles
+	// we draw:
+	
+	w.GetStockObject( w.BLACK_BRUSH );
+	mov( eax, blackBrush );
+	
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		rand.range( 0, $FF_FFFF ); // Generate a random RGB value.
+		mov( eax, lastRGB );
+		
+		// Select the null pen into the context so we don't get
+		// a black outline around the ellipse:
+		
+		SelectObject( nullPen );
+		mov( eax, oldPen );
+
+		// Create a random rectangle to surround the first ellipse
+		// we're going to draw:
+		
+		rand.range( 0, ClientSizeX );
+		mov( eax, theRect.left );
+		rand.range( 0, ClientSizeY );
+		mov( eax, theRect.top );
+		
+		mov( ClientSizeX, eax );
+		sub( theRect.left, eax );
+		rand.range( 0, eax );
+		add( theRect.left, eax );
+		mov( eax, theRect.right );
+		
+		mov( ClientSizeY, eax );
+		sub( theRect.top, eax );
+		rand.range( 0, eax );
+		add( theRect.top, eax );
+		mov( eax, theRect.bottom );
+		
+		// Draw a sequence of ellipses, each successive one inside the
+		// previous one, until the ellipse closes up on itself.
+		
+		repeat
+		
+			// Create a brush with the current color we're using.
+			// On each iteration of the loop, we'll lighten the color
+			// a small amount so that it creates a shading effect.
+
+			w.CreateSolidBrush( lastRGB );
+			add( $03_0303, lastRGB );		// Lighten the color for next loop.
+			and( $FF_FFFF, lastRGB );
+			mov( eax, hBrush );
+			SelectObject( eax );
+			
+			// Draw the current ellipse:
+			
+			Ellipse( theRect.left, theRect.top, theRect.right, theRect.bottom );
+			
+			// Shrink the Ellipse in by two pixels:
+			
+			add( 2, theRect.top );
+			add( 2, theRect.left );
+			sub( 2, theRect.bottom );
+			sub( 2, theRect.right );
+			
+			// Delete the brush we created:
+			
+			SelectObject( blackBrush );	// First, select a different brush.
+			w.DeleteObject( hBrush );
+
+			// Quit the loop when the ellipse collapses on itself:
+			
+			mov( theRect.top, eax );
+			mov( theRect.left, ecx );
+
+		until( eax >= theRect.bottom  ||	ecx >= theRect.right );
+		
+		// Restore the original pen:
+		
+		SelectObject( oldPen );
+							
+	EndPaint;
+
+	// Force Windows to redraw this window without erasing
+	// it so that we get constant feedback in the window:
+
+	w.InvalidateRect( hwnd, NULL, false ); 
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//	Basically, it just saves the window's size so
+//	the Paint procedure knows when a line goes out of
+//	bounds.
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+	
+	xor( eax, eax ); // return success.
+	
+
+end Size;
+end Ellipses;

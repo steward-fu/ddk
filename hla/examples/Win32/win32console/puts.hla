@@ -1,0 +1,37 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "strings.hhf" );
+
+
+procedure win32cons.puts( y:word; x:word; s:string ); @nodisplay;
+var
+	chrsWritten:	dword;
+
+begin puts;
+
+	pushad();
+
+	win.WriteConsoleOutputCharacter
+	(
+		chrsWritten,
+		#{
+			pushw( y );
+			pushw( x );
+		}#,
+		#{
+			mov( s, eax );
+			push( (type str.strRec [eax]).length );
+		}#,
+		s,
+		stdout.handle()
+	);
+	popad();
+
+end puts;
+
+
+
+
+
+end consoleUnit;

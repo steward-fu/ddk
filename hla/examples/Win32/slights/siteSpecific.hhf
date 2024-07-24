@@ -1,0 +1,94 @@
+#if( !@defined( siteSpecific_hhf ))
+?siteSpecific_hhf := true;
+
+
+// The following constants and types are used for General Atomics' TRIGA
+// Reactors and reactor sites.  These constants are specific to TRIGA Basic
+// and are only applicable if HLA Basic is being compiled as TRIGA Basic.
+
+const
+	Standalone		:= false;		// Standalone version of HLA Basic
+	
+	
+	
+type
+	stmt_t	:record
+								
+		identifier	:string;
+		numArgs		:uns32;
+		IDmap		:dword;
+		
+	endrecord;
+	
+	
+
+	
+const
+
+	// If no site-specific code, then use "hbbc" as the default
+	// suffix for HLA Basic Byte Code files:
+	
+	HLABasicByteCodeExt_c	:text := """hbbc""";
+	siteTitle_c 			:string	:=	"HLA Basic Compiler v2.0" nl;
+	
+	
+	// If no site-specific code, then we must create an empty macro
+	// for "siteSpecificPseudoVars" and "siteSpecificFunctions:
+	
+	#macro siteSpecificPseudoVars;
+		pvrec_t:[ "midiDevice",			0, 				0,			"dword"  ],
+		pvrec_t:[ "midiMsg",			0, 				0,			"dword"  ],
+		pvrec_t:[ "midiStatus",			0, 				255,		"byte"   ],
+		pvrec_t:[ "midiChannel",		0, 				15,			"byte"   ],
+		pvrec_t:[ "midiParm",		    0, 				0,			"dword"  ],
+		pvrec_t:[ "midiValue",		    0, 				0,			"dword"  ],
+		pvrec_t:[ "midiTimeStamp",		0, 				0,			"dword"  ],
+		
+		pvrec_t:[ "numFaders",			0, 				0,			"uns32"  ],
+		pvrec_t:[ "faders",				4096*16, 		0,			"byte"   ],
+		
+		pvrec_t:[ "numKnobs",			0, 				0,			"uns32"  ],
+		pvrec_t:[ "knobs",				4096*16, 		0,			"byte"   ],
+		
+		pvrec_t:[ "numButtons",			0, 				0,			"uns32"  ],
+		pvrec_t:[ "buttons",			4096*16, 		0,			"byte"   ],
+		
+		pvrec_t:[ "deviceChanged",		0, 				3,			"byte"   ],
+		pvrec_t:[ "changedIndex",		0, 				0,			"dword"  ],
+		
+		
+	#endmacro
+	
+	#macro siteSpecificFunctions;
+	#endmacro
+	
+	const
+		siteSpecificStmts_c	:stmt_t[] := 
+		[
+			// Last entry isn't referenced.
+			
+			stmt_t:[ "    dummy    ",		 0, 0		]
+		];
+		numSiteSpecificStmts := @elements( siteSpecificStmts_c ) - 1; 
+	
+	
+	
+
+const
+	siteSpecificReservedWords	:string :=
+		""
+		#for( _i_ := 0 to numSiteSpecificStmts-1 )
+		
+			+
+			siteSpecificStmts_c[_i_].identifier + "_tkn, " +
+			"""" + siteSpecificStmts_c[_i_].identifier + """, " +
+			"@{}, " +
+			"stmt_c,"
+		
+		#endfor
+		+ nl;		
+
+				
+		
+
+#endif

@@ -1,0 +1,162 @@
+/*
+** 
+** HLAcmp-
+**
+** This program compares the output of two HLA compilations.
+** It returns exit status zero if the two files are identical.  
+** It returns a non-zero exit code if the files are not equal.
+*/
+
+program HLAcmp;
+
+#include( "stdlib.hhf" );
+
+// Define ExitProcess so we can set the exit code.
+
+procedure ExitProcess( ErrCode:uns32 ); external( "_ExitProcess@4" );;
+
+
+static
+	input1:		file;
+	filename1:	string;
+	line1:		string;
+	line1a:		string;
+	
+	input2:		file;
+	filename2:	string;
+	line2:		string;
+	line2a:		string;
+	
+	DelFromHere:dword;
+	
+	ReturnVal:	uns32 := 0;	
+
+begin HLAcmp;
+
+	// Verify command line syntax:
+	
+	
+	if( arg.c() <> 3 ) then
+
+		stdout.put( "Usage: hlacmp hlaOutFile1 hlaOutFile2" nl );
+		arg.c();
+		stdout.put( "Arguments: ", (type uns32 eax ), nl );
+		arg.cmdLn();
+		stdout.put( "Current command line: '", (type string eax ), "'", nl );
+		ExitProcess( 1 );
+
+	endif;
+	
+	// Get the filenames:
+	
+	arg.v(1);
+	mov( eax, filename1 );
+	arg.v(2);
+	mov( eax, filename2 );
+	stdout.put( "Comparing ", filename1, " and ", filename2, "...", nl );
+
+	// Open the files:
+	
+	input1.create();
+	input1.open( filename1, fileio.r );
+	
+	input2.create();
+	input2.open( filename2, fileio.r );
+	
+	// Okay, until an end of file comes along,
+	// read and compare each line in the file:
+	
+	mov( 0, ReturnVal );
+	while( input1.eof() != true ) do
+	
+		// Check to make sure we're not at EOF
+		// in the second file.
+		
+		input2.eof();
+		if( al ) then
+		
+			stdout.put( "Error, eof in file ", filename2, nl );
+			ExitProcess( 2 );
+			
+		endif;
+		
+		// Read the next available line from the files.
+		
+		input1.a_gets();
+		mov( eax, line1 );
+		input2.a_gets();
+		mov( eax, line2 );
+		
+		// See if the lines are different:
+		
+		str.ne( line1, line2 );
+		if( al ) then
+		
+				
+			if( ReturnVal = 0 ) then
+			
+				stdout.put
+				( 
+					nl 
+					"Error, files ",
+					filename1,
+					" and ",
+					filename2,
+					" do not agree" nl nl 
+				);
+				
+			endif;
+			stdout.put( line1, nl );
+			stdout.put( line2, nl );
+			mov( line1, esi );
+			mov( line2, edi );
+			
+			// Print a caret under the first offending character:
+			
+			mov( (type str.strRec [esi]).length, ecx );
+			if( ecx > (type str.strRec[edi]).length ) then
+			
+				mov( (type str.strRec [edi]).length, ecx );
+				
+			endif;
+			while( ecx > 0 ) do
+			
+				mov( [esi], al );
+				if( al <> (type char [edi])) then
+				
+					stdout.putc( '^' );
+					break;
+					
+				else
+					
+					stdout.putc( ' ' );
+					
+				endif;
+				inc( esi );
+				inc( edi );
+				dec( ecx );
+				
+			endwhile;
+			stdout.newln(); 
+			
+			// Set the return value to an error code.
+			
+			mov( 3, ReturnVal );
+			
+		endif;
+		
+		// Free storage allocated by stdin.a_gets:
+		
+		strfree( line1 );
+		strfree( line2 );
+		
+	endwhile;
+	
+	if( ReturnVal = 0 ) then
+	
+		stdout.put( "Files compare OK" nl nl );
+		
+	endif;
+	ExitProcess( ReturnVal );	
+
+end HLAcmp;

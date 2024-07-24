@@ -1,0 +1,53 @@
+unit consoleUnit;
+#include( "stdin.hhf" );
+#include( "win32cons.hhf" );
+
+
+
+
+// getMode-
+//
+//	Returns the current console mode flags in EAX.
+
+procedure win32cons.getMode; @nodisplay;
+var theMode:dword;
+
+begin getMode;
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	
+	win.GetConsoleMode( theMode, stdin.handle() );
+	mov( theMode, eax );	
+		
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+
+end getMode;
+
+
+// setMode-
+//
+//	Sets the current console mode to the flag values passed
+//	as the parameter.
+
+procedure win32cons.setMode( theMode:dword ); 
+begin setMode;
+
+	pushad();
+	win.SetConsoleMode( theMode, stdin.handle() );
+	popad();
+	
+end setMode;
+
+
+
+
+
+end consoleUnit;

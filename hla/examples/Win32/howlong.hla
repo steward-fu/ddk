@@ -1,0 +1,64 @@
+program tim;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+static
+	cmdLn	:str.strvar(256);
+	theTime	:pointer to timer;
+	sui		:w.STARTUPINFO;
+	pi		:w.PROCESS_INFORMATION;
+	t		:dword;
+	fpt		:real80;
+	tenPt0	:real64 := 10.0;
+
+begin tim;
+
+	arg.c();
+	mov( eax, edx );
+	for( mov( 1, ecx ); ecx < edx; inc( ecx )) do
+
+		arg.v( ecx );
+		str.cat( (type string eax), cmdLn );
+		str.cat( " ", cmdLn );
+
+	endfor;
+	mov( NULL, esi );
+	timer.create();
+	mov( esi, theTime );
+
+	stdout.put( "Timing '", cmdLn, "'" nl );
+	mov( @size( sui ), sui.cb );
+	mov( NULL, sui.lpDesktop );
+	mov( arg.v(0), sui.lpTitle );
+	mov( 0, sui.dwFlags );
+	mov( 0, sui.cbReserved2 );
+	mov( NULL, sui.lpReserved2 );
+	theTime.start();
+	w.CreateProcess
+	(
+		NULL,
+		cmdLn,
+		NULL,
+		NULL,
+		false,
+		0,
+		NULL,
+		NULL,
+		sui,
+		pi
+	);
+	w.WaitForSingleObject
+	(
+		pi.hProcess,
+		w.INFINITE
+	);
+	theTime.stop();
+	div( 100, edx:eax );
+	mov( eax, t);
+	fild( t );
+	fdiv( tenPt0 );
+	fstp( fpt );
+	stdout.put( "Finished, run time is ", fpt:6:1, nl );
+
+
+end tim;

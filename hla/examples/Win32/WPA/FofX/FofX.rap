@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Function Plotting Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=FofX.rap
+1=FofX.rc
+2=FofX.asm
+3=FofX.obj
+4=FofX.res
+5=FofX.exe
+6=FofX.def
+7=FofX.dll
+8=FofX.txt
+9=FofX.lib
+10=FofX.mak
+11=FofX.hla
+[Files]
+1=FofX.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,145
+3=0,0,0,0,262
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

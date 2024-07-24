@@ -1,0 +1,72 @@
+program fastLC;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+const
+	bufSize_c := 64*1024;
+	
+static
+	bytesRead	:dword;
+	filename	:string;
+	handle		:dword;
+	count		:uns64;
+	
+var
+	buffer		:char[ bufSize_c ];
+
+begin fastLC;
+
+	if( arg.c() <> 2 ) then
+	
+		stdout.put( "usage: fastlc <<filename>>" );
+		exit fastLC;
+		
+	endif;
+	
+	mov( arg.v( 1 ), filename );
+	w.CreateFile
+	( 
+		filename, 
+		w.GENERIC_READ, 
+		0, 
+		NULL, 
+		w.OPEN_EXISTING, 
+		0, 
+		null 
+	);
+	if( eax = w.INVALID_HANDLE_VALUE ) THEN
+	
+		stdout.put( "Could not open file '", filename, "'" nl );
+		exit fastLC;
+		
+	endif;
+	mov( eax, handle );
+	forever
+	
+		lea( edi, buffer );
+		w.ReadFile( handle, [edi], bufSize_c, bytesRead, NULL );
+		breakif( bytesRead = 0 );
+		xor( edi, edi );
+		while( edi < bytesRead ) do
+		
+			if( buffer[edi] = stdio.lf ) then
+			
+				inc( (type dword count) );
+				if( @z ) then
+					
+					inc( (type dword count[4]) );
+					
+				endif;
+				
+			endif;
+			inc( edi );
+			
+		endwhile;
+		
+	endfor;
+	w.CloseHandle( handle );
+	stdout.put( "Number of lines in '", filename, "' is ", count, nl );
+			 	
+end fastLC;
+           
+

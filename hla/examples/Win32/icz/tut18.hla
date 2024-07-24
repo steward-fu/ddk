@@ -1,0 +1,118 @@
+//Iczelion's tutorial #18: Common Controls
+program aComControls;
+
+#include("w.hhf")
+
+const
+	IDC_PROGRESS := 1;
+	IDC_STATUS := 2;
+	IDC_TIMER := 3;
+	
+readonly
+	ClassName : string := "CommonControlsWinClass";
+	AppName : string := "Common Controls Demo";
+	ProgressClass :string :=	"msctls_progress32";
+	Message : string := "Finished!";
+			
+static
+	hInstance : dword;
+	hwndProgress : dword;
+	hwndStatus : dword;
+	CurrentStep : dword;
+	TimerID : dword := 0;
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin WndProc;
+	if(uMsg = w.WM_CREATE) then
+		w.CreateWindowEx(NULL,ProgressClass,NULL,w.WS_CHILD | w.WS_VISIBLE,
+		                  100,200,300,20,hWnd,IDC_PROGRESS,hInstance,NULL);
+		  mov(eax,hwndProgress);
+		  mov(1000,eax);
+		  mov(eax,CurrentStep);
+		  shl(16,eax);
+		w.SendMessage(hwndProgress,w.PBM_SETRANGE,0,eax);
+		w.SendMessage(hwndProgress,w.PBM_SETSTEP,10,eax);
+		w.CreateStatusWindow(w.WS_CHILD | w.WS_VISIBLE,NULL,hWnd,IDC_STATUS);
+		  mov(eax,hwndStatus);
+		w.SetTimer(hWnd,IDC_TIMER,100,NULL);
+		  mov(eax,TimerID);
+	elseif(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(NULL);
+		if(TimerID <> 0) then
+			w.KillTimer(hWnd,TimerID); 
+		endif;
+	elseif(uMsg = w.WM_TIMER) then	
+		w.SendMessage(hwndProgress,w.PBM_STEPIT,0,0);
+		sub(10,CurrentStep);
+		if(CurrentStep = 0) then
+			w.KillTimer(hWnd,TimerID);
+			mov(0,TimerID);
+			w.SendMessage(hwndStatus,w.SB_SETTEXT,0,Message);
+			w.MessageBox(hWnd,Message,AppName,w.MB_OK | w.MB_ICONINFORMATION); 
+			w.SendMessage(hwndProgress,w.PBM_SETPOS,0,0);
+		endif;
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_APPWORKSPACE  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPED | w.WS_CAPTION | w.WS_SYSMENU | w.WS_MINIMIZEBOX | w.WS_MAXIMIZEBOX | w.WS_VISIBLE , 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,NULL,hInst, NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aComControls;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.InitCommonControls();	
+	WinMain( hInstance, NULL, NULL, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aComControls;

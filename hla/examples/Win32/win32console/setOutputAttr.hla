@@ -1,0 +1,38 @@
+unit consoleUnit;
+#include( "stdio.hhf" );
+#include( "stdout.hhf" );
+#include( "stdin.hhf" );
+#include( "win32cons.hhf" );
+#include( "strings.hhf" );
+#include( "excepts.hhf" );
+#include( "memory.hhf" );
+#include( "conv.hhf" );
+
+
+
+
+
+
+// setOutputAttr-
+//
+//	Sets the output attribute for all text written
+//	after the call.
+
+procedure win32cons.setOutputAttr( Attribute:word ); @nodisplay;
+begin setOutputAttr;
+
+	// Set the screen attributes:
+	
+	pushad();
+	win.SetConsoleTextAttribute( Attribute, stdout.handle() );
+	popad();
+		
+end setOutputAttr;
+
+
+
+
+
+
+
+end consoleUnit;

@@ -1,0 +1,53 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Mouse Eyes Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,nmake build,
+2=0,O,nmake buildall,
+3=0,O,nmake compilerc,
+4=0,O,nmake syntax,
+5=0,C,nmake run,
+6=
+[MakeFiles]
+0=MouseEyes.rap
+1=MouseEyes.rc
+2=MouseEyes.asm
+3=MouseEyes.obj
+4=MouseEyes.res
+5=MouseEyes.exe
+6=MouseEyes.def
+7=MouseEyes.dll
+8=MouseEyes.txt
+9=MouseEyes.lib
+10=MouseEyes.mak
+11=MouseEyes.hla
+[Files]
+1=MouseEyes.hla
+2=wpa.hhf
+3=makefile
+4=
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+4=
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

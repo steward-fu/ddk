@@ -1,0 +1,998 @@
+// keytest.hla-
+//
+//	This program reads keystroke messages from the system and displays them.
+
+unit keytest;
+
+// Set the following to true to display interesting information
+// during program operation. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "excepts.hhf" )
+#includeonce( "conv.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+type
+	// Data type for the keyboard message:
+	
+	keymsgPtr_t		:pointer to keymsg_t;
+	keymsg_t:
+		record
+		
+			// Maintains list of records:
+
+			Next		:keymsgPtr_t;
+
+			// MsgStr points at a string specifying the
+			// message type: "WM_CHAR", "WM_KEYDOWN", etc:
+
+			MsgStr		:string;
+
+			// Virtual key code in WM_KEYDOWN/WM_KEYUP
+			// messages:
+
+			VirtKey		:dword;
+						
+			// Repeat count in message (# of autorepeated
+			// keys passed on this message):
+
+			RepeatCnt	:uns16;
+
+			// ASCII code from WM_CHAR message:
+
+			ASCIIcode	:byte;
+			
+			// OEM scan code in messages:
+
+			ScanCode	:byte;
+
+			// 1 indicates down->up transition, 0 indicates
+			// an up->down transition:
+
+			Transition	:uns8;
+
+			// 1 indicates key previously down, 0 indicates
+			// key was previously up:
+
+			PrevKeyState:uns8;
+			
+			// 1 indicates that ALT was down when key
+			// was pressed:
+
+			Context		:uns8;
+
+			// 1 indicates extended (non-keypad) cursor control
+			// key was pressed:
+
+			ExtendedKey	:uns8;			
+
+			// 1 indicates left shift was down:
+
+			LshiftState	:uns8;
+			
+			// 1 indicates right shift was down:
+						
+			RshiftState	:uns8;
+
+			// 1 indicates that the left control
+			// key was down:
+
+			LctrlState	:uns8;
+
+			// 1 indicates that the right control
+			// key was down:
+
+			RctrlState	:uns8;
+
+			// 1 indicates that the left ALT key
+			// was down:
+
+			LaltState	:uns8;
+
+			// 1 indicates that the right ALT key
+			// was down:
+
+			RaltState	:uns8;
+
+			// 1 indicates that the keyboard is in the
+			// "capslock" mode (caps are on):
+
+			CapsLock	:uns8;
+
+			// 1 indicates that the keyboard is in the
+			// "numlock" mode:
+
+			NumLock		:uns8;
+
+			// 1 indicates that the keyboard is in the
+			// "scroll lock" mode:
+
+			ScrlLock	:uns8;
+		
+		endrecord;
+
+
+static
+	KeyPressList		:keymsgPtr_t := NULL;	// Ptr to list of key events.
+	EndKeyPressList		:keymsgPtr_t := NULL;	// Ptr to last entry
+	KeyPressCnt			:uns32 := 0;			// # of key event entries.
+
+	TheFont				:dword;			// Font we'll use.
+
+	AverageCapsWidth	:dword;			// Font metric values.
+	AverageCharWidth	:dword;
+	AverageCharHeight	:dword;
+	
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+	VscrollPos			:int32 := 0;	// Tracks where we are in the document
+	VscrollMax 			:int32 := 0;	// Max display position (vertical).
+	HscrollPos			:int32 := 0;	// Current Horz position.
+	HscrollMax			:int32 := 0;	// Max Horz position.
+	MaxWidth			:int32 := 0;	// Max # of chars on a line.
+
+readonly
+
+	ClassName	:string := "keytestWinClass";		// Window Class Name
+	AppCaption	:string := "keytest Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, 	&QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   	&Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  	&Create				],
+			MsgProcPtr_t:[ w.WM_HSCROLL, 	&HScroll			],
+			MsgProcPtr_t:[ w.WM_VSCROLL, 	&VScroll			],
+			MsgProcPtr_t:[ w.WM_SIZE,	 	&Size				],
+			MsgProcPtr_t:[ w.WM_KEYDOWN, 	&KeyDown			],
+			MsgProcPtr_t:[ w.WM_KEYUP,   	&KeyUp				],
+			MsgProcPtr_t:[ w.WM_SYSKEYDOWN, &SysKeyDown			],
+			MsgProcPtr_t:[ w.WM_SYSKEYUP,   &SysKeyUp			],
+			MsgProcPtr_t:[ w.WM_CHAR,   	&CharMsg			],
+			MsgProcPtr_t:[ w.WM_DEADCHAR,   &DeadCharMsg		],
+			MsgProcPtr_t:[ w.WM_SYSCHAR,   	&SysCharMsg			],
+			MsgProcPtr_t:[ w.WM_SYSDEADCHAR,&SysDeadCharMsg		],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+			
+	
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Create-
+//
+//	This procedure responds to the w.WM_CREATE message.
+//	Windows sends this message once when it creates the
+//	main window for the application.  We will use this
+//	procedure to do any one-time initialization that
+//	must take place in a message handler.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc:	dword;				// Handle to video display device context
+	tm:		w.TEXTMETRIC;
+begin Create;
+
+	// First, create a useful font (fixed pitch):
+
+	w.GetStockObject( w.SYSTEM_FIXED_FONT );
+	mov( eax, TheFont );
+		
+	GetDC( hwnd, hdc );
+	
+		// Initialization:
+		//
+		//	Get the text metric information so we can compute
+		//	the average character heights and widths.
+
+		SelectObject( TheFont );
+		
+		GetTextMetrics( tm );
+
+		mov( tm.tmHeight, eax );
+		add( tm.tmExternalLeading, eax );
+		mov( eax, AverageCharHeight );
+
+		mov( tm.tmAveCharWidth, eax );
+		mov( eax, AverageCharWidth );
+		
+		// If bit #0 of tm.tmPitchAndFamily is set, then
+		// we've got a proportional font.  In that case
+		// set the average capital width value to 1.5 times
+		// the average character width.  If bit #0 is clear,
+		// then we've got a fixed-pitch font and the average
+		// capital letter width is equal to the average
+		// character width.
+		
+		mov( eax, ebx );
+		shl( 1, tm.tmPitchAndFamily );
+		if( @c ) then
+		
+			shl( 1, ebx );				// 2*AverageCharWidth
+			
+		endif;
+		add( ebx, eax );				// Computes 2 or 3 times eax.
+		shr( 1, eax );					// Computes 1 or 1.5 times eax.
+		mov( eax, AverageCapsWidth );
+		
+	ReleaseDC;
+	
+end Create;
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+//	For this keytest program, the Paint procedure
+//	displays the list of key events we've saved in memory.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	value		:string;
+	valData		:char[256];
+	vallen		:uns32;			// Length of value string.
+	
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+
+begin Paint;
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Initialize the value->valData string object:
+	
+	mov( str.init( (type char valData), 256 ), value );
+	
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., w.DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Select the fixed-pitch font into our context:
+
+		SelectObject( TheFont );
+
+		// Figure out which keypress record we should start drawing
+		// Begin by computing the number of lines of text we can
+		// can draw in the window. This is 
+		//
+		//			(ClientSizeY/AverageCharHeight)
+		//
+		// The number of keyboard events we can display is the
+		// the minimum of this value and the number of events
+		// we've seen thus far:
+		
+		mov( ClientSizeY, eax );
+		cdq();
+		idiv( AverageCharHeight );
+		if( eax > KeyPressCnt ) then
+
+			mov( KeyPressCnt, eax );
+
+		endif;
+		mov( eax, esi );
+
+		// VscrollPos specifies the starting event record number
+		// we're supposed to display. Search for that entry in
+		// the keyboard event list:
+
+		mov( KeyPressList, ebx );
+		for( mov( 1, edi ); edi < VscrollPos; inc( edi )) do
+																		 
+			mov( (type keymsg_t [ebx]).Next, ebx );
+
+		endfor;
+		
+		// Okay, draw all the records (esi currently holds the
+		// number of records to draw):
+
+	   	mov( 0, edi );	// Holds output y-coordinate.
+		while( esi > 0 ) do
+
+			// Create the output string for this line:
+
+			str.put
+			( 
+				value,
+				(type keymsg_t [ebx]).MsgStr:-16,
+				"VK=",
+				(type byte (type keymsg_t [ebx]).VirtKey):2,
+				" ASCII=",
+				(type byte (type keymsg_t [ebx]).ASCIIcode):3,
+				" SC=",
+				(type byte (type keymsg_t [ebx]).ScanCode):3,
+				" Trans=",
+				(type keymsg_t [ebx]).Transition:2,
+				" Prev=",
+				(type keymsg_t [ebx]).PrevKeyState:2,
+				" Context=",
+				(type keymsg_t [ebx]).Context:2,
+				" Ext=",
+				(type keymsg_t [ebx]).ExtendedKey:2,
+				" LS=",
+				(type keymsg_t [ebx]).LshiftState:2,
+				" RS=",
+				(type keymsg_t [ebx]).RshiftState:2,
+				" LC=",
+				(type keymsg_t [ebx]).LctrlState:2,
+				" RC=",
+				(type keymsg_t [ebx]).RctrlState:2,
+				" LA=",
+				(type keymsg_t [ebx]).LaltState:2,
+				" RA=",
+				(type keymsg_t [ebx]).RaltState:2,
+				" CL=",
+				(type keymsg_t [ebx]).CapsLock:2,
+				" NL=",
+				(type keymsg_t [ebx]).NumLock:2,
+				" SL=",
+				(type keymsg_t [ebx]).ScrlLock:2
+			);
+				
+			mov( value, eax );
+			mov( (type str.strRec [eax]).length, ecx );
+
+			// Activate the horizontal scroll bars if we emit a line
+			// that is wider than the current window:
+
+			if( ecx > MaxWidth ) then
+
+				mov( ecx, MaxWidth );
+				push( eax );
+				mov( MaxWidth, eax );
+				intmul( AverageCharWidth, eax );
+				sub( ClientSizeX, eax );
+				cdq();
+				idiv( AverageCharWidth );
+				add( 2, eax );
+				if( @s ) then
+				
+					xor( eax, eax );
+					
+				endif;
+				mov( eax, HscrollMax );
+
+				w.SetScrollRange( hwnd, w.SB_HORZ, 0, HscrollMax, false );
+				pop( eax );
+
+			endif;
+
+			// Emit the current line to the display:
+
+			add( HscrollPos, eax );		// Add in offset to 1st char in line
+			sub( HscrollPos, ecx );		// Decrease line length by like amount.
+			TextOut
+			( 
+				5, 
+				edi, 
+				eax, 
+				ecx 
+			);
+
+			// Move on to the next line of text to display:
+
+			add( AverageCharHeight, edi );
+			dec( esi );
+			mov( (type keymsg_t [ebx]).Next, ebx );
+
+		endwhile;
+			
+	EndPaint;
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+
+
+	// Compute new bounds values for VscrollMax and VscrollPos based
+	// on the new size of the window:
+	//
+	// VscrollMax = max( 0, KeyPressCnt - ClientSizeY/AverageCharHeight )
+	
+	mov( ClientSizeY, eax );
+	cdq();
+	idiv( AverageCharHeight );
+	neg( eax );
+	add( KeyPressCnt, eax );
+	if( @s ) then
+	
+		xor( eax, eax );
+		
+	endif;
+	mov( eax, VscrollMax );
+	
+	// VscrollPos = min( VscrollPos, VscrollMax )
+	
+	if( eax > VscrollPos ) then
+	
+		mov( VscrollPos, eax );
+		
+	endif;
+	mov( eax, VscrollPos );
+
+	// Set the new scrolling range and position based on the
+	// new VscrollMax and VscrollPos values:
+
+	w.SetScrollRange( hwnd, w.SB_VERT, 0, VscrollMax, false );
+	w.SetScrollPos( hwnd, w.SB_VERT, VscrollPos, true );
+		
+
+	// Repeat the above for the horizontal scroll items:
+	//
+	// HscrollMax = 
+	//	max( 0, 2 + (MaxWidth - ClientSizeX) / AverageCharWidth);
+
+
+	mov( MaxWidth, eax );
+	intmul( AverageCharWidth, eax );
+	sub( ClientSizeX, eax );
+	cdq();
+	idiv( AverageCharWidth );
+	add( 2, eax );
+	if( @s ) then
+	
+		xor( eax, eax );
+		
+	endif;
+	mov( eax, HscrollMax );
+
+	// HscrollPos = min( HscrollMax, HscrollPos )
+	
+	if( eax > HscrollPos ) then
+	
+		mov( HscrollPos, eax );
+		
+	endif;
+	mov( eax, HscrollPos );
+	w.SetScrollRange( hwnd, w.SB_HORZ, 0, HscrollMax, false );
+	w.SetScrollPos( hwnd, w.SB_HORZ, HscrollPos, true );
+
+
+	xor( eax, eax ); // return success.
+	
+
+end Size;
+
+
+
+// HScroll-
+//
+//	Handles w.WM_HSCROLL messages.
+//	On entry, L.O. word of wParam contains the scroll bar activity.
+
+procedure HScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin HScroll;
+
+	// Convert 16-bit command to 32 bits so we can use switch macro:
+
+	movzx( (type word wParam), eax );
+	switch( eax )
+		
+		case( w.SB_LINELEFT )
+		
+			mov( -1, eax );
+			
+		case( w.SB_LINERIGHT )
+		
+			mov( 1, eax );
+			
+		case( w.SB_PAGELEFT )
+		
+			mov( -8, eax );
+			
+		case( w.SB_PAGERIGHT )
+			
+			mov( 8, eax );
+			
+		case( w.SB_THUMBPOSITION )
+			
+			movzx( (type word wParam[2]), eax );
+			sub( HscrollPos, eax );
+			
+		default
+		
+			xor( eax, eax );
+			
+	endswitch;
+	
+	// eax = 
+	//	max( -HscrollPos, min( eax, HscrollMax - HscrollPos ))
+	
+	mov( HscrollPos, edx );
+	neg( edx );
+	mov( HscrollMax, ecx );
+	add( edx, ecx );
+	if( eax > (type int32 ecx) ) then
+	
+		mov( ecx, eax );
+		
+	endif;
+	if( eax < (type int32 edx )) then
+	
+		mov( edx, eax );
+		
+	endif;
+	if( eax <> 0 ) then
+	
+		add( eax, HscrollPos );
+		neg( eax );
+		w.SetScrollPos( hwnd, w.SB_HORZ, HscrollPos, true );
+		
+	endif;
+	w.InvalidateRect( hwnd, NULL, false ); 
+	xor( eax, eax ); // return success
+	
+end HScroll;
+
+
+
+// VScroll-
+//
+//	Handles the w.WM_VSCROLL messages from Windows.
+//	The L.O. word of wParam contains the action/command to be taken.
+//	The H.O. word of wParam contains a distance for the w.SB_THUMBTRACK
+//	message.
+
+procedure VScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin VScroll;
+
+	movzx( (type word wParam), eax );
+	switch( eax )
+	
+		case( w.SB_TOP )
+		
+			mov( VscrollPos, eax );
+			neg( eax );
+			
+		case( w.SB_BOTTOM )
+		
+			mov( ClientSizeY, eax );
+			cdq();
+			idiv( AverageCharHeight );
+			neg( eax );
+			add( VscrollMax, eax );
+			sub( VscrollPos, eax );
+			
+		case( w.SB_LINEUP )
+		
+			mov( -1, eax );
+			
+		case( w.SB_LINEDOWN )
+		
+			mov( 1, eax );
+			
+		case( w.SB_PAGEUP )
+		
+			mov( ClientSizeY, eax );
+			cdq();
+			idiv( AverageCharHeight );
+			neg( eax );
+			if( (type int32 eax) > -1 ) then
+			
+				mov( -1, eax );
+				
+			endif;
+			
+		case( w.SB_PAGEDOWN )
+		
+			mov( ClientSizeY, eax );
+			cdq();
+			idiv( AverageCharHeight );
+			if( (type int32 eax) < 1 ) then
+			
+				mov( 1, eax );
+				
+			endif;
+			
+		case( w.SB_THUMBTRACK )
+		
+			movzx( (type word wParam[2]), eax );
+			sub( VscrollPos, eax );
+			
+		default
+		
+			xor( eax, eax );
+			
+	endswitch;
+	
+	// VscrollPos += min( eax, VscrollMax - VscrollPos )
+	
+	mov( VscrollMax, ecx );
+	sub( VscrollPos, ecx );
+	if( eax > (type int32 ecx)) then
+	
+		mov( ecx, eax );
+
+	endif;
+	add( VscrollPos, eax );
+	if( @s ) then
+
+		xor( eax, eax );
+
+	endif;
+	mov( eax, VscrollPos );
+	w.SetScrollPos( hwnd, w.SB_VERT, eax, true );
+	w.InvalidateRect( hwnd, NULL, false ); 
+	xor( eax, eax ); // return success.
+			
+end VScroll;
+
+
+// KeyMsg-
+//
+//	Handles the keyboard messages from Windows.
+//	This routine creates a keyboard message record and adds it to the
+//	list we're building in memory.
+
+procedure KeyMsg
+( 
+	hwnd:dword; 
+	msg:string; 
+	wParam:dword; 
+	lParam:dword; 
+	ASCII:dword 
+);
+const
+	msgPtr :text := "(type keymsg_t [ebx])";
+
+var
+	ThisMsg :keymsgPtr_t;
+
+begin KeyMsg;
+
+	push( ebx );
+
+	// Allocate storage for a new node in our
+	// keymsg list:
+
+	malloc( @size( keymsg_t ) );
+	mov( eax, ThisMsg );
+	mov( eax, ebx );
+
+	// Build the current key message record that we've
+	// just allocated:
+
+	mov( NULL, msgPtr.Next );
+
+	mov( msg, eax );
+	mov( eax, msgPtr.MsgStr );
+	mov( wParam, eax );
+	mov( eax, msgPtr.VirtKey );
+
+	// The repeat count is bits 0..16 of lParam:
+
+	mov( lParam, eax );
+	mov( ax, msgPtr.RepeatCnt );
+	
+	// The transition flag is in bit 31:
+
+	test( eax, eax );
+	sets( cl );
+	mov( cl, msgPtr.Transition );
+
+	// The PrevKeyState flag is in bit 30:
+
+	bt( 30, eax );
+	setc( cl );
+	mov( cl, msgPtr.PrevKeyState );
+
+	// The Context flag is in bit 29:
+
+	bt( 29, eax );
+	setc( cl );
+	mov( cl, msgPtr.Context );
+
+	// The extended key flag is in bit 24:
+
+	bt( 24, eax );
+	setc( cl );
+	mov( cl, msgPtr.ExtendedKey );
+
+	// The eight-bit scan code is in bits 16..23:
+
+	shr( 16, eax );
+	mov( al, msgPtr.ScanCode );
+
+	// Save the ASCII code in the record entry:
+
+	mov( (type byte ASCII), al );
+	mov( al, msgPtr.ASCIIcode );
+
+	// Call GetKeyState to get the remaining
+	// flags. Most of these set bit 31 to 1 if
+	// the current state is true:
+
+	w.GetKeyState( w.VK_LSHIFT );
+	shr( 31, eax );
+	mov( al, msgPtr.LshiftState );
+
+	w.GetKeyState( w.VK_RSHIFT );
+	shr( 31, eax );
+	mov( al, msgPtr.RshiftState );
+
+	w.GetKeyState( w.VK_LCONTROL );
+	shr( 31, eax );
+	mov( al, msgPtr.LctrlState );
+
+	w.GetKeyState( w.VK_RCONTROL );
+	shr( 31, eax );
+	mov( al, msgPtr.RctrlState );
+
+	w.GetKeyState( w.VK_LMENU );
+	shr( 31, eax );
+	mov( al, msgPtr.LaltState );
+
+	w.GetKeyState( w.VK_RMENU );
+	shr( 31, eax );
+	mov( al, msgPtr.RaltState );
+
+	// For the "lock" keys, bit zero
+	// determines if the keyboard is
+	// in the "locked" state:
+
+	w.GetKeyState( w.VK_CAPITAL );
+	and( 1, eax );
+	mov( al, msgPtr.CapsLock );
+
+	w.GetKeyState( w.VK_NUMLOCK );
+	and( 1, eax );
+	mov( al, msgPtr.NumLock );
+
+	w.GetKeyState( w.VK_SCROLL );
+	and( 1, eax );
+	mov( al, msgPtr.ScrlLock );
+
+	// Bump out key event counter and
+	// add the current entry to our list
+	// of key events.
+
+	inc( KeyPressCnt );
+	if( EndKeyPressList = NULL ) then
+
+		mov( ebx, KeyPressList );
+		mov( ebx, EndKeyPressList );
+
+	else
+
+		mov( EndKeyPressList, eax );
+		mov( ebx, (type keymsg_t [eax]).Next );
+		mov( ebx, EndKeyPressList );
+
+	endif;
+
+	// Whenever they press a key, automatically move to the end of the
+	// display list so that the new line is displayed:
+
+	mov( KeyPressCnt, ebx );
+	mov( ClientSizeY, eax );	// Compute size of window.
+	cdq();
+	idiv( AverageCharHeight );
+	sub( eax, ebx );
+	if( @s ) then
+
+		xor( ebx, ebx );
+
+	endif;
+	mov( ebx, VscrollMax );		// VscrollMax = max( 0, KeyPressCnt-scrnsize)
+
+	push( eax );
+	w.SetScrollRange( hwnd, w.SB_VERT, 0, ebx, false );
+	pop( ebx );
+
+	// Move the thumb on the scroll bar to the appropriate
+	// position:
+
+	mov( KeyPressCnt, eax );
+	sub( ebx, eax );
+	if( @s ) then
+
+		xor( eax, eax );
+
+	endif;
+	mov( eax, VscrollPos );
+
+	w.SetScrollPos( hwnd, w.SB_VERT, eax, true );
+
+	// Force Windows to redraw this window without erasing
+	// it so that we get feedback in the window:
+
+	w.InvalidateRect( hwnd, NULL, false ); 
+
+	pop( ebx );
+	
+end KeyMsg;
+
+
+// KeyDown, KeyUp, SysKeyDown, SysKeyUp-
+// These procedures handle the actual Windows' keyboard messages
+// and pass them on to KeyMsg to do the actual work.
+
+procedure KeyDown( hwnd: dword; wParam:dword; lParam:dword );
+begin KeyDown;
+
+	KeyMsg( hwnd, "WM_KEYDOWN", wParam, lParam, 0 );
+
+end KeyDown;
+
+procedure KeyUp( hwnd: dword; wParam:dword; lParam:dword );
+begin KeyUp;
+
+	KeyMsg( hwnd, "WM_KEYUP", wParam, lParam, 0 );
+
+end KeyUp;
+
+procedure SysKeyDown( hwnd: dword; wParam:dword; lParam:dword );
+begin SysKeyDown;
+
+	KeyMsg( hwnd, "WM_SYSKEYDOWN", wParam, lParam, 0 );
+
+end SysKeyDown;
+
+procedure SysKeyUp( hwnd: dword; wParam:dword; lParam:dword );
+begin SysKeyUp;
+
+	KeyMsg( hwnd, "WM_SYSKEYUP", wParam, lParam, 0 );
+
+end SysKeyUp;
+
+
+procedure CharMsg( hwnd: dword; wParam:dword; lParam:dword );
+begin CharMsg;
+
+	KeyMsg( hwnd, "WM_CHAR", 0, lParam, wParam );
+
+end CharMsg;
+
+
+procedure DeadCharMsg( hwnd: dword; wParam:dword; lParam:dword );
+begin DeadCharMsg;
+
+	KeyMsg( hwnd, "WM_DEADCHAR", 0, lParam, wParam );
+
+end DeadCharMsg;
+
+
+procedure SysCharMsg( hwnd: dword; wParam:dword; lParam:dword );
+begin SysCharMsg;
+
+	KeyMsg( hwnd, "WM_SYSCHAR", 0, lParam, wParam );
+
+end SysCharMsg;
+
+
+procedure SysDeadCharMsg( hwnd: dword; wParam:dword; lParam:dword );
+begin SysDeadCharMsg;
+
+	KeyMsg( hwnd, "WM_SYSDEADCHAR", 0, lParam, wParam );
+
+end SysDeadCharMsg;
+
+end keytest;

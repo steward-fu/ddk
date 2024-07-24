@@ -1,0 +1,72 @@
+// Iczelion's tutorial #24: Windows Hooks (DLL Module)
+
+//  ============================================
+//  = For RadASM users:                        =
+//  =           1.Compile with Make > Assemble =
+//  =			2.Link with Make > Link        =
+//  ============================================
+
+//You can also manually assemble the example with the commands below:
+//hla -v -c mousehook.hla
+//link /dll /subsystem:windows /entry:DLLEntry /def:mousehook.def /libpath:c:\masm32\lib user32.lib kernel32.lib mousehook.obj
+
+unit MsHook;
+
+#include("w.hhf")
+
+	
+	procedure DLLEntry(hInst:dword; reason:dword; reserved:dword); @stdcall;external("_DLLEntry@12");
+	procedure InstallHook(hwin : dword);external;
+	procedure UninstallHook;external;
+    procedure MouseProc(nCode:dword; wParam:dword; lParam:dword);@stdcall;external;
+	
+
+const
+	WM_MOUSEHOOK := w.WM_USER + 6;
+	
+static
+	hInstance : dword := 0;
+
+storage
+	hHook : dword;
+	hWnd : dword;
+
+	
+	procedure DLLEntry(hInst:dword; reason:dword; reserved:dword);
+	begin DLLEntry;
+		if( reason = w.DLL_PROCESS_ATTACH) then
+			mov(hInst,hInstance);
+		endif;
+			mov(true,eax);
+	end DLLEntry;
+	
+	procedure MouseProc(nCode:dword; wParam:dword; lParam:dword);@noframe;
+	
+	begin MouseProc;
+		w.CallNextHookEx(hHook,nCode,wParam,lParam);
+			mov(lParam,edx);
+		w.WindowFromPoint((type w.MOUSEHOOKSTRUCT [edx]).pt);
+		w.PostMessage(hWnd,WM_MOUSEHOOK,eax,0);
+			xor(eax,eax);
+			ret();
+	end MouseProc;
+
+	procedure InstallHook(hwin:dword);@noframe;
+	
+	begin InstallHook;
+		mov(hwin,hWnd);
+		w.SetWindowsHookEx(w.WH_MOUSE, &MouseProc,hInstance,NULL);
+		    mov(eax,hHook);
+			ret();
+	end InstallHook;
+
+	
+	procedure UninstallHook;@nodisplay;@noframe;
+	
+	begin UninstallHook;
+		w.UnhookWindowsHookEx(hHook);
+			ret();
+	end UninstallHook;
+
+end MsHook;
+

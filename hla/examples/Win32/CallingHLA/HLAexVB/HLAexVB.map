@@ -1,0 +1,118 @@
+ HLAexVB
+
+ Timestamp is 3f99dbd9 (Fri Oct 24 19:11:37 2003)
+
+ Preferred load address is 04000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 0000153aH .text                   CODE
+ 0002:00000000 00000020H .idata$5                DATA
+ 0002:00000020 00000028H .idata$2                DATA
+ 0002:00000048 00000014H .idata$3                DATA
+ 0002:0000005c 00000020H .idata$4                DATA
+ 0002:0000007c 00000070H .idata$6                DATA
+ 0002:000000f0 00000059H .edata                  DATA
+ 0003:00000000 000000a0H .data                   DATA
+ 0003:000000a0 00000000H .bss                    DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000148       QuitMain__hla_             04001148 f   HLAexVB.obj
+ 0001:0000015f       HWexcept__hla_             0400115f f   HLAexVB.obj
+ 0001:00000174       DfltExHndlr__hla_          04001174 f   HLAexVB.obj
+ 0001:00000189       _hlaFunc@4                 04001189 f   HLAexVB.obj
+ 0001:00000456       _DLLEntry@12               04001456 f   HLAexVB.obj
+ 0001:00000470       STR_CAT                    04001470 f   hlalib:cat.obj
+ 0001:000004c0       STR_CPY                    040014c0 f   hlalib:cpy.obj
+ 0001:00000510       STR_CATD                   04001510 f   hlalib:catd.obj
+ 0001:00000bd8       DefaultExceptionHandler__hla_ 04001bd8 f   hlalib:excepts.obj
+ 0001:00000be5       printExceptionError        04001be5 f   hlalib:excepts.obj
+ 0001:00000f20       STR_CATI32                 04001f20 f   hlalib:cati32.obj
+ 0001:00000f40       _HARDWAREEXCEPTION__HLA_   04001f40 f   hlalib:hwexcept.obj
+ 0001:00000f40       HARDWAREEXCEPTION__HLA_    04001f40 f   hlalib:hwexcept.obj
+ 0001:00000f40       HardwareException__hla_    04001f40 f   hlalib:hwexcept.obj
+ 0001:00000fe0       BUILDEXCEPTS__HLA_         04001fe0 f   hlalib:buildexcepts.obj
+ 0001:00000fe0       _BUILDEXCEPTS__HLA_        04001fe0 f   hlalib:buildexcepts.obj
+ 0001:00000fe0       BuildExcepts__hla_         04001fe0 f   hlalib:buildexcepts.obj
+ 0001:00001010       _RAISE__HLA_               04002010 f   hlalib:raise.obj
+ 0001:00001010       RAISE__HLA_                04002010 f   hlalib:raise.obj
+ 0001:00001010       _Raise__hla_               04002010 f   hlalib:raise.obj
+ 0001:00001010       Raise__hla_                04002010 f   hlalib:raise.obj
+ 0001:00001040       MEMORY_MALLOC              04002040 f   hlalib:memory.obj
+ 0001:0000106e       MEMORY_FREE                0400206e f   hlalib:memory.obj
+ 0001:00001088       MEMORY_ISINHEAP            04002088 f   hlalib:memory.obj
+ 0001:000010ba       MEMORY_REALLOC             040020ba f   hlalib:memory.obj
+ 0001:000010eb       MEMORY_STRALLOC            040020eb f   hlalib:memory.obj
+ 0001:00001130       MEMORY_STRREALLOC          04002130 f   hlalib:memory.obj
+ 0001:00001181       MEMORY_STRFREE             04002181 f   hlalib:memory.obj
+ 0001:000011a4       MEMORY_STRISINHEAP         040021a4 f   hlalib:memory.obj
+ 0001:000011e0       CONV_SETUNDERSCORES        040021e0 f   hlalib:underscores.obj
+ 0001:000011f3       CONV_GETUNDERSCORES        040021f3 f   hlalib:underscores.obj
+ 0001:000011fb       CONV_OUTPUT_               040021fb f   hlalib:underscores.obj
+ 0001:00001220       CONV_DTOSTR                04002220 f   hlalib:dtostr.obj
+ 0001:000012e0       CONV_U32TOSTR              040022e0 f   hlalib:u32toStr.obj
+ 0001:00001300       STR_CATI64SIZE             04002300 f   hlalib:cati64size.obj
+ 0001:00001370       CONV__DSIZE                04002370 f   hlalib:_dsize.obj
+ 0001:00001380       CONV_U64TOSTR              04002380 f   hlalib:u64ToStr.obj
+ 0001:00001410       CONV_I64TOSTR              04002410 f   hlalib:i64ToStr.obj
+ 0001:000014a0       L220_DivideBy10__hla_      040024a0 f   hlalib:u64ToBuf.obj
+ 0001:000014b4       L221_recU64ToBuf__hla_     040024b4 f   hlalib:u64ToBuf.obj
+ 0001:000014cf       CONV_U64TOBUF              040024cf f   hlalib:u64ToBuf.obj
+ 0001:00001500       CONV_I64TOBUF              04002500 f   hlalib:i64ToBuf.obj
+ 0001:00001534       _ExitProcess@4             04002534 f   kernel32:KERNEL32.dll
+ 0002:00000000       __imp__GlobalAlloc@8       04003000     kernel32:KERNEL32.dll
+ 0002:00000004       __imp__ExitProcess@4       04003004     kernel32:KERNEL32.dll
+ 0002:00000008       __imp__GlobalReAlloc@12    04003008     kernel32:KERNEL32.dll
+ 0002:0000000c       __imp__GlobalFree@4        0400300c     kernel32:KERNEL32.dll
+ 0002:00000010       __imp__GlobalFlags@4       04003010     kernel32:KERNEL32.dll
+ 0002:00000014       \177KERNEL32_NULL_THUNK_DATA 04003014     kernel32:KERNEL32.dll
+ 0002:00000018       __imp__MessageBoxA@16      04003018     user32:USER32.dll
+ 0002:0000001c       \177USER32_NULL_THUNK_DATA 0400301c     user32:USER32.dll
+ 0002:00000020       __IMPORT_DESCRIPTOR_USER32 04003020     user32:USER32.dll
+ 0002:00000034       __IMPORT_DESCRIPTOR_KERNEL32 04003034     kernel32:KERNEL32.dll
+ 0002:00000048       __NULL_IMPORT_DESCRIPTOR   04003048     user32:USER32.dll
+ 0003:00000004       MainPgmCoroutine__hla_     04004004     HLAexVB.obj
+ 0003:00000080       AssertionStr               04004080     hlalib:excepts.obj
+ 0003:00000090       CONV_OUTPUTUNDERSCORES     04004090     hlalib:underscores.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+
+ 0001:00000378       L2236_exception__hla_      04001378 f   HLAexVB.obj
+ 0001:0000029e       L2210_exception__hla_      0400129e f   HLAexVB.obj
+ 0001:00000c7d       L217__case0_0___hla_       04001c7d f   hlalib:excepts.obj
+ 0001:00000c88       L223__case0_1___hla_       04001c88 f   hlalib:excepts.obj
+ 0001:00000c93       L228__case0_2___hla_       04001c93 f   hlalib:excepts.obj
+ 0001:00000c9e       L233__case0_3___hla_       04001c9e f   hlalib:excepts.obj
+ 0001:00000ca9       L238__case0_4___hla_       04001ca9 f   hlalib:excepts.obj
+ 0001:00000cb4       L243__case0_5___hla_       04001cb4 f   hlalib:excepts.obj
+ 0001:00000cbf       L248__case0_6___hla_       04001cbf f   hlalib:excepts.obj
+ 0001:00000cca       L253__case0_7___hla_       04001cca f   hlalib:excepts.obj
+ 0001:00000cd5       L258__case0_8___hla_       04001cd5 f   hlalib:excepts.obj
+ 0001:00000ce0       L263__case0_9___hla_       04001ce0 f   hlalib:excepts.obj
+ 0001:00000ceb       L268__case0_10___hla_      04001ceb f   hlalib:excepts.obj
+ 0001:00000cf6       L273__case0_11___hla_      04001cf6 f   hlalib:excepts.obj
+ 0001:00000d01       L278__case0_12___hla_      04001d01 f   hlalib:excepts.obj
+ 0001:00000d0c       L283__case0_13___hla_      04001d0c f   hlalib:excepts.obj
+ 0001:00000d17       L288__case0_14___hla_      04001d17 f   hlalib:excepts.obj
+ 0001:00000d22       L293__case0_15___hla_      04001d22 f   hlalib:excepts.obj
+ 0001:00000d2d       L298__case0_16___hla_      04001d2d f   hlalib:excepts.obj
+ 0001:00000d38       L303__case0_17___hla_      04001d38 f   hlalib:excepts.obj
+ 0001:00000d43       L308__case0_18___hla_      04001d43 f   hlalib:excepts.obj
+ 0001:00000d4e       L313__case0_19___hla_      04001d4e f   hlalib:excepts.obj
+ 0001:00000d59       L318__case0_20___hla_      04001d59 f   hlalib:excepts.obj
+ 0001:00000d64       L323__case0_21___hla_      04001d64 f   hlalib:excepts.obj
+ 0001:00000d6f       L328__case0_22___hla_      04001d6f f   hlalib:excepts.obj
+ 0001:00000d85       L338__case0_24___hla_      04001d85 f   hlalib:excepts.obj
+ 0001:00000d7a       L333__case0_23___hla_      04001d7a f   hlalib:excepts.obj
+ 0001:00000da8       L340__00cd__switch_otherwise____hla_ 04001da8 f   hlalib:excepts.obj
+
+ Exports
+
+  ordinal    name
+
+        1    _DLLEntry@12
+               exported name: DLLEntry
+        2    _hlaFunc@4
+               exported name: hlaFunc

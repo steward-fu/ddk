@@ -1,0 +1,274 @@
+; Debugger.INF
+;
+; This is the Setup information file for options
+; specific for MS Millennium DDK Debug Kit.
+;
+; Copyright (c) 2000, Microsoft Corporation
+
+[version]
+signature="$CHICAGO$"
+SetupClass=DEBUG
+AdvancedINF=2.0
+
+[InstallDebugger]
+OptionDesc="Debugger"
+CopyFiles = debugger.files
+IconIndex=4
+
+[DestinationDirs]
+dbg.drv       = 10,SYSTEM32\DRIVERS
+dbg.sym       = 25
+dbg.sys       = 11
+dbg.tool      = 25
+dbg.ios       = 12
+dbg.vxd       = 22
+dbg.wb        = 30
+ret.wb        = 30
+bak.wb        = 30
+drv.bak       = 10,SYSTEM32\DRIVERS
+sys.bak       = 11
+ios.bak       = 12
+drv.restore   = 10,SYSTEM32\DRIVERS
+sys.restore   = 11
+ios.restore   = 12
+
+
+[StandardDebug]
+CopyFiles  = dbg.drv, dbg.sys, dbg.wb, dbg.vxd, dbg.ios, dbg.tool, dbg.sym
+UpdateInis = standard.inis
+RenFiles   = ret.wb, drv.bak, sys.bak, ios.bak
+
+[SysIniDebug]
+CopyFiles  = dbg.drv, dbg.sys, dbg.vxd, dbg.ios, dbg.tool, dbg.sym
+UpdateInis = standard.inis, systemini.Inis
+RenFiles   = drv.bak, sys.bak, ios.bak
+
+[dbg.drv]
+acpi.sys
+
+[dbg.tool]
+debugger.exe
+
+[dbg.sys]
+pci.vxd,,,1
+
+[ret.wb]
+io.bak,io.sys
+
+[dbg.wb]
+io.sys,winboot.sys,,1
+
+[bak.wb]
+io.sys,io.bak,,1
+
+[dbg.ios]
+rmm.pdr
+scsiport.pdr
+
+[dbg.vxd]
+configmg.vxd
+ntkern.vxd
+vdd.vxd
+vdmad.vxd
+vflatd.vxd
+vkd.vxd
+vmm.vxd
+vpicd.vxd
+vxdldr.vxd
+
+[drv.bak]
+acpi.ret,acpi.sys
+
+[sys.bak]
+pci.ret,pci.vxd,,1
+
+[ios.bak]
+rmm.ret,rmm.pdr
+scsiport.ret,scsiport.pdr
+
+[drv.restore]
+acpi.sys,acpi.ret
+
+[sys.restore]
+pci.vxd,pci.ret,,1
+
+[ios.restore]
+rmm.pdr,rmm.ret
+scsiport.pdr,scsiport.ret
+
+[dbg.sym]
+configmg.sym
+ios.sym
+scsiport.sym
+vdd.sym
+vflatd.sym
+vkd.sym
+gdi.sym
+kmixer.sym
+krnl386.sym
+kernel32.sym
+hidvkd.sym
+msacm.sym
+msacm32.sym
+msvfw32.sym
+msvideo.sym
+ntkern.sym
+ohci1394.sym
+pci.sym
+portcls.sym
+sysaudio.sym
+tapi.sym
+uhcd.sym
+usbaudio.sym
+usbd.sym
+usbhub.sym
+user.sym
+vdmad.sym
+vmm.sym
+wdmaud.sym
+winmm.sym
+
+[systemini.Inis.Remove]
+system.ini,386Enh,"device=%25%\debugger.exe",
+
+[standard.inis]
+system.ini,386Enh,,"LoadDebugOnlyObjs=YES"
+
+[systemini.Inis]
+system.ini,386Enh,,"device=%25%\debugger.exe",
+system.ini,386Enh,,"debugsym=%25%\configmg.sym",1
+system.ini,386Enh,,"debugsym=%25%\ios.sym",1
+system.ini,386Enh,,"debugsym=%25%\scsiport.sym",1
+system.ini,386Enh,,"debugsym=%25%\vdd.sym",1
+system.ini,386Enh,,"debugsym=%25%\vflatd.sym",1
+system.ini,386Enh,,"debugsym=%25%\vkd.sym",1
+system.ini,386Enh,,"debugsym=%25%\gdi.sym",1
+system.ini,386Enh,,"debugsym=%25%\kmixer.sym",1
+system.ini,386Enh,,"debugsym=%25%\kernel32.sym",1
+system.ini,386Enh,,"debugsym=%25%\krnl386.sym",1
+system.ini,386Enh,,"debugsym=%25%\hidvkd.sym",1
+system.ini,386Enh,,"debugsym=%25%\msacm.sym",1
+system.ini,386Enh,,"debugsym=%25%\msacm32.sym",1
+system.ini,386Enh,,"debugsym=%25%\msvfw32.sym",1
+system.ini,386Enh,,"debugsym=%25%\msvideo.sym",1
+system.ini,386Enh,,"debugsym=%25%\ntkern.sym",1
+system.ini,386Enh,,"debugsym=%25%\ohci1394.sym",1
+system.ini,386Enh,,"debugsym=%25%\pci.sym",1
+system.ini,386Enh,,"debugsym=%25%\portcls.sym",1
+system.ini,386Enh,,"debugsym=%25%\sysaudio.sym",1
+system.ini,386Enh,,"debugsym=%25%\tapi.sym",1
+system.ini,386Enh,,"debugsym=%25%\uhcd.sym",1
+system.ini,386Enh,,"debugsym=%25%\usbaudio.sym",1
+system.ini,386Enh,,"debugsym=%25%\usbd.sym",1
+system.ini,386Enh,,"debugsym=%25%\usbhub.sym",1
+system.ini,386Enh,,"debugsym=%25%\user.sym",1
+system.ini,386Enh,,"debugsym=%25%\vdmad.sym",1
+system.ini,386Enh,,"debugsym=%25%\vmm.sym",1
+system.ini,386Enh,,"debugsym=%25%\wdmaud.sym",1
+system.ini,386Enh,,"debugsym=%25%\winmm.sym",1
+
+[Debugvxd.Inis.Remove]
+system.ini,386Enh,"device=%25%\debugger.exe",
+system.ini,386Enh,"debugsym=%25%\configmg.sym",
+system.ini,386Enh,"debugsym=%25%\ios.sym",
+system.ini,386Enh,"debugsym=%25%\scsiport.sym",
+system.ini,386Enh,"debugsym=%25%\vdd.sym",
+system.ini,386Enh,"debugsym=%25%\vflatd.sym",
+system.ini,386Enh,"debugsym=%25%\vkd.sym",
+system.ini,386Enh,"debugsym=%25%\gdi.sym",
+system.ini,386Enh,"debugsym=%25%\kmixer.sym",
+system.ini,386Enh,"debugsym=%25%\kernel32.sym",
+system.ini,386Enh,"debugsym=%25%\krnl386.sym",
+system.ini,386Enh,"debugsym=%25%\hidvkd.sym",
+system.ini,386Enh,"debugsym=%25%\msacm.sym",
+system.ini,386Enh,"debugsym=%25%\msacm32.sym",
+system.ini,386Enh,"debugsym=%25%\msvfw32.sym",
+system.ini,386Enh,"debugsym=%25%\msvideo.sym",
+system.ini,386Enh,"debugsym=%25%\ntkern.sym",
+system.ini,386Enh,"debugsym=%25%\ohci1394.sym",
+system.ini,386Enh,"debugsym=%25%\pci.sym",
+system.ini,386Enh,"debugsym=%25%\portcls.sym",
+system.ini,386Enh,"debugsym=%25%\sysaudio.sym",
+system.ini,386Enh,"debugsym=%25%\tapi.sym",
+system.ini,386Enh,"debugsym=%25%\uhcd.sym",
+system.ini,386Enh,"debugsym=%25%\usbaudio.sym",
+system.ini,386Enh,"debugsym=%25%\usbd.sym",
+system.ini,386Enh,"debugsym=%25%\usbhub.sym",
+system.ini,386Enh,"debugsym=%25%\user.sym",
+system.ini,386Enh,"debugsym=%25%\vdmad.sym",
+system.ini,386Enh,"debugsym=%25%\vmm.sym",
+system.ini,386Enh,"debugsym=%25%\wdmaud.sym",
+system.ini,386Enh,"debugsym=%25%\winmm.sym",
+
+[Uninstall]
+OptionDesc = "Debugger"
+UpdateInis = systemini.Inis.Remove, Debugvxd.Inis.Remove, standard.inis.Remove, PortSet.Inis.Remove
+Delfiles   = dbg.drv, dbg.sys, dbg.vxd, dbg.ios, dbg.tool, dbg.sym
+RenFiles   = drv.restore, sys.restore, ios.restore
+
+[PortSet.Inis.Remove]
+system.ini,386Enh,"debugcom=1",
+system.ini,386Enh,"debugcom=2",
+system.ini,386Enh,"debugcom=3",
+system.ini,386Enh,"debugcom=4",
+system.ini,386Enh,"debugbaud=1200",
+system.ini,386Enh,"debugbaud=2400",
+system.ini,386Enh,"debugbaud=4800",
+system.ini,386Enh,"debugbaud=9600",
+system.ini,386Enh,"debugbaud=19200",
+system.ini,386Enh,"debugbaud=38400",
+system.ini,386Enh,"debugbaud=57600",
+system.ini,386Enh,"debugbaud=115200",
+
+
+[standard.inis.Remove]
+system.ini,386Enh,"LoadDebugOnlyObjs=YES"
+
+[SourceDisksNames]
+1="Windows Millennium DDK Debug Kit",, 0001
+
+[SourceDiskFiles]
+configmg.sym=1
+ios.sym=1
+scsiport.sym=1
+vdd.sym=1
+vflatd.sym=1
+vkd.sym=1
+gdi.sym=1
+kmixer.sym=1
+krnl386.sym=1
+hidvkd.sym=1
+msacm.sym=1
+msacm32.sym=1
+msvfw32.sym=1
+msvideo.sym=1
+ntkern.sym=1
+ohci1394.sym=1
+pci.sym=1
+portcls.sym=1
+sysaudio.sym=1
+tapi.sym=1
+uhcd.sym=1
+usbaudio.sym=1
+usbd.sym=1
+usbhub.sym=1
+user.sym=1
+vdmad.sym=1
+vmm.sym=1
+wdmaud.sym=1
+winmm.sym=1
+debugger.exe=1
+winboot.sys=1
+configmg.vxd=1
+ntkern.vxd=1
+pci.vxd=1
+rmm.pdr=1
+scsiport.pdr=1
+vdd.vxd=1
+vdmad.vxd=1
+vflatd.vxd=1
+vkd.vxd=1
+vmm.vxd=1
+vxdldr.vxd=1
+acpi.sys=1
+vpicd.vxd=1

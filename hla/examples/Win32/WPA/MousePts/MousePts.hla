@@ -1,0 +1,239 @@
+// MousePts.hla-
+//
+//	A program that demonstrates the use of the mouse.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit MousePoints;
+
+// Set the following to true to display interesting information
+// about the bitmap file this program opens. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+const
+	maxPoints	:= 2048;
+	
+static
+	PointCnt:		uns32 := 0;
+	PointsArray:	w.POINT[ maxPoints ];
+
+
+readonly
+
+	ClassName	:string := "MousePtsWinClass";		// Window Class Name
+	AppCaption	:string := "MousePts Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, 		&QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   		&Paint				],
+			MsgProcPtr_t:[ w.WM_LBUTTONDOWN, 	&LButtonDown		],
+			MsgProcPtr_t:[ w.WM_LBUTTONUP, 		&LButtonUp			],
+			MsgProcPtr_t:[ w.WM_MOUSEMOVE, 		&MouseMove			],			
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Tell the application to quit:
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// LButtonDown:
+//
+//	This procedure handles the w.WM_LBUTTONDOWN message.
+
+procedure LButtonDown( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonDown;
+	
+	mov( 0, PointCnt );
+	w.InvalidateRect( hwnd, NULL, true );
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonDown;
+
+
+// LButtonUp:
+//
+//	This procedure handles the w.WM_LBUTTONUP message.
+
+procedure LButtonUp( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonUp;
+	
+	w.InvalidateRect( hwnd, NULL, true );
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonUp;
+
+
+// MouseMove:
+//
+//	This procedure handles the w.WM_MOUSEMOVE message.
+
+procedure MouseMove( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc: dword;
+begin MouseMove;
+	
+	test( w.MK_LBUTTON, wParam );
+	if( @nz && PointCnt < maxPoints ) then
+	
+		GetDC( hwnd, hdc );
+			mov( PointCnt, ecx );
+			movzx( (type word lParam), eax );
+			mov( eax, PointsArray.x[ ecx*8 ] );
+			movzx( (type word lParam[2]), edx );
+			mov( edx, PointsArray.y[ ecx*8 ] );
+			SetPixel( eax, edx, 0 );
+			inc( PointCnt );
+		ReleaseDC;		 
+
+	endif;
+	xor( eax, eax );
+end MouseMove;
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+
+var
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		w.SetCursor( w.LoadCursor( NULL, @string( w.IDC_WAIT ) ));
+		w.ShowCursor( true );
+		MoveTo( PointsArray.x[0], PointsArray.y[0] );
+		for( mov( 1, ebx ); ebx < PointCnt; inc( ebx )) do
+		 
+			LineTo( PointsArray.x[ebx*8], PointsArray.y[ebx*8] );
+			
+		endfor;
+		w.ShowCursor( false );
+		w.SetCursor( w.LoadCursor( NULL, @string(w.IDC_ARROW )));
+				
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;				
+end MousePoints;
+ 

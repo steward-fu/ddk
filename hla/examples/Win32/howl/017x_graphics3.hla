@@ -1,0 +1,630 @@
+// graphics3x-
+//
+//	This program demonstrates drawing pie wedges objects on a form.
+//
+// This version of the program implements the object manually, without using the
+// wForm..endwForm macro (the HOWL declarative language).
+
+program graphics3x;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+#includeOnce( "howl.hhf" )
+
+const
+	applicationName := "Graphics #3x";
+	formX			:= w.CW_USEDEFAULT;	// Let Windows position this guy
+	formY			:= w.CW_USEDEFAULT;
+	formW			:= 600;
+	formH			:= 600;
+
+
+
+	
+	
+// Forward declarations for the onClick widgetProcs that we're going to
+// call when an event occurs.
+
+proc hideShowPie			:widgetProc; @forward;
+proc movePie				:widgetProc; @forward;
+proc resizePie				:widgetProc; @forward;
+proc colorPie				:widgetProc; @forward;
+proc onClick		   		:widgetProc; @forward;
+proc onQuit			   		:widgetProc; @forward;
+	
+
+type
+
+	// Create a new class for our main application window.
+	// All application forms must be derived from wForm_t:
+		
+	mainAppWindow_t:
+		class inherits( wForm_t );
+		
+			// We have to add VAR declarations for all our widgets
+			// here.
+			
+			var
+				pie1		:wPie_p;
+				button2			:wPushButton_p;
+				button3			:wPushButton_p;
+				button4			:wPushButton_p;
+				button5			:wPushButton_p;
+				button6			:wPushButton_p;
+				quitButton		:wPushButton_p;
+				showState		:boolean;
+				align(4);
+	
+		
+			// We need to override these (actually, onClose is the
+			// only one that is important):
+			
+			override method onClose;
+			override method onCreate;
+			
+			// Every main application window must have a
+			// constructor with the following prototype:
+			
+			procedure create_mainAppWindow
+			(
+			        caption :string;
+			        exStyle :dword;
+			        style   :dword;
+			        parent  :dword;
+			        x       :dword;
+			        y       :dword;
+			        width   :dword;
+			        height  :dword;
+			        bkgClr  :dword;
+			        visible :boolean
+			);
+			
+		endclass;
+		
+		mainAppWindow_p	:pointer to mainAppWindow_t;
+
+// Must have the following declarations in all (manually written) HOWL apps:
+	
+static
+    vmt( mainAppWindow_t );
+    mainAppWindow: mainAppWindow_t;
+    pmainAppWindow: mainAppWindow_p := &mainAppWindow;	
+
+
+
+
+
+// Here is the constructor we must supply for the mainAppWindow class:
+
+procedure mainAppWindow_t.create_mainAppWindow
+(
+        caption :string;
+        exStyle :dword;
+        style   :dword;
+        parent  :dword;
+        x       :dword;
+        y       :dword;
+        width   :dword;
+        height  :dword;
+        bkgClr  :dword;
+        visible :boolean
+);
+var
+    main 	:mainAppWindow_p;
+	rs		:wRadioSet_p;
+	rsHndl	:dword;
+
+begin create_mainAppWindow;
+
+    push( eax );
+    push( ebx );
+    push( ecx );
+    push( edx );
+	
+	// Standad main form initialization:
+	//
+	// If a class procedure call (not typical), then allocate storage
+	// for this object:
+	
+    if( esi = NULL ) then
+        mem.alloc( @size( mainAppWindow_t ));
+        mov( eax, esi );
+        mov( true, cl );
+    else
+        mov( this.wBase_private.onHeap, cl );
+    endif;
+	
+	// Call the wForm_t constructor to do all the default initialization:
+	
+    (type wForm_t [esi]).create_wForm
+    (
+        "mainAppWindow",
+        caption,
+        exStyle,
+        style,
+        parent,
+        x,
+        y,
+        width,
+        height,
+        bkgClr,
+        visible
+    );
+	
+	// Initialize the VMT pointer:
+	
+    mov( &mainAppWindow_t._VMT_, this._pVMT_ );
+	
+	// Retrieve the onHeap value from above and store it into
+	// the onHeap data field:
+	
+    mov( cl, this.wBase_private.onHeap );
+	
+	// Preserve "this" because we're about to make an object call
+	// that will overwrite this' value:
+	
+    mov( esi, main );
+	
+	//////////////////////////////////////////////
+	//
+	// Create all the widgets on this form:
+	//
+	//////////////////////////////////////////////
+	
+	// Put the pie on the form:
+	
+	wPie_t.create_wPie
+	(
+		"pie1",							// Label name
+		this.handle,					// Parent window handle
+		10,								// x position 
+		10,								// y position 
+		200,							// width 
+		200,							// height
+		45.0,							// Start angle
+		135.0,							// end angle 
+		RGB( 0, 0, 0 ),					// foreground color (black)
+		RGB( 255, 255, 255 ),			// fill color (white)
+		howl.bkgColor_g					// Background color
+	);
+	mov( esi, eax );					// Save ptr to new label		
+	(type wPie_t [esi]).show();	// Show the pie.
+	mov( main, esi );					// Retrieve ptr to main app's object
+	mov( eax, this.pie1 );		// Save label pointer.
+	this.insertWidget( eax );			// Add label to wForm's widget list.
+	
+	
+	
+	// The show/hide button on the form:
+	
+	mov( main, esi );				// Retrieve ptr to main app's object
+	wPushButton_t.create_wPushButton
+	(
+		"button2",					// Button name
+		"Hide pie",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		10,							// y position 
+		175,						// width 
+		25,							// height 
+		&hideShowPie			// initial "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button2 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The move pie button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button3",					// Button name
+		"Move pie",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		40,							// y position 
+		175,						// width 
+		25,							// height 
+		&movePie				// initial "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button3 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The resize button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button4",					// Button name
+		"Resize pie",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		70,							// y position 
+		175,						// width 
+		25,							// height 
+		&resizePie				// initial "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button5 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The change color button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button5",					// Button name
+		"Change Color",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		100,						// y position 
+		175,						// width 
+		25,							// height 
+		&colorPie				// initial "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button5 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	
+	// We need to create a quit button and store the pointer to the
+	// new button object in the this.button field on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"quitButton",				// Button name
+		"Quit",						// Caption
+		this.handle,				// parent window handle
+		450,						// x position 
+		525,						// y position 
+		125,						// width 
+		25,							// height 
+		&onQuit						// "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.quitButton );	// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+	
+    this.onCreate();				// Be nice, call this guy (even if empty).
+    pop( edx );
+    pop( ecx );
+    pop( ebx );
+    pop( eax );
+
+end create_mainAppWindow;	
+	
+	
+
+
+	
+
+
+
+
+
+	
+
+
+
+
+	
+
+
+// The colorPie widget proc will change the foreground and background color.
+
+proc colorPie:widgetProc;
+begin colorPie;
+
+	mov( mainAppWindow.pie1, esi );
+	(type wPie_t [esi]).get_lineColor();
+	if( eax = RGB( 0, 0, 0 )) then
+	
+		(type wPie_t [esi]).set_lineColor( RGB( 0, 255, 0 ));
+		(type wPie_t [esi]).set_fillColor( RGB( 255, 0, 0 ));
+		
+	else
+	
+		(type wPie_t [esi]).set_lineColor( RGB( 0, 0, 0 ));
+		(type wPie_t [esi]).set_fillColor( RGB( 255, 255, 255 ));
+		
+	endif;
+	
+	
+end colorPie;
+	
+
+
+// The resizePie widget proc will resize label1 between widths 150 and 200.
+
+proc resizePie:widgetProc;
+begin resizePie;
+
+	mov( mainAppWindow.pie1, esi );
+	(type wLabel_t [esi]).get_width();
+	if( eax = 200 ) then
+	
+		stdout.put( "Resizing pie to width/height 150" nl );
+		(type wPie_t [esi]).resize( 150, 150 );
+		
+	else
+	
+		stdout.put( "Resizing label to width/height 200" nl );
+		(type wPie_t [esi]).resize( 200, 200 );
+		
+	endif;
+	
+end resizePie;
+	
+
+
+// The movePie widget proc will move label 
+// between y positions 10 and 40.
+
+proc movePie:widgetProc;
+begin movePie;
+
+	mov( mainAppWindow.pie1, esi );
+	(type wPie_t [esi]).get_y();
+	if( eax = 10 ) then
+	
+		stdout.put( "Moving pie to y-position 40" nl );
+		(type wPie_t [esi]).set_y( 40 );
+		
+	else
+	
+		stdout.put( "Moving pie to y-position 10" nl );
+		(type wPie_t [esi]).set_y( 10 );
+		
+	endif;
+	
+end movePie;
+	
+
+
+// The hideShowPie widget proc will hide and show pie1.
+
+proc hideShowPie:widgetProc;
+begin hideShowPie;
+
+	mov( thisPtr, esi );
+	if( mainAppWindow.showState ) then
+	
+		(type wPushButton_t [esi]).set_text( "Hide Pie" );
+		mov( false, mainAppWindow.showState );
+		stdout.put( "Showing pie 1" nl );
+		
+		mov( mainAppWindow.pie1, esi );
+		(type wPie_t [esi]).show();
+		
+	else		 
+	
+		(type wPushButton_t [esi]).set_text( "Show Pie" );
+		mov( true, mainAppWindow.showState );
+		stdout.put( "Hiding pie 1" nl );
+		
+		mov( mainAppWindow.pie1, esi );
+		(type wPie_t [esi]).hide();
+				
+	endif;	
+	
+end hideShowPie;
+	
+
+
+
+	
+	
+
+// Here's the onClick event handler the graphic object:
+
+proc onClick:widgetProc;
+begin onClick;
+
+	stdout.put( "Clicked on graphic object" nl );
+	mov( thisPtr, esi );
+	(type wPie_t [esi]).set_lineColor( RGB( 0, 0, 255 ));
+	(type wPie_t [esi]).set_fillColor( RGB( 255, 0, 255 ));
+	
+end onClick;
+
+
+
+	
+	
+
+// Here's the onClick event handler for our quit button on the form.
+// This handler will simply quit the application:
+
+proc onQuit:widgetProc;
+begin onQuit;
+
+	// Quit the app:
+	
+	w.PostQuitMessage( 0 );
+
+end onQuit;
+
+
+
+
+
+// We'll use the main application form's onCreate method to initialize
+// the various buttons on the form.
+//
+// This could be done in appStart, but better to leave appStart mainly
+// as boilerplate code. Also, putting this code here allows us to use
+// "this" to access the mainAppWindow fields (a minor convenience).
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+
+	// Initialize the showState data field:
+		
+	mov( false, this.showState );
+	
+	// Install onClick handler for the graphic object:
+	
+	mov( (type mainAppWindow_t [esi]).pie1, esi );
+	(type wPie_t [esi]).set_onClick( &onClick );
+	
+
+end onCreate;
+
+	
+
+	
+	
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following is mostly boilerplate code for all apps (about the only thing
+// you would change is the size of the main app's form)
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+   
+
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+	// Create the main application window:
+	
+	mainAppWindow.create_mainAppWindow
+	(
+		applicationName,		// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		formX,					// x-coordinate for window. 
+		formY,					// y-coordinate for window.
+		formW,					// Width
+		formH,					// Height
+		howl.bkgColor_g,		// Background color
+		true					// Make visible on creation 
+	);
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException
+( 
+	theException	:dword in eax;
+	raiseAdrs		:dword in ebx;
+	filename		:string in ecx;
+	userCode		:dword in edx;
+	lineNum			:uns32 in edi 
+);
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must
+// call the HowlMainApp procedure.
+
+begin graphics3x;
+
+	// Set up the background and transparent colors that the
+	// form will use when registering the window_t class:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, howl.bkgColor_g );
+	or( $FF00_0000, eax );
+	mov( eax, howl.transparent_g );
+	w.CreateSolidBrush( howl.bkgColor_g );
+	mov( eax, howl.bkgBrush_g );
+
+	// Start the HOWL Framework Main Program:
+	
+	HowlMainApp();
+	
+	// Delete the brush we created earlier:
+	
+	w.DeleteObject( howl.bkgBrush_g );			
+				
+end graphics3x;
+ 

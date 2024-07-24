@@ -1,0 +1,146 @@
+unit hlaFuncUnit;
+
+// We want to demonstrate how to call HLA Standard Library
+// routines from code that is called from VB, so let's include
+// the standard library right here.
+
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+
+// HLA exception-handling system initialisation:
+
+#include( "InitFullExcept.hhf" )
+//#include( "InitShortExcept.hhf" )
+
+static
+	Message :str.strvar(80);
+
+
+
+
+//--------------------------------------------------------------
+//					The external prototypes
+//--------------------------------------------------------------
+// Call with "stdcall calling convention", (how WIN API), for VB
+//--------------------------------------------------------------
+procedure DLLEntry( instance:dword; reason:dword; reserved:dword ); @stdcall;
+		  @external( "_DLLEntry@12" );
+		  
+// Here's the sample function we're going to call from external
+// code ("VB" in this example) that demonstrates HLA stdlib calls
+// and exception handling.
+
+procedure hlaFunc( i:int32 ); @stdcall;
+		  @external( "_hlaFunc@4" );
+//--------------------------------------------------------------
+
+
+
+// Here's the HLA code we're going to call from C that
+// demonstrates exception handling without an HLA main program.
+
+procedure hlaFunc( i:int32 );
+var
+	s		:string;
+	saveSEH	:dword;
+
+begin hlaFunc;
+	
+	
+	#asm
+		mov eax, fs:[0]
+	#endasm
+	mov( eax, saveSEH );
+	
+
+	// Upon entry into any HLA code that needs exception support,
+	// we have to set up the structured exception handling record
+	// for HLA:
+	
+	call BuildExcepts;
+
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	str.put( Message, "esp=", esp, " seh=", SaveSEHPointer );
+	w.MessageBox( Null, Message, "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+	
+	// Okay, here's the code we're going to execute that uses
+	// exceptions, calls HLA stdlib routines, etc., even though
+	// caller is not an HLA program:
+	
+	try
+	
+		str.put( Message, "MessageBox called from HLA code, i = ", i );
+		w.MessageBox( Null, Message, "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+
+		raise( 5 );
+		
+	exception( 5 );
+	
+		w.MessageBox( Null, "Exception handled by HLA code", "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+		
+	endtry;
+	
+	// One more demonstration, this time with an exception
+	// occurring deep down inside an HLA Standard Library routine:
+	
+	try
+	
+		stralloc( 16 );
+		mov( eax, s );
+		str.cpy( "Hello World", s );
+
+		str.put( Message, "Successfully copied 'Hello World' to s: ", s );
+		w.MessageBox( Null, Message, "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+
+		str.cpy( "0123456789abcdefghijklmnop", s );
+
+		w.MessageBox( Null, "Shouldn't get here", "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+	
+	anyexception
+	
+		str.put( Message, "Exception code: ", eax );
+		w.MessageBox( Null, Message, "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+		ex.printExceptionError();
+	
+	endtry;
+	
+	strfree( s );
+	w.MessageBox( Null, "Returning to VB code", "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+	str.put( Message, "esp=", esp, " seh=", SaveSEHPointer );
+	w.MessageBox( Null, Message, "HLA", w.MB_OK | w.MB_ICONINFORMATION );
+	
+	// Before we leave, we have to clean up the SEH record
+	// pushed on the stack by BuildExcepts. Actually, the
+	// return will clean this up, but we do need to restore
+	// the system's SEH pointer before returning.
+	
+	mov( saveSEH, eax );
+	
+	// The following actually *could* be done in straight
+	// HLA code, but this is easier.
+	
+	#asm
+		mov fs:[0], eax
+	#endasm
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+	
+end hlaFunc;
+
+//--------------------------------------------------------------
+//		The DLL initialization procedure (DLL entry point)
+//--------------------------------------------------------------
+procedure DLLEntry( instance:dword; reason:dword; reserved:dword );
+begin DLLEntry;
+	
+	mov( true, eax );
+
+end DLLEntry;
+
+end hlaFuncUnit;

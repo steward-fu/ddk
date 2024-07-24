@@ -1,0 +1,67 @@
+unit consoleUnit;
+#include( "stdout.hhf" )
+#include( "win32cons.hhf" );
+
+
+
+// home/cls-
+//
+//	Clears the screen.
+
+procedure win32cons.cls; @nodisplay;
+var
+	size:			dword;
+	Attributes:		dword;
+	csbi:			win.CONSOLE_SCREEN_BUFFER_INFO;
+	charsWritten:	dword;
+	
+static
+	HomePosn:		win.COORD := win.COORD:[0,0];
+
+begin cls;
+
+	pushad();
+	
+	// Compute the number of character positions on the current console.
+	
+	win32cons.info( csbi );
+	movzx( csbi.dwSize.X, eax );
+	intmul( csbi.dwSize.Y, ax );
+	mov( eax, size );
+	
+	// Fill the entire screen with blanks:
+	
+	win.FillConsoleOutputCharacter
+	( 
+		charsWritten, 
+		HomePosn, 
+		size, 
+		' ', 
+		stdout.handle()
+	);
+	
+	// Set the screen attributes:
+	
+	movzx( csbi.wAttributes, eax );
+	win.FillConsoleOutputAttribute
+	(
+		charsWritten,
+		HomePosn,
+		size,
+		ax,
+		stdout.handle()
+	);
+	
+	// Home the cursor at position (0,0);
+	
+	win32cons.gotoxy( 0,0 );
+	
+	popad();
+		
+end cls;
+
+
+
+
+
+end consoleUnit;

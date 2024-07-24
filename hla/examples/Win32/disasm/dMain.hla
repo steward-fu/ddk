@@ -1,0 +1,291 @@
+unit disasmEngine;
+#includeonce( "stdlib.hhf" )
+#includeonce( "disasm.hhf" )
+										  
+?@nostackalign := true;
+?@nodisplay := true;
+?@noframe := true;
+
+
+// opXlat-
+//
+// 	Operand translation table. See comments for op2m_t for a 
+// 	description of this table's purpose.
+
+readonly
+	align(4);
+	opXlat	:op2m_t[256] := opXlat_c;
+
+
+// opXlat2xxx-
+//	These four tables do the mnemonic translation for the instructions
+//	that begin with the $0F opcode prefix.
+
+	opXlat2		:xOp2m_t[256] := opXlat2_c;  
+	opXlat2_66	:xOp2m_t[256] := opXlat2_66_c; 
+	opXlat2_F2	:xOp2m_t[256] := opXlat2_F2_c; 
+	opXlat2_F3	:xOp2m_t[256] := opXlat2_F3_c; 
+
+
+// A Table that maps disassembler instruction mnemonics to their
+// corresponding string representation:
+
+readonly
+	align(4);
+	instrStrs :string[ @elements( instrStrs_c ) ] := instrStrs_c;
+
+
+// A table that maps disassembler register constants to their
+// corresponding string:
+
+readonly
+	align(4);
+	regStrs	:string[ uns32( regCnt_c ) ] :=
+		[
+			"",
+			"al", "ah", "bl", "bh", "cl", "ch", "dl", "dh",
+			"ax", "bx", "cx", "dx", "si", "di", "bp", "sp",
+			"eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp",
+			"st0", "st1", "st2", "st3", "st4", "st5", "st6", "st7",
+			"mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
+			"cr0", "cr1", "cr2", "cr3", "cr4", "cr5", "cr6", "cr7",
+			"dr0", "dr1", "dr2", "dr3", "dr4", "dr5", "dr6", "dr7",
+			"tr0", "tr1", "tr2", "tr3", "tr4", "tr5", "tr6", "tr7",
+			"xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7",
+			"cseg", "dseg", "eseg", "fseg", "gseg", "sseg"
+		];
+
+
+// A table that maps opcode ss scale values to the actual scaling
+// value in bytes:
+
+readonly
+	mapScale: byte[4] := [ 1, 2, 4, 8 ];
+
+
+// A table that maps x86 opcode rrr values (for 32-bit registers)
+// to their corresponding disassembler engine constants:
+
+readonly
+	mapX86ToReg32: byte[8] :=	// Indexed by rrr_XXX value
+		[
+			eax_c,
+			ecx_c,
+			edx_c,
+			ebx_c,
+			esp_c,
+			ebp_c,
+			esi_c,
+			edi_c
+		];
+
+
+// A table that maps x86 opcode rrr values (for 16-bit registers)
+// to their corresponding disassembler engine constants:
+
+readonly
+	mapX86ToReg16: byte[8] :=	// Indexed by rrr_XXX value
+		[
+			ax_c,
+			cx_c,
+			dx_c,
+			bx_c,
+			sp_c,
+			bp_c,
+			si_c,
+			di_c
+		];
+
+
+
+// A table that maps x86 opcode rrr values (for 8-bit registers)
+// to their corresponding disassembler engine constants:
+
+readonly
+	mapX86ToReg8: byte[8] :=	// Indexed by rrr_XXX value
+		[
+			al_c,
+			cl_c,
+			dl_c,
+			bl_c,
+			ah_c,
+			ch_c,
+			dh_c,
+			bh_c
+		];
+
+
+
+// A table that maps x86 opcode sss values (for 16-bit segment registers)
+// to their corresponding disassembler engine constants:
+
+readonly
+	mapX86ToSReg16: byte[8] :=	// Indexed by sss_XXX value
+		[
+			eseg_c,
+			cseg_c,
+			sseg_c,
+			dseg_c,
+			fseg_c,
+			gseg_c,
+			none_c,
+			none_c
+		];
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// initInstr-
+//	Initializes an instr_t object.
+
+procedure initInstr( var instr:instr_t in edi );
+begin initInstr;
+
+	preserve( eax, ecx );
+
+		// Zero out the whole structure just for maintainability
+		// purposes.
+
+		push( edi );
+		cld();
+		mov( @size( instr_t ) div 4, ecx );
+		xor( eax, eax );
+		rep.stosd();
+		pop( edi );	
+
+		// Although most of the following simply store zero into
+		// the structure we zero'd out above, this is done in case
+		// enumeration constants change.
+
+		mov( eax, instrEDI.size );		// Zero, from above.
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+		mov( false, al );
+		mov( al, instrEDI.lockPre );
+		mov( al, instrEDI.repnePre );
+		mov( al, instrEDI.repePre );
+		mov( al, instrEDI.sizePre );
+		mov( al, instrEDI.adrsPre );
+		mov( al, instrEDI.csPre );
+		mov( al, instrEDI.dsPre );
+		mov( al, instrEDI.esPre );
+		mov( al, instrEDI.fsPre );
+		mov( al, instrEDI.gsPre );
+		mov( al, instrEDI.ssPre );
+
+		mov( implied_c, al );
+		mov( al, instrEDI.firstOp.opClass );
+		mov( al, instrEDI.secondOp.opClass );
+		mov( al, instrEDI.thirdOp.opClass );
+
+	restore;
+
+end initInstr;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// dInstr-
+//	This procedure disassembles a single instruction at the memory
+//	location specified by the instrPtr parameter (ESI). It stores
+//	the disassembly data in the location specified by the dest parameter.
+//
+// Inputs:
+//
+//	instrPtr (ESI)-
+//		Points into the 1st byte of the instruction.
+//
+//	dest-
+//		Points at an instr_t value where this procedure will store the
+//		disassembly information about the current instruction.  Note:
+//		the original caller should initialize this data structure with
+//		all zeros. Because this routine can be called recursively (for
+//		prefix bytes), this code cannot handle that chore.
+//
+// Outputs:
+//
+//	dest-
+//		Filled in to reflect the disassembly information.
+
+procedure dInstr
+(
+		instrPtr	:dword in esi; 
+	var dest		:instr_t in edi
+);
+begin dInstr;
+
+	preserve( eax, ebx, ecx, edx );
+
+		// Call disInstrTable to do the actual disassembly.
+		// Pass it the address of the opXlat table, which is
+		// the main (single-byte) opcode mapping table.
+
+		// Save the pointer to the start of the instruction
+		// so we can compute the instruction length later:
+
+		push( esi );
+
+		// Okay, grab the first byte of the instruction:
+
+		movzx( (type byte [esi]), ecx );
+		#if( @size( op2m_t ) = 16 )
+
+			shl( 4, ecx );
+
+		#else
+
+			intmul( @size( op2m_t ), ecx );
+
+		#endif
+
+		// Initialize the mnemonic based on the opcode we
+		// just fetched. Note that the size, repne, and repe
+		// prefixes (or their absence) selects which mnenmonic
+		// code we're going to use.
+
+		if( instrEDI.sizePre ) then // has $66 prefix
+
+			movzx( opXlat.mnemonic_66[ecx], eax );
+
+		else
+
+			movzx( opXlat.mnemonic_std[ecx], eax );
+
+		endif;
+		mov( eax, instrEDI.mnemonic );
+		add( 1, esi );		// Skip over opcode byte.
+
+		// Call the instruction-specific handler.
+
+		call( opXlat.handleInstr[ecx] );
+
+		// Call the instruction-specific operand handlers.
+
+		mov( esi, ebx );
+
+		lea( edx, instrEDI.firstOp );
+		call( opXlat.handleOprnd1[ecx] );
+
+		lea( edx, instrEDI.secondOp );
+		call( opXlat.handleOprnd2[ecx] );
+
+		// Compute the length of this instruction:
+
+		pop( eax );
+		neg( eax );
+		add( esi, eax );
+		mov( eax, instrEDI.size );
+
+	restore;
+	 
+end dInstr;
+
+
+end disasmEngine;

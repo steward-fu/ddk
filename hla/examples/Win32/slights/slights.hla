@@ -1,0 +1,1094 @@
+program t;
+#linker( "winmm.lib" )
+#includeOnce( "stdlib.hhf" )
+#includeOnce( "w.hhf" )
+#includeOnce( "threads.hhf" )
+#includeOnce( "sleep.hhf" )
+#includeOnce( "basic.hhf" )
+
+const
+	maxBasicPgms_c	:= 128;
+	controlChange_c	:= $B0;
+	nrpnLSB_c		:= 98;
+	nrpnMSB_c		:= 99;
+
+	enEAX	:text := "(type eventNode_t [eax])";
+	enECX	:text := "(type eventNode_t [ecx])";
+	
+type
+	deviceArray_t	:string[128];			// Names of enumerated MIDI devices
+			
+	// HLA Basic program object:
+	
+	pMyRTPgmClass	:pointer to myRTPgmClass;
+	myRTPgmClass: 
+		class inherits( rtPgmClass );
+			var
+				midiInHandle	:dword;
+				midiOutHandle	:dword;
+				midiDeviceNum	:uns32;
+		
+			override procedure create;				external;
+			override method destroy;				external;				
+			
+		endclass;
+		
+	// The following type is used to pass data from
+	// the MIDI IN callback function to the MIDI message
+	// thread that this program creates:
+	
+	pdwInstance_t	:pointer to dwInstance_t;
+	dwInstance_t:
+		record
+		
+			timeStamp	:dword;
+			basicPgm	:pMyRTPgmClass;
+			
+		endrecord;
+		
+	// This is a packed DWORD passed to the midi message thread
+	// containing the MIDI message (generally in the wParam argument):
+	
+	midiData_t:
+		record
+			
+			midiStatus	:byte;
+			midiParm	:byte;
+			midiValue	:word;
+		
+		endrecord;
+		
+	// When a MIDI event occurs, the following constants
+	// tell the main program what type of data changed:
+	
+	whatChanged_t:
+		enum
+		{ 	
+			nothingChanged_c, 
+			faderChanged_c, 
+			knobChanged_c, 
+			buttonChanged_c,
+			exception_c 
+		};
+	
+	// The main program processes a queue of messages created
+	// by the MIDI message thread. The following data type
+	// defines each node in that list:
+	
+	eventNode_p	:pointer to eventNode_t;
+	eventNode_t:
+		record
+			next			:eventNode_p;
+			whatChanged		:whatChanged_t;
+			align(4);
+			index			:dword;
+			exceptionCode	:dword;
+			basicPgm		:pMyRTPgmClass;
+		endrecord;
+			
+			
+	
+static
+	midiThreadID	:dword;			// Thread ID for the MIDI message thread
+	hwndMidi		:dword;			// Handle for the MIDI message window
+	eventQueue		:eventNode_p;	// Pointer to start of the MIDI msg queue
+	endEventQueue	:eventNode_p;	// Pointer to end of MIDI msg queue
+	
+	numOutDevices	:uns32;			// # of MIDI output devices
+	outDevices		:deviceArray_t;	// Names of MIDI output devices
+	
+	numInDevices	:uns32;			// # of MIDI input devices
+	inDevices		:deviceArray_t;	// Names of MIDI input devices
+	
+	midiInEvent		:dword;			// Set when item is added to eventQueue
+	midiMsgEvent	:dword;			// Set when MIDI thread is done with msg.
+	midiInCS		:dword;			// Protects eventQueue
+	
+	exmsg			:str.strvar( 256 );	// Basic error messages go here
+	
+	
+	numInBasicPgms	:uns32;							// # of input Basic Pgms
+	inBasicPgms		:pMyRTPgmClass[maxBasicPgms_c];	// Basic pgms for MIDI input
+	numOutBasicPgms	:uns32;							// # of output Basic pgms
+	outBasicPgms	:pMyRTPgmClass[maxBasicPgms_c];	// Basic pgms for output
+	basicPgm		:pMyRTPgmClass;					// Used if error occurs				
+	
+	vmt( myRTPgmClass );
+				
+
+
+
+		
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// myRTPgmClass.create-
+	//
+	//	Overrides the rtPgmClass create function so we can properly set up
+	// the VMT pointer.
+
+	procedure myRTPgmClass.create( filename:string; pgmData:dword );; 
+	begin create;
+
+		push( eax );
+		push( ebx );
+		push( ecx );
+		push( edx );
+		
+		if( esi = NULL ) then
+		
+			rtPgmClass.create( filename, pgmData );
+			
+		else
+		
+			(type rtPgmClass [esi]).create( filename, pgmData );
+			
+		endif;
+		mov( &myRTPgmClass._VMT_, this._pVMT_ );
+		mov( NULL, this.midiInHandle );
+		mov( NULL, this.midiOutHandle );
+		mov( 0, this.midiDeviceNum );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		pop( eax );
+
+	end create;
+	
+	// Destructor for an HLA Basic program:
+	
+	method myRTPgmClass.destroy;
+	begin destroy;
+	
+		push( eax );
+		push( ecx );
+		push( edx );
+		if( this.midiInHandle <> NULL ) then
+		
+			w.midiInClose( this.midiInHandle );
+			
+		endif;
+		if( this.midiOutHandle <> NULL ) then
+		
+			w.midiOutClose( this.midiOutHandle );
+			
+		endif;
+		super.destroy();
+		pop( edx );
+		pop( ecx );
+		pop( eax );
+		
+	end destroy;
+
+
+
+
+
+
+
+
+
+
+
+
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// midiMsgThread
+	//
+	//	Because Windows threads are incompatible with HLA threads (due to the
+	// fact that Windows threads don't process HLA exceptions properly and
+	// there are issues with HLA stdlib thread local storage), we have to
+	// create a separate HLA thread to process MIDI messages.  This thread
+	// creates a (non-visible) window to which the midiInProc can send MIDI
+	// messages for further processing in an HLA-thread-safe environment.
+	
+	procedure midiMsgThread( parm:dword );
+		
+		// QueueEvent-
+		//	Queues a fader/knob/button event into the
+		// global eventQueue list and signals the main program
+		// that an item is availabe in the queue.
+		
+		procedure queueEvent
+		( 
+			whatChanged		:whatChanged_t; 
+			index			:dword;
+			exceptionCode	:dword;
+			basicPgm		:pMyRTPgmClass 
+		);
+		begin queueEvent;
+		
+			// Create a new eventQueue element and add
+			// the current data to it:
+			
+			mem.alloc( @size( eventNode_t ));
+			mov( whatChanged, cl );
+			mov( cl, enEAX.whatChanged );
+			mov( index, ecx );
+			mov( ecx, enEAX.index );
+			mov( exceptionCode, ecx );
+			mov( ecx, enEAX.exceptionCode );
+			mov( basicPgm, ecx );
+			mov( ecx, enEAX.basicPgm );
+			mov( NULL, enEAX.next );	
+			
+			// Must protect the eventQueue while we're adding items to it:
+			
+			thread.enterCriticalSection( midiInCS );
+			
+				if( eventQueue = NULL ) then
+				
+					mov( eax, eventQueue );
+					mov( eax, endEventQueue );
+					
+				else
+				
+					mov( endEventQueue, ecx );
+					mov( eax, enECX.next );
+					mov( eax, endEventQueue );
+					
+				endif;
+		 
+			thread.leaveCriticalSection( midiInCS );
+			
+			// Signal the main thread that a new element is present
+			// in the event queue:
+			
+			thread.setEvent( midiInEvent );
+
+		end queueEvent;
+
+
+		
+		// Window Procedure for the MIDI thread:
+		
+		procedure midiMsgWndProc
+		( 
+			hwnd	:dword; 
+			uMsg	:dword; 
+			wParam	:midiData_t; 
+			lParam	:pdwInstance_t 
+		); @stdcall;
+		var
+			basicPgm	:pMyRTPgmClass;
+			
+		begin midiMsgWndProc;
+		
+			// We only process w.MM_MIM_DATA messages, because
+			// that's all that the midiInProc callback procedure
+			// is going to send us:
+			
+			if( uMsg = w.MM_MIM_DATA ) then
+			
+				try
+				
+					// Extract the MIDI data from the
+					// wParam and lParam arguments:
+					
+					mov( uMsg, eax );
+					mov( eax, midiMsg );
+					
+					mov( wParam.midiStatus, al );
+					mov( al, ah );
+					and( $F0, al );
+					mov( al, midiStatus );	// Almost always $B0 (control change)
+					
+					and( $f, ah );			// Channel # is in L.O. 4 bits.
+					mov( ah, midiChannel );
+					
+					// wParam.midiParm generally contains the controller #:
+					
+					movzx( wParam.midiParm, eax );
+					mov( eax, midiParm );
+						
+					// wParam.midiValue contains the controller's value:
+							
+					movzx( wParam.midiValue, eax );
+					mov( eax, midiValue );
+						
+					// lParam points at a dwInstance_t record containing
+					// the MIDI time stamp and a pointer to the BASIC
+					// program that is charged with handling this message:
+							
+					mov( lParam, esi );
+					mov( (type dwInstance_t [esi]).timeStamp, eax );
+					mov( eax, midiTimeStamp );
+					mov( (type dwInstance_t [esi]).basicPgm, esi );
+					mov( esi, basicPgm );
+					
+					// Initialize deviceChanged with nothingChanged_c in
+					// case the Basic program fails to modify @deviceChanged.
+					// We wouldn't want the main program to process a "ghost"
+					// message because the Basic program didn't change this
+					// value.
+					
+					mov( nothingChanged_c, deviceChanged );
+					
+					// Resume execution of the Basic program (until it
+					// suspends):
+					
+					(type myRTPgmClass [esi]).resume();
+					
+					// If something changed, then queue up a message for
+					// the main thread. Note that the Basic program is
+					// responsible for setting the value of @deviceChanged:
+					
+					if( deviceChanged <> nothingChanged_c ) then
+					
+						queueEvent( deviceChanged, changedIndex, 0, 0 );
+						
+					endif;
+					
+				  anyexception
+				  
+				  	// If an exception occurs, queue up that exception
+					// and let the main program handle it:
+					
+					queueEvent( exception_c, 0, eax, basicPgm );				
+								
+				endtry;
+				thread.setEvent( midiMsgEvent );
+			
+			else
+			
+				// For all other messages, use the default Windows
+				// message handler:
+				
+				w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+				
+			endif;
+			
+		end midiMsgWndProc;
+		
+	var
+		wc			:w.WNDCLASS;
+		msg			:w.MSG;
+	
+	begin midiMsgThread;
+	
+		// Create a (non-visible) window class so we can
+		// have a window procedure to pass messages to:
+		
+		mov( 0, wc.style );
+		mov( &midiMsgWndProc, wc.lpfnWndProc );
+		mov( 0, wc.cbWndExtra );
+		w.GetModuleHandle( NULL );
+		mov( eax, wc.hInstance );
+		mov( NULL, wc.hIcon );
+		mov( NULL, wc.hCursor );
+		mov( w.COLOR_WINDOW, wc.hbrBackground );
+		mov( NULL, wc.lpszMenuName );
+		lea( eax, "midiMsgThreadCN" );
+		mov( eax, wc.lpszClassName );
+		w.RegisterClass( wc );
+		if( eax <> 0 ) then
+		
+			// Create the non-visible Window to whom we'll pass
+			// messages:
+			
+			w.CreateWindowEx
+			(
+				0,						// Extended Style
+				"midiMsgThreadCN",		// class name
+				"midiMsgThread",		// window name
+				0,						// style (specifically, not visible)
+				w.CW_USEDEFAULT,		// x
+				w.CW_USEDEFAULT,		// y
+				w.CW_USEDEFAULT,		// w
+				w.CW_USEDEFAULT,		// h
+				NULL,					// parent
+				NULL,					// hMenu
+				wc.hInstance,			// hInstance
+				NULL					// lpParam
+			);
+			
+			// Must save the window handle in a global location so that
+			// the midiInOpen callback function can pass a message to
+			// this window:
+			
+			mov( eax, hwndMidi );
+			
+			if( eax <> 0 ) then
+			
+				// Tell the main program that we're up and running.
+				// This event prevents the system from calling the
+				// window procedure with MIDI messages before our
+				// window procedure is created and ready to handle them.
+				// Note that we're overloading the midiInEvent event
+				// variable here. Normally it's used to tell the main
+				// program that there is a MIDI event in the event
+				// queue (so the main program can process that event).
+				// However, at this point in time the main program has
+				// just created this thread and it's nowhere ready to
+				// start processing midi events, so we'll just use this
+				// event variable rather than create another one.
+				
+				thread.setEvent( midiInEvent );
+				
+				// Standard Windows message processing loop:
+				
+				while
+				(
+					w.GetMessage
+					(
+						msg,
+						NULL,
+						0,
+						0
+					)
+				) do
+				
+					w.TranslateMessage( msg );
+					w.DispatchMessage( msg );
+					
+				endwhile; 
+			
+			else
+		
+				w.MessageBox
+				(
+					NULL,
+					"Could not create midiMsgThread window",
+					"MIDI Driver Error",
+					w.MB_ICONSTOP | w.MB_OK
+				);
+				os.exitProcess( 1 );
+			
+			endif;
+			
+		else
+		
+			w.MessageBox
+			(
+				NULL,
+				"Could not register midiMsgThreadCN window class",
+				"MIDI Driver Error",
+				w.MB_ICONSTOP | w.MB_OK
+			);
+			os.exitProcess( 1 );
+			
+		endif;
+			
+	end midiMsgThread;
+	
+	
+
+
+
+	// Callback procedure for MIDI input.
+	// Okay, this is really ugly. What we'd really like to
+	// do is pass a thread handle (or window procedure handle)
+	// to the midiInOpen call (in loadInBasicPgms). However,
+	// threads and window procedures don't get passed the
+	// dwInstance parameter (which points at the specific
+	// HLA BASIC program to execute for this MIDI message).
+	// It would be nice to do all the processing within midiInProc,
+	// however, Windows calls this from a thread that it creates
+	// internally and Windows threads are incompatible with
+	// HLA threads (because Windows don't set up the proper TLS
+	// for use by HLA stdlib functions).
+	//
+	// Sooooo...
+	//
+	//	We create an HLA stdlib thread, and it registers and
+	// creates a window that can receive messages. Then, we
+	// tell midiInOpen to call this callback procedure. This
+	// callback procedure is very limited in what it can do
+	// (with respect to HLA stdlib calls), so it just packages
+	// up the midi message, the timestamp, and the dwInstance
+	// value and posts a message to a separate (HLA) thread
+	// that does the real work. This procedure waits until
+	// that separate thread finishes processing the message
+	// before it returns. 
+			
+	procedure midiInProc
+	(
+		hMidiIn		:dword;
+		wMsg		:dword;
+		dwInstance	:pMyRTPgmClass;
+		dwParm1		:dword;
+		dwParm2		:dword
+	); @stdcall;
+	var
+		lParam	:dwInstance_t;
+		
+	begin midiInProc;
+	
+		push( eax );
+		push( ecx );
+		push( edx );
+		
+		// Marshall all the arguments to send to the 
+		// HLA thread window procedure:
+		
+		mov( dwParm2, eax );
+		mov( eax, lParam.timeStamp );
+		mov( dwInstance, eax );
+		mov( eax, lParam.basicPgm );
+		
+		// Post the message to the HLA thread's window procedure:
+		
+		lea( eax, lParam );
+		w.PostMessage( hwndMidi, w.MM_MIM_DATA, dwParm1, eax );
+		
+		// Wait for the HLA thread's window procedure to complete
+		// before returning to Windows:
+		
+		thread.waitForEvent( midiMsgEvent );
+		
+		pop( edx );
+		pop( ecx );
+		pop( eax );
+			
+	end midiInProc;
+
+
+
+	////////////////////////////////////////////////////////////////////////////
+	//
+	// Load basic programs to handle control surfaces:
+	
+	procedure loadInBasicPgms
+	(
+			numInDevices	:uns32;
+		var	inDevices		:deviceArray_t;
+		var	numInBasicPgms	:uns32;
+		var	inBasicPgms		:pMyRTPgmClass
+	);
+	var
+		inCnt		:uns32;			// Counts the number of programs we load
+		pgmName		:string;		// Current program name.
+		pgmNameBuf	:char[1024];
+		
+	begin loadInBasicPgms;
+	
+		push( eax );
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( esi );
+		push( edi );
+		
+		// Temporary string for use in creating ".hbbc" filenames:
+		
+		str.init( pgmNameBuf, @size( pgmNameBuf ));
+		mov( eax, pgmName );
+		
+		// The following loop repeats once for each of the MIDI input
+		// devices we've enumerated:
+		
+		mov( 0, inCnt );
+		mov( inBasicPgms, ebx );	// Pointer to basic pgm array.
+		for( mov( 0, ecx ); ecx < numInDevices; inc( ecx )) do
+		
+			push( ecx );
+			
+			// All MIDI input BASIC programs are compiled into the "midiIn"
+			// subdirectory. Create a filename by combining "midiIn/" with
+			// the enumerated MIDI input device name and ".hbbc". See if that
+			// file exists; if so, load that BASIC program and begin executing
+			// it's initialization code:
+			
+			mov( inDevices, edi );	// Pointer to array of input device names.
+			str.cat( "midiIn/", (type string [edi+ecx*4]), pgmName );
+			str.cat( ".hbbc", pgmName );
+			filesys.exists( pgmName);
+			if( filesys.exists( pgmName ) && inCnt < maxBasicPgms_c ) then
+			
+				stdout.put
+				( 
+					"Loading: '", 
+					pgmName, 
+					"' as MIDI #", 
+					(type uns32 ecx), 
+					nl 
+				);
+				
+				// Create an HLA Basic object and load this file's bytecodes
+				// for execution:
+				
+				myRTPgmClass.create( pgmName, NULL );
+				mov( ecx, (type myRTPgmClass [esi]).midiDeviceNum );
+				mov( ecx, midiDevice );
+				
+				// Save away a pointer to this Basic program object into
+				// the inBasicPgm array:
+				
+				mov( inCnt, edx );
+				mov( esi, [ebx+edx*4] );
+				
+				// Start the Basic program running to execute all the
+				// initialization code (up to the first suspend):
+				
+				(type myRTPgmClass [esi]).run();
+				
+				// run() returns 0 if the program quits, 1 if it suspended.
+				
+				if( eax = 0 ) then
+				
+					// If run returns zero, then the program has quit
+					
+					(type myRTPgmClass [esi]).destroy();
+					
+				else
+				
+					// If the program didn't quit, then increment the program
+					// count.
+					
+					inc( inCnt );
+					
+					// Open the MIDI device and initialize it so that
+					// it passes MIDI messages to the HLA Basic program
+					// we just created.
+					
+					w.midiInOpen
+					( 
+						(type myRTPgmClass [esi]).midiInHandle, 
+						ecx,				// MIDI device # 
+						&midiInProc,		// Send msgs to midi thread window 
+						esi,				// Call back instance is BASIC object 
+						w.CALLBACK_FUNCTION 
+					);
+					
+					// Reset the time stamp and begin accepting MIDI messages
+					// from this device:
+					
+					w.midiInReset( (type myRTPgmClass [esi]).midiInHandle );
+					w.midiInStart( (type myRTPgmClass [esi]).midiInHandle );
+
+					
+				endif;
+				
+			endif;
+			pop( ecx );
+			
+		endfor;
+		
+		// Must return the number of input Basic programs via the
+		// pass by reference parameter "inBasicPgms":
+		
+		mov( inCnt, eax );
+		mov( numInBasicPgms, ebx );
+		mov( eax, [ebx] );
+		
+		pop( edi );
+		pop( esi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		pop( eax ); 
+			
+	end loadInBasicPgms;
+
+
+	// Enumerate all the MIDI input devices:
+	
+	procedure enumInDevices( var numInDevices:uns32; var devices:deviceArray_t );
+	var
+		numDevs		:dword;
+		devcaps		:w.MIDIINCAPS;
+		
+	begin enumInDevices;
+	
+		push( eax );
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( edi );
+		
+		w.midiInGetNumDevs();
+		mov( eax, numDevs );
+		mov( numInDevices, ebx );
+		mov( eax, [ebx] );
+		mov( devices, edi );
+		for( mov( 0, ebx ); ebx < numDevs; inc( ebx )) do
+		
+			w.midiInGetDevCaps( ebx, devcaps, @size( devcaps ));
+			lea( eax, devcaps.szPname );
+			str.a_cpyz( eax );
+			mov( eax, [edi] );
+			add( 4, edi );
+			
+		endfor;
+		mov( NULL, (type dword [edi]) );
+		
+		pop( edi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		pop( eax );
+		
+	end enumInDevices;	
+	
+	
+
+	// Enumerate all the MIDI output devices:
+	
+	procedure enumOutDevices
+	( 
+		var numOutDevices	:uns32; 
+		var devices			:deviceArray_t 
+	);
+	var
+		numDevs		:dword;
+		devcaps		:w.MIDIOUTCAPS;
+		
+	begin enumOutDevices;
+	
+		push( eax );
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( edi );
+		
+		w.midiOutGetNumDevs();
+		mov( eax, numDevs );
+		mov( numOutDevices, ebx );
+		mov( eax, [ebx] );
+		mov( devices, edi );
+		for( mov( 0, ebx ); ebx < numDevs; inc( ebx )) do
+		
+			w.midiOutGetDevCaps( ebx, devcaps, @size( devcaps ));
+			lea( eax, devcaps.szPname );
+			str.a_cpyz( eax );
+			mov( eax, [edi] );
+			add( 4, edi );
+			
+		endfor;
+		mov( NULL, (type dword [edi]) );
+		
+		pop( edi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		pop( eax );
+		
+	end enumOutDevices;	
+	
+	
+			
+	
+	procedure midiOutProc
+	(
+		hMidiIn		:dword;
+		wMsg		:dword;
+		dwInstance	:dword;
+		dwParm1		:dword;
+		dwParm2		:dword
+	); @stdcall; 
+	begin midiOutProc;
+	
+		stdout.put
+		( 
+			"midiOutProc:", hMidiIn, ", ", wMsg, ", ", dwInstance, ", ",
+			dwParm1, ", ", dwParm2, nl );
+			
+	end midiOutProc;
+	
+	
+	
+	
+	// putPgmName-
+	//
+	//	Outputs the this.pgmFileName string to the stdout.
+
+	procedure putPgmName( pgm:pMyRTPgmClass );;
+	begin putPgmName ;
+
+		push( ebx );
+		mov( pgm, ebx );
+		stdout.put( nl, (type myRTPgmClass [ebx]).pgmFileName, ": " );
+		pop( ebx );
+		 
+	end putPgmName;
+	
+	
+	
+	// AtLineNumber-                        
+	//                                      
+	// A little utility routine that prints 
+	// " at line number xx" where xx is the 
+	// current source file line number (this
+	// code assumes that EBX is pointing at 
+	// the start of the current line).      	
+
+	procedure AtLineNumber( ip:dword in ebx ); @nodisplay; @noframe;;
+	begin AtLineNumber;
+
+		stdout.put( "at line number ", (type StmtRec [ebx]).lineNum, nl );
+		ret();
+		
+	end AtLineNumber ;
+	
+	// Utility function to halt the program if there is an error.
+
+	procedure pressEnterToContinue;
+	begin pressEnterToContinue;
+
+		stdout.put( "Press ENTER to continue: " );
+		stdin.readLn();
+		os.exitProcess( 1 );
+		
+	end pressEnterToContinue;
+	
+	
+begin t;
+
+	// Initialize the events and critical sections that this program uses:
+	
+	thread.createEvent();
+	mov( eax, midiInEvent );
+	
+	thread.createEvent();
+	mov( eax, midiMsgEvent );
+	
+	thread.createCriticalSection();
+	mov( eax, midiInCS );
+	
+	
+	// Start the midi thread running:
+	
+	thread.create( &midiMsgThread, 0, 65536 );
+	mov( eax, midiThreadID );
+	
+	// Wait until the midi thread has initialized itself:
+	
+	thread.waitForEvent( midiInEvent );
+	 
+	try
+	
+		
+		xor( eax, eax );
+		mov( eax, numFaders );
+		mov( eax, numKnobs );
+		mov( eax, numButtons );
+		mov( eax, eventQueue );
+		mov( eax, endEventQueue );
+		
+		mov( nothingChanged_c, deviceChanged );
+		mov( eax, changedIndex );
+
+		enumInDevices( numInDevices, inDevices );
+		loadInBasicPgms( numInDevices, inDevices, numInBasicPgms, inBasicPgms );
+		
+		enumOutDevices( numOutDevices, outDevices );
+		
+		
+		
+		
+		
+		forever
+		
+			// Wait until the MIDI thread tells us that it has place
+			// an item in the event queue:
+			
+			thread.waitForEvent( midiInEvent );
+			
+			// Must protect the eventQueue from further modification
+			// while we are processing the queue:
+			
+			thread.enterCriticalSection( midiInCS );
+			
+				mov( eventQueue, ecx );
+				while( ecx <> NULL ) do
+				
+					movzx( enECX.whatChanged, eax );
+					switch( eax )
+					
+						case( nothingChanged_c )
+						
+							// Do Nothing
+							
+							
+						// A fader on a MIDI input device was moved:
+						
+						case( faderChanged_c )
+						
+							mov( enECX.index, ebx );
+							movzx( faders[ ebx ], eax );
+							stdout.put
+							( 
+								"Fader[", 
+								(type uns32 ebx), 
+								"] = ", 
+								(type uns32 eax), 
+								nl 
+							);
+							
+						// A knob on a MIDI input device was twisted:
+						
+						case( knobChanged_c )
+						
+							mov( enECX.index, ebx );
+							movzx( knobs[ ebx ], eax );
+							stdout.put
+							( 
+								"Knob[", 
+								(type uns32 ebx), 
+								"] = ", 
+								(type uns32 eax), 
+								nl 
+							);
+							
+						// A button on a MIDI input device was pressed:
+						
+						case( buttonChanged_c )
+						
+							mov( enECX.index, ebx );
+							movzx( buttons[ ebx ], eax );
+							test( eax, eax );
+							setnz( al );
+							stdout.put
+							( 
+								"Button[", 
+								(type uns32 ebx), 
+								"] = ", 
+								(type uns32 eax), 
+								nl 
+							);
+							
+						// The following case handles exceptions raise
+						// by the BASIC interpreter during the execution
+						// of the MIDI message thread:
+						
+						case( exception_c )
+						
+							// Set up the exception environment and
+							// re-raise the exception:
+							
+							mov( enECX.basicPgm, eax );
+							mov( eax, basicPgm );
+							mov( enECX.exceptionCode, eax );
+							raise( eax );
+							
+					endswitch;
+					
+					// Remove the current item from the event queue and
+					// move on to the next item in the queue:
+					
+					mov( enECX.next, eax );
+					mem.free( ecx );
+					mov( eax, ecx );
+					
+				endwhile;
+				
+				// Empty the queue by setting the head and tail pointers
+				// to NULL (note: ECX is known to contain NULL at this point):
+				
+				mov( ecx, eventQueue );
+				mov( ecx, endEventQueue );			
+				
+			thread.leaveCriticalSection( midiInCS );
+				
+		endfor;
+	
+	  // If there is an error during the execution of some BASIC code,
+	  // the MIDI thread queues up an exception and the main thread
+	  // reraises that exception. The following exception handlers
+	  // handle all the run-time Basic errors:
+	  
+	  exception( BasicError )
+
+		putPgmName( basicPgm );
+		stdout.put( nl "Program stopped because of BASIC run-time error " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( BasicErrorWithMsg )
+
+		putPgmName( basicPgm );
+		stdout.put( nl "Program stopped because of BASIC run-time error " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		stdout.put( (type myRTPgmClass [eax]).exceptionMsg, nl );
+		pressEnterToContinue();
+		
+	  exception( typeMismatch )
+	  
+		putPgmName( basicPgm );
+		stdout.put( nl "Type mismatch in expression " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( typeMismatchIntOpStr )
+	  
+		putPgmName( basicPgm );
+		stdout.put( nl "Type mismatch in expression (int op str) " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( typeMismatchStrOpInt )
+	  
+		putPgmName( basicPgm );
+		stdout.put( nl "Type mismatch in expression (str op int) " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( typeMismatchRealOpStr )
+	  
+		putPgmName( basicPgm );
+		stdout.put( nl "Type mismatch in expression (real op str) " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( typeMismatchStrOpReal )
+	  
+		putPgmName( basicPgm );
+	  	stdout.put( nl "Type mismatch in expression (str op real) " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( BadPgmDataException )
+	  
+		putPgmName( basicPgm );
+	  	stdout.put( nl "Program stopped because of byte code file corruption " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( StrToNumberError )
+	  
+		putPgmName( basicPgm );
+	  	stdout.put( nl "Unknown error in StrToNumber function " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+	  exception( NumToStrError )
+		
+		putPgmName( basicPgm );
+	  	stdout.put( nl "Illegal parameter data type in NumberToStr function " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		stdin.readLn();
+		
+	  exception( AttemptToDeallocateLabel )
+		
+		putPgmName( basicPgm );
+	  	stdout.put( nl "Attempted to overwrite a label object " );
+		mov( basicPgm, eax );
+		AtLineNumber( (type myRTPgmClass [eax]).ip );
+		pressEnterToContinue();
+		
+
+	  anyexception
+	  
+	  	ex.exceptionMsg( eax, exmsg );
+	  	stderr.put
+		( 
+			nl "S'Lights Exception: ", 
+			exmsg,
+			" ($", eax, "/", (type uns32 eax), ")" 
+		);
+		pressEnterToContinue();
+		
+	endtry;
+	
+end t;
+													

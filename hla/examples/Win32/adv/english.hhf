@@ -1,0 +1,253 @@
+// english.hhf
+//
+// Header file containing various English messages that
+// may need translation if porting to a different natural language.
+// This text is independent of the specific adventure game created
+// with the AGE class library.
+
+#if( !@defined( english_hhf )) 
+?english_hhf := true;
+
+
+const
+	continueChar				:= 'c';
+	fleeChar					:= 'f';
+	
+	AgentsFoundInThisRoom		:= "Also present here:";
+	AnAgePlayer					:= ", a player in the AGE Adventure Game";
+	AnEffectiveHitOnYourOpponent:= "A very effective hit on your opponent!";
+	
+	AntagonistFightsBackWithPower := "Your opponent fights back with power ";
+	aStr						:= " a ";
+	AWellPlacedHitOnYourOpponent:= "A well-placed hit on your opponent!";
+	
+	CannotGoDoorIsLocked		:= "A locked door bars your progress in "
+								   "that direction";
+	
+	ClerkDoesntHaveThat			:= "The clerk does not offer that item "
+								   "for sale";
+								   
+	ClerkOffersForSale			:= "The clerk offers the following "
+									"items for sale:";
+	Command						:= "'s command: ";
+	ContinueOrFlee				:= "C)ontinue fight or F)lee?  (C/F):";
+	CouldNotSaveGame			:= "Error saving game data to file";
+	CurrencySymbol				:= ""; // Typically something like "$"
+	CurrencyPostfix				:= " gold";
+	CurrentlyPossesses			:= " currently possesses: ";
+	CurrentlyThereIsNoHint		:= "Currently there is no hint, sorry";
+	
+	DoesNotAllowSearch			:= " does not allow you to inspect its "
+								   "possessions";
+								   
+	DoorIsLockedCannotEnter		:= "A locked door blocks your progress in "
+								   "that direction";
+	
+	EnterYourName				:= "Please enter your name: ";
+	Exits						:= "Exits:";
+
+	FoodIs						:= "Food level is ";
+	For_c						:= " for ";
+	
+	GoingDown					:= "You go Down";
+	GoingEast					:= "You go EAST";
+	GoingNorth					:= "You go NORTH";
+	GoingSouth					:= "You go SOUTH";
+	GoingNorthEast				:= "You go NORTHEAST";
+	GoingNorthWest				:= "You go NORTHWEST";
+	GoingSouthEast				:= "You go SOUTHEAST";
+	GoingSouthWest				:= "You go SOUTHWEST";
+	GoingWest					:= "You go WEST";
+	GoingUp						:= "You go UP";
+		
+
+	HasQuitTheGame				:= " has quit the game";
+	HealthLevelIs				:= "Health level is ";
+	IDontKnowHowToDoInventory	:= "I don't know how to display the inventory";
+	IDontKnowHowToDoScore		:= "I don't know how to display the score";
+	IDontKnowHowToStr			:= "I don't know how to ";
+	InventoryIs					:= "'s inventory is:";
+	ItemsFoundIn				:= "Items found in this room:";
+	ItemsHeldBy					:= "Items held by ";
+	ItemsYoureHolding			:= "Items you're holding:";
+	
+	ItWasAGlancingBlow			:= "It was a glancing blow, causing little "
+								   "damage to your opponent";
+	
+	MustBeInVillageShopToSell	:= "You must be in the village shop to "
+								   "sell that item";
+	
+	MustBeInVillageShopToBuy	:= "You must be in the village shop to "
+								   "buy that item";
+	
+	NothingToSeeDown			:= "Nothing to see looking DOWN";
+	NothingToSeeEast			:= "Nothing to see looking EAST";
+	NothingToSeeNorth			:= "Nothing to see looking NORTH";
+	NothingToSeeNorthEast		:= "Nothing to see looking NORTHEAST";
+	NothingToSeeNorthWest		:= "Nothing to see looking NORTHWEST";
+	NothingToSeeSouth			:= "Nothing to see looking SOUTH";
+	NothingToSeeSouthEast		:= "Nothing to see looking SOUTHEAST";
+	NothingToSeeSouthWest		:= "Nothing to see looking SOUTHWEST";
+	NothingToSeeUp				:= "Nothing to see looking UP";
+	NothingToSeeWest			:= "Nothing to see looking WEST";
+	
+	NoPathLeadingDown			:= "No path leads to the DOWN";
+	NoPathLeadingEast			:= "No path leads to the EAST";
+	NoPathLeadingNorth			:= "No path leads to the NORTH";
+	NoPathLeadingNorthEast		:= "No path leads to the NORTHEAST";
+	NoPathLeadingNorthWest		:= "No path leads to the NORTHWEST";
+	NoPathLeadingSouth			:= "No path leads to the SOUTH";
+	NoPathLeadingSouthEast		:= "No path leads to the SOUTHEAST";
+	NoPathLeadingSouthWest		:= "No path leads to the SOUTHWEST";
+	NoPathLeadingUp				:= "No path leads to the UP";
+	NoPathLeadingWest			:= "No path leads to the WEST";
+	
+	ObjectsValueIs				:= "This object's value is ";
+	OpponentMissesYou			:= "Your opponent attacks, and misses!";
+	
+	PathToRoomIs				:= "The path to that room is:";
+	PlayerStr					:= "Player ";
+	PowerRatingIs				:= "Power level is ";
+	PressEnterToContinue		:= "Press the ENTER key to continue:";
+	QuestsCompleted				:= "Quests completed: ";
+	QuestHeaderOnBB				:= "Quest#             Description                 Reward    Completed" nl
+								   "-----------------  --------------------------  --------  ---------";
+
+	ReadIsNotYetSupported		:= "Read is not yet supported";
+	Removed						:= "You are no longer wearing the item";
+	RetailValue					:= "Retail value";
+	
+	SaveGameAs					:= "Save game in file: ";
+	ScoreIs						:= "'s score is ";
+	
+	SeeAPathLeadingDown			:= "There is a path leading DOWN";
+	SeeAPathLeadingEast			:= "There is a path leading EAST";
+	SeeAPathLeadingNorth		:= "There is a path leading NORTH";
+	SeeAPathLeadingSouth		:= "There is a path leading SOUTH";
+	SeeAPathLeadingWest			:= "There is a path leading WEST";
+	SeeAPathLeadingNorthEast	:= "There is a path leading NORTHEAST";
+	SeeAPathLeadingNorthWest	:= "There is a path leading NORTHWEST";
+	SeeAPathLeadingSouthEast	:= "There is a path leading SOUTHEAST";
+	SeeAPathLeadingSouthWest	:= "There is a path leading SOUTHWEST";
+	SeeAPathLeadingUp			:= "There is a path leading UP";
+	
+	SyntaxError					:= "I cannot figure out the command: ";
+	Taken						:= " taken";
+	
+	ThereIsALockedDoorToTheWest	:= "In the WEST direction there is a locked "
+								   "door";
+								   
+	ThereIsAnOpenDoorToTheEast	:= "There is an open doorway to the east";
+	ThereIsNo					:= "You cannot get the ";
+	ThereIsNoInscription		:= "There is no inscription on this object";
+	ThereIsNoPath				:= "There is no path to that room";
+	ThePurchasePriceIs			:= "The purchase price is ";
+	ToGetInHere					:= " in here";
+	TotalNumberOfMoves			:= "Total # of moves was ";
+	TypeHelpForHelp				:= "Type 'HELP' for game instructions";
+	UnknownDirectionForGo		:= "Unknown direction for 'go' verb";
+	UnknownDirectionForLook		:= "Unknown direction for 'look' verb";
+	UnlockDoorAndEnter			:= "You unlock the door and enter";
+	
+	ValidVerbs					:= "Valid verbs: ";
+	WealthIs					:= "Personal fortune is ";
+	Wearing						:= "Wearing: ";
+	WearingTooManyItems			:= " You are wearing too many items already ";
+	WelcomeTo					:= "Welcome to the ";
+	
+	WhatDoYouExpectToFightWith	:= "You are wielding no weapon. What do you "
+								   "expect to fight with, your gums?";
+								   
+	WholesaleValue				:= "Wholesale value";
+	WhileInRoom					:= "while in room ";
+	Worn						:= "You are now wearing the item";
+	WritingOnThisObjectSez		:= "You read the following text:";
+	
+	YouAreGettingHungry			:= "You need to replinish your food supply";
+	YouAttackAndHitWithPower	:= "You attack and hit with power ";
+	
+	YouDontHaveEnoughMoney		:= "You have insufficient funds to purchase "
+								   "that item";
+								   
+	YouCannotExamineThatObjectHere := "You cannot examine that object here";
+	
+	YouCannotRemoveThatItem		:= " You cannot remove that item because you "
+								   "are not wearing it ";
+								   
+	YouCannotWearThatItem		:= " You cannot wear that item, "
+								   "or you don't have it to wear ";
+								   
+	YouCanOnlySellWhatYouOwn	:= "You cannot sell what you do not possess";
+	YouCantFightThatHere		:= "You cannot fight that here (not present)";
+	YouDoNotPosssessThatItem	:= "You do not possess that item";
+	YouDoNotPosssessThatWeapon	:= "You do not possess that weapon";
+	YouHaveDiedInBattleAgainstThe := "You have died in battle against the ";
+	YouHaveDiedOfPoorHealth		:= "Your health has failed you";
+	YouHaveKilledThe			:= "You have killed the ";
+	YouHaveStarvedToDeath		:= "You have starved to death";
+	YouHaveToPurchaseThatItem	:= "You have to purchase that item";
+	YouHitYourOpponent			:= "You hit your opponent";
+	
+	YouPassThroughDoorItLocks	:= "You pass through a door, it locks "
+								   "behind you";
+								   
+	YourAttackCompletelyMissed	:= "Your attack completely missed your "
+								   "opponent";
+	
+	YourHealthIsPoor			:= "Your health rating is getting low";
+	YourHealthLevelIs			:= "Your health level is ";
+	YoureInThatRoomAlready		:= "You're already in that room";
+	YourOpponentsHealthIs		:= "Your opponent's health level is ";
+	YouPurchasedThe				:= "You purchase the ";
+	YouSellThe					:= "You sell the ";
+								   
+								   
+///////////////////////////////////////////////////////////////////////////////
+//
+// Help Screens:
+
+HelpMsg1 :=
+
+"HLA Adventure (AGE conversion)" nl
+nl
+"Commands take the following form: <verb> <noun>" nl
+"List of available verbs:" nl
+nl
+"    buy, close, drop, eat, examine, extinguish, fight, get, give, " nl
+"    go, light, look, kill, open, play, read, remove, sell," nl
+"    steal, use, unwield, wear, wield," nl
+nl
+" The following verbs are stand-alone and don't require a noun:" nl
+nl
+"    describe, help, hint, inventory, save, score, quit" nl
+nl
+"Typical nouns include:" nl
+nl
+"    north, south, east, west, up, and down" nl
+nl
+"in addition to all the object names you will find in the game" nl
+"( e.g., ""armor"")." nl
+nl;
+
+HelpMsg2 :=
+"HLA Adventure (AGE conversion) -- Help page #2" nl
+nl
+"To use most weapons you must first 'wield' them." nl
+"To use protective articles, like armor, you must first 'wear' them" nl
+"Other items you would typically 'use', 'eat', 'light', etc.," nl
+"as appropriate to the item. " nl
+nl
+"You can 'examine' most items and get additional details about them." nl
+nl
+"You have several quests to complete for this game. You'll have to" nl
+"discover how to determine what those quests are." nl
+nl
+"When moving through the game, you will often find that your path" nl
+"is obstructed somehow. You can often use objects you find in the" nl
+"game to overcome those obstructions."
+nl
+"Good luck in your adventure" nl
+nl; 
+
+								   
+#endif

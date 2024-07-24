@@ -1,0 +1,2530 @@
+unit AGEactions;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+#include( "gamespecific.hhf" )
+
+
+// IDontKnowHowTo-
+// Prints an error message when a verb-noun combination is illegal.
+// This is the default action applied to all verb/noun pairs.
+
+_procedure( IDontKnowHowTo )
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);
+begin IDontKnowHowTo; debug( "IDontKnowHowTo");
+
+	stdout.put
+	( 
+		IDontKnowHowToStr,
+		" """, 
+		cmd,
+		"""" nl 
+	);
+	
+end IDontKnowHowTo;
+
+
+// verb_save-
+//
+// Saves the current game state to a text file.
+// (Presumably, to allow loading a game later.)
+
+_procedure( verb_save )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	filename	:string;
+	fd			:dword;
+	
+begin verb_save; debug( "verb_save");
+
+	pushad();
+	stdout.put( SaveGameAs );
+	stdin.a_gets();
+	mov( eax, filename );
+	try
+	
+		fileio.openNew( filename );
+		mov( eax, fd );
+		foreach objectList.nodeInList() do
+		
+			mov( (type objNode [esi]).theObject, esi );
+			objESI.write( fd );
+			
+		endfor;
+		
+	  anyexception
+	  
+	  	stdout.put( CouldNotSaveGame, nl );
+		
+	endtry;
+	popad();
+	
+end verb_save;
+
+
+
+// verb_hint-
+//
+//	Intended to provide a small hint about the game.
+// Hints should be context-sensitive, depending on the current room,
+// and player status.
+
+_procedure( verb_hint )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_hint; debug( "verb_hint");
+
+	// Put in hints here:
+	
+	stdout.put( CurrentlyThereIsNoHint, nl );
+	
+end verb_hint;
+		
+// verb_help-
+//
+//	General help routine.
+// (Currently, this just prints a list of verbs.)
+	
+_procedure( verb_help )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_help; debug( "verb_help");
+	
+	push( eax );
+	push( ecx );
+	push( esi );
+	push( edi );
+	
+	console.setAttrs( gameFGColor, gameBGColor );
+	console.cls();
+	stdout.puts( HelpMsg1 );
+	console.setAttrs( warningFGColor, warningBGColor );
+	stdout.puts( PressEnterToContinue );
+	stdin.getc();
+	stdin.flushInput();
+	
+	#if( @defined( HelpMsg2 ))
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		console.cls();
+		stdout.puts( HelpMsg2 );
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.puts( PressEnterToContinue );
+		stdin.getc();
+		stdin.flushInput();
+		
+	#endif
+		
+	#if( @defined( HelpMsg3 ))
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		console.cls();
+		stdout.puts( HelpMsg3 );
+		
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.puts( PressEnterToContinue );
+		stdin.getc();
+		stdin.flushInput();
+	
+	#endif
+		
+	#if( @defined( HelpMsg4 ))
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		console.cls();
+		stdout.puts( HelpMsg4 );
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.puts( PressEnterToContinue );
+		stdin.getc();
+		stdin.flushInput();
+			
+	#endif
+
+	// To add more help screens, just repeat the above
+	// #if blocks...		
+		
+
+	console.setAttrs( gameFGColor, gameBGColor );
+	console.cls();
+	
+	// After clearing the last help screen, let's
+	// redisplay the current room's info:
+	
+	mov( p, eax );
+	mov( playerEAX.curRoom, esi );
+	roomESI.fullyDescribe();
+	
+	pop( edi );
+	pop( esi );
+	pop( ecx );
+	pop( eax );
+
+end verb_help;
+
+
+
+// VERB_QUIT
+//
+//	Quits the game.
+
+_procedure( verb_quit )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_quit; debug( "verb_quit");
+
+	// Put in any code needed to clean up this player here:
+
+	quit( p );
+
+end verb_quit;
+
+
+// verb_describe-
+//
+//	Provides a full description of the current room the player is in:
+
+_procedure( verb_describe )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_describe; debug( "verb_describe");
+
+	// Display the specified player's inventory:
+	
+	push( esi );
+	mov( p, esi );
+	mov( playerESI.curRoom, esi );
+	containerESI.fullyDescribe();
+	pop( esi );	
+
+end verb_describe;
+
+
+// verb_score
+//
+//	Displays the player's current score.
+
+_procedure( verb_score )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_score; debug( "verb_score");
+
+	pushad();
+	
+	// Display the player's current score:
+	
+	console.setAttrs( longDescrFGColor, gameBGColor );
+	mov( p, esi );
+	dec( playerESI.quest );		// Make quests completed.
+	stdout.put
+	( 
+		PlayerStr, 
+		playerESI.shortDescription, 
+		ScoreIs, playerESI.score, nl,
+		QuestsCompleted, playerESI.quest, nl
+	);
+	inc( playerESI.quest );		// Restore to quest #
+	
+	// List all the things the player is wearing:
+	//	
+	// First, count the number of objects that are
+	// worn (so we can determine if we even want to
+	// print the list):
+	
+	mov( playerESI.contains, ecx );
+	mov( 0, edx );					// Maintain count in EDX
+	foreach objListECX.nodeInList() do
+	
+		mov( objNodeESI.theObject, ebx );
+		mov( objEBX.rtti, eax );
+		bt( _protection_rtti, eax );
+		if( @c ) then
+		
+			if( protectionEBX.isWearing ) then
+			
+				inc( edx );
+				
+			endif;
+			
+		endif;
+		
+	endfor;
+	mov( p, esi );
+	
+	if( edx > 0 ) then
+	
+		console.setAttrs( wearingFGColor, wearingBGColor );
+	
+		stdout.put( Wearing );
+		mov( playerESI.contains, ecx );
+		foreach objListECX.nodeInList() do
+		
+			mov( objNodeESI.theObject, ebx );
+			mov( objEBX.rtti, eax );
+			bt( _protection_rtti, eax );
+			if( @c ) then
+			
+				if( protectionEBX.isWearing ) then
+				
+					stdout.put( objEBX.objName, ' ' );
+					
+				endif;
+				
+			endif;
+			
+		endfor;
+		stdout.newln();
+		
+	endif;
+	
+	mov( p, esi );
+	console.setAttrs( longDescrFGColor, gameBGColor );
+	if( playerESI.enableHealth ) then
+
+		stdout.put( HealthLevelIs, playerESI.health, nl );
+
+	endif;
+	if( playerESI.enableFood ) then
+
+		stdout.put( FoodIs, playerESI.food, nl );
+
+	endif;
+	if( playerESI.enablePower ) then
+
+		stdout.put( PowerRatingIs, playerESI.power, nl );
+
+	endif;
+	if( playerESI.enableWealth ) then
+	
+		stdout.put
+		( 
+			WealthIs, 
+			CurrencySymbol, 
+			playerESI.wealth:10:2,
+			CurrencyPostfix, 
+			nl 
+		);
+		
+	endif;
+	console.setAttrs( gameFGColor, gameBGColor );
+	popad();
+
+end verb_score;
+
+
+
+
+
+
+// verb_go-
+// Handles the "go" verb.
+// If possible, moves the player in the direction specified by the n1 noun.
+
+_procedure( verb_go )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+
+	// impeded - Checks to see if the player is impeded from going
+	// in the specified direction. Returns true in EAX if the player
+	// doesn't have the key object (and is impeded).
+	
+	procedure impeded( plyr:playerPtr; impedeObj:impedimentPtr ); 
+		@returns( "eax" );
+		
+	var
+		rtnResult	:boolean;
+		
+	begin impeded;
+	
+		push( ebx );
+		push( esi );
+		push( edi );
+		
+		mov( false, rtnResult );	// Assume no impediment.
+		mov( impedeObj, ebx );
+		if( ebx <> NULL && impedimentEBX.key <> NULL ) then
+			
+
+			// Okay, there is an impediment present. See if the
+			// user holds the key to the impediment.
+			
+			mov( true, rtnResult );	// Assume player is impeded.
+			mov( plyr, esi );
+			mov( playerESI.contains, esi );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, esi );
+				if( esi = impedimentEBX.key ) then
+				
+					// If the user has the key object, they are not impeded.
+					
+					mov( false, rtnResult );
+					
+				endif;
+				
+			endfor;
+			
+			// If the player is impeded, print a message to that effect
+			
+			if( rtnResult ) then
+			
+				stdout.put( impedimentEBX.impededMsg, nl );
+				
+			else
+			
+				// If there is an impedement, but the user is unimpeded,
+				// then print the unImpededMsg string:
+				
+				stdout.put( impedimentEBX.unImpededMsg, nl );
+				
+			endif;
+			
+		
+		endif;
+		
+		pop( edi );
+		pop( esi );
+		pop( ebx );
+		movzx( rtnResult, eax );
+		
+	end impeded;
+	
+begin verb_go; debug( "verb_go");
+
+	pushad();
+		
+	// We are doing the "go" operation on the 'n1' noun.
+	// We already know that we can apply the "go" verb
+	// to that noun, or we wouldn't be here.
+	
+	mov( n1, esi );
+	mov( nounESI.nounValue, eax );
+	
+	// Movement takes place from the current room holding the player:
+	
+	mov( p, ebx );
+	mov( playerEBX.curRoom, ecx );
+	
+	// Execute the go command in the direction specified by
+	// the noun that got us here (n1):
+	
+	switch( eax )
+	
+		case( n_north )
+		
+			if( !impeded( p, roomECX.impedeNorth )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go north:
+				
+				stdout.put( roomECX.goNorthStr, nl );
+				mov( roomECX.north, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		case( n_south )
+				
+			if( !impeded( p, roomECX.impedeSouth )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go south:
+				
+				stdout.put( roomECX.goSouthStr, nl );
+				mov( roomECX.south, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		
+		case( n_east )
+		
+			if( !impeded( p, roomECX.impedeEast )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go east:
+				
+				stdout.put( roomECX.goEastStr, nl );
+				mov( roomECX.east, eax );
+
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		
+		case( n_west )
+		
+			if( !impeded( p, roomECX.impedeWest )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go west:
+				
+				stdout.put( roomECX.goWestStr, nl );
+				mov( roomECX.west, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+	
+		case( n_northEast )
+		
+			if( !impeded( p, roomECX.impedeNorthEast )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go north east:
+				
+				stdout.put( roomECX.goNorthEastStr, nl );
+				mov( roomECX.northEast, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+
+	
+		case( n_northWest )
+		
+			if( !impeded( p, roomECX.impedeNorthWest )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go north west:
+				
+				stdout.put( roomECX.goNorthWestStr, nl );
+				mov( roomECX.northWest, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		case( n_southEast )
+				
+			if( !impeded( p, roomECX.impedeSouthEast )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go south east:
+				
+				stdout.put( roomECX.goSouthEastStr, nl );
+				mov( roomECX.southEast, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		case( n_southWest )
+				
+			if( !impeded( p, roomECX.impedeSouthWest )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go south west:
+				
+				stdout.put( roomECX.goSouthWestStr, nl );
+				mov( roomECX.southWest, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		
+		case( n_up )
+				
+			if( !impeded( p, roomECX.impedeUp )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go up:
+				
+				stdout.put( roomECX.goUpStr, nl );
+				mov( roomECX.up, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+			
+		case( n_down )
+				
+			if( !impeded( p, roomECX.impedeDown )) then
+				
+				// Player is not impeded, if there is
+				// a path going that way, go down:
+				
+				stdout.put( roomECX.goDownStr, nl );
+				mov( roomECX.down, eax );
+				if( eax <> NULL ) then
+				
+					mov( ecx, playerEBX.lastRoom );
+					mov( eax, playerEBX.curRoom );
+					
+				endif;
+				
+			endif;
+			
+		
+		default
+		
+			// If we can't handle this direction, then
+			// print an error message and leave the player
+			// in the current room:
+			
+			stdout.put( UnknownDirectionForGo, nl );
+			mov( playerEBX.curRoom, eax );
+		
+	endswitch;
+	mov( playerEBX.curRoom, eax );
+	
+	// If this is the first time we've visited this room, set
+	// the corresonding "roomsVisited" element to true and
+	// bump up the experience counter by the amount specified in
+	// the "experience" field.
+	
+	mov( roomEAX.nounValue, ecx );				
+	if( !playerEBX.roomsVisited[ecx] ) then
+	
+		mov( roomEAX.experience, edx );
+		add( edx, playerEBX.power );		// The "experience" counter
+		mov( true, playerEBX.roomsVisited[ecx] );	
+		
+	endif;
+	roomEAX.fullyDescribe();
+	popad();
+	
+end verb_go;
+
+
+
+					
+
+// verb_inventory-
+//
+//	Provides a brief description of those things that the
+// player is currently carrying.
+
+_procedure( verb_inventory )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_inventory; debug( "verb_inventory");
+
+	// Display the specified player's inventory:
+	
+	push( esi );
+	mov( p, esi );
+	stdout.put( PlayerStr, playerESI.shortDescription, InventoryIs, nl );
+	mov( playerESI.contains, esi );
+	objListESI.printDescriptions();
+	stdout.put( "---------------------------" nl );
+	pop( esi );	
+
+end verb_inventory;
+
+
+// verb_look-
+// Handles the "look" verb.
+// This displays a "direction string" associated with the player's
+// current room, so the player can determine if they can go in that
+// direction without actually moving.
+
+_procedure( verb_look )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+begin verb_look; debug( "verb_look");
+
+	if( n1 = NULL ) then
+	
+		// If they type "look" without a noun, then do "describe":
+		
+		verb_describe( p, n1, n2, cmd );
+		
+	else
+	
+		pushad();
+			
+		// We are doing the "look" operation on the 'n1' noun.
+		// We already know that we can apply the "look" verb
+		// to that noun, or we wouldn't be here.
+		
+		mov( n1, esi );
+		mov( nounESI.nounValue, eax );
+		
+		// Viewin takes place in the current room holding the player:
+		
+		mov( p, ebx );
+		mov( playerEBX.curRoom, ecx );
+		
+		// Execute the look command in the direction specified by
+		// the noun that got us here (n1):
+		
+		switch( eax )
+		
+			case( n_north )
+			
+				stdout.put( roomECX.lookNorthStr, nl );
+				
+			case( n_south )
+					
+				stdout.put( roomECX.lookSouthStr, nl );
+				
+			
+			case( n_east )
+			
+				stdout.put( roomECX.lookEastStr, nl );			
+			
+			case( n_west )
+			
+				stdout.put( roomECX.lookWestStr, nl );
+			
+			case( n_northEast )
+			
+				stdout.put( roomECX.lookNorthEastStr, nl );
+				
+			case( n_northWest )
+			
+				stdout.put( roomECX.lookNorthWestStr, nl );
+				
+			case( n_southEast )
+					
+				stdout.put( roomECX.lookSouthEastStr, nl );
+				
+			
+			case( n_southWest )
+					
+				stdout.put( roomECX.lookSouthWestStr, nl );
+				
+			
+			case( n_up )
+			
+				stdout.put( roomECX.lookUpStr, nl );			
+			
+			case( n_down )
+			
+				stdout.put( roomECX.lookDownStr, nl );
+			
+			default
+			
+				// If we can't handle this direction, then
+				// print an error message and leave the player
+				// in the current room:
+				
+				stdout.put( UnknownDirectionForLook, nl );
+			
+		endswitch;
+		popad();
+		
+	endif;
+	
+end verb_look;
+
+
+
+// verb_examine
+//
+//	Handles the "examine" command. If the object is present, and
+// you're allowed to examine it, this routine will print the description
+// of the object and it's inscription.
+//
+// Note that this code assumes that n1 points at a physObj or
+// a descendent.
+
+_procedure( verb_examine )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+var	
+	canRead	:boolean;
+
+readonly
+	csfx	:string := CurrencyPostfix;
+	cpfx	:string := CurrencySymbol;
+	
+begin verb_examine; debug( "verb_examine");
+
+	// Print the inscription string, if one is present.
+	
+	push( eax );
+	push( ebx );
+	push( esi );
+	
+	// Determine if the player is holding the "n1" object:
+	
+	mov( p, esi );
+	mov( n1, ebx );
+	playerESI.searchObj( nounEBX.objName );
+	cmp( eax, NULL );
+	setne( canRead );
+	
+	if( !canRead ) then // player wasn't holding the object.
+	
+		// Determine if the object is found in the current room:
+
+		mov( p, esi );
+		mov( playerESI.curRoom, esi );
+		roomESI.searchObj( nounEBX.objName );
+		cmp( eax, NULL );
+		setne( canRead );
+		
+		// If not lying around in the current room, see if it's
+		// being held by an agent and that agent allows inspection.
+		
+		if( !canRead ) then // Object is not in the room
+		
+		
+			// Okay, the object wasn't found on the player's person
+			// and it wasn't found lying around in the room. Iterate
+			// through the agents list and see if we can find the
+			// object on any of the agents in this room:
+			
+			mov( roomESI.agents, esi );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, esi );
+				agentESI.searchObj( nounEBX.objName );
+				if( eax ) then
+				
+					// We found the n1 object, set canRead to
+					// true to denote this.
+					
+					mov( true, canRead );
+					
+				endif;
+			
+			endfor;
+			
+		endif;
+		
+		
+	endif;	
+	
+	// If the object is in the current room or is held by the player or
+	// an agent, then display the description & inscription (if one is present):
+	
+	mov( n1, esi );
+	if( canRead ) then
+	
+		objESI.fullyDescribe();
+		objESI.examine();
+		
+		// If it's a possession (actually, it must be at this point, but
+		// just to be safe), then emit the retail and wholesale prices.
+		
+		mov( objESI.rtti, eax );
+		bt( _possession_rtti, eax );
+		if( @c ) then
+		
+			stdout.put
+			( 
+				RetailValue, 
+				": ", 
+				CurrencySymbol, 
+				possessionESI.retail:8:2, 
+				CurrencyPostfix, 
+				", ", 
+				WholesaleValue, 
+				": ",
+				CurrencySymbol, 
+				possessionESI.wholesale:8:2,
+				CurrencyPostfix,
+				nl
+			);
+			
+		endif;
+
+	else
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.put( YouCannotExamineThatObjectHere, nl );
+		
+	endif;
+	pop( esi );
+	pop( ebx );
+	pop( eax );
+
+end verb_examine;
+
+
+
+// verb_read
+//
+//	Handles the "read" command.
+//	This is very similar to examine, except it only displays
+// the inscription string on an object, it doesn't provide the
+// full description as well.
+
+_procedure( verb_read )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	canRead	:boolean;
+			
+begin verb_read; debug( "verb_read");
+
+	// Print the inscription string, if one is present.
+	
+	push( eax );
+	push( ebx );
+	push( esi );
+	
+	// Determine if the player is holding the "n1" object:
+	
+	mov( p, esi );
+	mov( n1, ebx );
+	playerESI.searchObj( nounEBX.objName );
+	cmp( eax, NULL );
+	setne( canRead );
+	
+	// Determine if the object is found in the current room:
+	
+	if( @e ) then
+	
+		mov( p, esi );
+		mov( playerESI.curRoom, esi );
+		roomESI.searchObj( nounEBX.objName );
+		cmp( eax, NULL );
+		setne( canRead );
+		
+		// If not lying around in the current room, see if it's
+		// being held by an agent and that agent allows inspection.
+		
+		if( !canRead ) then
+		
+			// Okay, the object wasn't found on the player's person
+			// and it wasn't found lying around in the room. Iterate
+			// through the agents list and see if we can find the
+			// object on any of the agents in this room:
+			
+			mov( roomESI.agents, esi );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, eax );
+				agentESI.searchObj( nounEBX.objName );
+				if( eax ) then
+				
+					// We found the n1 object, set canRead to
+					// true to denote this.
+					
+					mov( true, canRead );
+					
+				endif;
+			
+			endfor;
+			
+		endif;
+		
+		
+	endif;	
+	
+	// If the object is in the current room or is held by the player or
+	// an agent, then display the inscription if one is present:
+	
+	mov( n1, esi );
+	if( canRead ) then
+	
+		objESI.examine();
+		if( !eax ) then
+		
+			stdout.put( ThereIsNoInscription, nl );
+			
+		endif;				
+
+	else
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.put( YouCannotExamineThatObjectHere, nl );
+		
+	endif;
+	pop( esi );
+	pop( eax );
+
+end verb_read;
+
+
+
+// verb_light
+//
+//	Handles the "light" command.
+//	(You have to define this.)
+
+_procedure( verb_light )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_light; debug( "verb_light");
+
+	// Fill in your own code for verb_light, or leave it defaulting to nothing
+	
+	#print( "TODO: verb_light" )
+	
+end verb_light;
+
+
+// verb_extinguish
+//
+//	Handles the "extinguish" command.
+//	(You have to define this.)
+
+_procedure( verb_extinguish )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_extinguish; debug( "verb_extinguish");
+
+	// Fill in your own code for verb_extinguish, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: verb_extinguish" )
+	
+end verb_extinguish;
+
+
+// verb_fight
+//
+//	Handles the "fight" command.
+//
+// This is a generic "monster" battle.
+// In reality, most "fights" will be overridden and there will be
+// special code for each "monster" noun to handle specific strengths
+// and weaknesses of a particular antagonist. This code just provides
+// a random battle between the player and the monster specified by
+// n1.
+
+_procedure( verb_fight )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	espSave				:dword;
+	fightingPower		:int32;
+	protectionAbility	:int32;
+	antagonistFight		:int32;
+	antagonistProtect	:int32;
+	antagonist			:objNodePtr;
+			
+begin verb_fight; debug( "verb_fight");
+
+	pushad();
+	
+	// Note: Breaking out of a foreach loop leaves junk on the stack.
+	// Save ESP so we can clean up the stack should this occur.
+	
+	mov( esp, espSave );
+	
+	
+	// First, let's determine if the antagonist is actually present in
+	// the current room:
+	
+	mov( p, ebx );
+	mov( playerEBX.curRoom, esi );
+	mov( roomESI.agents, esi );
+	begin foundAgent;
+	
+		mov( n1, ebx );
+		foreach objListESI.nodeInList() do
+		
+			if( ebx = objNodeESI.theObject ) then
+			
+				mov( esi, antagonist );		// Save, in case we kill this guy.
+				exit foundAgent;
+				
+			endif;
+		
+		endfor;
+		mov( NULL, ebx );	// Flag failure to find agent.
+		
+	end foundAgent;
+	mov( espSave, esp );	// In case we broke out of foreach loop.
+	if( ebx = NULL ) then
+	
+		stdout.put( YouCantFightThatHere, nl );
+		
+	else
+		// Okay, the monster is present in this room.
+		// Find out if the player is wielding something at this point.
+		// If the player is wielding more than one weapon, we're just
+		// going to use the first weapon we find that's wielded (they
+		// should learn to unwield weapons).
+
+		begin foundWeapon;
+		
+			mov( esp, espSave );	// So we can break out of foreach loop.		
+			mov( p, ebx );
+			mov( playerEBX.contains, esi );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, ebx );
+				mov( objEBX.rtti, eax );
+				bt( _weapon_rtti, eax );	// Is this a weapon?
+				if( @c ) then
+				
+					// Okay, it's a weapon. Is it wielded?
+					
+					exitif( weaponEBX.wielded ) foundWeapon;
+					
+				endif;					
+						
+			endfor;
+			mov( NULL, ebx );	// No weapon wielded
+			
+		end foundWeapon;
+		mov( espSave, esp );	// Restore, in case we exited foreach loop.
+
+		if( ebx = NULL ) then 	// They have no weapon wielded
+		
+			stdout.put( WhatDoYouExpectToFightWith, nl );
+			
+		else	// We've got a fight on our hands.
+		
+			mov( weaponEBX.power, eax );
+			mov( eax, fightingPower );
+			
+			// See if the player is wearing any protection objects:
+			
+			mov( p, ebx );
+			mov( playerEBX.contains, esi );
+			mov( 0, edx );						// Protection sum
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, ebx );
+				mov( objEBX.rtti, eax );
+				bt( _protection_rtti, eax );	// Is this a protective device?
+				if( @c ) then
+				
+					// Okay, it's protection. Is it worn?
+					
+					if( protectionEBX.isWearing ) then
+					
+						add( protectionEBX.ability, edx );
+						
+					endif;						
+					
+				endif;					
+						
+			endfor;
+			
+			// At this point, EDX contains the sum of all the protective
+			// items the player is wearing.
+			
+			mov( edx, protectionAbility );
+			
+			// Okay, now let's see what weapons the antagonist has:
+			
+			mov( n1, ebx );
+			mov( agentEBX.contains, esi );
+			mov( 0, antagonistFight );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, esi );
+				mov( objESI.rtti, eax );
+				bt( _weapon_rtti, eax );
+				if( @c ) then
+				
+					mov( weaponESI.power, eax );
+					add( eax, antagonistFight );
+					
+				endif;
+			
+			endfor;
+			
+			// Check out the antagonist's protection:
+			
+			mov( 0, antagonistProtect );
+			mov( agentEBX.contains, esi );
+			foreach objListESI.nodeInList() do
+			
+				mov( objNodeESI.theObject, esi );
+				mov( objESI.rtti, eax );
+				bt( _protection_rtti, eax );
+				if( @c ) then
+				
+					mov( protectionESI.ability, eax );
+					add( eax, antagonistProtect );
+					
+				endif;
+				
+			endfor;
+			
+			
+			// Let the battle begin!
+			
+			mov( n1, ebx );
+			mov( p, ecx );
+			repeat
+			
+				// Attack of the player.
+				// Randomize this particular attack as follows:
+				//
+				// 0-15% - Missed blow
+				// 16-30% - Glancing blow
+				// 31-70% - Normal blow
+				// 71-85% - Solid blow
+				// 86-100% - Nearly fatal blow
+				
+				rand.urange( 0, 100 );
+				
+				if( eax <= 15 ) then
+				
+					stdout.put( YourAttackCompletelyMissed, nl );
+					
+				else
+				
+					if( eax <= 30 ) then
+				
+						stdout.put( ItWasAGlancingBlow, nl );
+						mov( fightingPower, eax );
+						shr( 1, eax );
+						
+					elseif( eax < 70 ) then
+					
+						stdout.put( YouHitYourOpponent, nl );
+						mov( fightingPower, eax );
+						
+					elseif( eax < 85 ) then
+					
+						stdout.put( AWellPlacedHitOnYourOpponent, nl );
+						mov( fightingPower, eax );
+						shl( 1, eax );
+						
+					else // Must be 86% or greater
+					
+						stdout.put( AnEffectiveHitOnYourOpponent, nl );
+						mov( fightingPower, eax );
+						shl( 3, eax );
+						
+					endif;
+					
+					// Temper the blow based on the protection worn
+					// by the antagonist
+					
+					shl( 3, eax );
+					sub( antagonistProtect, eax );
+					shr( 3, eax );
+					adc( 0, eax );
+					if( @s ) then
+					
+						// Sorry, they don't gain points if the attack
+						// was ineffective :-)
+						
+						xor( eax, eax );
+						
+					endif;
+					stdout.put
+					( 
+						YouAttackAndHitWithPower, 
+						(type int32 eax), 
+						nl 
+					);
+					
+				endif; 
+				
+				
+				
+				sub( eax, agentEBX.curPower );
+				breakif( @z );
+				breakif( @s );
+				
+				// Okay, the opponent gets a shot at the player.
+				//
+				// Randomization:
+				//
+				// 	 0- 25% - Opponent misses
+				//  26- 50% - Glancing blow
+				//  51- 75% - Normal blow
+				//  76- 90% - Powerful blow
+				//	91-100% - Effective blow
+
+
+				rand.urange( 0, 100 );
+				if( eax <= 25 ) then
+				
+					stdout.put( OpponentMissesYou, nl );
+					xor( eax, eax );	// No power to this hit.
+					
+				else
+				
+					// Based on the random number, adjust
+					// the power of this blow:
+					
+					if( eax <=50 ) then
+					
+						// Glancing blow is 50% power.
+						
+						mov( antagonistFight, eax );
+						shr( 1, eax );
+						adc( 0, eax );
+						
+					elseif( eax <= 75 ) then
+					
+						// Regular blow is 100%:
+						
+						mov( antagonistFight, eax );
+						
+					elseif( eax <= 90 ) then 
+					
+						// 76-90% Powerful blow (150%)
+					
+						mov( antagonistFight, eax );
+						shr( 1, eax );
+						adc( antagonistFight, eax );
+						
+					else // 91-100%, effective blow (200%)
+					
+						mov( antagonistFight, eax );
+						shl( 1, eax );
+						
+					endif;
+					
+					// Factor in the player's protection (25% protection factor)
+					
+					shl( 2, eax );
+					sub( protectionAbility, eax );
+					shr( 2, eax );
+					adc( 0, eax );
+					if( @s ) then
+					
+						xor( eax, eax );	// Clip to zero if it goes negative.
+						
+					endif;
+					stdout.put
+					( 
+						AntagonistFightsBackWithPower, 
+						(type int32 eax), 
+						nl 
+					);
+				
+				endif;
+				sub( eax, playerECX.health );
+				breakif( @z );
+				breakif( @s );
+				
+				stdout.put( YourHealthLevelIs, playerECX.health, nl );
+				stdout.put( YourOpponentsHealthIs, agentEBX.curPower, nl );
+
+				// While the player's health is greater than "healthy_c"
+				// just operate in auto mode:
+				
+				mov( continueChar, al );	
+				if( playerECX.health < healthy_c ) then
+				
+					repeat
+								
+						stdout.put( ContinueOrFlee );
+						stdin.getc();
+						stdin.flushInput();
+						chars.toLower( al );
+						stdout.newln();
+						
+					until( al = continueChar || al = fleeChar );
+					
+				endif;
+				
+			until( al = fleeChar );
+			if( agentEBX.curPower <= 0 ) then
+			
+				stdout.put( YouHaveKilledThe, agentEBX.objName, nl );
+				
+				// Remove all the antagonist's possessions and drop
+				// them in the current room.
+				
+				mov( agentEBX.contains, esi );
+				objListESI.numNodes();
+				mov( eax, edx );
+				for( mov( 0, ecx ); ecx<edx; inc( ecx )) do
+				
+					// This loop removes all the objects:
+					
+					mov( agentEBX.contains, esi );
+					objListESI.deleteLast();
+					push( esi );	// Save pointer to deleted node
+					
+				endfor;
+				
+				mov( p, eax );
+				mov( playerEAX.curRoom, ebx );
+				for( mov( 0, ecx ); ecx<edx; inc( ecx )) do
+				
+					// This loop puts all the objects in the current room:
+					
+					mov( roomEBX.contains, esi );
+					pop( eax );	// Get pointer to deleted node
+					objListESI.insertFirst( [eax] );
+					
+				endfor;
+				
+				
+				// Remove the antagonist from the room
+				// (really ought to destroy the guy, but what the heck...)
+				
+				mov( p, ecx );
+				mov( playerECX.curRoom, esi );
+				mov( roomESI.agents, esi );
+				objListESI.deleteNode( antagonist );
+			
+			elseif( playerECX.power <= 0 ) then
+			
+				stdout.put
+				( 
+					YouHaveDiedInBattleAgainstThe, 
+					agentEBX.objName, 
+					nl 
+				);
+				quit( p );
+					
+			endif;
+		
+		endif;
+	
+	endif;
+	popad();	
+		
+end verb_fight;
+
+
+// verb_use
+//
+//	Handles the "use" command.
+//	(You have to define this.)
+
+_procedure( verb_use )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_use; debug( "verb_use");
+
+	// Fill in your own code for verb_use, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: verb_use" )
+	
+end verb_use;
+
+
+// verb_wield
+//
+//	Handles the "wield" command.
+//	(You have to define this.)
+
+_procedure( verb_wield )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	saveESP	:dword;
+			
+begin verb_wield; debug( "verb_wield");
+
+	// First, let's make sure the player possesses the weapon they
+	// wish to wield:
+	
+	begin foundWeapon;
+	
+		mov( esp, saveESP );	// So we can break out of foreach loop.		
+		mov( p, ebx );
+		mov( playerEBX.contains, esi );
+		foreach objListESI.nodeInList() do
+		
+			mov( objNodeESI.theObject, ebx );
+			mov( objEBX.rtti, eax );
+			bt( _weapon_rtti, eax );
+			if( @c ) then
+			
+				exitif( ebx = n1 ) foundWeapon;
+				
+			endif;
+								
+		endfor;
+		mov( NULL, ebx );	// No weapon wielded
+		
+	end foundWeapon;
+	mov( saveESP, esp );	// Restore, in case we exited foreach loop.
+	if( ebx = NULL ) then
+	
+		stdout.put( YouDoNotPosssessThatWeapon, nl );
+		
+	else
+	
+		mov( true, weaponEBX.wielded );
+		
+	endif;
+	
+end verb_wield;
+
+
+// verb_unwield
+//
+//	Handles the "unwield" command.
+//	(You have to define this.)
+
+_procedure( verb_unwield )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	saveESP	:dword;
+			
+begin verb_unwield; debug( "verb_unwield");
+
+	// First, let's make sure the player possesses the weapon they
+	// wish to unwield:
+	
+	begin foundWeapon;
+	
+		mov( esp, saveESP );	// So we can break out of foreach loop.		
+		mov( p, ebx );
+		mov( playerEBX.contains, esi );
+		foreach objListESI.nodeInList() do
+		
+			mov( objNodeESI.theObject, ebx );
+			mov( objEBX.rtti, eax );
+			bt( _weapon_rtti, eax );
+			if( @c ) then
+			
+				exitif( ebx = n1 ) foundWeapon;
+				
+			endif;
+								
+		endfor;
+		mov( NULL, ebx );	// No weapon wielded
+		
+	end foundWeapon;
+	mov( saveESP, esp );	// Restore, in case we exited foreach loop.
+	if( ebx = NULL ) then
+	
+		stdout.put( YouDoNotPosssessThatWeapon, nl );
+		
+	else
+	
+		mov( false, weaponEBX.wielded );
+		
+	endif;	
+	
+end verb_unwield;
+
+
+// verb_get
+//
+//	Handles the "get" command.
+// n1 is a pointer to the object to grab.
+// It must be found on the "contains" list of curRoom.
+
+_procedure( verb_get )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+begin verb_get; debug( "verb_get");
+
+	pushad();
+	mov( p, edx );
+	mov( playerEDX.curRoom, ecx );
+	mov( n1, edx );
+	
+	// If present, remove the object from the room:
+	
+	roomECX.removeObj( objEDX.objName );
+	
+	if( eax <> NULL ) then
+			
+		// If the object was present and it could be removed
+		// from the room, add the object to the player's inventory:
+		
+		mov( p, edx );
+		mov( playerEDX.contains, ebx );
+		mov( possessionEAX.possObjNode, ecx );
+		objListEBX.appendLast( [ecx] );
+		
+		// If the object had any reward value, transfer that value
+		// to the player:
+		
+		fld( possessionEAX.reward );
+		fld( playerEDX.wealth );
+		fadd();
+		fstp( playerEDX.wealth );
+		
+		// Object's reward value is now zero:
+		
+		fldz();
+		fstp( possessionEAX.reward );
+		
+		stdout.put( '''', possessionEAX.objName, '''', Taken, nl );
+		
+		
+	else
+		
+		// If the object wasn't present or couldn't be removed
+		// from the room:
+		
+		stdout.put( ThereIsNo, nounEDX.objName, ToGetInHere, nl );
+	
+	endif;
+	popad();
+		
+	
+end verb_get;
+
+
+// verb_drop
+//
+//	Handles the "drop" command.
+// n1 is a pointer to the object to drop.
+// It must be found on the "contains" list of the player.  It will be
+// left in the curRoom.
+
+_procedure( verb_drop )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+var
+	index	:int32;		
+begin verb_drop; debug( "verb_drop");
+
+	pushad();
+	mov( p, edx );
+	mov( playerEDX.contains, ebx );
+	mov( n1, edx );
+
+	// Search for the object in the player's "contains" list.
+	
+	mov( -1, index );
+	mov( 0, eax );
+	foreach objListEBX.nodeInList() do
+	
+		if( edx = objNodeESI.theObject ) then
+		
+			mov( eax, index );
+			
+		endif;
+		inc( eax ); 
+	
+	endfor;
+	
+	// At this point, index contains the index into the player's contains
+	// list where the n1 object is found, or index contains -1 if the
+	// object is not  present on the list.
+	
+	mov( index, eax );
+	if( eax <> -1 ) then
+	
+		// Okay, remove the object from the player's list:
+		
+		objListEBX.deleteIndex( eax );
+		
+		// Now add the object to the curRoom's inventory:
+		
+		mov( p, edx );
+		mov( playerEDX.curRoom, ebx );
+		mov( roomEBX.contains, ebx );
+		objListEBX.appendLast( [esi] );
+		
+	else
+	
+		stdout.put( ThereIsNo, nounEDX.objName, ToGetInHere, nl );
+	
+	endif;
+	popad();
+	
+	
+end verb_drop;
+
+
+
+
+// verb_steal
+//
+//	Handles the "steal" command.
+//	(You have to define this.)
+
+_procedure( verb_steal )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_steal; debug( "verb_steal");
+
+	// Fill in your own code for verb_steal, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: steal" )
+	
+end verb_steal;
+
+
+// verb_eat
+//
+//	Handles the "eat" command.
+
+_procedure( verb_eat )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_eat; debug( "verb_eat");
+
+	// First, let's determine if the player possesses the object to eat.
+	
+	mov( p, esi );
+	mov( n1, eax );
+	playerESI.searchObj( nounEAX.objName );
+	if( eax = NULL ) then
+	
+		stdout.put( YouDoNotPosssessThatItem, nl );
+		
+	else
+	
+		mov( n1, ebx );
+		mov( consumableEBX.score, eax );
+		add( eax, playerESI.score );
+		
+		mov( consumableEBX.power, eax );
+		add( eax, playerESI.power );
+		
+		mov( consumableEBX.food, eax );
+		add( eax, playerESI.food );
+		
+		mov( consumableEBX.health, eax );
+		add( eax, playerESI.health );
+		
+		fld( consumableEBX.wealth );
+		fld( playerESI.wealth );
+		fstp( playerESI.wealth );
+		
+		// Okay, the item is consumed. Remove it from the player's possession
+		// Really, we ought to destroy the object, but what the heck...
+		
+		mov( playerESI.contains, esi );
+		objListESI.deleteNode( consumableEBX.possObjNode );
+		
+	endif;			
+	
+end verb_eat;
+
+
+// verb_buy
+//
+//	Handles the "buy" command.
+//	(You have to define this.)
+
+_procedure( verb_buy )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	item	:possessionPtr;
+			
+begin verb_buy; debug( "verb_buy");
+
+
+	// Buying is a game-specific action, so it must be handled over
+	// in the game specific module.
+
+	gs_buy( p, n1, n2, cmd );
+			
+	
+end verb_buy;
+
+
+// verb_sell
+//
+//	Handles the "sell" command. Give the player the wholesale price
+// for whatever goods they are selling.
+
+_procedure( verb_sell )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_sell; debug( "verb_sell");
+
+	// Selling is a game-specific action, so it must be handled over
+	// in the game specific module.
+
+	gs_sell( p, n1, n2, cmd );
+			
+end verb_sell;
+
+
+
+// must_buy -
+//
+//	This gets called whenever the user attempts to "get" an object
+// that must be purchased.
+
+_procedure( must_buy )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+begin must_buy;
+
+	mov( n1, esi );
+	stdout.put
+	( 
+		YouHaveToPurchaseThatItem, nl,
+		ThePurchasePriceIs,
+		CurrencySymbol,
+		(type real64 possessionESI.retail):8:2,
+		CurrencyPostfix,
+		nl
+	);
+	
+end must_buy;
+
+
+// verb_wear
+//
+//	Handles the "wear" command.
+// Returns true in EAX if the player possesses n1.
+// Returns true even if the user was already wearing the object.
+// Returns false if the user doesn't possess the object.
+//
+// This code can safely assume the object is wearable (or it wouldn't
+// have been called).
+
+_procedure( verb_wear )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_wear; debug( "verb_wear");
+
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	mov( n1, eax );
+	mov( p, ebx );
+	playerEBX.searchObj( protectionEAX.objName );
+	if( eax ) then
+	
+		mov( n1, eax );
+		mov( true, protectionEAX.isWearing );
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.put( Worn, nl );
+		mov( true, eax );
+
+	else
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put( YouCannotWearThatItem, nl );
+		console.setAttrs( gameFGColor, gameBGColor );
+		mov( false, eax );
+				
+	endif;
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+	
+end verb_wear;
+
+
+// verb_remove
+//
+//	Handles the "remove" command.
+//	This removes an article that the player is currently wearing.
+//	This procedure returns true if the user was wearing the object
+//	and it has been remove. This function returns false if the user
+//	wasn't wearing the object.
+
+_procedure( verb_remove )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_remove; debug( "verb_remove");
+
+
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	mov( p, ebx );
+	playerEBX.isWearing( n1 );
+	if( eax ) then
+	
+		mov( n1, eax );
+		mov( false, protectionEAX.isWearing );
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.put( Removed, nl );
+		mov( true, eax );
+
+	else
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put( YouCannotRemoveThatItem, nl );
+		console.setAttrs( gameFGColor, gameBGColor );
+		mov( false, eax );
+				
+	endif;
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+	
+	
+end verb_remove;
+
+
+// verb_open
+//
+//	Handles the "open" command.
+//	(You have to define this.)
+
+_procedure( verb_open )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_open; debug( "verb_open");
+
+	// Fill in your own code for verb_open, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: verb_open" )
+	
+end verb_open;
+
+
+// verb_close
+//
+//	Handles the "close" command.
+//	(You have to define this.)
+
+_procedure( verb_close )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_close; debug( "verb_close");
+
+	// Fill in your own code for verb_close, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: verb_close" )
+	
+end verb_close;
+
+
+
+/***************************************************************************/
+/*                                                                         */
+/* "path" verb is handled here.                                            */
+/* This computes a shortest path from the player's current node (room)     */
+/* to a specified destination node (room).                                 */
+/*                                                                         */
+/* Note that this is a specialized "shortest path" algorithm. There is     */
+/* no need to do the "relaxation" normally required for a shortest-path    */
+/* weighted-graph algorithm because all the edge weights are the same (1). */
+/* Therefore, the first time we see the destination node, we can stop      */
+/* the algorithm because we have the shortest path at that point.          */
+/*                                                                         */
+/***************************************************************************/
+
+
+
+// verb_path
+//
+//	Handles the "path" command.
+//
+//	player.curRoom is the source node (room).
+//	n1 is the destination node (room).
+//	This code computes a path between the source and
+// the destination nodes.
+
+_procedure( verb_path )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	curEntry	:uns32;
+	numQEntries	:uns32;
+	src			:roomPtr;
+	dest		:roomPtr;
+	roomQueue	:roomPtr[ num_rooms+1 ];
+	
+	// The following (recursive) function prints the path
+	// in the reverse order that it traverses the backlinks
+	// created in the room graph. Note that this procedure
+	// assumes that the src and dest rooms are *not* the same.
+			
+	procedure printReversePath( r:roomPtr );
+	begin printReversePath;
+	
+		push( eax );
+		mov( r, eax );
+		if( eax <> NULL ) then
+		
+			printReversePath( roomEAX.pathSrch.fromWhom );
+			stdout.putc( roomEAX.pathSrch.dirFrom[0] );
+			stdout.putc( roomEAX.pathSrch.dirFrom[1] );
+			stdout.putc( roomEAX.pathSrch.dirFrom[2] );
+		
+		endif;
+		pop( eax );		
+			
+	end printReversePath;
+	
+begin verb_path; debug( "verb_path");
+
+	pushad();
+	console.setAttrs( warningFGColor, warningBGColor );
+	mov( n1, eax );
+	mov( eax, dest );
+	
+	// Initialize the roomQueue in order to do a breadth-first
+	// search from the current node:
+	
+	mov( 0, curEntry );
+	mov( 1, numQEntries );			// Initialize with src
+	mov( p, ebx );
+	mov( playerEBX.curRoom, ebx );
+	mov( ebx, src );
+	mov( ebx, roomQueue[0*4] );
+	
+	// Initialize all the pathSrch fields in each of the
+	// rooms prior to the start of the breadth-first search:
+	
+	mov( NULL, eax );
+	mov( false, dl );
+	mov( ' ', dh );
+	for( mov( 0, ecx ); ecx <= num_rooms; inc( ecx )) do
+	
+		mov( rooms[ ecx*4 ], ebx );
+		if( ebx <> NULL ) then
+		
+			mov( eax, roomEBX.pathSrch.fromWhom ); 
+			mov( dl, roomEBX.pathSrch.visited );
+			mov( dh, roomEBX.pathSrch.dirFrom[0] );
+			mov( dh, roomEBX.pathSrch.dirFrom[1] );
+			mov( dh, roomEBX.pathSrch.dirFrom[2] );
+			
+		endif;
+		
+	endfor;
+	
+	// Special case for the situation where the destination node
+	// is equal to the source node.
+	
+	mov( src, eax );
+	mov( true, roomEAX.pathSrch.visited );	// src room has been visited.
+	if( eax <> dest ) then
+	
+		// Okay, do a breadth-first search on the roomQueue to
+		// find the shortest path to the destination node:
+		
+		forever
+		
+			// In the odd chance that there isn't a path to the
+			// specified node from the src node, let's return NULL.
+			
+			mov( NULL, ecx );
+			mov( curEntry, eax );
+			breakif( eax >= numQEntries );
+		
+			// Okay, fetch the node at the front of the queue:
+			
+			mov( roomQueue[ eax*4 ], ecx );
+			breakif( ecx = dest );
+			mov( ecx, ebx );
+			
+			// Look at the outgoing edges. If one of them is
+			// the destination, we're done. Otherwise, add
+			// them to the queue if we haven't visited them before.
+
+			// Check out the north room:
+					
+			mov( roomEBX.north, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'n', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the south room:
+					
+			mov( roomEBX.south, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 's', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the east room:
+					
+			mov( roomEBX.east, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'e', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the west room:
+					
+			mov( roomEBX.west, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'w', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the north east room:
+					
+			mov( roomEBX.northEast, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'n', roomECX.pathSrch.dirFrom[0] );
+				mov( 'e', roomECX.pathSrch.dirFrom[1] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the north west room:
+					
+			mov( roomEBX.northWest, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'n', roomECX.pathSrch.dirFrom[0] );
+				mov( 'w', roomECX.pathSrch.dirFrom[1] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the south east room:
+					
+			mov( roomEBX.southEast, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 's', roomECX.pathSrch.dirFrom[0] );
+				mov( 'e', roomECX.pathSrch.dirFrom[1] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the south west room:
+					
+			mov( roomEBX.southWest, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 's', roomECX.pathSrch.dirFrom[0] );
+				mov( 'w', roomECX.pathSrch.dirFrom[1] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the up room:
+					
+			mov( roomEBX.up, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'u', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+
+			// Check out the down room:
+					
+			mov( roomEBX.down, ecx );
+			if( ecx <> NULL && !roomECX.pathSrch.visited ) then
+			
+				mov( numQEntries, edx );
+				assert( edx <= num_rooms );
+				mov( ecx, roomQueue[ edx*4 ] );
+				mov( ebx, roomECX.pathSrch.fromWhom );
+				mov( 'd', roomECX.pathSrch.dirFrom[0] );
+				mov( true, roomECX.pathSrch.visited );
+				inc( numQEntries );
+				
+			endif;
+			
+			// On to the next queue entry:
+			
+			inc( curEntry );
+			
+		endfor;
+		
+		if( ecx = NULL ) then
+		
+			stdout.put( ThereIsNoPath, nl );
+			
+		else 	// We found a path. ECX is pointing at dest and EBX is
+				// pointing at the node leading to dest.
+				
+			console.setAttrs( gameFGColor, gameBGColor );
+			stdout.put( PathToRoomIs, nl );
+			printReversePath( ecx );
+			
+		endif;
+		
+	else	// src = dest
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.put( YoureInThatRoomAlready, nl );
+	
+	endif;		
+	console.setAttrs( gameFGColor, gameBGColor );
+	popad();
+	
+end verb_path;
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following are all empty functions that corresond to the
+// verb suggestions appearing in age.hhf:
+
+#if( @defined( SomeVerbsYouMightWantToAdd ))
+
+// verb_play
+//
+//	Handles the "play" command.
+//	(You have to define this.)
+
+_procedure( verb_play )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_play; debug( "verb_play");
+
+	// Fill in your own code for verb_play, or leave it 
+	// defaulting to nothing
+	
+	#print( "TODO: verb_play" )
+	
+end verb_play;
+
+
+// verb_run
+//
+//	Handles the "run" command.
+//	(You have to define this.)
+
+_procedure( verb_run )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_run; debug( "verb_run");
+
+	// Fill in your own code for verb_run, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_run;
+
+
+// verb_walk
+//
+//	Handles the "walk" command.
+//	(You have to define this.)
+
+_procedure( verb_walk )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_walk; debug( "verb_walk");
+
+	// Fill in your own code for verb_walk, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_walk;
+
+
+// verb_move
+//
+//	Handles the "move" command.
+//	(You have to define this, currently a synonym for "go".)
+
+_procedure( verb_move )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_move; debug( "verb_move");
+
+	// Fill in your own code for verb_move, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_move;
+
+
+// verb_climb
+//
+//	Handles the "climb" command.
+//	(You have to define this, currently a synonym for "go".)
+
+_procedure( verb_climb )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_climb; debug( "verb_climb");
+
+	// Fill in your own code for verb_climb, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_climb;
+
+
+// verb_transport
+//
+//	Handles the "transport" command.
+//	(You have to define this, currently a synonym for "go".)
+
+_procedure( verb_transport )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_transport; debug( "verb_transport");
+
+	// Fill in your own code for verb_transport, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_transport;
+
+
+// verb_rest
+//
+//	Handles the "rest" command.
+//	(You have to define this.)
+
+_procedure( verb_rest )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_rest; debug( "verb_rest");
+
+	// Fill in your own code for rest, or leave it defaulting to nothing
+	
+end verb_rest;
+
+
+
+
+// verb_crawl
+//
+//	Handles the "crawl" command.
+//	(You have to define this, currently a synonym for "go".)
+
+_procedure( verb_crawl )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_crawl; debug( "verb_crawl");
+
+	// Fill in your own code for verb_transport, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_crawl;
+
+
+// verb_sit
+//
+//	Handles the "sit" command.
+//	(You have to define this.)
+
+_procedure( verb_sit )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_sit; debug( "verb_sit");
+
+	// Fill in your own code for verb_sit, or leave it defaulting to nothing
+	
+end verb_sit;
+
+
+// verb_stand
+//
+//	Handles the "stand" command.
+//	(You have to define this.)
+
+_procedure( verb_stand )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_stand; debug( "verb_stand");
+
+	// Fill in your own code for verb_stand, or leave it defaulting to nothing
+	
+end verb_stand;
+
+
+// verb_enter
+//
+//	Handles the "enter" command.
+//	(You have to define this, currently a synonym for "go".)
+
+_procedure( verb_enter )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_enter; debug( "verb_enter");
+
+	// Fill in your own code for verb_transport, or leave it defaulting to "go"
+	
+	verb_go( p, n1, n2, cmd );
+
+end verb_enter;
+
+
+// verb_talk
+//
+//	Handles the "talk" command.
+//	(You have to define this.)
+
+_procedure( verb_talk )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_talk; debug( "verb_talk");
+
+	// Fill in your own code for verb_talk, or leave it 
+	// defaulting to nothing
+	
+end verb_talk;
+
+
+// verb_pray
+//
+//	Handles the "pray" command.
+//	(You have to define this.)
+
+_procedure( verb_pray )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_pray; debug( "verb_pray");
+
+	// Fill in your own code for verb_pray, or leave it 
+	// defaulting to nothing
+	
+end verb_pray;
+
+
+// verb_list
+//
+//	Handles the "list" command.
+//	(You have to define this.)
+
+_procedure( verb_list )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_list; debug( "verb_list");
+
+	// Fill in your own code for verb_list, or leave it 
+	// defaulting to nothing
+	
+end verb_list;
+
+
+// verb_search
+//
+//	Handles the "search" command.
+//	(You have to define this.)
+
+_procedure( verb_search )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_search; debug( "verb_search");
+
+	// Fill in your own code for verb_search, or leave it 
+	// defaulting to nothing
+	
+end verb_search;
+
+
+// verb_flee
+//
+//	Handles the "flee" command.
+//	(You have to define this.)
+
+_procedure( verb_flee )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_flee; debug( "verb_flee");
+
+	// Fill in your own code for verb_flee, or leave it 
+	// defaulting to nothing
+	
+end verb_flee;
+
+
+// verb_give
+//
+//	Handles the "give" command.
+//	(You have to define this.)
+
+_procedure( verb_give )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_give; debug( "verb_give");
+
+	// Fill in your own code for verb_give, or leave it 
+	// defaulting to nothing
+	
+end verb_give;
+
+// verb_throw
+//
+//	Handles the "throw" command.
+//	(You have to define this.)
+
+_procedure( verb_throw )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_throw; debug( "verb_throw");
+
+	// Fill in your own code for verb_throw, or leave it 
+	// defaulting to nothing
+	
+end verb_throw;
+
+
+// verb_trade
+//
+//	Handles the "trade" command.
+//	(You have to define this.)
+
+_procedure( verb_trade )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_trade; debug( "verb_trade");
+
+	// Fill in your own code for verb_trade, or leave it 
+	// defaulting to nothing
+	
+end verb_trade;
+
+
+// verb_break
+//
+//	Handles the "break" command.
+//	(You have to define this.)
+
+_procedure( verb_break )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_break; debug( "verb_break");
+
+	// Fill in your own code for verb_break, or leave it 
+	// defaulting to nothing
+	
+end verb_break;
+
+
+// verb_repair
+//
+//	Handles the "repair" command.
+//	(You have to define this.)
+
+_procedure( verb_repair )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_repair; debug( "verb_repair");
+
+	// Fill in your own code for verb_repair, or leave it 
+	// defaulting to nothing
+	
+end verb_repair;
+
+
+// verb_turn
+//
+//	Handles the "turn" command.
+//	(You have to define this.)
+
+_procedure( verb_turn )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_turn; debug( "verb_turn");
+
+	// Fill in your own code for verb_turn, or leave it 
+	// defaulting to nothing
+	
+end verb_turn;
+
+
+// verb_push
+//
+//	Handles the "push" command.
+//	(You have to define this.)
+
+_procedure( verb_push )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_push; debug( "verb_push");
+
+	// Fill in your own code for verb_push, or leave it 
+	// defaulting to nothing
+	
+end verb_push;
+
+
+// verb_pull
+//
+//	Handles the "pull" command.
+//	(You have to define this.)
+
+_procedure( verb_pull )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin verb_pull; debug( "verb_pull");
+
+	// Fill in your own code for verb_pull, or leave it 
+	// defaulting to nothing
+	
+end verb_pull;
+
+
+
+
+#endif
+
+
+
+end AGEactions;

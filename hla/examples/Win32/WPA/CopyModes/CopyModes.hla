@@ -1,0 +1,385 @@
+// CopyModes.hla-
+//
+//	Program that demonstrates the use of the SetROP2 API function to set
+// the Windows copy mode (for drawing with a pen).
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit CopyModes;
+
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+
+// copy_t-
+// This record type holds a caption string and a copy mode
+// value for use when demostrating the 16 different copy
+// modes on the display.
+
+type
+	copy_t:
+		record
+			msg	:string;
+			cm	:dword;
+		endrecord;
+
+// cmm-
+//	This is a utility macro used to save some typing when
+// filling in an array of 16 "copy_t" array elements. An
+// invocation of the form "cmm( xyz )" produces the following:
+//
+//	copy_t:[ "xyz", w.xyz ]
+//
+// The intent is to supply a Windows Drawing mode as the macro
+// argument (see the copyData array, below).
+
+#macro cmm( mode );
+	copy_t:[ @string( mode ), @text( "w." + @string( mode )) ]
+#endmacro
+
+
+static
+	bkgndPen	:dword;
+	whitePen	:dword;
+	fgndPen		:dword;
+
+
+	copyData	:copy_t[16] :=
+		[
+			cmm( R2_BLACK ),
+			cmm( R2_NOTMERGEPEN ),
+			cmm( R2_MASKNOTPEN ),
+			cmm( R2_NOTCOPYPEN ),
+			cmm( R2_MASKPENNOT ),
+			cmm( R2_NOT ),
+			cmm( R2_XORPEN ),
+			cmm( R2_NOTMASKPEN ),
+			cmm( R2_MASKPEN ),
+			cmm( R2_NOTXORPEN ),
+			cmm( R2_NOP ),
+			cmm( R2_MERGENOTPEN ),
+			cmm( R2_COPYPEN ),
+			cmm( R2_MERGEPENNOT ),
+			cmm( R2_MERGEPEN ),
+			cmm( R2_WHITE )
+		];
+
+
+	
+readonly
+
+	ClassName	:string := "CopyModesWinClass";		// Window Class Name
+	AppCaption	:string := "CopyModes Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	push( eax );	// Save exception so we can re-raise it.
+
+	// Delete the pens we created in the Create procedure:
+
+	w.DeleteObject( bkgndPen );
+	w.DeleteObject( whitePen );
+	w.DeleteObject( fgndPen );
+
+	pop( eax );
+	raise( eax );
+
+end appException;
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+
+// The Create procedure creates all the pens we're going to use
+// in this application.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+begin Create;
+
+	// Create a thick, black, pen for drawing the axis:
+
+	w.CreatePen( w.PS_SOLID, 24, RGB( $0, $0, $0) );
+	mov( eax, bkgndPen );
+
+	// Create a thin, black, pen for demonstrating the copy modes:
+
+	w.CreatePen( w.PS_SOLID, 12, RGB( $0, $0, $0) );
+	mov( eax, fgndPen );
+
+	// Create a thin, white, pen for demonstrating the copy modes:
+
+	w.CreatePen( w.PS_SOLID, 12, RGB( $FF, $FF, $FF) );
+	mov( eax, whitePen );
+
+end Create;
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Delete the pens we created in the Create procedure:
+
+	w.DeleteObject( bkgndPen );
+	w.DeleteObject( whitePen );
+	w.DeleteObject( fgndPen );
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	oldPen		:dword;
+
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Draw a set of black lines in the window:
+
+		SelectObject( bkgndPen );  // Select the fat black pen.
+		mov( eax, oldPen );      // Save, so we can restore later
+
+		// Demonstrate each of the 16 pen/copy/draw modes,
+		// one mode per iteration of the following loop:
+
+		for( mov( 0, esi ); esi < 16; inc( esi )) do
+
+			// Compute the Y-offset for each line
+			// on the display:
+
+			intmul( 32, esi, edi );
+			add( 8, edi );
+
+			// Print a caption for each line:
+
+			TextOut
+			( 
+				32, 
+				edi, 
+				copyData.msg[ esi*8 ], 
+				str.length( copyData.msg[ esi*8] )
+			);
+			add( 8, edi );
+				   
+			// Display a background black line
+			// to draw against:
+
+			SetROP2( w.R2_COPYPEN );
+			SelectObject( bkgndPen );  // Select the fat black pen.
+			MoveToEx( 240, edi, NULL );
+			LineTo( 440, edi );
+
+			// Change the current copy mode to demonstrate each
+			// of the copy modes:
+
+			SetROP2( copyData.cm[ esi*8 ] );
+
+			// Draw a white line, using the curren copy mode,
+			// over the first half of the background line:
+
+			SelectObject( whitePen );  // Select the fat black pen.
+			MoveToEx( 200, edi, NULL );
+			LineTo( 330, edi );
+
+			// Draw a black line, using the current copy mode,
+			// over the second half of the background line.
+
+			SelectObject( fgndPen );  // Select the fat black pen.
+			MoveToEx( 350, edi, NULL );
+			LineTo( 480, edi );
+
+
+		endfor;
+
+		// Restore original pen:
+
+		SelectObject( oldPen );
+		SetROP2( w.R2_COPYPEN );
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+				
+end CopyModes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

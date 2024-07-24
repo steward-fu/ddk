@@ -1,0 +1,277 @@
+// Iczelion's tutorial #11_3: More About Dialogs
+//
+// Note: this is the file the html page describes.
+// Perhaps my html files are out of date with respect
+// to the tutorial files.  Oh well, bon apetite :-)
+//
+//	To compile this program use the command line:
+//
+//	hla -w tut11_3.hla tut11_3.rc comdlg32.lib
+
+
+program moreDialogs;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "strings.hhf" )	// Defines HLA string routines.
+#include( "memory.hhf" )	// Defines "NULL" among other things.
+#include( "args.hhf" )		// Command line parameter stuff.
+#include( "conv.hhf" )
+
+
+const
+	IDM_EXIT	:= 1;
+	IDM_OPEN	:= 2;
+	MAXSIZE		:= 260;
+	OUTPUTSIZE	:= 512;
+
+	AppNameStr	:= "Our Main Window";
+	MenuNameStr	:= "FirstMenu";
+
+
+static
+	hInstance		:dword;
+	CommandLine		:string;
+	ofn				:w.OPENFILENAME;
+	buffer			:char[ OUTPUTSIZE ] := OUTPUTSIZE dup [ #0 ];
+	OutputString	:str.strvar( OUTPUTSIZE );
+	pnameStr		:str.strvar( OUTPUTSIZE );
+	fnameStr		:str.strvar( OUTPUTSIZE );
+	xnameStr		:str.strvar( OUTPUTSIZE );
+	tempStr			:str.strvar( OUTPUTSIZE );
+	
+	FilterString	:byte; @nostorage;
+					byte "All Files", 0, "*.*", 0;
+					byte "Text Files", 0, "*.txt", 0, 0;						
+	
+	
+	
+	
+	
+readonly
+
+	ClassName		:string := "SimpleWinClass";
+	AppName			:string := AppNameStr;
+	MenuName		:string := MenuNameStr;
+
+	OurTitle		:string	:=	"-=Our First Open File Dialog Box=-";
+						
+
+
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( lParam:dword; wParam:dword; uMsg:uns32; hWnd:dword );
+	@nodisplay;
+	
+begin WndProc;
+
+
+	// If the WM_DESTROY message comes along, then we've
+	// got to post a message telling the event loop that
+	// it's time to quit the program.  The return value in
+	// EAX must be false (zero).  The GetMessage function
+	// will return this value to the event loop which is
+	// the indication that it's time to quit.
+	
+	if( uMsg = w.WM_DESTROY ) then
+	
+		w.PostQuitMessage( 0 );
+		
+	elseif( uMsg = w.WM_COMMAND ) then
+		
+		mov( wParam, eax );
+		if( ax = IDM_OPEN ) then
+		
+			mov( @size( ofn ), ofn.lStructSize );
+			mov( hWnd, ofn.hWndOwner );
+			mov( hInstance, ofn.hInstance );
+			mov( &FilterString, ofn.lpstrFilter );
+			mov( &buffer, ofn.lpstrFile );
+			mov( MAXSIZE, ofn.nMaxFile );
+			mov
+			(
+					w.OFN_FILEMUSTEXIST
+				|	w.OFN_PATHMUSTEXIST
+				|	w.OFN_LONGNAMES
+				|	w.OFN_EXPLORER
+				|	w.OFN_HIDEREADONLY,
+				ofn.Flags
+			);
+			mov( &OurTitle, ofn.lpstrTitle );
+			w.GetOpenFileName( ofn );
+			if( eax ) then
+			
+				push( ebx );
+				str.cpyz( (type zstring ofn.lpstrFile), pnameStr );
+
+				mov( ofn.lpstrFile, eax );
+				movzx( ofn.nFileOffset, ebx );
+				lea( ecx, [eax+ebx] );
+				str.cpyz( ecx, fnameStr );
+
+				mov( ofn.nFileExtension, bx );
+				lea( ecx, [eax+ebx] );
+				str.cpyz( ecx, xnameStr );
+				pop( ebx );
+
+				str.put
+				( 
+					OutputString,				
+					"The Full Filename with Path is: ",
+					pnameStr,
+					nl
+					"The Filename is: ",
+					fnameStr,
+					nl
+					"The Extension is: ",
+					xnameStr
+				);					 				
+				w.MessageBox( hWnd, OutputString, AppName, w.MB_OK );
+				
+			endif;
+			
+		else
+			w.DestroyWindow( hWnd );
+
+		endif;
+			
+	else
+	
+		// If a WM_DESTROY message doesn't come along,
+		// let the default window handler process the
+		// message.  Whatever (non-zero) value this function
+		// returns is the return result passed on to the
+		// event loop.
+		
+		w.DefWindowProc( hWnd, uMsg, wParam, lParam );
+		exit WndProc;
+		
+	endif;
+	sub( eax, eax );
+	
+end WndProc;
+
+
+	
+// WinMain-
+//
+// This is the "main" windows program.  It sets up the
+// window and then enters an "event loop" processing
+// whatever messages are passed along to that window.
+// Since our code is the only code that calls this function,
+// we'll use the Pascal calling conventions for the parameters.
+
+procedure WinMain
+(
+	hInst:dword;
+	hPrevInst:	dword;
+	CmdLine:	string;
+	CmdShow:	dword
+);	@nodisplay;
+
+var
+	wc:		w.WNDCLASSEX;
+	msg:	w.MSG;
+	hwnd:	dword;
+	
+begin WinMain;
+
+	
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	
+	mov( hInstance, wc.hInstance );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( MenuName, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+	
+	w.CreateWindowEx
+	( 
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		300,
+		200,
+		NULL,
+		NULL,
+		hInst,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+	mov( msg.wParam, eax );
+	
+
+end WinMain;
+
+	
+begin moreDialogs;
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+	// Get a copy of the command line string passed to this code:
+	
+	mov( arg.cmdLn(), CommandLine );
+	
+
+	
+	WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	
+	// WinMain returns a return code in EAX, exit the program
+	// and pass along that return code.
+	
+	w.ExitProcess( eax );	
+
+end moreDialogs;

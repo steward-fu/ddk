@@ -1,0 +1,62 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+
+
+procedure win32cons.clrToEOLN; @nodisplay;
+var
+	size:			dword;
+	Attributes:		dword;
+	csbi:			win.CONSOLE_SCREEN_BUFFER_INFO;
+	charsWritten:	dword;
+	handle:			dword;
+	
+begin clrToEOLN;
+
+	pushad();
+	
+	stdout.handle();
+	mov( eax, handle );
+
+	// Compute the number of character positions left on the current line.
+	
+	win32cons.info( csbi );
+
+	xor( eax, eax );
+	mov( csbi.dwSize.X, ax );
+	sub( csbi.dwCursorPosition.X, ax );
+	mov( eax, size );
+	
+	// Fill the remainder of the line with blanks:
+	
+	win.FillConsoleOutputCharacter
+	( 
+		charsWritten, 
+		csbi.dwCursorPosition, 
+		size, 
+		' ', 
+		handle
+	);
+	
+	// Set the screen attributes:
+	
+	movzx( csbi.wAttributes, eax );
+	win.FillConsoleOutputAttribute
+	(
+		charsWritten,
+		csbi.dwCursorPosition,
+		size,
+		ax,
+		handle
+	);
+	
+	popad();
+		
+end clrToEOLN;
+
+
+
+
+
+
+end consoleUnit;

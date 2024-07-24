@@ -1,0 +1,28 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+
+
+// Info-
+//
+//	This procedure returns information about the console.
+//	It fills in the CONSOLE_SCREEN_BUFFER_INFO record
+//	passed as a parameter (see the win.hhf header file).
+
+procedure win32cons.info( var csbi:win.CONSOLE_SCREEN_BUFFER_INFO );	@nodisplay;
+begin info;
+
+	pushad();
+	win.GetConsoleScreenBufferInfo( csbi, stdout.handle() );
+	popad();
+	
+end info;
+
+
+
+
+
+
+
+
+end consoleUnit;

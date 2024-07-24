@@ -1,0 +1,255 @@
+// Iczelion's tutorial #10: Dialog Boxes
+//
+//	To compile this program use the command line:
+//
+//	hla -w tut10.hla tut10_1.rc
+
+
+program firstDialogBox;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "strings.hhf" )	// Defines HLA string routines.
+#include( "memory.hhf" )	// Defines "NULL" among other things.
+#include( "args.hhf" )		// Command line parameter stuff.
+#include( "conv.hhf" )
+
+
+static
+	hInstance:		dword;
+	CommandLine:	string;
+	buffer:			char[ 512 ];
+	str1:			str.strvar(256);
+	
+const
+	IDM_GETTEXT	:= 32000;
+	IDM_CLEAR	:= 32001;
+	IDM_EXIT	:= 32002;
+	
+	IDC_EDIT	:= 3000;
+	IDC_BUTTON	:= 3001;
+	IDC_EXIT	:= 3002;
+	
+	
+	AppNameStr	:= "Our First Dialog Box";
+	MenuNameStr	:= "MyMenu";
+	
+readonly
+
+	ClassName:	string := "DLGCLASS";
+	DlgName:	string := "MyDialog";
+	AppName:	string := AppNameStr;
+	MenuName:	string := MenuNameStr;
+	TestString:	string := "Wow! I'm in an edit box now";
+	
+
+
+// The window procedure.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword  );
+	@nodisplay;
+	@stdcall;
+	
+begin WndProc;
+
+
+	// If the WM_DESTROY message comes along, then we've
+	// got to post a message telling the event loop that
+	// it's time to quit the program.  The return value in
+	// EAX must be false (zero).  The GetMessage function
+	// will return this value to the event loop which is
+	// the indication that it's time to quit.
+	
+	if( uMsg = w.WM_DESTROY ) then
+	
+		w.PostQuitMessage( 0 );
+		
+	elseif( uMsg = w.WM_CREATE ) then
+	
+		w.SetDlgItemText( hWnd, IDC_EDIT, AppName );		
+	
+	elseif( uMsg = w.WM_COMMAND ) then
+		
+		mov( wParam, eax );
+		if( lParam = 0 ) then
+		
+			if( ax = IDM_CLEAR ) then
+			
+				w.SetDlgItemText( hWnd, IDC_EDIT, NULL );
+				
+			elseif( ax = IDM_GETTEXT ) then
+			
+				w.GetDlgItemText( hWnd, IDC_EDIT, buffer, 512 );
+				w.MessageBox
+				( 
+					NULL, 
+					&buffer, 
+					AppName, 
+					w.MB_OK 
+				);
+				
+			else
+
+				w.DestroyWindow( hWnd );
+
+			endif;
+			
+		else
+		
+			mov( (type word wParam[2]), dx );
+			if( dx = w.BN_CLICKED ) then
+			
+				if( ax = IDC_BUTTON ) then
+				
+					w.SetDlgItemText( hWnd, IDC_EDIT, TestString );
+					
+				elseif( ax = IDC_EXIT ) then
+				
+					w.SendMessage( hWnd, w.WM_COMMAND, IDM_EXIT, 0 );
+					
+				endif;
+				
+			endif;					
+
+		endif;
+		 
+	else
+	
+		// If a WM_DESTROY message doesn't come along,
+		// let the default window handler process the
+		// message.  Whatever (non-zero) value this function
+		// returns is the return result passed on to the
+		// event loop.
+		
+		w.DefWindowProc( hWnd, uMsg, wParam, lParam );
+		exit WndProc;
+		
+	endif;
+	sub( eax, eax );
+	
+end WndProc;
+
+
+	
+// WinMain-
+//
+// This is the "main" windows program.  It sets up the
+// window and then enters an "event loop" processing
+// whatever messages are passed along to that window.
+// Since our code is the only code that calls this function,
+// we'll use the Pascal calling conventions for the parameters.
+
+procedure WinMain
+(
+	hInst:dword;
+	hPrevInst:	dword;
+	CmdLine:	string;
+	CmdShow:	dword
+);	@nodisplay;
+
+var
+	wc:		w.WNDCLASSEX;
+	msg:	w.MSG;
+	hDlg:	dword;
+	
+begin WinMain;
+
+	
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( w.DLGWINDOWEXTRA, wc.cbWndExtra );
+	
+	mov( hInstance, wc.hInstance );
+	mov( w.COLOR_BTNFACE+1, wc.hbrBackground );
+	mov( MenuName, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+	
+	w.CreateDialogParam
+	(
+		hInst,
+		DlgName,
+		NULL,
+		NULL,
+		NULL
+	);
+	mov( eax, hDlg );
+	
+	w.GetDlgItem
+	(
+		hDlg,
+		IDC_EDIT
+	);
+	w.SetFocus( eax );
+	
+	
+
+	w.ShowWindow( hDlg, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hDlg );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.IsDialogMessage( hDlg, msg );
+		if( !eax ) then
+		
+			w.TranslateMessage( msg );
+			w.DispatchMessage( msg );
+			
+		endif;
+		
+	endfor;
+	mov( msg.wParam, eax );
+	
+
+end WinMain;
+
+	
+begin firstDialogBox;
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+	// Get a copy of the command line string passed to this code:
+	
+	mov( arg.cmdLn(), CommandLine );
+	
+
+	
+	WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	
+	// WinMain returns a return code in EAX, exit the program
+	// and pass along that return code.
+	
+	w.ExitProcess( eax );	
+
+end firstDialogBox;

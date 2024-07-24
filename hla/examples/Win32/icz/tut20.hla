@@ -1,0 +1,133 @@
+//Iczelion's tutorial #20: Window Subclassing
+program aSubclassing;
+
+#include("w.hhf")
+	
+readonly
+	ClassName : string := "SubclassWinClass";
+	AppName : string := "Subclassing Demo";
+	EditClass :string :=	"edit";
+	Message : string := "You pressed <Enter> in the text box!";
+			
+static
+	hInstance : dword;
+	hwndEdit : dword;
+	OldWndProc : dword;
+
+procedure EditWndProc(hEdit:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin EditWndProc;
+	if(uMsg = w.WM_CHAR) then
+		mov(wParam,eax);
+		if(al in '0'..'9') then
+			jmp HexInput;
+		elseif(al in 'A'..'F') then
+			jmp HexInput;
+		elseif(al in 'a'..'f') then
+			sub($20,al);
+			jmp HexInput;
+		elseif(al = w.VK_BACK) then
+			jmp HexInput;
+		else
+			jmp BadInput;
+		endif;
+		
+		HexInput:
+			w.CallWindowProc(OldWndProc,hEdit,uMsg,eax,lParam);
+			exit EditWndProc;
+		BadInput:	
+			
+	elseif(uMsg = w.WM_KEYDOWN) then
+		mov(wParam,eax);
+			if(al = w.VK_RETURN) then
+				w.MessageBox(hEdit,Message,AppName,w.MB_OK | w.MB_ICONINFORMATION);
+				w.SetFocus(hEdit);
+			else
+		        w.CallWindowProc(OldWndProc,hEdit,uMsg,wParam,lParam);
+		        exit EditWndProc;
+			endif;
+	else
+		w.CallWindowProc(OldWndProc,hEdit,uMsg,wParam,lParam);
+		exit EditWndProc;
+	endif;
+
+	xor(eax,eax);
+end EditWndProc;
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin WndProc;
+	if(uMsg = w.WM_CREATE) then
+		w.CreateWindowEx(w.WS_EX_CLIENTEDGE,EditClass,NULL,w.WS_CHILD | w.WS_VISIBLE | w.WS_BORDER,
+		                  20,20,300,25,hWnd,NULL,hInstance,NULL);
+		  mov(eax,hwndEdit);
+		w.SetFocus(eax);
+	   //-------------------
+	  //Subclass It!!
+	 //-------------------
+		w.SetWindowLong(hwndEdit,-4,&EditWndProc);
+		  mov(eax,OldWndProc);
+	elseif(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_APPWORKSPACE  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPED | w.WS_CAPTION | w.WS_SYSMENU | w.WS_MINIMIZEBOX | w.WS_MAXIMIZEBOX | w.WS_VISIBLE , 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		350, 200,
+		NULL,NULL,hInst, NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+	    w.TranslateMessage(msg);
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aSubclassing;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	WinMain( hInstance, NULL, NULL, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aSubclassing;

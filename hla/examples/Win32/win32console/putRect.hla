@@ -1,0 +1,98 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "excepts.hhf" );
+
+
+// putRect-
+//
+//	Converse to the above.  Copies data from
+//  a buffer to a rectangular region on the screen.
+//	The buffer must contain a sufficient number of
+//	characters and any extra characters are ignored.
+
+procedure win32cons.putRect
+( 
+		top:word; 
+		left:word; 
+		bottom:word; 
+		right:word;
+	var	buf:byte
+);	@nodisplay;
+
+var
+	csbi: 		win.CONSOLE_SCREEN_BUFFER_INFO;
+	charsRead:	dword;
+	xyposn:		win.COORD;
+	handle:		dword;
+	
+begin putRect;
+
+	pushad();
+	
+	mov( stdout.handle(), handle );
+
+	// Verify that the coordinates are within range:
+	
+	win32cons.info( csbi );
+	if
+	(#{
+		mov( top, ax );
+		cmp( ax, bottom );
+		ja true;
+		cmp( ax, csbi.dwSize.Y );
+		jae true;
+		mov( left, ax );
+		cmp( ax, right );
+		ja true;
+		cmp( ax, csbi.dwSize.X );
+		jb false;
+	}#) then
+
+		raise( ex.ValueOutOfRange );
+		
+	endif;
+
+	
+	// Set up the coordinates where we will write the string.
+	
+	mov( top, cx );
+	mov( cx, xyposn.Y );
+	mov( left, cx );
+	mov( cx, xyposn.X );
+	
+	// Loop row by row, grab and store the data:
+	
+	mov( buf, ebx );		// Start storing data here.
+	movzx( right, eax );	// Compute # of chars/row.
+	sub( left, ax );
+	inc( ax );
+	forever
+	
+		mov( xyposn.Y, cx );
+		breakif( cx > bottom );
+		push( eax );
+		push( ebx );		
+		win.WriteConsoleOutputCharacter
+		( 
+			charsRead,
+			xyposn,
+			eax,
+			ebx,
+			handle 
+		);
+		pop( ebx );
+		pop( eax );
+		add( eax, ebx );
+		inc( xyposn.Y );
+
+	endfor;
+	popad();
+	
+end putRect;
+
+
+
+
+
+end consoleUnit;

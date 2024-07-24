@@ -1,0 +1,3199 @@
+// ageobjs.hla
+//
+// File containing procedure and method declarations
+// for adventure engine classes.
+
+unit adventureObjs;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+	
+	
+static
+	objectVMT		:VMT( object );
+	nounVMT			:VMT( noun );
+	physObjVMT		:VMT( physObj );
+	impedimentVMT	:VMT( impediment );
+	possessionVMT	:VMT( possession );
+	weaponVMT		:VMT( weapon );
+	protectionVMT	:VMT( protection );
+	consumableVMT	:VMT( consumable );
+	containerVMT	:VMT( container );
+	roomVMT			:VMT( room );
+	agentVMT		:VMT( agent );
+	playerVMT		:VMT( player );
+	
+/*****************************************************************/
+/*                                                               */
+/* 	                                                             */
+/*  ------------ object class method and procedures ------------ */
+/*                                                               */
+/* 	                                                             */
+/*****************************************************************/
+	
+	// object.create-
+	// Constructor for the object class.
+	
+	_procedure( object.create ) ( objName :string );
+	begin create; debug( "object.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( object ));
+			mov( eax, esi );
+			
+		endif;
+		mov( &object._VMT_, this._pVMT_ );
+		mov( objName, eax );
+		mov( eax, this.objName );
+		mov( object_rtti, this.rtti );
+		
+		
+		// Add this object to the global objects list:
+		
+		push( esi );
+		mov( esi, eax );
+		objNode.create();
+		mov( eax, (type objNode [esi]).theObject );
+		mov( esi, eax );
+		objectList.appendLast( (type objNode [eax]) );
+		pop( esi );
+		pop( eax );
+		
+	end create;
+	
+	// object.destroy-
+	// Object destructor, frees up any storage used by the object:
+	
+	_method( object.destroy );
+	begin destroy; debug( "object.destroy" );
+	
+		// Note: this object had better not be on any lists
+		// when destroy is called, or we'll wind up with a
+		// dangling pointer problem.
+		
+		if( isInHeap( esi )) then
+		
+			free( esi );
+			
+		endif;
+	
+	end destroy;
+	
+	
+	// object.brieflyDescribe,
+	// object.fullyDescribe -
+	// Simple objects have no descriptions, so these two methods just return.
+	
+	_method( object.brieflyDescribe ); @noframe;
+	begin brieflyDescribe; debug( "object.brieflyDescribe" );
+	
+		ret();
+		
+	end brieflyDescribe;
+	
+	_method( object.fullyDescribe ); @noframe;
+	begin fullyDescribe; debug( "object.fullyDescribe" );
+	
+		ret();
+		
+	end fullyDescribe;
+	
+	// examine-
+	//	Simple objects cannot be examined, just return false in EAX to
+	// denote that nothing was printed:
+	
+	_method( object.examine ); @noframe;
+	begin examine;
+	
+		mov( false, eax );
+		ret();
+		
+	end examine;
+	
+	
+	// object.write-
+	// Outputs an object's information to an output file.
+	
+	_method( object.write )( fd:dword );
+	begin write; debug( "object.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually an "object" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &objectVMT ) then // RTTI - is this an OBJECT type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: object" nl
+			);
+			
+		
+		endif;
+		
+		fileio.put
+		( 
+			fd, 
+			"rtti: ", (type dword this.rtti), nl
+			"name: ",
+			this.objName, nl
+		);
+		
+		
+		// If this is an actual "object" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &objectVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// object.read
+	// Reads an object's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( object.read)( fd:dword );
+	begin read; debug( "object.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: object.read" )
+		
+	end read;
+
+
+
+
+
+/**************************************************************/
+/* 	                                                          */
+/*                                                            */
+/* ------------ noun class method and procedures ------------ */
+/*                                                            */
+/*                                                            */
+/**************************************************************/
+
+	// noun.create-
+	// Constructor for the noun class.
+	// It is the caller's responsibility to initialize the nounValue field.
+	
+	_procedure( noun.create )( objName:string );
+	begin create; debug( "noun.create" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );
+		
+		if( esi = NULL ) then
+		
+			malloc( @size( noun ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "object" fields:
+		
+		objESI.create( objName );
+		
+		// Set the specific fields:
+		
+		mov( &noun._VMT_, this._pVMT_ );
+		mov( noun_rtti, this.rtti );
+		mov( &dummy_usage, this.usage );
+		
+		// Initialize the actions array with pointers to
+		// the IDontKnowHowTo procedure:
+		
+		cld();
+		mov( num_verbs, ecx );
+		lea( edi, this.actions );
+		mov( &IDontKnowHowTo, eax );
+		rep.stosd(); 
+		
+		
+		// Add this object to the nounTable:
+		
+		push( esi );
+		nounTable.getNode( objName );
+		pop( esi );
+		mov( esi, (type tableNode [eax]).Value );
+			
+		pop( edi );
+		pop( ecx );	
+		pop( eax );
+		
+	end create;
+	
+	// noun.write-
+	// Outputs a noun's information to an output file.
+	
+	_method( noun.write )( fd:dword );
+	begin write; debug( "noun.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this noun's specific information.
+		//
+		// First, if this is actually a "noun" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &nounVMT ) then // RTTI - is this a NOUN type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: noun" nl
+			);
+			
+		
+		endif;
+		
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( objectVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Emit the noun-specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"value: ",
+			this.nounValue, nl
+		);
+		
+		// If this is an actual "noun" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &nounVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	// noun.read
+	// Reads an object's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( noun.read )( fd:dword );
+	begin read; debug( "noun.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: noun.read" )
+		
+	end read;
+	
+	
+	
+					
+		
+					
+	
+	
+	
+	
+	
+	
+/******************************************************************/
+/*                                                                */
+/*                                                                */
+/* ------------ physObj class methods and procedures ------------ */
+/*                                                                */
+/*                                                                */
+/******************************************************************/
+	
+	// physObj.create-
+	// Constructor for the physObj class.
+	
+	_procedure( physObj.create )( objName:string );
+	readonly
+		emptyStr :string := "";
+		
+	begin create; debug( "physObj.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( physObj ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "object" fields:
+		
+		(type noun [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for phyObj class:
+		
+		mov( &physObj._VMT_, this._pVMT_ );
+		mov( physObj_rtti, this.rtti );
+		
+		mov( emptyStr, eax );			// Default to an empty string.
+		mov( eax, this.longDescription );
+		mov( eax, this.shortDescription );
+		mov( eax, this.inscription );
+		mov( longDescrFGColor, this.ldFGColor );// Colors for the description
+		mov( gameBGColor, this.ldBGColor );		// strings.
+		mov( shortDescrFGColor, this.sdFGColor );
+		mov( gameBGColor, this.sdBGColor );
+		mov( inscrpFGColor, this.inscrpFGColor );
+		mov( inscrpBGColor, this.inscrpBGColor );
+		
+		pop( eax );
+		
+	end create;
+	
+	// physObj.destroy-
+	// physObj destructor, frees up any storage used by the object:
+	
+	_method( physObj.destroy );
+	begin destroy; debug( "physObj.destroy" );
+	
+		push( eax );
+		
+
+		// If the longDescription or shortDescription strings are
+		// on the heap, deallocate them.
+		
+		if( isInHeap( this.longDescription )) then
+		
+			//free( this.longDescription );
+			
+		endif;
+		if( isInHeap( this.shortDescription )) then
+		
+			//free( this.shortDescription );
+			
+		endif;
+		
+		
+		// Call the parent's destructor to deallocate this object:
+		
+
+		call( nounVMT[ @offset( noun.destroy ) ] );
+		pop( eax );
+	
+	end destroy;
+	
+	
+	// physObj.examine-
+	//	Displays the inscription on a physical object.
+	// Returns true (1) in EAX if it actually prints something,
+	// false (0) otherwise.
+	
+	_method( physObj.examine );
+	begin examine;
+
+		console.setAttrs( physObjESI.inscrpFGColor, physObjESI.inscrpBGColor );
+		
+		// Note that call to str.ne will automatically set EAX to an
+		// appropriate value, but this code explicitly sets EAX anyway,
+		// just for clarity.
+		
+		if( str.ne( this.inscription, "" )) then
+		
+			stdout.put
+			( 
+				WritingOnThisObjectSez,
+				nl, 
+				this.inscription, 
+				nl 
+			);
+			mov( true, eax );	// 'cause we printed an inscription
+			
+		else
+			
+			mov( false, eax );	// Did not print the inscription.
+					
+		endif;
+		console.setAttrs( gameFGColor, gameBGColor );
+
+	end examine;
+	
+	
+	
+	_procedure( physObj.initPhysObj )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string 
+	);
+	begin initPhysObj; debug( "physObj.initPhysObj" );
+
+		assert( esi <> NULL );	// Just to be safe...
+		push( eax );
+		mov( sdString, eax );
+		mov( eax, this.shortDescription );
+		mov( ldStr, eax );
+		mov( eax, this.longDescription );
+		mov( inscription, eax );
+		mov( eax, this.inscription );
+		pop( eax );
+
+	end initPhysObj;
+
+	
+	// physObj.brieflyDescribe -
+	// Displays the brief description of the physObj object.
+	
+	_method( physObj.brieflyDescribe );
+	begin brieflyDescribe; debug( "physObj.brieflyDescribe" );
+	
+		console.setAttrs( this.sdFGColor, this.sdBGColor );
+		stdout.puts( this.shortDescription );
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.newln();
+		
+	end brieflyDescribe;
+	
+	// physObj.shortDescribe -
+	// Displays the full description of the current object.
+	
+	_method( physObj.fullyDescribe );
+	begin fullyDescribe; debug( "physObj.fullyDescribe" );
+	
+		stdout.newln();
+		console.setAttrs( this.sdFGColor, this.sdBGColor );
+		str.length( this.shortDescription );
+		if( eax > 0 ) then
+
+			stdout.putcSize( '-', eax, '-' );
+			stdout.newln();
+			stdout.puts( this.shortDescription );
+			stdout.newln();
+			stdout.putcSize( '-', eax, '-' );
+			stdout.newln();
+			
+		endif; 
+		console.setAttrs( this.ldFGColor, this.ldBGColor );
+		stdout.puts( this.longDescription );
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.newln();
+		
+	end fullyDescribe;
+	
+	
+	// physObj.write-
+	// Outputs a physObj's information to an output file.
+	
+	_method( physObj.write )( fd:dword );
+	begin write; debug( "physObj.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "physObj" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &physObjVMT ) then // RTTI - is this an physObj type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: physObj" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( nounVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the physObj specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"#descr:" nl,
+			this.longDescription, nl,
+			"#enddescr" nl,
+			"#shortdescr:" nl,
+			this.shortDescription, nl,
+			"#enddescr" nl
+		);
+				
+		// If this is an actual "physObj" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &physObjVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// physObj.read
+	// Reads a physObj's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( physObj.read )( fd:dword );
+	begin read; debug( "physObj.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: physObj.read" )
+		
+	end read;
+	
+
+
+
+
+	
+/******************************************************************/
+/*                                                                */
+/*                                                                */
+/* ----------- impediment class methods and procedures ---------- */
+/*                                                                */
+/*                                                                */
+/******************************************************************/
+	
+	// impediment.create-
+	// Constructor for the impediment class.
+	
+	_procedure( impediment.create )( objName:string );
+	readonly
+		emptyStr :string := "";
+		
+	begin create; debug( "impediment.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( impediment ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "physObj" fields:
+		
+		(type physObj [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for impediment class:
+		
+		mov( &impediment._VMT_, this._pVMT_ );
+		mov( impediment_rtti, this.rtti );
+		
+		mov( NULL, this.key );
+		pop( eax );
+		
+	end create;
+	
+	
+	
+	_procedure( impediment.initImpediment )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string;
+		key			:possessionPtr;
+		impededMsg	:string;
+		unImpededMsg:string
+	);
+	begin initImpediment; debug( "impediment.initImpediment" );
+
+		assert( esi <> NULL );	// Just to be safe...
+		push( eax );
+		
+		this.initPhysObj
+		(
+			sdString,
+			ldStr,
+			inscription
+		);
+		mov( key, eax );
+		mov( eax, this.key );
+		mov( impededMsg, eax );
+		mov( eax, this.impededMsg );
+		mov( unImpededMsg, eax );
+		mov( eax, this.unImpededMsg );
+		pop( eax );
+
+	end initImpediment;
+	
+	
+	// impediment.write-
+	// Outputs a impediment's information to an output file.
+	
+	_method( impediment.write )( fd:dword );
+	begin write; debug( "impediment.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "impediment" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &impedimentVMT ) then // RTTI - is this an impediment type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: impediment" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( physObjVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the impediment specific data:
+		
+		mov( this.key, eax );
+		if( eax = NULL ) then
+		
+			fileio.put( fd, "#key:  ", nl );
+			
+		else
+		
+			fileio.put( fd, "#key: ", possessionEAX.objName, nl );
+			
+		endif;
+		fileio.put
+		( 
+			fd, 
+			"#impededMsg: ", this.impededMsg, nl
+			"#unImpededMsg:",  this.unImpededMsg, nl
+		);
+			
+				
+		// If this is an actual "impediment" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &impedimentVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// impediment.read
+	// Reads a impediment's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( impediment.read )( fd:dword );
+	begin read; debug( "impediment.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: impediment.read" )
+		
+	end read;
+	
+	
+
+
+
+
+
+
+/*********************************************************************/
+/*                                                                   */
+/*                                                                   */
+/* ------------ possession class methods and procedures ------------ */
+/* 	                                                                 */
+/* 	                                                                 */
+/*********************************************************************/
+
+	
+	// possession.create-
+	// Constructor for the possession class.
+	
+	_procedure( possession.create )( objName:string );
+	begin create; debug( "possession.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( possession ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "object" fields:
+		
+		(type physObj [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for possession class:
+		
+		mov( &possession._VMT_, this._pVMT_ );
+		mov( possession_rtti, this.rtti );
+		fldz();
+		fstp( this.reward );
+		fldz();
+		fstp( this.retail );
+		fldz();
+		fstp( this.wholesale );
+		fldz();
+		fstp( this.weight );
+		fldz();
+		fstp( this.reward );
+		
+		mov( 0, this.age );				// Initialize age counter.
+		mov( $ffff_ffff, this.uses );	// Init to infinite # of uses.
+		mov( 0, this.stealable );		// Default to can't be stolen.
+		
+		
+		// Because possessions always appear on a contains list,
+		// We'll create a new objNode object and save the pointer
+		// to this field in the possObjNode field of this class. 
+		
+		push( esi );
+		mov( esi, eax );
+		objNode.create();
+		mov( eax, (type objNode [esi]).theObject );
+		mov( esi, eax );
+		pop( esi );
+		mov( eax, this.possObjNode );
+		
+		pop( eax );
+		
+	end create;
+	
+	
+	
+	// possession.examine-
+	//	Displays the inscription on a possession and the value if
+	// the value is non-zero.  Returns true in EAX if it actually
+	// prints something, false otherwise.
+	
+	_method( possession.examine );
+	var
+		didOutput	:boolean;
+		
+	readonly
+		cpfx	:string := CurrencySymbol;
+		csfx	:string	:= CurrencyPostfix;
+		
+	begin examine;
+
+		mov( false, didOutput );
+		console.setAttrs( this.inscrpFGColor, this.inscrpBGColor );
+		if( str.ne( this.inscription, "" )) then
+		
+			stdout.put
+			( 
+				WritingOnThisObjectSez,
+				nl, 
+				this.inscription, 
+				nl 
+			);
+			mov( true, didOutput );
+
+		endif;
+		
+		// If this possession's value is non-zero, then display
+		// the possessions value:
+
+		fldz();
+		fld( this.reward );
+		fcompp();
+		fstsw( ax );
+		sahf();
+		if( @ne ) then
+		
+			stdout.put
+			( 
+				ObjectsValueIs, 
+				cpfx, 
+				this.reward:8:2,
+				csfx,
+				nl
+			);
+			mov( true, didOutput );
+			
+		endif;
+		console.setAttrs( gameFGColor, gameBGColor );
+		movzx( didOutput, eax );
+		
+	end examine;
+
+	
+	_procedure( possession.initPossession )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string;
+		reward		:real64;
+		weight		:real64;
+		retail		:real64;
+		wholesale	:real64;
+		numUses		:uns32 
+	);
+	begin initPossession; debug( "possession.initPossession" );
+
+		assert( esi <> NULL );	// no straight class-procedure calls!
+		push( eax );
+		mov( sdString, eax );
+		mov( eax, this.shortDescription );
+		mov( ldStr, eax );
+		mov( eax, this.longDescription );
+		mov( inscription, eax );
+		mov( eax, this.inscription );
+		fld( reward );
+		fstp( this.reward );
+		fld( weight );
+		fstp( this.weight );
+		fld( retail );
+		fstp( this.retail );
+		fld( wholesale );
+		fstp( this.wholesale );
+		mov( numUses, eax );
+		mov( eax, this.uses );
+		pop( eax );
+
+	end initPossession;
+
+	// possession.fullyDescribe -
+	// Displays the full description of a possession object.
+	
+	_method( possession.fullyDescribe );
+	begin fullyDescribe; debug( "possession.fullyDescribe" );
+	
+		console.setAttrs( this.ldFGColor, this.ldBGColor );
+		stdout.puts( this.longDescription );
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.newln();
+		
+	end fullyDescribe;
+
+	
+	// possession.write-
+	// Outputs a possession's information to an output file.
+	
+	_method( possession.write )( fd:dword );
+	begin write; debug( "possession.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "possession" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &possessionVMT ) then // RTTI - is this an possession type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: possession" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( physObjVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the possession specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"#possessionVal:", this.reward, nl,
+			"#possessionWt:", this.weight, nl,
+			"#possessionRtl: ", this.retail, nl,
+			"#possessionWhsl: ", this.wholesale, nl,
+			"#possessionAge: ", this.age, nl,
+			"#possessionUses: ", this.uses, nl
+		);
+				
+		// If this is an actual "possession" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &possessionVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// possession.read
+	// Reads a possession's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( possession.read )( fd:dword );
+	begin read; debug( "possession.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: possession.read" )
+		
+	end read;
+	
+	
+
+
+/*********************************************************************/
+/*                                                                   */
+/*                                                                   */
+/*   ------------ weapon class methods and procedures ------------   */
+/* 	                                                                 */
+/* 	                                                                 */
+/*********************************************************************/
+
+	
+	// weapon.create-
+	// Constructor for the weapon class.
+	
+	_procedure( weapon.create )( objName:string );
+	begin create; debug( "weapon.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( weapon ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "possession" fields:
+		
+		(type possession [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for weapon class:
+		
+		mov( &weapon._VMT_, this._pVMT_ );
+		mov( weapon_rtti, this.rtti );
+		mov( 0, this.power );
+		mov( false, this.wielded );
+		
+		pop( eax );
+		
+	end create;
+	
+	
+	
+
+	
+	_procedure( weapon.initWeapon )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string;
+		reward		:real64;
+		weight		:real64;
+		retail		:real64;
+		wholesale	:real64;
+		numUses		:uns32;
+		power		:int32 
+	);
+	begin initWeapon; debug( "weapon.initWeapon" );
+
+		assert( esi <> NULL );	// No straight class-procedure calls!
+		push( eax );
+		this.initPossession
+		(
+			sdString,	
+			ldStr,		
+			inscription,
+			reward,		
+			weight,		
+			retail,		
+			wholesale,	
+			numUses
+		);
+		mov( sdString, eax );
+		mov( power, eax );
+		mov( eax, this.power );
+		pop( eax );
+
+	end initWeapon;
+
+	
+	// weapon.write-
+	// Outputs a weapon's information to an output file.
+	
+	_method( weapon.write )( fd:dword );
+	begin write; debug( "weapon.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "weapon" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &weaponVMT ) then // RTTI - is this an weapon type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: weapon" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( possessionVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the weapon specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"#weaponPower:", this.power, nl,
+			"#weaponWielded:", this.wielded, nl
+		);
+				
+		// If this is an actual "weapon" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &weaponVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// weapon.read
+	// Reads a weapon's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( weapon.read )( fd:dword );
+	begin read; debug( "weapon.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: weapon.read" )
+		
+	end read;
+	
+	
+
+
+/*********************************************************************/
+/*                                                                   */
+/*                                                                   */
+/* ------------ protection class methods and procedures ------------ */
+/* 	                                                                 */
+/* 	                                                                 */
+/*********************************************************************/
+
+	
+	// protection.create-
+	// Constructor for the protection class.
+	
+	_procedure( protection.create )( objName:string );
+	begin create; debug( "protection.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( protection ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "protection" fields:
+		
+		(type possession [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for the protection class:
+		
+		mov( &protection._VMT_, this._pVMT_ );
+		mov( protection_rtti, this.rtti );
+		mov( 0, this.ability );
+		mov( false, this.isWearing );
+		
+		pop( eax );
+		
+	end create;
+	
+	
+	
+
+	
+	_procedure( protection.initProtection )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string;
+		reward		:real64;
+		weight		:real64;
+		retail		:real64;
+		wholesale	:real64;
+		numUses		:uns32;
+		ability		:int32 
+	);
+	begin initProtection; debug( "protection.initProtection" );
+
+		assert( ESI <> NULL );		// No straight class-procedure calls.
+		push( eax );
+		this.initPossession
+		(
+			sdString,	 
+			ldStr,		
+			inscription,	
+			reward,		
+			weight,		
+			retail,		
+			wholesale,	
+			numUses
+		);		
+		mov( ability, eax );
+		mov( eax, this.ability );
+		pop( eax );
+
+	end initProtection;
+
+	
+	// protection.write-
+	// Outputs a protection device's information to an output file.
+	
+	_method( protection.write )( fd:dword );
+	begin write; debug( "protection.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "protection" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &protectionVMT ) then // RTTI - is this a protection type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: protection" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( possessionVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the protection specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"#ability:", this.ability, nl,
+			"#wearing:", this.isWearing, nl
+		);
+				
+		// If this is an actual "protection" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &protectionVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// protection.read
+	// Reads a protection device's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( protection.read )( fd:dword );
+	begin read; debug( "protection.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: protection.read" )
+		
+	end read;
+	
+	
+
+
+/*********************************************************************/
+/*                                                                   */
+/*                                                                   */
+/* ------------ consumable class methods and procedures ------------ */
+/* 	                                                                 */
+/* 	                                                                 */
+/*********************************************************************/
+
+	
+	// consumable.create-
+	// Constructor for the consumable class.
+	
+	_procedure( consumable.create )( objName:string );
+	begin create; debug( "consumable.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( consumable ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "consumable" fields:
+		
+		(type possession [esi]).create( objName );
+		
+		
+		// Initialize the specific fields for the consumable class:
+		
+		mov( &consumable._VMT_, this._pVMT_ );
+		mov( consumable_rtti, this.rtti );
+		mov( 0, this.score );
+		mov( 0, this.power );
+		mov( 0, this.food );
+		mov( 0, this.health );		
+		pop( eax );
+		
+	end create;
+	
+	
+	
+
+	
+	_procedure( consumable.initConsumable )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string;
+		numUses		:uns32;
+		score		:int32;
+		power		:int32;
+		food		:int32;
+		health		:int32;
+		reward		:real64;
+		weight		:real64;
+		retail		:real64;
+		wholesale	:real64;
+		wealth		:real64 
+	);
+	begin initConsumable; debug( "consumable.initConsumable" );
+
+		push( eax );
+		this.initPossession
+		(
+			sdString,
+			ldStr,
+			inscription,
+			reward,
+			weight,
+			retail,
+			wholesale,
+			numUses
+		);
+		mov( score, eax );
+		mov( eax, this.score );
+		mov( power, eax );
+		mov( eax, this.power );
+		mov( food, eax );
+		mov( eax, this.food );
+		mov( health, eax );
+		mov( eax, this.health );
+		pop( eax );
+
+	end initConsumable;
+
+	
+	// consumable.write-
+	// Outputs a consumable device's information to an output file.
+	
+	_method( consumable.write )( fd:dword );
+	begin write; debug( "consumable.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually a "consumable" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &consumableVMT ) then // RTTI - is this a consumable type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: consumable" nl
+			);
+			
+		
+		endif;
+
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( possessionVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Now output the consumable specific data:
+		
+		fileio.put
+		( 
+			fd, 
+			"#score: ", this.score, nl,
+			"#power: ", this.power, nl,
+			"#food: ", this.food, nl,
+			"#health: ", this.health, nl
+		);
+				
+		// If this is an actual "consumable" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &consumableVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// consumable.read
+	// Reads a consumable device's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( consumable.read )( fd:dword );
+	begin read; debug( "consumable.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: consumable.read" )
+		
+	end read;
+	
+	
+
+
+/********************************************************************/
+/*                                                                  */
+/*                                                                  */
+/* ------------ container class methods and procedures ------------ */
+/*                                                                  */
+/*                                                                  */
+/********************************************************************/
+
+	// container.create-
+	// Constructor for the container class.
+	
+	_procedure( container.create )( objName :string );
+	begin create; debug( "container.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( container ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "object" fields:
+		
+		(type physObj [esi]).create( objName );
+		
+		// Initialize the container-specific fields:
+		
+		mov( &container._VMT_, this._pVMT_ );
+		mov( container_rtti, this.rtti );
+		lea( eax, "Inventory" );
+		mov( eax, this.invHeader );
+		mov( true, this.allowSearch );
+		mov( true, this.allowGet );
+		
+		// Create a contains list for this object. Initially,
+		// the list will be empty.
+		
+		push( esi );		// Must preserve ESI!
+		objList.create();
+		mov( esi, eax );	// Save ptr to "list".
+		pop( esi );			// Restore pointer to "container".
+		mov( eax, this.contains );
+		
+		pop( eax );
+		
+	end create;
+	
+	// container.destroy-
+	// container destructor, frees up any storage used by the object:
+	
+	_method( container.destroy );
+	begin destroy; debug( "container.destroy" );
+	
+		push( eax );
+		
+		// Question: do we want to free up everything on the
+		// "contains" list here? Current decision is no -- let
+		// any overridden versions of this method do this if
+		// it is necessary.
+		//
+		// Note: this object had better not be on any lists
+		// when destroy is called, or we'll wind up with a
+		// dangling pointer problem.
+		
+		// First, destroy the container list held by this object:
+		
+		push( esi );
+		mov( this.contains, esi );
+		(type objList [esi]).destroy();
+		pop( esi );
+		
+		// Call the parent's destructor to deallocate this object:
+
+		call( physObjVMT[ @offset( physObj.destroy ) ] );
+		
+		pop( eax );
+	
+	end destroy;
+	
+				
+	_procedure( container.initContainer )
+	( 
+		sdString	:string; 
+		ldStr		:string;
+		inscription	:string 
+	);
+	begin initContainer; debug( "container.initContainer" );
+	
+		push( eax );
+		push( esi );
+		this.initPhysObj( sdString, ldStr, inscription );
+		
+		// Create a new object list for the contains field.
+		
+		objList.create();
+		mov( esi, eax );
+		pop( esi );
+		mov( eax, this.contains );
+		
+		pop( eax );
+
+	end initContainer;
+	
+	
+	
+	// container.inventory-
+	// Displays the descriptions of all the items contained by this object.
+	
+	_method( container.inventory );
+	begin inventory; debug( "container.inventory" );
+	
+		push( esi );
+		push( ebx );
+		stdout.put( this.invHeader, nl );
+		mov( this.contains, ebx );
+		foreach (type objList [ebx]).nodeInList() do
+			
+			mov( (type objNode [esi]).theObject, esi );
+			(type object [esi]).brieflyDescribe();
+			
+		endfor;
+		pop( ebx );
+		pop( esi );
+		
+	end inventory;
+	
+	
+	
+	// container.searchObj-
+	// Searches through the contains list for a specific object
+	// and returns a pointer to that object if found. Returns
+	// NULL if the object is not found (return value in EAX).
+	
+	_method( container.searchObj )( objName:string );
+	var
+		saveESI	:dword;
+		saveEBX	:dword;
+		
+	begin searchObj; debug( "container.searchObj" );
+	
+		mov( NULL, eax );
+		if( this.allowSearch ) then
+		
+			mov( esi, saveESI );
+			mov( ebx, saveEBX );
+			mov( this.contains, ebx );
+			foreach (type objList [ebx]).nodeInList() do
+				
+				mov( (type objNode [esi]).theObject, esi );
+				if( str.eq( objESI.objName, objName ) ) then
+				
+					// If we find the object, return a
+					// pointer to the object in eax:
+					
+					mov( esi, eax );
+					mov( saveESI, esi );
+					mov( saveEBX, ebx );
+					exit searchObj;
+					
+				endif;
+				
+			endfor;
+			mov( saveEBX, ebx );
+			mov( saveESI, esi );
+			
+		endif;
+		
+	end searchObj;
+	
+	
+	
+	// container.removeObj-
+	// Searches through the contains list for a specific object
+	// and removes that object (if present) from the list. This
+	// method returns a pointer to the object that was removed
+	// in the EAX register. If no object is present, or you
+	// are not allowed to remove the object, this function
+	// returns NULL in EAX.
+	
+	_method( container.removeObj )( objName:string );
+	begin removeObj; debug( "container.searchObj" );
+	
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( esi );
+		
+		mov( NULL, edx );
+		
+		// First, see if this container object even allows you
+		// to remove objects from it:
+		
+		if( this.allowGet ) then
+		
+			// Okay, removal is allowed, now let's scan through
+			// each of the objects held by this container object
+			// searching for the one we want to remove:
+			
+			push( esi );
+			mov( this.contains, ebx );
+			foreach objListEBX.nodeInList() do
+				
+				mov( objNodeESI.theObject, ecx );
+				if( str.eq( objECX.objName, objName ) ) then
+				
+					// If we find the object, return a
+					// pointer to the object node in edx:
+					
+					mov( esi, edx );
+					
+				endif;
+				
+			endfor;
+			pop( esi );
+			
+		endif;
+		mov( edx, eax );	// Return result here
+		
+		// If we found the object, remove it from the contains
+		// list and return a pointer to the actual object in
+		// EAX:
+		
+		if( eax <> NULL ) then
+
+			
+			// Yep, we can remove the object. Delete
+			// it from the container's list here and
+			// return a pointer to the object in EAX:
+			
+			mov( this.contains, ebx );
+			objListEBX.deleteNode( [eax] );
+			mov( objNodeEDX.theObject, eax );
+				
+			
+		endif;
+		
+		pop( esi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+		
+	end removeObj;
+	
+	
+	// container.fullyDescribe -
+	// Displays the full description of the current object as well
+	// as any items held in inventory here.
+	
+	_method( container.fullyDescribe );
+	begin fullyDescribe; debug( "container.fullyDescribe" );
+	
+		push( ebx );
+		
+		// Call the anscestor method to print the description text:
+		
+		lea( edi, physObjVMT );
+		call( physObjVMT[ @offset( physObj.fullyDescribe ) ] );
+
+		// Also display the inventory list for this container object:
+		
+		mov( this.contains, ebx );
+		push( esi );
+		(type objList [ebx]).numNodes();
+		pop( esi );
+		if( eax <> 0 ) then
+
+			this.inventory();
+			console.setAttrs( this.sdFGColor, this.sdBGColor );			
+			stdout.put( "---------------" nl );
+			console.setAttrs( gameFGColor, gameBGColor );			
+			
+		endif;
+		pop( ebx );
+		
+	end fullyDescribe;
+	
+	
+	
+	// container.write-
+	// Outputs a container's information to an output file.
+	
+	_method( container.write )( fd:dword );
+	begin write; debug( "container.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually an "object" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &containerVMT ) then // RTTI - is this a container type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: container" nl
+			);
+			
+		
+		endif;
+		
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( physObjVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Output the "contains" data that is specific to this class:
+		
+		fileio.put
+		( 
+			fd, 
+			"#contains:" nl
+		);
+		mov( this.contains, esi );
+		foreach (type list [esi]).nodeInList() do
+		
+			mov( (type objNode [esi]).theObject, esi );
+			fileio.put( fd, objESI.objName, nl ); 
+		
+		endfor;
+		
+		// Close up the contains definition
+		
+		fileio.put
+		( 
+			fd, 
+			"#endcontains" nl
+		);
+		
+		// If this is an actual "container" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &containerVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// container.read
+	// Reads a container's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( container.read )( fd:dword );
+	begin read; debug( "container.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: container.read" )
+		
+	end read;
+	
+	
+/*****************************************************************/
+/* 	                                                             */
+/* 	                                                             */
+/* ------------ agent class methods and procedures ------------  */
+/*                                                               */
+/*                                                               */
+/*****************************************************************/
+
+
+	// agent.create-
+	// Constructor for the agent class.
+	
+	_procedure( agent.create )( objName:string );
+	readonly
+		itemsPlayerIsHolding 	:string := ItemsYoureHolding;
+		emptyString				:string := "";
+		agentPossesses			:string := CurrentlyPossesses;
+		
+	begin create; debug( "agent.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( agent ));
+			mov( eax, esi );
+			
+		endif;
+
+		// Call the ancestor create function to initialize
+		// the "container" fields:
+		
+		(type container [esi]).create( objName );
+
+		// Set the VMT to the player VMT:
+		
+		mov( &agent._VMT_, this._pVMT_ );
+		
+		// Initialize other agent-specific fields:
+		
+		mov( agent_rtti, this.rtti );
+		mov( NULL, this.curRoom );
+		mov( agentPossesses, eax );
+		mov( eax, this.invHeader );
+		mov( 0, this.maxPower );
+		mov( 0, this.curPower );
+		mov( 0, this.lastAttack );
+		mov( &defaultAgentAction, this.agentAction );
+
+		// Actions that are possible on an agent:
+		
+		mov( &verb_fight, this.actions[ uns32( v_fight )*4 ] );
+
+		
+		// Because agents always appear on a contains list,
+		// We'll create a new objNode object and save the pointer
+		// to this field in the agentObjNode field of this class. 
+		
+		push( esi );
+		mov( esi, eax );
+		objNode.create();
+		mov( eax, (type objNode [esi]).theObject );
+		mov( esi, eax );
+		pop( esi );
+		mov( eax, this.agentObjNode );
+		
+		pop( eax );
+		
+	end create;
+	
+	// agent.inventory-
+	// Displays the descriptions of all the items held by this agent.
+	
+	_method( agent.inventory );
+	begin inventory; debug( "agent.inventory" );
+	
+		push( esi );
+		push( ebx );
+		stdout.put( this.invHeader, nl );
+		mov( this.contains, ebx );
+		foreach (type objList [ebx]).nodeInList() do
+			
+			mov( (type objNode [esi]).theObject, esi );
+			(type object [esi]).brieflyDescribe();
+			
+		endfor;
+		pop( ebx );
+		pop( esi );
+		
+	end inventory;
+	
+	
+	// agent.write-
+	// Outputs an agent's information to an output file.
+	
+	_method( agent.write )( fd:dword );
+	begin write; debug( "agent.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually an "agent" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &agentVMT ) then // RTTI - is this an agent type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: agent" nl
+			);
+			
+		
+		endif;
+		
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( containerVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Emit the agent class specific info:
+		
+		writeObject( fd, "curroom: ", this.curRoom );
+		fileio.put( fd, "curPower: ", this.curPower, nl );
+		fileio.put( fd, "maxPower: ", this.maxPower, nl );
+		fileio.put( fd, "lastAttack: ", this.lastAttack, nl );
+		
+		// If this is an actual "agent" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &agentVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	
+	// agent.read
+	// Reads an agent's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( agent.read )( fd:dword );
+	begin read; debug( "agent.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: agent.read" )
+		
+	end read;
+	
+
+	// agent.initAgent-
+	//
+	//	Lets the caller initialize important fields in the agent object.
+	
+	procedure agent.initAgent
+	( 
+		sdStr		:string; 
+		ldStr		:string;
+		inscription	:string;
+		initRoom	:dword;
+		maxPower	:int32;
+		strength	:int32
+	); 
+	begin initAgent;
+	
+		push( eax );
+		mov( sdStr, eax );
+		mov( eax, this.shortDescription );
+		mov( ldStr, eax );
+		mov( eax, this.longDescription );
+		mov( inscription, eax );
+		mov( eax, this.inscription );
+		mov( initRoom, eax );
+		mov( rooms[ eax*4 ], eax );
+		mov( eax, this.curRoom );
+		mov( maxPower, eax );
+		mov( eax, this.maxPower );
+		mov( eax, this.curPower );
+		mov( strength, eax );
+		mov( eax, this.strength );
+		mov( 0, this.lastAttack );
+		
+		pop( eax );
+		
+	end initAgent;
+		
+
+	// This is the default action that agents will do on each turn
+	// that the player is in the same room as the agent.
+
+	_procedure( defaultAgentAction )( p:playerPtr; a:agentPtr );
+	begin defaultAgentAction;
+
+		// Default action is to do nothing.
+
+	end defaultAgentAction;
+
+
+	
+	
+/***************************************************************/
+/*                                                             */
+/*                                                             */
+/* ------------ room class methods and procedures ------------ */
+/*                                                             */
+/*                                                             */
+/***************************************************************/
+
+
+	// room.create- constructor for a room.
+	//				(note: room just uses the object class' destructor)
+	
+	_procedure( room.create )( objName:string );
+	readonly
+		ItemsFoundInThisRoom :string := ItemsFoundIn;
+
+	begin create; debug( "room.create" );
+	
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( room ));
+			mov( eax, esi );
+			
+		endif;
+		
+		// Call the ancestor create function to initialize
+		// the "object" fields:
+		
+		(type container [esi]).create( objName );
+		
+		// We need to set the VMT field to point at our actual VMT:
+		
+		mov( &room._VMT_, this._pVMT_ );
+		
+		// Initialize the other room-specific fields:
+		
+		mov( room_rtti, this.rtti );
+		mov( ItemsFoundInThisRoom, eax );
+		mov( eax, this.invHeader );
+		
+		mov( NULL, eax );
+		mov( eax, this.north );
+		mov( eax, this.south );
+		mov( eax, this.east );
+		mov( eax, this.west );
+		mov( eax, this.northEast );
+		mov( eax, this.northWest );
+		mov( eax, this.southEast );
+		mov( eax, this.southWest );
+		mov( eax, this.up );
+		mov( eax, this.down );
+		
+		mov( eax, this.lookNorthStr );
+		mov( eax, this.lookSouthStr );
+		mov( eax, this.lookWestStr );
+		mov( eax, this.lookEastStr );
+		mov( eax, this.lookNorthEastStr );
+		mov( eax, this.lookNorthWestStr );
+		mov( eax, this.lookSouthEastStr );
+		mov( eax, this.lookSouthWestStr );
+		mov( eax, this.lookUpStr );
+		mov( eax, this.lookDownStr );
+		
+		mov( eax, this.goNorthStr );
+		mov( eax, this.goSouthStr );
+		mov( eax, this.goWestStr );
+		mov( eax, this.goEastStr );
+		mov( eax, this.goNorthEastStr );
+		mov( eax, this.goNorthWestStr );
+		mov( eax, this.goSouthEastStr );
+		mov( eax, this.goSouthWestStr );
+		mov( eax, this.goUpStr );
+		mov( eax, this.goDownStr );
+		
+		mov( eax, this.impedeNorth );		
+		mov( eax, this.impedeSouth );
+		mov( eax, this.impedeEast );
+		mov( eax, this.impedeWest );
+		mov( eax, this.impedeNorthEast );
+		mov( eax, this.impedeNorthWest );
+		mov( eax, this.impedeSouthEast );
+		mov( eax, this.impedeSouthWest );
+		mov( eax, this.impedeUp );
+		mov( eax, this.impedeDown );	
+		
+		
+		// Initialize the console colors for the
+		// look and go strings:
+		
+		mov( goFGColor, this.goFGColor );
+		mov( goBGColor, this.goBGColor );
+		mov( lookFGColor, this.lookFGColor );
+		mov( lookBGColor, this.lookBGColor );
+		
+		// Bump the player's experience level up by
+		// one when they visit this room for the first time:
+		
+		mov( 1, this.experience );
+		
+		// Create an agents list for this object. Initially,
+		// the list will be empty.
+		
+		push( esi );		// Must preserve ESI!
+		objList.create();
+		mov( esi, eax );	// Save ptr to "list".
+		pop( esi );			// Restore pointer to "room".
+		mov( eax, this.agents );
+		
+		
+		pop( eax );
+		
+	end create;
+
+
+	// room.fullyDescribe -
+	// Displays the full description of the current room as well
+	// as any items held in inventory here and agents (and their
+	// inventory) appearing herein.
+	
+	_method( room.fullyDescribe );
+	
+		procedure printExit( dir:roomPtr; dirNoun:nounPtr );
+		begin printExit; debug( "printExit" );
+		
+			if( dir <> NULL ) then
+			
+				push( eax );
+				mov( dirNoun, eax );			
+				stdout.put( " <", nounEAX.objName, '>' );
+				pop( eax );
+				
+			endif;
+			
+		end printExit;
+		
+	
+	begin fullyDescribe; debug( "room.fullyDescribe" );
+	
+		push( ebx );
+		
+		// Call the anscestor method to print the description text
+		// and the inventory items:
+		
+		lea( edi, containerVMT );
+		call( containerVMT[ @offset( physObj.fullyDescribe ) ] );
+
+		// Also display the list of agents found in this room:
+		
+		mov( this.agents, ebx );
+		push( esi );
+		(type objList [ebx]).numNodes();
+		pop( esi );
+		if( eax <> 0 ) then
+
+			console.setAttrs( this.sdFGColor, this.sdBGColor );
+			stdout.put( nl, AgentsFoundInThisRoom, nl );
+			
+			push( esi );
+			mov( this.agents, ebx );
+			foreach objListEBX.nodeInList() do
+			
+				mov( objNodeESI.theObject, esi );
+				agentESI.fullyDescribe();
+				console.setAttrs( this.sdFGColor, this.sdBGColor );			
+				stdout.newln();
+				
+			endfor;
+			pop( esi );			
+			
+		endif;
+		console.setAttrs( this.sdFGColor, this.sdBGColor );
+		stdout.put( Exits );
+		printExit( this.north, northNoun );
+		printExit( this.south, southNoun );
+		printExit( this.east, eastNoun );
+		printExit( this.west, westNoun );
+		printExit( this.northEast, northEastNoun );
+		printExit( this.northWest, northWestNoun );
+		printExit( this.southEast, southEastNoun );
+		printExit( this.southWest, southWestNoun );
+		printExit( this.up, upNoun );
+		printExit( this.down, downNoun );
+		stdout.newln();		
+		
+	   	console.setAttrs( gameFGColor, gameBGColor );
+		pop( ebx );
+		
+	end fullyDescribe;
+
+	
+	
+	// room.enterRoom- Called whenever a player first enters a room.
+	
+	_method( room.enterRoom );
+	begin enterRoom; debug( "room.enterRoom" );
+	end enterRoom;
+	
+	// room.oneMove- Called whenever a player executes one
+	//				 command (except go) within a room.
+	
+	_method( room.oneMove );
+	begin oneMove; debug( "room.oneMove" );
+	end oneMove;
+	
+	
+	
+	// room.searchObj-
+	// Searches through the contains list for a specific object
+	// and returns a pointer to that object if found. If not found,
+	// it tries searching the the contains list of each of the
+	// agents found on the agents list and returns a pointer if
+	// the object is found in one of their lists. If the object
+	// isn't found anywhere, then this function returns NULL
+	// in EAX. If the object is found, then it returns a pointer
+	// to the object in EAX.
+	
+	_method( room.searchObj )( objName:string );
+	var
+		foundObject	:physObjPtr;
+		
+	begin searchObj; debug( "room.searchObj" );
+	
+		// Call the ancestor routine to see if the
+		// object is contained within this room:
+
+		push( esi );
+		push( objName );
+		call( containerVMT[ @offset( container.searchObj ) ] );
+		pop( esi );
+		
+		// If the object was not found within the room's contains list,
+		// then try searching through the agents list for the object.
+		
+		if( eax = NULL ) then
+
+			mov( eax, foundObject );	// Initialize with NULL
+			push( esi );
+			push( ebx );
+			mov( this.agents, ebx );
+			foreach (type objList [ebx]).nodeInList() do
+				
+				mov( (type objNode [esi]).theObject, esi );
+				agentESI.searchObj( objName );
+				if( eax <> NULL ) then
+				
+					mov( eax, foundObject );
+					
+				endif;
+				
+			endfor;
+			pop( ebx );
+			pop( esi );
+			mov( foundObject, eax );
+		
+		endif;
+		
+	end searchObj;
+	
+	
+	// room.removeObj-
+	// Searches through the contains list for a specific object
+	// and removes that object (if present) from the list. This
+	// method returns a pointer to the object that was removed
+	// in the EAX register. If no object is present, or you
+	// are not allowed to remove the object, this function
+	// returns NULL in EAX.
+	//
+	// This overridden procedure searches through both the
+	// room's contains list and, if the object isn't found yet,
+	// through each of the contains lists in the agents list.
+	
+	_method( room.removeObj )( objName:string );
+	var
+		saveESP	:dword;
+		
+	begin removeObj; debug( "room.searchObj" );
+	
+		push( ebx );
+		push( esi );
+		
+		
+		// Call the inherited function to search through
+		// the contains list:
+		
+		push( esi );
+		push( objName );
+		call( containerVMT[ @offset( container.removeObj ) ] );
+		pop( esi );
+		
+		// If EAX contains NULL at this point, then we didn't
+		// find the object on the contains list associated with
+		// this room. So repeat this process on the agents' list.
+		
+		if( eax = NULL ) then
+		
+			mov( esp, saveESP );		// So we can break out of iterator.
+			begin foundObject;
+			
+				mov( this.agents, ebx );
+				foreach objListEBX.nodeInList() do
+				
+					// For each agent, call the removeObj
+					// function:
+					
+					mov( objNodeESI.theObject, esi );
+					containerESI.removeObj( objName );
+					exitif( eax <> NULL ) foundObject;
+				
+				endfor;
+				
+				// If we fall through, then we didn't find the
+				// object. We must return NULL if this happens
+				
+				mov( NULL, eax );
+				
+			end foundObject;
+			
+			// Restore ESP in case we broke out of the iterator
+			// (which leaves the stack messed up).
+			
+			mov( saveESP, esp );
+		
+		endif;
+		
+		pop( esi );
+		pop( ebx );
+		
+	end removeObj;
+	
+	
+
+	// initroom- Useful utility method to initialize a room:
+		
+	_method( room.initroom )
+	(
+		roomVal				:dword;
+		sdStr				:string;
+		ldStr				:string;
+		lookNorthStr		:string;
+		goNorthStr			:string;
+		lookSouthStr		:string;
+		goSouthStr			:string;
+		lookEastStr			:string;
+		goEastStr			:string;
+		lookWestStr			:string;
+		goWestStr			:string;
+		lookNorthEastStr	:string;
+		goNorthEastStr		:string;
+		lookNorthWestStr	:string;
+		goNorthWestStr		:string;
+		lookSouthEastStr	:string;
+		goSouthEastStr		:string;
+		lookSouthWestStr	:string;
+		goSouthWestStr		:string;
+		lookUpStr			:string;
+		goUpStr				:string;
+		lookDownStr			:string;
+		goDownStr			:string			
+	);	 
+	begin initroom; debug( "room.initroom" );
+	
+		push( eax );
+		
+		this.initContainer( sdStr, ldStr, "" );
+		
+		// Assume no linkages to other rooms yet.
+		
+		mov( NULL, eax );
+		mov( eax, this.north );
+		mov( eax, this.south );
+		mov( eax, this.east );
+		mov( eax, this.west );
+		mov( eax, this.northEast );
+		mov( eax, this.northWest );
+		mov( eax, this.southEast );
+		mov( eax, this.southWest );
+		mov( eax, this.up );
+		mov( eax, this.down );
+		
+		// Allow the use of the "path" verb on this room:
+		
+		mov( &verb_path, this.actions[ uns32( v_path )*4 ] );
+		
+		
+		// Initialize the nounValue:
+		
+		mov( roomVal, eax );
+		mov( eax, this.nounValue );
+		
+		// Initialize the strings:
+		
+		mov( lookNorthStr, eax );
+		mov( eax, this.lookNorthStr );
+		mov( lookSouthStr, eax );
+		mov( eax, this.lookSouthStr );
+		mov( lookEastStr, eax );
+		mov( eax, this.lookEastStr );
+		mov( lookWestStr, eax );
+		mov( eax, this.lookWestStr );
+		mov( lookNorthEastStr, eax );
+		mov( eax, this.lookNorthEastStr );
+		mov( lookNorthWestStr, eax );
+		mov( eax, this.lookNorthWestStr );
+		mov( lookSouthEastStr, eax );
+		mov( eax, this.lookSouthEastStr );
+		mov( lookSouthWestStr, eax );
+		mov( eax, this.lookSouthWestStr );
+		mov( lookUpStr, eax );
+		mov( eax, this.lookUpStr );
+		mov( lookDownStr, eax );
+		mov( eax, this.lookDownStr );
+		
+		mov( goNorthStr, eax );
+		mov( eax, this.goNorthStr );
+		mov( goSouthStr, eax );
+		mov( eax, this.goSouthStr );
+		mov( goEastStr, eax );
+		mov( eax, this.goEastStr );
+		mov( goWestStr, eax );
+		mov( eax, this.goWestStr );
+		mov( goNorthEastStr, eax );
+		mov( eax, this.goNorthEastStr );
+		mov( goNorthWestStr, eax );
+		mov( eax, this.goNorthWestStr );
+		mov( goSouthEastStr, eax );
+		mov( eax, this.goSouthEastStr );
+		mov( goSouthWestStr, eax );
+		mov( eax, this.goSouthWestStr );
+		mov( goUpStr, eax );
+		mov( eax, this.goUpStr );
+		mov( goDownStr, eax );
+		mov( eax, this.goDownStr );
+		pop( eax );
+		
+	end initroom;
+
+	
+	// room.write-
+	// Outputs a room's information to an output file.
+	
+	_method( room.write )( fd:dword );
+	begin write; debug( "room.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this room's specific information.
+		//
+		// First, if this is actually an "room" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &roomVMT ) then // RTTI - is this a ROOM type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: room" nl
+			);
+			
+		
+		endif;
+		
+		// Call the ancestor's write method to emit the
+		// generic object information:
+		
+		push( esi );
+		push( fd );
+		call( containerVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Okay, now emit the information that is specific
+		// to a room:
+		
+		emitRoomDir
+		( 
+			fd, 
+			"north: ", 
+			this.north, 
+			this.goNorthStr,
+			this.lookNorthStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"south: ", 
+			this.south, 
+			this.goSouthStr, 
+			this.lookSouthStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"east: ", 
+			this.east, 
+			this.goEastStr, 
+			this.lookEastStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"west: ", 
+			this.west, 
+			this.goWestStr, 
+			this.lookWestStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"northEast: ", 
+			this.northEast, 
+			this.goNorthEastStr,
+			this.lookNorthEastStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"northWest: ", 
+			this.northWest, 
+			this.goNorthWestStr,
+			this.lookNorthWestStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"southEast: ", 
+			this.southEast, 
+			this.goSouthEastStr, 
+			this.lookSouthEastStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"southWest: ", 
+			this.southWest, 
+			this.goSouthWestStr, 
+			this.lookSouthWestStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"up: ", 
+			this.up, 
+			this.goUpStr, 
+			this.lookUpStr 
+		);
+		emitRoomDir
+		( 
+			fd, 
+			"down: ", 
+			this.down, 
+			this.goDownStr, 
+			this.lookDownStr 
+		);
+		
+		// Output the "agents" data that is specific to this class:
+		
+		fileio.put
+		( 
+			fd, 
+			"#agents:" nl
+		);
+		mov( this.agents, esi );
+		foreach (type list [esi]).nodeInList() do
+		
+			mov( (type objNode [esi]).theObject, esi );
+			fileio.put( fd, objESI.objName, nl ); 
+		
+		endfor;
+		
+		
+		// If this is an actual "room" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &roomVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	// room.read
+	// Reads a room's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( room.read )( fd:dword );
+	begin read; debug( "room.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: room.read" )
+		
+	end read;
+
+
+/*****************************************************************/
+/* 	                                                             */
+/* 	                                                             */
+/* ------------ player class methods and procedures ------------ */
+/*                                                               */
+/*                                                               */
+/*****************************************************************/
+
+	// player.create-
+	// Constructor for the player class.
+	
+	_procedure( player.create )( objName:string );
+	readonly
+		itemsPlayerIsHolding : string := ItemsYoureHolding;
+
+	begin create; debug( "player.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			malloc( @size( player ));
+			mov( eax, esi );
+			
+		endif;
+
+		// Call the ancestor create function to initialize
+		// the "container" fields:
+		
+		(type container [esi]).create( objName );
+
+		// Set the VMT to the player VMT:
+		
+		mov( &player._VMT_, this._pVMT_ );
+		
+		// Initialize other player-specific fields:
+		
+		mov( player_rtti, this.rtti );
+		mov( NULL, this.lastRoom );
+		mov( NULL, this.curRoom );
+		mov( 0, this.score );
+		mov( 0, this.cmdCnt );
+		mov( 1, this.quest );
+		mov( 0, this.food );
+		mov( 0, this.power );
+		fldz();
+		fstp( this.wealth );
+		
+		mov( false, this.enableFood );
+		mov( false, this.enablePower );
+		mov( false, this.enableWealth );
+		mov( false, this.enableHealth );
+		mov( itemsPlayerIsHolding, eax );
+		mov( eax, this.invHeader );
+		
+		// Clear out the "roomsVisited" array:
+		
+		push( edi );
+		push( ecx );
+		cld();
+		mov( false, al );
+		mov( num_rooms+1, ecx );
+		lea( edi, this.roomsVisited[0] );
+		rep.stosb();
+
+		pop( ecx );
+		pop( edi );
+		pop( eax );
+		
+	end create;
+	
+	// Initialize a player.
+	// If the initFood, initHealth, initPower, or initWealth
+	// values are negative, then disable them.
+
+	_method( player.initPlayer )
+	( 
+			sdStr		:string; 
+			ldStr		:string;
+			initRoom	:dword;
+			initScore	:int32;
+			initFood	:int32;
+			initHealth	:int32;
+			initPower	:int32;
+			initWealth	:real64
+	);
+	begin initPlayer;
+
+		push( eax );
+		mov( sdStr, eax );
+		mov( eax, this.shortDescription );
+		mov( ldStr, eax );
+		mov( eax, this.longDescription );
+		mov( initRoom, eax );
+		mov( rooms[ eax*4 ], eax );
+		mov( eax, this.curRoom );
+		mov( eax, this.lastRoom );
+		mov( initScore, eax );
+		mov( eax, this.score );
+		
+		mov( false, this.enableFood );
+		if( initFood >= 0 ) then
+		
+			mov( initFood, eax );
+			mov( eax, this.food );
+			mov( true, this.enableFood );
+			
+		endif;
+		
+		mov( false, this.enableHealth );
+		if( initHealth >= 0 ) then
+		
+			mov( initHealth, eax );
+			mov( eax, this.health );
+			mov( true, this.enableHealth );
+			
+		endif;
+		
+		mov( false, this.enablePower );
+		if( initPower >= 0 ) then
+		
+			mov( initPower, eax );
+			mov( eax, this.power );
+			mov( true, this.enablePower );
+			
+		endif;
+		
+		fldz();
+		fld( initWealth );
+		fcompp();
+		fstsw( ax );
+		sahf();
+		mov( false, this.enableWealth );
+		if( @ae ) then
+		
+			fld( initWealth );
+			fstp( this.wealth );
+			mov( true, this.enableWealth );
+			
+		endif;
+		pop( eax );
+
+	end initPlayer; 
+	
+	
+	
+	
+	
+	// player.isWearing -
+	// Returns true if the player is wearing the item.
+	
+	method player.isWearing( item:protectionPtr );
+	var
+		rtnResult	:boolean;
+		
+	begin isWearing;
+	
+		push( esi );
+		mov( this.contains, esi );
+		foreach objListESI.nodeInList() do
+		
+			// See if the current object matches "item":
+			
+			mov( objNodeESI.theObject, eax );
+			if( eax = item ) then
+			
+				// If the objects match, see if the
+				// player is wearing the item.
+				
+				if( protectionEAX.isWearing ) then
+				
+					mov( true, rtnResult );
+					
+				endif;
+				
+			endif;
+			
+		endfor;	
+		pop( esi );
+		movzx( rtnResult, eax );
+		
+	end isWearing;
+	
+	 
+
+	
+	
+	// player.write-
+	// Outputs a player's information to an output file.
+	
+	_method( player.write )( fd:dword );
+	begin write; debug( "player.write" );
+	
+		push( eax );
+		push( ecx );
+		push( edi );	// Save ptr to VMT for later.
+		
+		// Output this object's specific information.
+		//
+		// First, if this is actually an "object" type
+		// object (rather than a descendant), then
+		// emit the object header:
+		
+		if( edi = &playerVMT ) then // RTTI - is this a player type?
+		
+			fileio.put
+			( 
+				fd, 
+				"#object-------------------" nl
+				"type: player" nl
+			);
+			
+		
+		endif;
+		
+		// Call the ancestor write routine to emit
+		// inherited data.
+		
+		push( esi );
+		push( fd );
+		call( containerVMT[ @offset( object.write ) ] );
+		pop( esi );
+		
+		// Emit the player class specific info:
+		
+		writeObject( fd, "lastroom: ", this.lastRoom );
+		writeObject( fd, "curroom: ", this.curRoom );
+		fileio.put( fd, "score: ", this.score, nl );
+		fileio.put( fd, "cmdcnt: ", this.cmdCnt, nl );
+		fileio.put( fd, "food: ", this.food, nl );
+		fileio.put( fd, "health: ", this.health, nl );
+		fileio.put( fd, "power: ", this.power, nl );
+		fileio.put( fd, "wealth: ", this.wealth, nl );
+		fileio.put( fd, "enableFood: ", (type uns8 this.enableFood), nl );
+		fileio.put( fd, "enableHealth: ", (type uns8 this.enableHealth), nl );
+		fileio.put( fd, "enablePower: ", (type uns8 this.enablePower), nl );
+		fileio.put( fd, "enableWealth: ", (type uns8 this.enableWealth), nl );
+		
+		
+		// If this is an actual "object" type, then
+		// close up the object definition:
+
+		pop( edi );	// Retrieve VMT pointer		
+		if(  edi = &playerVMT ) then
+		
+			fileio.put
+			(
+				fd,
+				"#endobject----------------" nl 
+			);
+			
+		endif;		
+		pop( ecx );
+		pop( eax );
+			
+	end write;
+	
+	
+	
+	// player.read
+	// Reads a player's data from a file.
+	//
+	// Okay, this is going to take a lot of thought, so put it off for now.
+	
+	_method( player.read )( fd:dword );
+	begin read; debug( "player.read" );
+	
+		stdout.put( ReadIsNotYetSupported, nl );
+		#print( "TODO: player.read" )
+		
+	end read;
+	
+	
+	
+	
+	
+	// The following method executes one player move:
+	
+	_method( player.doCmd );
+	var
+		input	:string;
+		p		:playerPtr;
+		espSave	:dword;
+		verb	:dword;
+		noun1	:nounPtr;
+		noun2	:nounPtr;
+		
+		procedure computeScore;
+		begin computeScore;
+		
+			
+			// We need to compute the wholesale value of the inventory
+			// that the player is carrying.
+			
+			push( esi );
+			mov( playerESI.contains, esi );
+			fldz();
+			foreach objListESI.nodeInList() do
+			
+				fld( possessionESI.wholesale );
+				fadd();
+				
+			endfor;
+			pop( esi );
+
+			fld( this.wealth );	// Add in current wealth to wholesale worth.
+			fadd();
+			
+			fild( this.power );
+			fmul();
+			fild( this.food );
+			fadd();
+			fild( this.health );
+			fadd();
+			fild( this.quest );
+			fmul();
+			fild( this.cmdCnt );
+			fld( 100.0 );
+			fadd();
+			fdiv();
+			fistp( this.score );		
+
+		end computeScore;
+		
+	begin doCmd; debug( "player.doCmd" );
+	
+		pushad();
+
+		// Compute the player's score before each turn (must do before
+		// the turn, because they could be executing the "SCORE" command).
+		
+		computeScore();
+		
+		// As this is a new move, bump up the move counter:
+		
+		mov( esi, p );
+		inc( playerESI.cmdCnt );
+		
+		// For all the possessions, bump up the age counter:
+		
+		push( esi );
+		mov( this.contains, ebx );
+		foreach objListEBX.nodeInList() do
+		
+			mov( objNodeESI.theObject, ecx );
+			inc( possessionECX.age );
+			
+		endfor;
+		pop( esi );
+		
+		// On each move, decrement the food counter and warn if the
+		// user is getting hungry:
+		
+		if( this.food <= 25 ) then
+		
+			stdout.put( YouAreGettingHungry, nl );
+			
+		endif;
+		
+		// If they run out of food, they die!
+		
+		dec( this.food );
+		if( @s ) then
+			
+			stdout.put( YouHaveStarvedToDeath, nl );
+			verb_quit( esi, NULL, NULL, "" );
+				
+		endif;
+		
+		// As they eat, their health increases if it is below 300:
+		
+		if( this.health < 300 ) then
+		
+			inc( this.health );
+			
+		endif;
+		
+		// Check the health rating, if it drops below zero, they die!
+		
+		if( this.health < 10 ) then
+		
+			if( this.health > 0 ) then
+			
+				stdout.put( YourHealthIsPoor, nl );
+				
+			else
+			
+				stdout.put( YouHaveDiedOfPoorHealth, nl );
+				verb_quit( esi, NULL, NULL, "" );
+				
+			endif;
+			
+		endif;		
+		
+		
+		// Display a prompt and get the user command:
+		
+		mov( esp, espSave );
+		tstralloc( 1024 );
+		mov( eax, input );
+		
+		stdout.put( this.shortDescription, Command );
+		stdin.gets( input );
+		
+		// Process the user's input command:
+		
+		parse( input, verb, noun1, noun2 );
+		if( eax ) then
+		
+			mov( p, ebx );
+			mov( playerEBX.curRoom, ebx );
+			mov( verb, ecx );
+			if( noun1 = NULL ) then  // No noun
+
+				// Give the curRoom's "hijack_verb" procedure an
+				// opportunity to bypass normal verb processing.
+				// hijack_verb returns true in EAX if it processed
+				// the command, it returns false if we need to
+				// process the command ourselves.
+				
+				mov( roomEBX.hijack_verb, eax );
+				if( eax <> NULL ) then
+
+					roomEBX.hijack_verb( ecx, p, noun1, noun2, input );
+					
+				endif;				
+				if( !eax ) then
+				
+					mov( noNoun, esi );
+					nounESI.actions[ ecx*4 ](p, noun1, noun2, input );
+					
+				endif;
+				
+			else	// We have at least one noun.
+			
+				// Again, give "hijack_verb" an opportunity to 
+				// redirection this operation.
+				
+				mov( roomEBX.hijack_verb, eax );
+				if( eax <> NULL ) then
+
+					roomEBX.hijack_verb( ecx, p, noun1, noun2, input );
+					
+				endif;				
+				if( !eax ) then
+
+					mov( noun1, esi );
+					nounESI.actions[ ecx*4]( p, noun1, noun2, input );
+					
+				endif;
+				
+			endif;
+				
+		endif;
+
+		// Recompute the player's score after each turn (in case they
+		// quit or die).
+		
+		mov( p, esi );
+		computeScore();		
+
+		
+		mov( espSave, esp );
+		popad();
+		
+	end doCmd;
+	
+	
+      
+end adventureObjs;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

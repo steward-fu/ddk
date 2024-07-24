@@ -1,0 +1,160 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "excepts.hhf" );
+#include( "memory.hhf" );
+#include( "strings.hhf" );
+
+
+
+
+// gets-
+// a_gets-
+//
+//	This routines read a string of characters from the
+//	console device.  The gets procedure stores the string
+//	into the specified buffer.  The a_gets routine
+//	allocates storage for the string on the heap and
+//	returns a pointer to that string in EAX.
+
+procedure win32cons.gets( y:dword; x:dword; len:dword; s:string ); @nodisplay;
+var
+	csbi: 		win.CONSOLE_SCREEN_BUFFER_INFO;
+	charsRead:	dword;
+	xyposn:		win.COORD;
+	
+begin gets;
+
+	pushad();
+	
+
+	// Verify that the coordinates are within range:
+	
+	win32cons.info( csbi );
+	if
+	(#{
+		mov( y, eax );
+		cmp( ax, csbi.dwSize.Y );
+		jae true;
+		mov( x, eax );
+		add( len, eax );
+		cmp( ax, csbi.dwSize.X );
+		jb false;
+	}#) then
+
+		raise( ex.ValueOutOfRange );
+		
+	endif;
+
+
+	// Verify that the string is big enough:
+	
+	mov( len, eax );
+	mov( s, ebx );
+	if( eax > (type str.strRec [ebx]).MaxStrLen ) then
+	
+		raise( ex.StringOverflow );
+		
+	endif;
+	
+	// Set the length of the resulting string and zero terminate it:
+	
+	mov( eax, (type str.strRec [ebx]).length );
+	mov( 0, (type byte [ebx+eax]) );
+	
+	// Set up the coordinates where we will grab the string.
+	
+	mov( y, ecx );
+	mov( cx, xyposn.Y );
+	mov( x, ecx );
+	mov( cx, xyposn.X );
+	
+	// Read the string data from the screen:
+	
+	win.ReadConsoleOutputCharacter
+	( 
+		charsRead, 
+		xyposn, 
+		eax, 
+		(type byte [ebx]), 
+		stdout.handle() 
+	);
+	popad();
+	
+end gets;
+	 
+
+procedure win32cons.a_gets( y:dword; x:dword; len:dword ); @nodisplay;
+var
+	csbi: 		win.CONSOLE_SCREEN_BUFFER_INFO;
+	charsRead:	dword;
+	xyposn:		win.COORD;
+	theString:	dword;
+	
+begin a_gets;
+
+	pushad();
+	
+
+	// Verify that the coordinates are within range:
+	
+	win32cons.info( csbi );
+	if
+	(#{
+		mov( y, eax );
+		cmp( ax, csbi.dwSize.Y );
+		jae true;
+		mov( x, eax );
+		add( len, eax );
+		cmp( ax, csbi.dwSize.X );
+		jb false;
+	}#) then
+
+		raise( ex.ValueOutOfRange );
+		
+	endif;
+
+
+	// Allocate storage for the string:
+	
+	mov( len, eax );
+	mov( eax, ebx );
+	stralloc( eax );
+	mov( eax, theString );
+	
+	// Set the length of the resulting string and zero terminate it:
+	
+	mov( ebx, (type str.strRec [eax]).length );
+	mov( 0, (type byte [eax+ebx]) );
+	
+	// Set up the coordinates where we will grab the string.
+	
+	mov( y, ecx );
+	mov( cx, xyposn.Y );
+	mov( x, ecx );
+	mov( cx, xyposn.X );
+	
+	// Read the string data from the screen:
+	
+	win.ReadConsoleOutputCharacter
+	( 
+		charsRead, 
+		xyposn, 
+		ebx, 
+		(type byte [eax]), 
+		stdout.handle() 
+	);
+	popad();
+	mov( theString, eax );
+	
+end a_gets;
+
+
+
+
+
+
+
+
+
+end consoleUnit;

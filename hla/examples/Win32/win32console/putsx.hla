@@ -1,0 +1,110 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "strings.hhf" );
+
+
+procedure win32cons.putsx( y:word; x:word; attr:word; len:word; s:string );
+	@nodisplay;
+
+var
+	chrsWritten:	dword;
+	handle:			dword;
+
+static
+	space: 	string := ' ';
+
+begin putsx;
+
+	pushad();
+
+	mov( stdout.handle(), handle );
+
+	mov( s, eax );
+	mov( (type str.strRec [eax]).length, ecx );
+	if( cx < len ) then
+
+		// If the string is shorter than the output
+		// length, emit the string and follow it up
+		// with spaces.
+
+		push( ecx );
+		win.WriteConsoleOutputCharacter
+		(
+			chrsWritten,
+			#{
+				pushw( y );
+				pushw( x );
+			}#,
+			ecx,
+			s,
+			handle
+		);
+		pop( ecx );
+
+		mov( ecx, ebx );
+		add( x, bx );
+		while( cx < len ) do
+
+			push( ecx );
+			win.WriteConsoleOutputCharacter
+			(
+				chrsWritten,
+				#{
+					pushw( y );
+					push( bx );
+				}#,
+				1,
+				space,
+				handle
+			);
+			pop( ecx );
+			inc( ecx );
+			inc( ebx );
+
+		endwhile;
+
+	else
+
+		// If the length of the string is greater than
+		// or equal to "len", then output the first
+		// "len" characters.
+
+		win.WriteConsoleOutputCharacter
+		(
+			chrsWritten,
+			#{
+				pushw( y );
+				pushw( x );
+			}#,
+			#{
+				pushw( 0 );
+				pushw( len );
+			}#,
+			s,
+			handle
+		);
+
+	endif;
+
+	movzx( len, eax );
+	win.FillConsoleOutputAttribute
+	(
+		chrsWritten,
+		#{
+			pushw( y );
+			pushw( x );
+		}#,
+		eax,
+		attr,
+		handle
+	);
+
+	popad();
+
+end putsx;
+
+
+
+
+end consoleUnit;

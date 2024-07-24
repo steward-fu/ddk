@@ -1,0 +1,452 @@
+// ExtendedPens.hla-
+//
+//	Program that demonstrates the use of the ExtCreatePen API function.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit ExtendedPens;
+
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+readonly
+
+	ClassName	:string := "ExtendedPensWinClass";		// Window Class Name
+	AppCaption	:string := "ExtendedPens Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context.
+	oldPen		:dword;			// Used to save the original pen.
+	grayPen		:dword;
+	roundPen	:dword;
+	squarePen	:dword;
+	flatPen		:dword;
+	tempPen		:dword;
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	lb			:w.LOGBRUSH;	// Used to create pens.
+
+readonly
+	penStyles: dword[ 9 ] :=
+		[
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_ROUND | w.PS_JOIN_ROUND,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_ROUND | w.PS_JOIN_BEVEL,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_ROUND | w.PS_JOIN_MITER,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_SQUARE | w.PS_JOIN_ROUND,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_SQUARE | w.PS_JOIN_BEVEL,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_SQUARE | w.PS_JOIN_MITER,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_FLAT | w.PS_JOIN_ROUND,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_FLAT | w.PS_JOIN_BEVEL,
+			w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_FLAT | w.PS_JOIN_MITER
+		];
+
+
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Create a thin, gray, pen for annotation purposes:
+
+	w.CreatePen( w.PS_SOLID, 0, RGB( $A0, $A0, $A0) );
+	mov( eax, grayPen );
+
+	// Set up "lb" for use when creating the following pens:
+
+	mov( w.BS_SOLID, lb.lbStyle );
+	mov( RGB( 0, 0, 0 ), lb.lbColor );
+	mov( 0, lb.lbHatch );
+
+	// Create a thick, black, pen for drawing the axis:
+
+	w.ExtCreatePen
+	( 
+		w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_ROUND, 
+		16, 
+		lb,  
+		0,
+		NULL
+	);
+	mov( eax, roundPen );
+
+	w.ExtCreatePen
+	( 
+		w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_SQUARE, 
+		16, 
+		lb,  
+		0,
+		NULL
+	);
+	mov( eax, squarePen );
+
+	w.ExtCreatePen
+	( 
+		w.PS_SOLID | w.PS_GEOMETRIC | w.PS_ENDCAP_FLAT, 
+		16, 
+		lb,  
+		0,
+		NULL
+	);
+	mov( eax, flatPen );
+
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		SelectObject( roundPen );  // Select the round pen.
+		mov( eax, oldPen );        // Save, so we can restore later
+
+		TextOut( 5, 20, "Round Pen", 9 );
+
+		MoveToEx( 100, 25, NULL );
+		LineTo( 200, 25 );
+
+
+		TextOut( 5, 70, "Square Pen", 10 );
+
+		SelectObject( squarePen );  // Select the square pen.
+		MoveToEx( 100, 75, NULL );
+		LineTo( 200, 75 );
+
+		TextOut( 5, 120, "Flat Pen", 8 );
+
+		SelectObject( flatPen );   // Select the flat pen.
+		MoveToEx( 100, 125, NULL );
+		LineTo( 200, 125 );
+
+		SelectObject( grayPen );
+		MoveToEx( 100, 10, NULL );
+		LineTo( 100, 150 );
+
+		MoveToEx( 200, 10, NULL );
+		LineTo( 200, 150 );
+
+		// Draw a sequence of triangles to demonstrate the join mode
+		// when drawing (non-stroked) lines:
+
+		for( mov( 0, esi ); esi < 9; inc( esi )) do
+
+			// Select one of the nine pen styles here:
+
+			mov( penStyles[ esi*4 ], eax );
+			w.ExtCreatePen
+			( 
+				eax, 
+				12, 
+				lb,  
+				0,
+				NULL
+			);
+			mov( eax, tempPen );
+			SelectObject( eax );
+
+			// Draw a triangle using the selected pen:
+
+			intmul( 64, esi, edi );
+			add( 20, edi );
+			MoveToEx( edi, 200, NULL );
+			add( 40, edi );
+			LineTo( edi, 200 );
+			LineTo( edi, 160 );
+			sub( 40, edi );
+			LineTo( edi, 200 );
+
+			// Draw a triangle using the thin, gray, pen
+			// over the top of the existing triangle to
+			// show where we've drawn:
+
+			SelectObject( grayPen );
+			add( 40, edi );
+			LineTo( edi, 200 );
+			LineTo( edi, 160 );
+			sub( 40, edi );
+			LineTo( edi, 200 );
+
+			// Delete the pen we created above:
+
+			w.DeleteObject( tempPen );
+			
+		endfor;
+
+
+		// Draw a sequence of triangles to demonstrate 
+		// the join mode when drawing stroked lines:
+
+		for( mov( 0, esi ); esi < 9; inc( esi )) do
+
+			// Select one of the nine pen styles here:
+
+			mov( penStyles[ esi*4 ], eax );
+			w.ExtCreatePen
+			( 
+				eax, 
+				12, 
+				lb,  
+				0,
+				NULL
+			);
+			mov( eax, tempPen );
+			SelectObject( eax );
+
+			// Capture all the strokes:
+
+			w.BeginPath( hdc );
+
+				// Draw a triangle using the selected pen:
+				//
+				// Draw the triangles 64 units apart:
+
+				intmul( 64, esi, edi );
+				
+				// Start at x-coordinate 20 for the first triangle:
+
+				add( 20, edi );
+				
+				// Draw the path that forms the triangle:
+
+				MoveToEx( edi, 270, NULL );
+				add( 40, edi );
+				LineTo( edi, 270 );
+				LineTo( edi, 230 );
+				sub( 40, edi );
+				LineTo( edi, 270 );
+
+				// Create a closed path 
+				// (so 'end' joins with 'start' properly):
+
+				w.CloseFigure( hdc );
+
+			w.EndPath( hdc );
+
+			// Actually draw the triangle based on the path
+			// we've captured above:
+
+			w.StrokePath( hdc );
+
+			// Draw a triangle using the thin, gray, pen
+			// over the top of the existing triangle to
+			// show where we've drawn:
+
+			SelectObject( grayPen );
+			intmul( 64, esi, edi );
+			add( 20, edi );
+			MoveToEx( edi, 270, NULL );
+			add( 40, edi );
+			LineTo( edi, 270 );
+			LineTo( edi, 230 );
+			sub( 40, edi );
+			LineTo( edi, 270 );
+
+			// Delete the pen we created above:
+
+			w.DeleteObject( tempPen );
+			
+		endfor;
+
+		// Restore original pen:
+
+		SelectObject( oldPen );
+
+	EndPaint;
+
+	// Delete the pens we created:
+
+	w.DeleteObject( grayPen );
+	w.DeleteObject( roundPen );
+	w.DeleteObject( squarePen );
+	w.DeleteObject( flatPen );
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+				
+end ExtendedPens;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

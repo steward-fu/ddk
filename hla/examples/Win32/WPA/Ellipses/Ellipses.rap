@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Ellipses Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=Ellipses.rap
+1=Ellipses.rc
+2=Ellipses.asm
+3=Ellipses.obj
+4=Ellipses.res
+5=Ellipses.exe
+6=Ellipses.def
+7=Ellipses.dll
+8=Ellipses.txt
+9=Ellipses.lib
+10=Ellipses.mak
+11=Ellipses.hla
+[Files]
+1=Ellipses.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,2326
+3=0,0,0,0,272
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

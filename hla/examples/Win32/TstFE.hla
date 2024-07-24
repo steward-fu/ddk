@@ -1,0 +1,109 @@
+/************************************************************************/
+/*                                                                      */
+/* Ok. Can someone tell me how to make a ASM program that               */
+/* will look for a file and if it exists go to a label, but if the file */
+/* does not exist, then go to a different label?  Like it looks for     */
+/* the file "c:\file.txt" and if it exists it goes to exists: and if it */
+/* does not exist then it goes to noexist:  Thanks.                     */
+/* Will Elliott                                                         */
+/*                                                                      */
+/*                                                                      */
+/************************************************************************/
+
+program TestFileExists;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+
+type
+		FileTime:
+			record
+			
+				LowDateTime: dword;
+				HighDateTime:dword;
+				
+			endrecord;
+
+	Win32FindData:
+		record
+
+		    FileAttributes:	dword; 
+    		CreationTime:	FileTime; 
+    		LastAccessTime:	FileTime; 
+    		LastWriteTime:	FileTime; 
+			FileSizeHigh:	dword; 
+			FileSizeLow:	dword; 
+			Reserved0:		dword; 
+			dwReserved1:	dword; 
+			FileName:		char[ 260 ]; 
+			AlternateFileName: char[ 14 ]; 
+			
+		endrecord;
+
+
+    // External declarations for Windows API calls:
+
+    procedure FindFirstFile( var WFD:Win32FindData; FileName:string );
+        @returns( "eax" ); // File Handle.
+        external( "_FindFirstFileA@8" );
+
+        
+    procedure FindClose( handle:dword );
+        external( "_FindClose@4" );
+
+
+    /*
+    ** FileExists-
+    **
+    **  This procedure returns true (1) in the AL register if a file
+    **  exists, false (0) otherwise.
+    */
+    
+    procedure FileExists( FileName:string ); @nodisplay; @returns( "AL" );
+    var
+        WFD:    Win32FindData;
+        
+    begin FileExists;
+    
+        pushad();   // Win32 APIs mess with many registers.
+        
+        // See if at least one instance of this file exists.
+        
+        FindFirstFile( WFD, FileName );
+        
+        // INVALID_HANDLE_VALUE suggests that the file does
+        // not exist (could be some other error too, that's
+        // probably just as bad as a non-existent file to
+        // the caller).
+        
+        if( EAX <> w.INVALID_HANDLE_VALUE ) then
+        
+            FindClose( eax );   // Close the handle opened by 
+            popad();            // Windows and restore registers.
+            mov( true, eax );   // Return true as function result.
+            
+        else
+        
+            popad();            // Restore registers saved above.
+            xor( eax, eax );    // Return false as function result.
+            
+        endif;
+    
+    end FileExists;
+    
+        
+begin TestFileExists;
+
+    // "TstFE.hla" is the name of this program's source file.
+    // It definitely exists so we should get a true result.
+    
+    FileExists( "TstFE.hla" );
+    stdout.put( "FileExists( ""TstFE.hla"" ) = ", (type boolean AL), nl );
+    
+    // Presumably, "xxxxx.xxx" does not exist, so we should
+    // get a false result.
+    
+    FileExists( "xxxxx.xxx" );
+    stdout.put( "FileExists( ""xxxxx.xxx"" ) = ", (type boolean AL), nl );
+    
+end TestFileExists;

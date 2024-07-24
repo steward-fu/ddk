@@ -1,0 +1,5 @@
+LIBRARY mhook
+EXPORTS 
+MouseProc
+InstallHook
+UninstallHook

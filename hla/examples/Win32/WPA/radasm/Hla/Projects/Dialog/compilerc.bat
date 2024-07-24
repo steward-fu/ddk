@@ -1,0 +1,4 @@
+rc /v Dialog.rc
+
+
+

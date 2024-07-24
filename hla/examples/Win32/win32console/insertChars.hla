@@ -1,0 +1,72 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+
+
+procedure win32cons.insertChars( n:word );  @nodisplay;
+var
+	csbi: 	win.CONSOLE_SCREEN_BUFFER_INFO;
+	ci:		win.CHAR_INFO;
+	src:	win.small_rect;
+	dest:	win.COORD;
+
+
+begin insertChars;
+
+	pushad();
+	win32cons.info( csbi );
+
+	// If n is greater than the number of characters 
+	// left on the line, then just do a clrToEOLN.
+
+	mov( csbi.dwCursorPosition.X, ax );
+	add( n, ax );
+	if( ax >= csbi.dwSize.X ) then
+
+		win32cons.clrToEOLN();
+
+	else
+
+		// Compute the bounds of the rectangle to move.
+		// And the destination coordinate to move it to.
+
+		mov( csbi.dwCursorPosition.X, ax );
+		mov( ax, src.left );
+		add( n, ax );
+		mov( ax, dest.X );
+
+		mov( csbi.dwCursorPosition.Y, ax );
+		mov( ax, dest.Y );
+		mov( ax, src.top );
+		mov( ax, src.bottom );
+
+		mov( csbi.dwSize.X, ax );
+		sub( n, ax );
+		mov( ax, src.right );
+
+		// Set up the fill char and attribute:
+
+		mov( ' ', ci.AsciiChar );
+		mov( csbi.wAttributes, ax );
+		mov( ax, ci.Attributes );
+
+		// Okay, scroll the screen up one line:
+
+		win.ScrollConsoleScreenBuffer
+		(
+			ci,
+			#{
+				pushd( (type dword dest));
+			}#,
+			0,	// NULL clipping region.
+			src,
+			stdout.handle()
+		);
+
+	endif;
+	popad();	
+
+end	insertChars;
+
+
+end consoleUnit;

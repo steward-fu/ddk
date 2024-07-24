@@ -1,0 +1,1461 @@
+// adv.hhf
+//
+// Header file containing class definitions, etc.
+
+#if( !@defined( adv_hhf )) 
+?adv_hhf := true;
+
+#includeonce( "english.hhf" )
+
+// Set the following to true if you want to
+// emit procedure names to the executable file before each procedure:
+
+?emitProcNames := true;
+
+// Set the following to true if you want the program to print
+// procedure names upon entry:
+
+?traceBlocks := false;
+
+
+const
+	objESI			:text := "(type object [esi])";
+	objEAX			:text := "(type object [eax])";
+	objEBX			:text := "(type object [ebx])";
+	objECX			:text := "(type object [ecx])";
+	objEDX			:text := "(type object [edx])";
+
+	nounESI			:text := "(type noun [esi])";
+	nounEAX			:text := "(type noun [eax])";
+	nounEBX			:text := "(type noun [ebx])";
+	nounECX			:text := "(type noun [ecx])";
+	nounEDX			:text := "(type noun [edx])";
+
+	physObjESI		:text := "(type physObj [esi])";
+	physObjEAX		:text := "(type physObj [eax])";
+	physObjEBX		:text := "(type physObj [ebx])";
+	physObjECX		:text := "(type physObj [ecx])";
+	physObjEDX		:text := "(type physObj [edx])";
+	
+	possessionESI	:text := "(type possession [esi])";
+	possessionEAX	:text := "(type possession [eax])";
+	possessionEBX	:text := "(type possession [ebx])";
+	possessionECX	:text := "(type possession [ecx])";
+	possessionEDX	:text := "(type possession [edx])";
+	
+	impedimentESI	:text := "(type impediment [esi])";
+	impedimentEAX	:text := "(type impediment [eax])";
+	impedimentEBX	:text := "(type impediment [ebx])";
+	impedimentECX	:text := "(type impediment [ecx])";
+	impedimentEDX	:text := "(type impediment [edx])";
+	
+	weaponESI		:text := "(type weapon [esi])";
+	weaponEAX		:text := "(type weapon [eax])";
+	weaponEBX		:text := "(type weapon [ebx])";
+	weaponECX		:text := "(type weapon [ecx])";
+	weaponEDX		:text := "(type weapon [edx])";
+	
+	protectionESI	:text := "(type protection [esi])";
+	protectionEAX	:text := "(type protection [eax])";
+	protectionEBX	:text := "(type protection [ebx])";
+	protectionECX	:text := "(type protection [ecx])";
+	protectionEDX	:text := "(type protection [edx])";
+	
+	consumableESI	:text := "(type consumable [esi])";
+	consumableEAX	:text := "(type consumable [eax])";
+	consumableEBX	:text := "(type consumable [ebx])";
+	consumableECX	:text := "(type consumable [ecx])";
+	consumableEDX	:text := "(type consumable [edx])";
+	
+	agentESI		:text := "(type agent [esi])";
+	agentEAX		:text := "(type agent [eax])";
+	agentEBX		:text := "(type agent [ebx])";
+	agentECX		:text := "(type agent [ecx])";
+	agentEDX		:text := "(type agent [edx])";
+	
+	containerESI	:text := "(type container [esi])";
+	containerEAX	:text := "(type container [eax])";
+	containerEBX	:text := "(type container [ebx])";
+	containerECX	:text := "(type container [ecx])";
+	containerEDX	:text := "(type container [edx])";
+	
+	roomESI			:text := "(type room [esi])";
+	roomEAX			:text := "(type room [eax])";
+	roomEBX			:text := "(type room [ebx])";
+	roomECX			:text := "(type room [ecx])";
+	roomEDX			:text := "(type room [edx])";
+	
+	playerESI		:text := "(type player [esi])";
+	playerEAX		:text := "(type player [eax])";
+	playerEBX		:text := "(type player [ebx])";
+	playerECX		:text := "(type player [ecx])";
+	playerEDX		:text := "(type player [edx])";
+
+	objListESI		:text := "(type objList [esi])";
+	objListEAX		:text := "(type objList [eax])";
+	objListEBX		:text := "(type objList [ebx])";
+	objListECX		:text := "(type objList [ecx])";
+	objListEDX		:text := "(type objList [edx])";
+
+	objNodeESI		:text := "(type objNode [esi])";
+	objNodeEAX		:text := "(type objNode [eax])";
+	objNodeEBX		:text := "(type objNode [ebx])";
+	objNodeECX		:text := "(type objNode [ecx])";
+	objNodeEDX		:text := "(type objNode [edx])";
+	
+	
+	// Useful constants:
+	//	
+	// Color constants for text in the game:
+	
+	
+	gameFGColor			:= console.white;	// Main screen foreground
+	gameBGColor			:= console.blue;	// and background colors
+	
+	longDescrFGColor	:= console.white;	// longDescription and
+	shortDescrFGColor	:= console.cyan;	// shortDescription foreground colors
+	
+	wearingFGColor		:= console.cyan;	// Colors to use when describing
+	wearingBGColor		:= console.blue;	// what the player is wearing
+	
+	lookFGColor			:= console.yellow;	// Colors for the "look" strings in
+	lookBGColor			:= console.blue;	// a room.
+	
+	warningFGColor		:= console.yellow;	// Colors for the "look" strings in
+	warningBGColor		:= console.red;		// a room.
+	
+	goFGColor			:= console.yellow;	// Colors for the "go" strings in
+	goBGColor			:= console.blue;	// a room.
+	
+	inscrpFGColor		:= console.white;	// Colors for "read" and "examine"
+	inscrpBGColor		:= console.blue;	// strings.
+	
+	bulletinFGColor		:= console.cyan;	// Colors for text appearing on
+	bulletinBGColor		:= console.blue;	// the bulletin board.
+
+
+
+	// General constants
+	
+	maxWearable			:= 8;	// Maximum # of items a player can wear at once.
+	maxWieldable		:= 2;	// Maximum # of weapons a player can wield.
+	
+	healthy_c			:= 200;	// Below this, fights are in manual mode.
+
+type
+	objListPtr		:pointer to objList;
+	objNodePtr		:pointer to objNode;
+
+    objectPtr   	:pointer to object;
+    nounPtr		   	:pointer to noun;
+	physObjPtr		:pointer to physObj;
+	impedimentPtr	:pointer to impediment;
+	possessionPtr	:pointer to possession;
+	containerPtr	:pointer to container;
+	weaponPtr		:pointer to weapon;
+	protectionPtr	:pointer to protection;
+	consumablePtr	:pointer to consumable;
+	agentPtr		:pointer to agent;
+	roomPtr			:pointer to room;
+	playerPtr		:pointer to player;
+	
+	
+	// Directions that the player can travel through the game:
+	
+	direction	:enum
+				{
+					north, 
+					south, 
+					east, 
+					west, 
+					northEast, 
+					northWest,
+					southEast,
+					southWest,
+					up,
+					down  
+				};
+	
+	// rtti_t- run-time type information for the object classes:
+	
+	
+	rtti_t		:dword;
+	_rtti_t		:enum
+				{ 
+					_object_rtti,
+					_noun_rtti,
+					_physObj_rtti,
+					_impediment_rtti,
+					_possession_rtti,
+					_weapon_rtti,
+					_protection_rtti,
+					_consumable_rtti,
+					_container_rtti,
+					_room_rtti,
+					_agent_rtti,
+					_player_rtti,
+					num_rtti	// This value is the number of rtti_entries
+				};
+				
+const
+	
+	// The following bitmaps specify which the class hierarchy for
+	// each object. For example, "room_rtti" contains set bits for
+	// object, noun, physObj, container, and room because room objects
+	// can be treated as any one of these object types:
+	//
+	// Note that this data structure causes a fundamental limitation
+	// of 31 derived classes of "object". That shouldn't be a problem,
+	// however.	 Do keep this in mind, however, if you decide to
+	// go crazy extending the classes in a game-specific manner. Once
+	// you exceed 32 classes (total), you won't be able to track the
+	// run-time type information beyond the 32nd class without changing
+	// this program's logic.
+	
+	object_rtti		:= @{ uns8(_object_rtti) };
+	
+	noun_rtti		:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti) 
+						};
+						
+	physObj_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti) 
+						};
+						
+	impediment_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_possession_rtti) 
+						};
+				
+	possession_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_impediment_rtti) 
+						};
+				
+	weapon_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_possession_rtti), 
+							uns8(_weapon_rtti) 
+						};
+				
+				
+	protection_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_possession_rtti), 
+							uns8(_protection_rtti) 
+						};
+				
+				
+	consumable_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_possession_rtti), 
+							uns8(_consumable_rtti) 
+						};
+				
+	container_rtti	:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_container_rtti) 
+						};
+				
+	room_rtti		:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_container_rtti), 
+							uns8(_room_rtti) 
+						};
+				
+	agent_rtti		:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_container_rtti), 
+							uns8(_agent_rtti) 
+						};
+				
+	player_rtti		:= @{ 
+							uns8(_object_rtti), 
+							uns8(_noun_rtti), 
+							uns8(_physObj_rtti), 
+							uns8(_container_rtti), 
+							uns8(_player_rtti) 
+						};
+				
+	// verbValues_t- run-time identification for each of the verb values
+	// To create a new verb in the system, add a string to the appropriate
+	// point in this string array constant.
+
+const
+	verbStrs_c :=
+		[
+					"go",
+					
+					"inventory",
+					"look",
+					"examine",
+					"read",
+					
+					"light",
+					"extinguish",
+					
+					"fight",
+					"kill", 
+
+					"use",
+					"wield",
+					"unwield",
+					"get",
+					"drop",
+					"give",
+					"steal",
+					"eat",
+					"buy",
+					"sell",
+					"wear",
+					"remove",
+					
+					"open",
+					"close",
+					
+					"path",
+					
+					"describe",
+					"score",
+					"hint",
+					"help",
+					"save",
+					"quit"
+
+			// The following aren't implemented, but are
+			// good suggestions. IFDEF'd out prototypes
+			// appear in actions.hhf. Note that 
+			// "SomeVerbsYouMightWantToAdd" is not defined,
+			// so the following is really just commented out.
+			
+			#if( @defined( SomeVerbsYouMightWantToAdd ))
+
+					"run",
+					"walk",
+					"move",
+					"climb",
+					"transport",
+					"rest",
+					"crawl",
+					"sit",
+					"stand",
+					"enter",
+					"flee",
+					"throw",
+					"trade",
+					"break",
+					"repair",
+					"turn",
+					"push",
+					"pull",
+					"list",
+					"search",
+					"talk",
+					"pray",
+					"play"
+
+			#endif
+			
+		];
+		  
+type
+	// verbValues_t is an enumerated list of all the verbs, each
+	// enumerated identifier is of the form "v_<verbname>", e.g.,
+	// "v_go". The following compile-time program automatically
+	// generates this list from the array of strings immediately above.
+	// To add new verbs, simply put the verb name in the string array
+	// above. DO NOT EDIT THIS TYPE DEFINITION!
+	
+	verbValues_t
+		:enum
+		{
+			v_none,
+			#for( _verbNameStr_ in verbStrs_c )
+			
+				@text( "v_" + _verbNameStr_ ),
+				
+			#endfor
+			v_num_verbs
+		};
+		?num_verbs := @elements( verbStrs_c ) + 1;
+	
+	
+	
+	// Nouns used by the AGE system.
+	// Note that the room definitions must immediately
+	// follow n_none and all rooms must appear before
+	// any other nouns in the game.
+	//
+	// Use the "enumRoom" macro to declare room names.
+	// It automatically creates an "n_<roomName>" and "r_<roomName>"
+	// pair of symbols, with "r_<roomName>" being the index into
+	// the rooms array.
+		
+	#macro enumRoom( _roomName_[] );
+	
+		@text( "n_" + _roomName_[0] )
+		?@text( "r_" + _roomName_[0] ) : text := 
+			"uns32( n_" + _roomName_[0] + ") * 4";
+			
+	#endmacro
+	
+	nounValues_t
+		:enum
+		{
+			// Special value for "not-a-noun":
+			
+			n_none,
+			
+			// Include the game-specific room nouns:
+			
+			#includeonce( "roomnouns.hhf" )			
+			
+			r_lastRoom,	// Special marker, must immediately follow last room.
+			
+			// All remaining nouns must go here:
+			
+			n_north,
+			n_south,
+			n_east,
+			n_west,
+			n_northEast,
+			n_northWest,
+			n_southEast,
+			n_southWest,
+			n_up,
+			n_down,
+			n_player,
+			n_num_nouns
+		};
+		?num_nouns := uns32( n_num_nouns );
+		?num_rooms := uns32( r_lastRoom ) - uns32( n_none ) - 1; 
+			
+		
+static
+	nounTable	:pointer to table; @external;
+				
+    
+
+type	
+
+	verbMethod:
+		procedure( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+	
+
+	///////////////////////////////////////////////////////////////////////////
+	//
+	//
+	// objNode- This class holds one item in
+	// an objList list.
+	
+	objNode	:class inherits( node );
+	
+		var
+			theObject	:objectPtr;
+			
+		override procedure create;	@external;
+		override method destroy;	@external;
+			
+	endclass;
+
+	
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// objList - a generic list of objects.
+	
+	objList	:class inherits( virtualList );
+	
+		override procedure create;				@external;
+		override method destroy;				@external;
+		method searchNames( objName:string );	@external;
+		method printDescriptions;				@external;
+		
+	endclass;
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// object-
+	//	Base object inherited by most other objects in the game:
+	
+	object	:class
+	
+		var
+			objName	:string;
+			rtti	:dword;
+			
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        procedure create( objName:string ); @external;
+        
+		// destroy- Destructor for the class:
+		
+        method destroy;         	@external;
+		
+		// examine-
+		// 	Provides an examination of this object.
+		
+		method examine;				@external;
+
+		// write-	Outputs the data for this object to file specified by
+		//			the fd (file descriptor) parameter.
+		
+		method write( fd:dword );	@external;
+
+		// read-
+		//	Reads data for this object from the file specified by "fd"
+		
+		method read( fd:dword );	@external;
+		
+		// These methods describe an object. Note that not all
+		// objects have a description associated with them. For those
+		// objects that do not, these methods do nothing.
+		
+		method brieflyDescribe;		@external;
+		method fullyDescribe;		@external;			
+		
+	endclass;
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// noun-
+	//
+	//	A base object. Unlike physObj, you cannot hold a noun object.
+	
+	noun	:class inherits( object )
+	
+		var
+			nounValue	:dword;
+			usage		:procedure( p:playerPtr );
+			
+			// Dynamic methods (procedure pointers) that correspond to each of 
+			// the verbs that can be applied to nouns:
+
+			actions		:verbMethod[ uns32( num_verbs ) ];
+
+		// object methods we override for nouns:
+			
+		override procedure create;	@external;
+		override method read;		@external;
+		override method write;		@external;
+		
+			
+	endclass;
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// physObj-
+	//
+	//	This is the basic object in the Adventure Game Engine (AGE) that
+	// can be possessed (held) by some other object.
+			
+	physObj  :class inherits( noun );
+    
+        var
+			
+			// longDescription- 	A full description of this object.
+			// shortDescription-	A brief description of this object.
+			// inscription-			Any text or writing on the object.
+			
+            longDescription 	:string;
+            shortDescription    :string;
+			inscription			:string;
+			
+			// Colors for the above three strings:
+			
+			ldFGColor			:uns32;
+			ldBGColor			:uns32;
+			sdFGColor			:uns32;
+			sdBGColor			:uns32;
+			inscrpFGColor		:uns32;
+			inscrpBGColor		:uns32;
+			
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+        
+		// destroy- Destructor for the class:
+		
+        override method destroy;         	@external;
+		
+		// Method to allow display of inscription:
+		
+		override method examine;			@external;
+
+		// initPhyObj - Used to initialize or reset the fields of a PhysObj:
+				
+		procedure initPhysObj
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string 
+		); @external;
+		
+		// Display the shortDescription and longDescription strings:
+		
+		override method brieflyDescribe;	@external;
+		override method fullyDescribe;		@external;			
+		override method read;				@external;
+		override method write;				@external;
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// impediment-
+	//
+	//	This is an object, typically appearing within a room, that prevents
+	// the player from doing something (such as heading in a given direction).
+			
+	impediment  :class inherits( physObj );
+    
+        var
+			// The following field specifies the possession that a player
+			// must have in order to overcome this impediment:
+			
+			key				:possessionPtr;
+			
+			// Message to print if the player is impeded:
+			
+			impededMsg		:string;
+			
+			// Message to print if the player is unimpeded:
+			
+			unImpededMsg	:string;
+			
+						
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+		
+        
+		// initImpediment - 
+		//  Used to initialize or reset the fields of a impediment:
+				
+		procedure initImpediment
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string;
+			key			:possessionPtr;
+			impededMsg	:string;
+			unImpededMsg:string
+		); @external;
+
+		
+		override method read;				@external;
+		override method write;				@external;
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// possession-
+	//
+	//	This is a possession that has a value associated with it.
+			
+	possession  :class inherits( physObj );
+    
+        var
+			weight		:real64;		// Difficulty to possess.
+			retail		:real64;		// Price, if purchased at retail.
+			wholesale	:real64;		// Price, if sold at wholesale.
+			reward		:real64;		// One-time reward for obtaining object.
+			age			:uns32;			// # turns object has been held.
+			uses		:uns32;			// # times object can be used. 
+			possObjNode	:objNodePtr;	// This is the node on an 
+										//  object list that contains
+										//  this possession.
+										
+			stealable	:uns32;			// 0 if not stealable.
+										// 1-100 percent chance object can
+										// be stolen.
+												
+			
+			
+						
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+		
+		override method examine; @external;
+		
+        
+		// initPossession - 
+		//  Used to initialize or reset the fields of a possession:
+				
+		procedure initPossession
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string;
+			reward		:real64;
+			weight		:real64;
+			retail		:real64;
+			wholesale	:real64;
+			numUses		:uns32 
+		); @external;
+
+		
+		override method read;				@external;
+		override method write;				@external;
+		override method fullyDescribe;		@external;			
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// weapon-
+	//
+	//	This is an offensive weapon
+			
+	weapon  :class inherits( possession );
+    
+        var
+			power		:int32;		// Power of this weapon.
+			
+			wielded		:boolean;	// True if user is currently wielding this.
+						
+			align( 4 );
+			
+						
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+		
+        
+		// initWeapon - 
+		//  Used to initialize or reset the fields of a possession:
+				
+		procedure initWeapon
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string;
+			reward		:real64;
+			weight		:real64;
+			retail		:real64;
+			wholesale	:real64;
+			numUses		:uns32;
+			power		:int32 
+		); @external;
+
+		
+		override method read;				@external;
+		override method write;				@external;
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// protection-
+	//
+	//	This is a defensive (protective) weapon class:
+			
+	protection  :class inherits( possession );
+    
+        var
+			ability		:int32;		// Protection power of this device.
+			
+			isWearing	:boolean;	// True if user is currently wearing this.
+						
+			align( 4 );
+			
+						
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+		
+        
+		// initProtection - 
+		//  Used to initialize or reset the fields of a protective device:
+				
+		procedure initProtection
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string;
+			reward		:real64;
+			weight		:real64;
+			retail		:real64;
+			wholesale	:real64;
+			numUses		:uns32;
+			ability		:int32 
+		); @external;
+
+		
+		override method read;				@external;
+		override method write;				@external;
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// consumable-
+	//
+	//	This class is used to create objects that are consumable, like food,
+	// potions, one-time spells, and the like
+			
+	consumable  :class inherits( possession );
+	
+		var		
+			// The following data fields get added to the player's values
+			// when you "use" this consumable object.  This consumable
+			// object can only be used the number of times specified by
+			// the "uses" field (inherited).
+			
+			score		:int32;		// Add this to player's score.
+			power		:int32;		// Power rating for user (experience)
+			food		:int32;		// Amount of food on the player.
+			health		:int32;		// Value representing player's health
+			wealth		:real64;	// Monetary worth of user
+						
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+		
+        
+		// initConsumable - 
+		//  Used to initialize or reset the fields of a protective device:
+				
+		procedure initConsumable
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string;
+			numUses		:uns32;
+			score		:int32;
+			power		:int32;
+			food		:int32;
+			health		:int32;
+			reward		:real64;
+			weight		:real64;
+			retail		:real64;
+			wholesale	:real64;
+			wealth		:real64 
+		); @external;
+
+		
+		override method read;				@external;
+		override method write;				@external;
+		
+    endclass;
+	
+	
+	
+
+			
+	///////////////////////////////////////////////////////////////////////////
+	//
+	// container-
+	//
+	//	This is an object that is capable of possessing other objects (it
+	// may also be possess by some other object, as it inherits physObj's
+	// attributes).
+			
+	container  :class inherits( physObj );
+    
+        var
+			// contains-
+			// This is a container that holds a list of other objects
+			// currently "owned" or "associated" with this object.
+			
+            contains            :objListPtr;
+
+			// invHeader is the text to display just before
+			// printing the inventory list.
+
+			invHeader			:string;
+			
+			// allowSearch-
+			// Set to true if player is allowed to search
+			// for an object in the contains list.
+			
+			allowSearch			:boolean;
+			
+			// allowGet-
+			//	Set to true if a player is allowed to
+			// get an object on the contains list.
+			
+			allowGet			:boolean;
+	
+	        align( 4 );
+			
+		// Methods and procedures:
+		//
+		// create - Constructor for the class:
+		
+        override procedure create; @external;
+        
+		// destroy- Destructor for the class:
+		
+        override method destroy;         	@external;
+
+
+		// A full description will list out the items held by this
+		// object in addition to the object's description:
+		
+		override method fullyDescribe;		@external;
+					
+
+
+		// Reading and writing container records:
+		
+		override method read;		@external;
+		override method write;		@external;
+
+		// initPhyObj - Used to initialize or reset the fields of a PhysObj:
+				
+		procedure initContainer
+		( 
+			sdString	:string; 
+			ldStr		:string;
+			inscription	:string 
+		); @external;
+		
+		// inventory-	Displays the list of objects in the contains list.
+		
+		method inventory;			@external;
+		
+		// searchObj-	Searches for a particular object in the contains list.
+		
+		method searchObj( objName:string );	@external;
+		
+		// removeObj-	Removes an object from the contains list.
+		
+		method removeObj( objName:string ); @external;
+		
+		
+    endclass;
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	//
+	// agent-
+	//
+	// This class defines an "agent" in the game.  Agents are "actors" who
+	// appear in the game but whose actions are controlled by the computer.
+	
+	agent :class inherits( container );
+	
+		var
+			curRoom			:roomPtr;		// Pointer to current room 
+											//  containing the agent
+											
+			maxPower		:int32;			// Agent's maximum power level.
+			curPower		:int32;			// Agent's current power level.
+			
+			lastAttack		:uns32;			// # of player moves since last
+											// attack (used to heal agent).
+											
+			strength		:int32;			// Native strength (w/o weapons).
+			
+			agentObjNode	:objNodePtr;	// This is the node on an 
+											//  object list that contains
+											//  this agent.
+
+			agentAction		:procedure( p:playerPtr; thisAgent:agentPtr );
+			
+		override procedure create;	@external;
+		override method inventory;	@external;
+		override method write;		@external;
+		override method read;		@external;
+		procedure initAgent
+		( 
+			sdStr		:string; 
+			ldStr		:string;
+			inscription	:string;
+			initRoom	:dword;
+			maxPower	:int32;
+			strength	:int32
+		); @external;
+		
+		
+	endclass;
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	//
+	// room-
+	//
+	// This class defines a "room" (place) in the adventure game matrix.
+	
+	room :class inherits( container );
+	
+		var
+			north				:roomPtr;
+			south				:roomPtr;
+			east				:roomPtr;
+			west				:roomPtr;
+			northEast			:roomPtr;
+			northWest			:roomPtr;
+			southEast			:roomPtr;
+			southWest			:roomPtr;
+			up					:roomPtr;
+			down				:roomPtr;
+			
+			impedeNorth			:impedimentPtr;
+			impedeSouth			:impedimentPtr;
+			impedeEast			:impedimentPtr;
+			impedeWest			:impedimentPtr;
+			impedeNorthEast		:impedimentPtr;
+			impedeNorthWest		:impedimentPtr;
+			impedeSouthEast		:impedimentPtr;
+			impedeSouthWest		:impedimentPtr;
+			impedeUp			:impedimentPtr;
+			impedeDown			:impedimentPtr;
+			
+			
+			// The game displays the following strings whenever the
+			// user looks in the specified direction:
+			
+			lookNorthStr		:string;
+			lookSouthStr		:string;
+			lookEastStr			:string;
+			lookWestStr			:string;
+			lookNorthEastStr	:string;
+			lookNorthWestStr	:string;
+			lookSouthEastStr	:string;
+			lookSouthWestStr	:string;
+			lookUpStr			:string;
+			lookDownStr			:string;
+			
+			lookFGColor			:uns32;
+			lookBGColor			:uns32;
+
+			// The game displays the following strings whenever the
+			// user goes in the specified direction:
+			
+			goNorthStr		:string;
+			goSouthStr		:string;
+			goEastStr		:string;
+			goWestStr		:string;
+			goNorthEastStr	:string;
+			goNorthWestStr	:string;
+			goSouthEastStr	:string;
+			goSouthWestStr	:string;
+			goUpStr			:string;
+			goDownStr		:string;
+			
+			goFGColor		:uns32;
+			goBGColor		:uns32;
+			
+			// Whenever a command executes, the command parser
+			// will call the hijack_verb procedure if this pointer
+			// is non-NULL. This function returns true in EAX if
+			// it handled the verb, it returns false in EAX if 
+			// the standard verb processing should be done.
+			
+			hijack_verb		:procedure
+							(
+								v:dword; // really verbValues_t;
+								p:playerPtr; 
+								n1:nounPtr; 
+								n2:nounPtr; 
+								cmd:string 
+							); @returns( "eax" );
+			
+			// Experience-
+			// This is the experience the player gains from
+			// visiting this room for the first time.
+			
+			experience		:uns32;
+			
+			// agents-
+			// This is a container that holds a list of all game
+			// agents currently residing in this room.
+			
+            agents			:objListPtr;
+			
+			
+			// pathSrch-
+			// This data is used when searching for a path
+			// between two nodes in the room graph.
+			
+			pathSrch:
+				record
+					fromWhom	:roomPtr;	//Back ptr to previous room
+					visited		:boolean;	//Tracks if we've visited here
+					dirFrom		:char[3];	//Direction string to print
+				endrecord;
+
+
+			// nodeVisited-
+			// Set to true when we visit this node during
+			// a shortest-path algorithm.
+			
+			nodeVisited		:boolean;
+			
+			align(4);			
+			
+			
+
+		override procedure create;  	@external;
+		override method fullyDescribe;	@external;
+		override method write;			@external;
+		override method read;			@external;
+		override method searchObj;		@external;
+		override method removeObj;		@external;
+		
+		method enterRoom;				@external;
+		method oneMove;					@external;
+		method initroom
+		(
+			roomVal				:dword;
+			sdStr				:string;
+			ldStr				:string;
+			lookNorthStr		:string;
+			goNorthStr			:string;
+			lookSouthStr		:string;
+			goSouthStr			:string;
+			lookEastStr			:string;
+			goEastStr			:string;
+			lookWestStr			:string;
+			goWestStr			:string;
+			lookNorthEastStr	:string;
+			goNorthEastStr		:string;
+			lookNorthWestStr	:string;
+			goNorthWestStr		:string;
+			lookSouthEastStr	:string;
+			goSouthEastStr		:string;
+			lookSouthWestStr	:string;
+			goSouthWestStr		:string;
+			lookUpStr			:string;
+			goUpStr				:string;
+			lookDownStr			:string;
+			goDownStr			:string			
+		);	@external;
+		
+	endclass;
+		
+	
+	////////////////////////////////////////////////////////////////////////////
+	//
+	// player-
+	//
+	// This class defines a "player" for the game.  Typically, a game has
+	// but a single player, but there is no reason we couldn't create a multi-
+	// player adventure game.
+	
+	player :class inherits( container );
+	
+		var
+			lastRoom	:roomPtr;	// Pointer to the last room player was in.
+			curRoom		:roomPtr;	// Pointer to current room containing player
+			score		:int32;		// Current player's score.
+			cmdCnt		:uns32;		// # of commands executed by player.
+			power		:int32;		// Power rating for user (experience)
+			food		:int32;		// Amount of food on the player.
+			health		:int32;		// Value representing player's health
+			wealth		:real64;	// Monetary worth of user
+			quest		:uns32;		// Current quest
+									
+			// The following variables enable the corresponding
+			// player values:
+			
+			enableFood		:boolean;
+			enableHealth	:boolean;
+			enablePower		:boolean;
+			enableWealth	:boolean;
+			
+			// The following array tracks all the rooms that the
+			// player has visited:
+			
+			roomsVisited	:boolean[ num_rooms+1 ];
+			
+
+			
+		override procedure create;	@external;
+		override method write;		@external;
+		override method read;		@external;
+		method initPlayer
+		( 
+			sdStr		:string; 
+			ldStr		:string;
+			initRoom	:dword;
+			initScore	:int32;
+			initFood	:int32;
+			initHealth	:int32;
+			initPower	:int32;
+			initWealth	:real64
+		); @external;
+		
+		method doCmd;								@external;
+		
+		// Methods dealing with players ability to wear things
+		
+		method isWearing( item:protectionPtr );		@external;
+		
+	endclass;
+	
+	
+	
+//////////////////////////////////////////////////////////////////////////////
+//
+// Global values:
+
+static
+	
+	// List of all objects in the game.
+	
+	objectList	:pointer to objList;	@external;
+	verbTable	:pointer to table;		@external;
+	noNoun		:nounPtr;				@external;
+
+	// rooms- Array of rooms for this game. We need an extra pointer
+	// because rooms are indexed from 1..numRooms.
+	
+	rooms			:roomPtr[ num_rooms+1 ];	@external;
+	
+	northNoun		:nounPtr;					@external;
+	southNoun		:nounPtr;					@external;
+	eastNoun		:nounPtr;					@external;
+	westNoun		:nounPtr;					@external;
+	northEastNoun	:nounPtr;					@external;
+	northWestNoun	:nounPtr;					@external;
+	southEastNoun	:nounPtr;					@external;
+	southWestNoun	:nounPtr;					@external;
+	upNoun			:nounPtr;					@external;
+	downNoun		:nounPtr;					@external;
+	
+												
+												
+readonly
+	rttiStrs	:string[ @uns32( num_rtti ) ];	@external;
+	verbStrs	:string[ @uns32( num_verbs ) ]; @external;	
+	
+	
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// General (non-class) prototypes:
+
+
+procedure quit( p:playerPtr ); @external;
+procedure dummy_usage( p:playerPtr ); @external;
+procedure writeObject( fd:dword; prefix:string; theRoom:objectPtr ); @external;
+procedure defaultAgentAction( p:playerPtr; a:agentPtr ); @external;
+procedure emitRoomDir
+( 
+	fd		:dword; 
+	dir		:string; 
+	theRoom	:roomPtr;
+	dirStr	:string;
+	lookStr	:string 
+); @external;
+
+procedure linkRoom
+( 
+	destRoom		:roomPtr; 
+	northRoom		:roomPtr;
+	southRoom		:roomPtr; 
+	eastRoom		:roomPtr;
+	westRoom		:roomPtr;
+	northEastRoom	:roomPtr;
+	northWestRoom	:roomPtr;
+	southEastRoom	:roomPtr; 
+	southWestRoom	:roomPtr;
+	upRoom			:roomPtr;
+	downRoom		:roomPtr 
+);	@external;
+
+procedure parse
+( 
+		input	:string;
+	var	verb	:dword;
+	var	noun1	:nounPtr;
+	var	noun2	:nounPtr
+);	@use eax; @external;
+
+
+procedure IDontKnowHowTo
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// Automatically generate prototypes for all the verbs in verbValues_t:
+//
+// Each prototype is like the following:
+//
+//	procedure verb_go(p:player; n1:nounPtr; n2:nounPtr; cmd:string ); @external;
+
+#macro verbProto( _vv_ ):_verbProc_;
+
+	?_verbProc_ : string := "verb_" + _vv_;
+	procedure @text( _verbProc_ )
+	( 
+		p:playerPtr; 
+		n1:nounPtr; 
+		n2:nounPtr; 
+		cmd:string 
+	);	@external;
+	
+#endmacro
+
+#for( _curVerb_ in verbStrs_c )
+
+	verbProto( _curVerb_ );
+	
+#endfor
+
+
+// Some pseudo-verbs that don't correspond to real commands the
+// player can use.
+//
+// "must_buy" is an alternate for "get" when the user must purchase an item.
+
+procedure must_buy
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+	
+	
+//////////////////////////////////////////////////////////////////////////////
+//
+// The following macro is for debugging purposes only. It emits the
+// string parameter constant into the code string to help locate
+// various procedures and methods when using ollydbg.
+
+
+#macro emitProcName( _procName_ ):_dummyProc_, _unique_, _index_;
+	?_index_ :int32 := @rindex( _procName_, 0, "." );
+	#if( _index_ <> -1 )
+	
+		?_unique_ :string := 
+				@string( _dummyProc_ )
+			+	@substr
+				(
+					_procName_, 
+					_index_ + 1,
+					@length( _procName_ ) - _index_
+				);
+				
+	#else
+	
+		?_unique_ :string := @string( _dummyProc_ ) + _procName_;
+				
+	#endif
+	?_dummyProc_ :text :=  _unique_;
+
+	#if( @defined( emitProcNames ))
+	
+		#if( emitProcNames )
+	
+			procedure _dummyProc_; @noframe;  
+			begin _dummyProc_;
+				nop;	// These NOPs help resync disassemblers.
+				nop;
+				nop;
+				nop;
+				byte _procName_, 0;
+				nop;
+				nop;
+				nop;
+				nop;
+			end _dummyProc_;
+			
+		#endif
+		
+	#endif
+	
+#endmacro 
+
+
+// "Helper" macros for procedures and methods that automatically invoke
+// emitProcName
+
+
+#macro _method( _methodName_ );
+	
+	emitProcName( @eval( """" + @string( _methodName_ ) + """") )
+	method _methodName_
+	
+#endmacro
+	
+#macro _procedure( _procedureName_ );
+	
+	emitProcName( @eval( """" + @string( _procedureName_ ) + """") )
+	procedure _procedureName_
+	
+#endmacro
+	
+
+#macro debug( msg );
+
+	#if( @defined( traceBlocks ))
+	
+		#if( traceBlocks )
+	
+			stdout.puts( "Entering " + @string( msg ) + nl );
+			
+		#endif
+		
+	#endif
+
+#endmacro

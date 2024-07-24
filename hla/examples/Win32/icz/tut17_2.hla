@@ -1,0 +1,34 @@
+//Iczelion's tutorial #17: Dynamic Link Library (2)
+//DLL module project is in DLLSkeleton folder
+program callDLL;
+
+#include("w.hhf")
+
+readonly
+	LibName : string := "DLLSkeleton.dll";
+	FunctionName : string := "TestFunction";
+	DllNotFound : string := "Cannot load library";
+	AppName : string := "Load Library";
+	FunctionNotFound : string := "TestHello function not found";
+
+static
+	hLib : dword;
+	TestHelloAddr : dword;
+
+begin callDLL;
+        w.LoadLibrary(LibName);
+        if(eax = NULL) then
+                w.MessageBox(NULL, DllNotFound, AppName,w.MB_OK);
+        else
+                mov(eax,hLib);
+                w.GetProcAddress(hLib, FunctionName);
+                if(eax = NULL) then
+                        w.MessageBox(NULL, FunctionNotFound, AppName,w.MB_OK);
+                else
+                        mov(eax,TestHelloAddr);
+                        call(TestHelloAddr);
+                endif;
+                w.FreeLibrary(hLib);
+        endif;
+end callDLL;
+

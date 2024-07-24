@@ -1,0 +1,374 @@
+// Bitmaps3.hla-
+//
+//	A second program that demonstrates how to use a simple bitmap.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit Bitmaps3;
+
+// Set the following to true to display interesting information
+// about the bitmap file this program opens. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "excepts.hhf" )
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+type
+	bmfh_t		:w.BITMAPFILEHEADER;
+	bmih_t		:w.BITMAPINFOHEADER;
+	fihPtr_t	:pointer to bmfh_t;
+	fiPtr_t		:pointer to bmih_t;
+
+static
+	fileHandle	:dword;		// Handle for the "Bitmaps3.bmp"
+	mapHandle	:dword;		// Handle for the memory map for "Bitmaps3.bmp"
+	filePtr		:fihPtr_t;	// Ptr to memory based version of "Bitmaps3.bmp"
+	fileInfo	:fiPtr_t;	// Ptr to w.FILEINFOHEADER structure in file.
+	bmData		:dword;		// Ptr to actual bitmap data.
+	offsetToBM	:dword;		// Offset in "Bitmaps3.bmp" to actual bitmap.
+
+readonly
+
+	ClassName	:string := "Bitmaps3WinClass";		// Window Class Name
+	AppCaption	:string := "Bitmaps3 Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	dbg.put( hwnd, nl "Bitmaps3----------------", nl );
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	push( eax );	// Save exception so we can re-raise it.
+
+	// Clean up the memory mapped file we've opened:
+
+	w.UnmapViewOfFile( filePtr );
+	w.CloseHandle( mapHandle );
+	w.CloseHandle( fileHandle );
+
+	pop( eax );
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// The Create procedure opens the file mapping object we're going to
+// manipulate as a bitmap:
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+begin Create;
+
+	w.CreateFile
+	( 
+		"Bitmaps3.bmp", 
+		w.GENERIC_READ | w.GENERIC_WRITE, 
+		0,					// Don't share
+		NULL,				// No security attributes
+		w.OPEN_EXISTING,	// File must exist.
+		0,					// No file attributes.
+		NULL				// No template file.
+	);
+	mov( eax, fileHandle );
+	dbg.put( hwnd, "Create: fileHandle = ", fileHandle, nl );
+	
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+
+		w.CreateFileMapping
+		(
+			fileHandle,			// File to map to memory.
+			NULL,				// No security.
+			w.PAGE_READWRITE,	// Allow r/w access.
+			0, 0,				// Default to size of file.
+			NULL				// No object name.
+		);
+		mov( eax, mapHandle );
+		dbg.put( hwnd, "Create: mapHandle=", mapHandle, nl );
+		
+		if( eax = NULL ) then
+
+			raise( ex.FileOpenFailure );
+
+		endif;
+		w.MapViewOfFile
+		(
+			mapHandle,
+			w.FILE_MAP_WRITE,
+			0, 0,				// Offset zero in the file
+			0					// Map entire file
+		);
+		mov( eax, filePtr );
+		dbg.put( hwnd, "Create: filePtr=", (type dword filePtr), nl );
+		
+		if( eax = NULL ) then
+
+			raise( ex.FileOpenFailure );
+
+		endif;
+
+		// okay, filePtr points at the w.BITMAPFILEHEADER record
+		// Add the size of this to EAX to get the pointer to
+		// the w.BITMAPINFOHEADER structure:
+
+		add( @size( w.BITMAPFILEHEADER ), eax );
+		mov( eax, fileInfo );
+		dbg.put( hwnd, "fileInfo=", (type dword fileInfo), nl );
+
+		// Add the size of the w.BITMAPINFOHEADER structure
+		// to get the pointer to the palette:
+
+		mov( (type w.BITMAPINFOHEADER [eax]).biSize, ecx );
+		dbg.put( hwnd, "BITMAPINFOHEADER size =", (type uns32 ecx), nl );
+
+		// Add the size of the palette to get the pointer to
+		// the actual bitmap:
+
+		mov( (type w.BITMAPINFOHEADER [eax]).biClrUsed, edx );
+		dbg.put( hwnd, "Colors used =", (type uns32 edx), nl );
+		dbg.put
+		( 
+			hwnd, 
+			"Important colors = ", 
+			(type uns32 (type w.BITMAPINFOHEADER [eax]).biClrUsed), 
+			nl 
+		);
+		dbg.put
+		( 
+			hwnd, 
+			"Width of bitmap=", 
+			(type uns32 (type w.BITMAPINFOHEADER [eax]).biWidth),
+			nl
+		);
+		dbg.put
+		( 
+			hwnd, 
+			"Height of bitmap=", 
+			(type uns32 (type w.BITMAPINFOHEADER [eax]).biHeight),
+			nl
+		);
+		dbg.put
+		( 
+			hwnd, 
+			"Bits per pixel=", 
+			(type uns32 (type w.BITMAPINFOHEADER [eax]).biBitCount),
+			nl
+		);
+
+		add( ecx, eax );
+		lea( eax, [eax+edx*4] );
+		mov( eax, bmData );
+		dbg.put( hwnd, "Bitmap start address =", eax, nl );
+		
+
+		// Compute the offset into the file for the bitmap. Note that
+		// the bitmap must start on a double word boundary, so we
+		// need to round this up to the next multiple of four.
+
+		sub( filePtr, eax );
+		add( 3, eax );
+		and( $ffff_fffc, eax );
+		mov( eax, offsetToBM );
+		dbg.put( hwnd, "Offset to bitmap =", (type uns32 eax), nl );
+		
+
+	else
+
+		raise( ex.FileOpenFailure );
+
+	endif;
+
+end Create;
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Clean up the memory mapped file we've opened:
+
+	w.UnmapViewOfFile( filePtr );
+	w.CloseHandle( mapHandle );
+	w.CloseHandle( fileHandle );
+
+	// Tell the application to quit:
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+
+var
+	hBitmap		:dword;			// Handle to hold our bitmap handle.
+	hdcMem		:dword;			// Handle for Memory device context.	
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+static
+	bmPtr		:dword;			// Holds the pointer to the bitmap.	
+	
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Create an uninitialized bitmap that Windows allocates.
+		// This API call returns a pointer to the bitmap it allocates
+		// in the bmPtr variable.
+
+		CreateDIBSection
+		( 
+			fileInfo, 
+			w.DIB_RGB_COLORS, 
+			bmPtr, 
+			mapHandle, 
+			offsetToBM 
+		);
+		mov( eax, hBitmap );
+
+		// If the bitmap is valid, let's use it:
+
+		if( eax <> NULL && bmPtr <> NULL ) then
+			
+			// Now create a new device context (memory device context)
+			// and give it the same attributes as our bitmap we just created:
+			
+			w.CreateCompatibleDC( hdc );
+			mov( eax, hdcMem );
+			w.SelectObject( hdcMem, hBitmap );
+			w.GdiFlush();
+
+		endif;
+			
+
+		// Copy the bitmap to our display context so we can see it:
+		
+		w.BitBlt( hdc, 20, 20, 256, 256, hdcMem, 0, 0, w.SRCCOPY );
+		
+		
+		// Delete the memory-based device context we created because
+		// we're now done with it:
+			
+		w.DeleteDC( hdcMem );
+		
+		// Delete the bitmap object we created, because we're done
+		// with it:
+		
+		w.DeleteObject( hBitmap );	
+				
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;				
+end Bitmaps3;
+ 

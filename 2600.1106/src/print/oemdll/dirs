@@ -1,0 +1,9 @@
+DIRS= \
+     custhlp \
+     oemps \
+     oemui \
+     oemuni \
+     psuirep \
+     syncset \
+     themeui \
+     watermark

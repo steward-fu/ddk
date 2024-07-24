@@ -1,0 +1,144 @@
+//Iczelion's tutorial #23: Tray Icon
+/*
+The program will display a simple window. When you press the minimize button,
+it will hide itself end put an icon into the system tray. 
+When you double-click on the icon, the program will restore itself 
+and remove the icon from the  system tray. When you right-click on it, 
+a popup menu is displayed. You can choose to restore the program or exit it.
+*/
+
+program aTrayIcon;
+
+#include("w.hhf")
+#include("shell32.hhf")
+
+const
+	WM_SHELLNOTIFY := w.WM_USER + 5;
+	IDI_TRAY := 0;
+	IDM_RESTORE := 1000;
+	IDM_EXIT := 1010;
+
+
+readonly
+	ClassName : string := "TrayIconWinClass";
+	AppName : string := "TrayIcon Demo";
+	RestoreString :string :=	"&Restore";
+	ExitString :string :=	"E&xit Program";
+			
+static
+	hInstance : dword;
+	note : w.NOTIFYICONDATA;
+	hPopupMenu : dword;
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	pt : w.POINT;
+		
+begin WndProc;
+	if(uMsg = w.WM_CREATE) then
+		w.CreatePopupMenu();
+		 mov(eax,hPopupMenu);
+		w.AppendMenu(hPopupMenu,w.MF_STRING,IDM_RESTORE,RestoreString);
+		w.AppendMenu(hPopupMenu,w.MF_STRING,IDM_EXIT,ExitString);
+	elseif(uMsg = w.WM_SIZE) then
+		if(wParam = w.SIZE_MINIMIZED) then
+			mov(@size(w.NOTIFYICONDATA),note.cbSize);
+			mov(hWnd,note.hwnd);
+			mov(IDI_TRAY,note.uID);
+			mov(w.NIF_ICON | w.NIF_MESSAGE | w.NIF_TIP,note.uFlags);
+			mov(WM_SHELLNOTIFY,note.uCallbackMessage);
+		  w.LoadIcon(NULL, val w.IDI_WINLOGO);
+		    mov(eax,note.hIcon);
+		  w.lstrcpy(&note.szTip, val AppName);
+		  w.ShowWindow(hWnd,w.SW_HIDE);
+		  Shell_NotifyIcon(w.NIM_ADD, &note); 
+		endif;
+	elseif(uMsg = w.WM_COMMAND) then
+		if(lParam = 0) then
+			Shell_NotifyIcon(w.NIM_DELETE, &note); 
+			 mov(wParam,eax);
+			if(ax = IDM_RESTORE) then
+				w.ShowWindow(hWnd,w.SW_RESTORE);
+			else
+				w.DestroyWindow(hWnd);
+			endif;
+		endif;
+	elseif(uMsg = WM_SHELLNOTIFY) then	
+		if(wParam = IDI_TRAY) then
+			if(lParam = w.WM_RBUTTONDOWN) then
+				w.GetCursorPos(&pt);
+				w.SetForegroundWindow(hWnd);
+				w.TrackPopupMenu(hPopupMenu,w.TPM_RIGHTALIGN,pt.x,pt.y,NULL,hWnd,NULL);
+				w.PostMessage(hWnd,w.WM_NULL,0,0);
+			elseif(lParam = w.WM_LBUTTONDBLCLK) then
+				w.SendMessage(hWnd,w.WM_COMMAND,IDM_RESTORE,0);
+			endif;
+		endif;
+	elseif(uMsg = w.WM_DESTROY) then
+		w.DestroyMenu(hPopupMenu);
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW | w.CS_DBLCLKS, wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_APPWORKSPACE  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		w.WS_EX_CLIENTEDGE,
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPED | w.WS_CAPTION | w.WS_SYSMENU | w.WS_MINIMIZEBOX | w.WS_MAXIMIZEBOX | w.WS_VISIBLE , 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		350, 220,
+		NULL,NULL,hInst, NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+	    w.TranslateMessage(msg);
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aTrayIcon;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	WinMain( hInstance, NULL, NULL, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aTrayIcon;

@@ -1,0 +1,29 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+
+
+
+
+// numButtons-
+//
+//	Returns the number of mouse buttons in EAX.
+
+procedure win32cons.numButtons; @nodisplay;
+var
+	BtnCount:	dword;
+	
+begin numButtons;
+
+	pushad();
+	win.GetNumberOfConsoleMouseButtons( BtnCount );
+	popad();
+	mov( BtnCount, eax );
+	
+end numButtons;
+	
+
+
+
+
+
+end consoleUnit;

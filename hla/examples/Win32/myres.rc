@@ -1,0 +1,68 @@
+#include <windows.h>
+#define str1 100
+#define str2 101
+#define str3 102
+STRINGTABLE
+BEGIN
+str1, "Hello World"
+str2, "How are you?"
+str3, "I am fine"
+END
+#define myaccs 103
+#define acc1 104
+#define acc2 105
+#define acc3 106
+#define acc4 107
+#define acc5 108
+myaccs ACCELERATORS
+BEGIN
+"^C", acc1
+"K", acc2
+"k", acc3, ALT
+98, acc4, ASCII
+VK_F1, acc5, ALT, VIRTKEY
+END
+#define myDlg 109
+#define a3s 110
+#define acb 111
+#define cb 112
+#define cmbo 113
+#define ctxt 114
+#define dpb 115
+#define etxt 116
+#define gbx 117
+#define icn 118
+#define lbx 119
+#define ltxt 120
+#define pbx 121
+#define pbtn 122
+#define rbtn 123
+#define rtxt 124
+#define sbar 125
+#define s3c 126
+myDlg DIALOG 10, 20, 300, 400
+BEGIN
+AUTO3STATE "caption",a3s,10,20,100,200
+AUTOCHECKBOX "caption1",acb,11,21,101,201
+CHECKBOX "caption2",cb,12,22,102,202
+COMBOBOX cmbo,13,23,103,203
+CTEXT "Centered Text",ctxt,14,24,104,204
+DEFPUSHBUTTON "Default Push Button",dpb,15,25,105,205
+EDITTEXT etxt,16,26,106,206
+GROUPBOX "Group Box",gbx,17,27,107,207
+ICON "ICON",icn,1,2,3,4
+LISTBOX lbx,1,2,3,4
+LTEXT "LTEXT",ltxt,1,2,3,4
+PUSHBOX "PBOX",pbx,1,2,3,4
+PUSHBUTTON "PUSH BUTTON",pbtn,1,2,3,4
+PUSHBUTTON "RADIO BUTTON",rbtn,1,2,3,4
+RTEXT "RTEXT",rtxt,1,2,3,4
+SCROLLBAR sbar,1,2,3,4
+STATE3 "STATE3",s3c,1,2,3,4
+END
+#define myCurs 127
+myCurs CURSOR "arrow.cur"
+#define myBM 128
+myBM BITMAP "Buttons.bmp"
+129 FONT "roman.fon"
+ FONT 12, "roman.fon"

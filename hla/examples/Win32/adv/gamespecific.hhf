@@ -1,0 +1,489 @@
+// gamespecific.hhf
+//
+// Header file containing definitions specific to
+// a particular game.
+
+#if( !@defined( gamespecific_hhf )) 
+?gamespecific_hhf := true;
+
+
+// Put game-specific constants, externals, etc., here
+
+const
+	infiniteUses		:dword := $ffff_ffff;	// Infinite # of uses
+
+	// Quest values:
+
+	lantern_quest_c			:uns32 := 1;
+	goblin_quest_c			:uns32 := lantern_quest_c + 1;	//2
+	castle_quest_c			:uns32 := goblin_quest_c + 1;	//3
+	sorcerer_quest_c		:uns32 := castle_quest_c + 1;	//4
+	mansion_quest_c			:uns32 := sorcerer_quest_c + 1;	//5
+	werewolf_quest_c		:uns32 := mansion_quest_c + 1;	//6
+	vampire_quest_c			:uns32 := werewolf_quest_c + 1;	//7
+	cavern_quest_c			:uns32 := vampire_quest_c + 1;	//8
+	dragon_quest_c			:uns32 := cavern_quest_c + 1;	//9
+
+	// Values associated with objects in the game:
+
+	playerInitialFood_c		:int32 := 250;		// Initial food supply
+	playerInitialHealth_c	:int32 := 200;		// Initial health value
+	playerInitialPower_c	:int32 := 0;		// Initial experience.
+	playerInitialWealth_c	:real64:= 200.0;	// Initial gold pieces
+	
+	oilRetail_c				:real64 := 6.0;		// Price of oil
+	oilWholesale_c			:real64 := 3.0;
+	
+	swordRetail_c			:real64 := 75.0;	// Prices for a sword
+	swordWholesale_c		:real64 := 37.0;
+	
+	cleaverRetail_c			:real64	:= 180.0;	// Prices for a meat cleaver
+	cleaverWholesale_c		:real64 := 90.0;
+	
+	broadswordRetail_c		:real64	:= 384.0;	// Prices for a broadsword
+	broadswordWholesale_c	:real64 := 192.0;
+	
+	gauntletRetail_c		:real64 := 74.0;	// Prices for a gauntlet
+	gauntletWholesale_c		:real64 := 37.0;
+	
+	axeRetail_c				:real64	:= 127.0;	// Prices for an axe
+	axeWholesale_c			:real64 := 63.0;
+	
+	helmetRetail_c			:real64 := 150.0;	// Prices for a helmet
+	helmetWholesale_c		:real64 := 75.0;
+	
+	cloakRetail_c			:real64 := 212.0;	// Prices for an elven cloak
+	cloakWholesale_c		:real64 := 106.0;
+	
+	ringRetail_c			:real64 := 476.0;	// Prices for a magic ring
+	ringWholesale_c			:real64 := 287.0;
+	
+	scimitarRetail_c		:real64 := 288.0;	// Prices for scimiatar
+	scimitarWholesale_c		:real64 := 144.0;
+	
+	armorRetail_c			:real64 := 87.0;	// Prices for armor
+	armorWholesale_c		:real64 := 43.0;
+	
+	shieldRetail_c			:real64	:= 118.0;	// Prices for shield
+	shieldWholesale_c		:real64 := 59.0;
+	
+	longswordRetail_c		:real64	:= 142.0;	// Longsword prices
+	longswordWholesale_c	:real64 := 71.0;
+	
+	lanternRetail_c			:real64 := 14.0;	// Lantern prices
+	lanternWholesale_c		:real64 := 7.0;
+	
+	ropeRetail_c			:real64 := 5.0;		// Rope prices
+	ropeWholesale_c			:real64 := 2.0;
+	
+	keyRetail_c				:real64 := 10.0;	// Key prices
+	keyWholesale_c			:real64 := 5.0;
+	
+	bottleRetail_c			:real64 := 8.0;		// Smokey Bottle prices
+	bottleWholesale_c		:real64 := 4.0;
+	
+	daggerRetail_c			:real64 := 48.0;	// Dagger prices
+	daggerWholesale_c		:real64 := 24.0;
+	
+	battleaxeRetail_c		:real64 := 420.0;	// Battleaxe prices
+	battleaxeWholesale_c	:real64 := 210.0;
+	
+	foodRetail_c			:real64 := 64.0;	// Food prices
+	foodWholesale_c			:real64 := 32.0;
+	foodQuantity_c			:uns32	:= 250;		// Amount of food units
+	foodHealth_c			:uns32	:= 300;		// Health provided by food
+	
+	appleRetail_c			:real64	:= 24.0;	// Poison apple prices
+	appleWholesale_c		:real64 := 12.0;
+	
+	ironRetail_c			:real64 := 36.0;	// Iron prices
+	ironWholesale_c			:real64 := 18.0;
+	
+	bucklerRetail_c			:real64	:= 288.0;	// Buckler prices
+	bucklerWholesale_c		:real64 := 144.0;
+	
+	fluteRetail_c			:real64 := 80.0;
+	fluteWholesale_c		:real64 := 40.0;
+	
+	
+	
+	daggerPower_c		:int32 := 2;	// Relative power of a dagger.
+	swordPower_c		:int32 := 4;	// Relative power of a sword.
+	axePower_c			:int32 := 6;	// Relative power of an axe.
+	longswordPower_c	:int32 := 7;	// Relative power of a longsword.
+	scimitarPower_c		:int32 := 8;	// Relative power of a scimitar.
+	cleaverPower_c		:int32 := 10;	// Relative power of a meat cleaver.
+	broadSwordPower_c	:int32 := 12;	// Relative power of a broadsword.
+	battleaxePower_c	:int32 := 18;	// Relative power of a battleaxe.
+	
+	gauntletProtection_c:int32 := 0;	// Protection afforded by gauntlets.
+	helmetProtection_c	:int32 := 0;	// Protection afforded by a helmet.
+	cloakProtection_c	:int32 := 0;	// Protection afforded by elf cloak.
+	ringProtection_c	:int32 := 0;	// Protection afforded by the ring.
+	armorProtection_c	:int32 := 0;	// Protection afforded by armor.
+	shieldProtection_c	:int32 := 0;	// Protection afforded by sheild.
+	shroudProtection_c	:int32 := 0;	// Protection afforded by shroud.
+	bucklerProtection_c	:int32 := 0;	// Protection afforded by buckler.
+	
+type
+	synonyms_t:
+		record
+			inputWord	:string;	// User's word is substituted
+			substitute	:string;	//  by this word the game recognizes.
+		endrecord;
+		
+	phrases_t:
+		record
+			firstWord	:string;
+			secondWord	:string;
+			translation	:string;
+		endrecord;
+
+const
+
+	// To create synonyms for various words in the
+	// game, extend the following table.
+	//
+	// Note: all the text in this table must be lowercase.
+	// Input words are converted to lowercase prior to
+	// lookup, and the parser expects lowercase on exit.
+
+	synonyms_c: synonyms_t[14] :=
+		[
+			synonyms_t:[ "n", "go north" ],
+			synonyms_t:[ "s", "go south" ],
+			synonyms_t:[ "e", "go east" ],
+			synonyms_t:[ "w", "go west" ],
+			synonyms_t:[ "ne", "go northeast" ],
+			synonyms_t:[ "nw", "go northwest" ],
+			synonyms_t:[ "se", "go southeast" ],
+			synonyms_t:[ "sw", "go southwest" ],
+			synonyms_t:[ "u", "go up" ],
+			synonyms_t:[ "d", "go down" ],
+			synonyms_t:[ "inv", "inventory" ],
+			synonyms_t:[ "ax", "axe" ],
+			synonyms_t:[ "kill", "fight" ],
+			synonyms_t:[ "play", "use" ]
+		];
+		
+		
+	// The following "noise words" are always removed
+	// from the input string during parsing.
+	
+	noiseWords_c :string[6] :=
+		[
+			"and", 
+			"or", 
+			"the", 
+			"a", 
+			"from",
+			"to"
+		];
+		
+	// The following are "phrases" that the game recognizes
+	// and converts to a single word. The first two words
+	// in each record form the two-word phrase, the third
+	// word is what the parser translates the phrase to
+	// if it finds the first two words.
+	
+	phrases_c	:phrases_t[25] :=
+		[
+			phrases_t:[ "north", "east", "northeast" ],
+			phrases_t:[ "north", "west", "northwest" ],
+			phrases_t:[ "south", "east", "southeast" ],
+			phrases_t:[ "south", "west", "southwest" ],
+			phrases_t:[ "brass", "lantern", "lantern" ],
+			phrases_t:[ "wooden", "key", "key" ],
+			phrases_t:[ "glass", "bottle", "bottle" ],
+			phrases_t:[ "smokey", "bottle", "bottle" ],
+			phrases_t:[ "metal", "dagger", "dagger" ],
+			phrases_t:[ "metal", "battleaxe", "battleaxe" ],
+			phrases_t:[ "food", "rations", "food" ],
+			phrases_t:[ "iron", "rations", "iron" ],
+			phrases_t:[ "holy", "shroud", "shroud" ],
+			phrases_t:[ "wooden", "buckler", "buckler" ],
+			phrases_t:[ "wooden", "flute", "flute" ],
+			phrases_t:[ "bulletin", "board", "board" ],
+			phrases_t:[ "meat", "cleaver", "cleaver" ],
+			phrases_t:[ "metal", "broadsword", "broadsword" ],
+			phrases_t:[ "metal", "axe", "axe" ],
+			phrases_t:[ "brass", "helmet", "helmet" ],
+			phrases_t:[ "elven", "cloak", "cloak" ],
+			phrases_t:[ "magical", "ring", "ring" ],
+			phrases_t:[ "metal", "scimitar", "scimitar" ],
+			phrases_t:[ "crusader", "shield", "shield" ],
+			phrases_t:[ "metal", "longsword", "longsword" ]
+			
+		];
+		
+		
+static
+	villageClerk	:agentPtr;	@external;
+	goblinAgent		:agentPtr;	@external;
+	sorcererAgent	:agentPtr;	@external;
+	vampireAgent	:agentPtr;	@external;
+	butlerAgent		:agentPtr;	@external;
+	werewolfAgent	:agentPtr;	@external;
+	hellhoundAgent	:agentPtr;	@external;
+	dragonAgent		:agentPtr;	@external;
+	
+	
+		
+// Prototypes for game-specific functions:
+
+procedure initRooms; @external;
+procedure initAgents; @external;
+procedure initPossessions; @external;
+procedure initializePlayer( p:playerPtr ); @external;
+procedure eachTurn( p:playerPtr ); @external;
+
+procedure readBulletinBoard
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+); @external;
+
+
+procedure links
+(
+	r:dword; 
+	n:dword; 
+	s:dword; 
+	e:dword; 
+	w:dword; 
+	u:dword; 
+	d:dword 
+); @external;
+
+
+
+procedure gs_sell( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+	@external;		
+
+procedure gs_buy( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+	@external;		
+
+
+// quest_lantern gets called the first time the player gets the lantern:
+
+procedure quest_lantern
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_goblin gets called when you fight the goblin
+
+procedure quest_goblin
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_sorcerer gets called when you fight the sorcerer
+
+procedure quest_sorcerer
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_mansion gets called when you fight the butler
+
+procedure quest_mansion
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_werewolf gets called when you fight the werewolf
+
+procedure quest_werewolf
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+// quest_vampire gets called when you fight the vampire
+
+procedure quest_vampire
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_caverns gets called when you fight the hellhound
+
+procedure quest_caverns
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+// quest_dragon gets called when you fight the dragon
+
+procedure quest_dragon
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+
+
+
+// gs_go gets called when you execute the go command, in order
+// to check to see if we've arrived at certain rooms in the
+// game (to fulfill certain quests.
+
+procedure gs_go
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+procedure wearShroud
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+procedure removeShroud
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+procedure goWestVW6
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+procedure play_flute
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	@external;
+
+
+
+procedure createAgent
+(
+	objName			:string;
+	shortDesc		:string;
+	longDesc		:string;
+	inscription		:string;
+	initialRoom		:dword;
+	initialPower	:int32;
+	strength		:int32
+); @external;
+
+procedure createPossession
+(
+	objName		:string;
+	shortDesc	:string;
+	longDesc	:string;
+	inscription	:string;
+	retail		:real64;
+	wholesale	:real64;
+	initialRoom	:dword
+); @external;
+
+procedure createInv
+(
+	objName		:string;
+	shortDesc	:string;
+	longDesc	:string;
+	inscription	:string;
+	retail		:real64;
+	wholesale	:real64;
+	theAgent	:agentPtr
+); @external;
+
+
+procedure createWeapon
+(
+	objName			:string;
+	shortDesc		:string;
+	longDesc		:string;
+	inscription		:string;
+	retail			:real64;
+	wholesale		:real64;
+	power			:int32;
+	theContainer	:containerPtr
+); @external;
+
+
+procedure createProtection
+(
+	objName			:string;
+	sdString		:string; 
+	ldStr			:string;
+	inscription		:string;
+	retail			:real64;
+	wholesale		:real64;
+	ability			:int32;
+	theContainer	:containerPtr 
+); @external;
+
+procedure createConsumable
+(
+	objName			:string;
+	sdString		:string; 
+	ldStr			:string;
+	inscription		:string;
+	numUses			:uns32;
+	score			:int32;
+	power			:int32;
+	food			:int32;
+	health			:int32;
+	reward			:real64;
+	weight			:real64;
+	retail			:real64;
+	wholesale		:real64;
+	wealth			:real64; 
+	theContainer	:containerPtr
+); @external;
+
+
+
+		
+
+#endif

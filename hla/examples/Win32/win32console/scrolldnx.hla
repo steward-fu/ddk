@@ -1,0 +1,79 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+
+
+// scrollDnx-
+//
+// Scrolls the screen down N lines plus the ability
+// to set the fill character and attribute.
+
+procedure win32cons.scrollDnx( fill:char; attr:word; n:uns16 ); @nodisplay;
+var
+	csbi: 	win.CONSOLE_SCREEN_BUFFER_INFO;
+	ci:		win.CHAR_INFO;
+	src:	win.small_rect;
+	dest:	win.COORD;
+
+
+begin scrollDnx;
+
+	pushad();
+	win32cons.info( csbi );
+
+	mov( n, ax );
+	if(  ax >= csbi.dwSize.Y ) then
+
+		// If the number of lines to scroll is greater
+		// than or equal to the size of the screen, 
+		// then just clear the screen.
+
+		win32cons.cls();
+
+	else
+
+		// Compute the bounds of the rectangle to move.
+		// And the destination coordinate to move it to.
+
+		mov( csbi.srWindow.left, ax );
+		mov( ax, src.left );
+		mov( ax, dest.X );
+
+		mov( csbi.srWindow.top, ax );
+		mov( ax, src.top );
+		add( n, ax );
+		mov( ax, dest.Y );
+
+		mov( csbi.srWindow.right, ax );
+		mov( ax, src.right );
+		mov( csbi.srWindow.bottom, ax );
+		mov( ax, src.bottom );
+
+		// Set up the fill char and attribute:
+
+		mov( fill, al );
+		mov( al, ci.AsciiChar );
+		mov( attr, ax );
+		mov( ax, ci.Attributes );
+
+		// Okay, scroll the screen up one line:
+
+		win.ScrollConsoleScreenBuffer
+		(
+			ci,
+			#{
+				pushd( (type dword dest));
+			}#,
+			0,	// NULL clipping region.
+			src,
+			stdout.handle()
+		);
+
+	endif;
+	popad();	
+
+end scrollDnx;
+
+
+
+end consoleUnit;

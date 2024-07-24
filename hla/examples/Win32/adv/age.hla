@@ -1,0 +1,393 @@
+// adv.hla
+//
+// Adventure game main program/sample/demo game.
+
+program adventure;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+#include( "gamespecific.hhf" )
+
+readonly
+
+	// Strings corresponding to each of the verbs appearing in the
+	// verbValues_t enumeration type in age.hhf:
+	
+	verbStrs	:string[ num_verbs ] :=
+				[
+					" ",
+					verbStrs_c
+				];
+				
+									
+	
+			
+static
+	objectList		:pointer to objList; // The list of all objects in the game
+	verbTable		:pointer to table;	 // Lookup table for verbs in game.
+	nounTable		:pointer to table;	 // Lookup table for nouns in game.
+	synonymTable	:pointer to table;	 // Lookup table for synonyms.
+	
+	// Default nouns in this game:
+	
+	noNoun			:nounPtr;	// Handles noun-less verbs.
+	
+	northNoun		:nounPtr;	// Direction nouns.
+	southNoun		:nounPtr;
+	eastNoun		:nounPtr;
+	westNoun		:nounPtr;
+	northEastNoun	:nounPtr;
+	northWestNoun	:nounPtr;
+	southEastNoun	:nounPtr;
+	southWestNoun	:nounPtr;
+	upNoun			:nounPtr;
+	downNoun		:nounPtr;
+	
+	// rooms- Array of rooms for this game. We need an extra pointer
+	// because rooms are indexed from 1..numRooms.
+	
+	rooms			:roomPtr[ num_rooms+1 ];
+	
+	thePlayer		:playerPtr;			// Current player info.
+	
+	villageClerk	:agentPtr;			// The village clerk agent.
+	
+
+			
+				
+_procedure( initializeGame ); @noframe;
+begin initializeGame; debug( "initializeGame" );
+
+	// Before creating any objects, we need to initialize the objectList
+	// list variable because all object get put onto this list when they
+	// are created.
+	
+	objList.create();
+	mov( esi, objectList );
+
+	// Initialize the verbs and the verb look-up table:
+	
+	table.create( 128 );
+	mov( esi, verbTable );
+	for( mov( 1, ecx ); ecx < num_verbs; inc( ecx )) do
+	
+		// Create a new table entry in the verbTable and
+		// store a pointer to the corresponding verbs array
+		// element into the verb table:
+
+		verbTable.getNode( verbStrs[ ecx*4 ] );
+		mov( ecx, (type tableNode [eax]).Value );
+		
+	endfor;
+	
+	
+	// Initialize the default nouns.
+	// Note that they are automatically stored in the
+	// nounTable by the noun.create routine.
+	
+	table.create( 1024 );
+	mov( esi, nounTable );
+	
+	noun.create( " nonoun " );
+	mov( esi, noNoun );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	mov( &verb_quit, nounESI.actions[ uns32( v_quit )*4 ] );
+	mov( &verb_inventory, nounESI.actions[ uns32( v_inventory )*4 ] );
+	mov( &verb_score, nounESI.actions[ uns32( v_score )*4 ] );
+	mov( &verb_hint, nounESI.actions[ uns32( v_hint )*4 ] );
+	mov( &verb_help, nounESI.actions[ uns32( v_help )*4 ] );
+	mov( &verb_save, nounESI.actions[ uns32( v_save )*4 ] );
+	mov( &verb_describe, nounESI.actions[ uns32( v_describe )*4 ] );
+					
+	// Set up the direction nouns:
+	
+	noun.create( "north" );
+	mov( esi, northNoun );
+	mov( n_north, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "south" );
+	mov( esi, southNoun );
+	mov( n_south, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "east" );
+	mov( esi, eastNoun );
+	mov( n_east, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "west" );
+	mov( esi, westNoun );
+	mov( n_west, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+
+	noun.create( "northEast" );
+	mov( esi, northEastNoun );
+	mov( n_northEast, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "northWest" );
+	mov( esi, northWestNoun );
+	mov( n_northWest, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "southEast" );
+	mov( esi, southEastNoun );
+	mov( n_southEast, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "southWest" );
+	mov( esi, southWestNoun );
+	mov( n_southWest, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "up" );
+	mov( esi, upNoun );
+	mov( n_up, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	noun.create( "down" );
+	mov( esi, downNoun );
+	mov( n_down, nounESI.nounValue );
+	mov( &verb_go, nounESI.actions[ uns32( v_go )*4 ] );
+	mov( &verb_look, nounESI.actions[ uns32( v_look )*4 ] );
+	
+	// Initialize all the room objects:
+	
+	initRooms();
+	
+	// Initialize all the agents appearing in rooms in the game:
+	
+	initAgents();
+	
+	// Initialize all the "possession" objects and distribute them
+	// throughout the rooms:
+	
+	initPossessions();	
+
+
+	// Now create a player object.
+	
+	player.create( "player" );
+	mov( esi, thePlayer );
+	mov( n_player, playerESI.nounValue );
+
+	initializePlayer( esi );
+
+	ret();
+	
+end initializeGame;
+
+ 
+// quit-
+//
+// Quits the game. Doesn't really need a display, this is just to shut
+// up the compiler because it thinks a display is needed to exit from
+// nested procedures.
+ 
+//_procedure( quit )( p:playerPtr ); @display;
+//begin quit; debug( "quit" );
+procedure quit( p:playerPtr ); @display;
+begin quit;
+
+	mov( p, esi );
+	mov( playerESI.curRoom, ebx );
+	stdout.put
+	( 
+		PlayerStr, 
+		playerESI.shortDescription, 
+		HasQuitTheGame,
+		nl,
+		WhileInRoom,
+		'''', (type room [ebx]).objName, '''',
+		nl,
+		TotalNumberOfMoves,
+		playerESI.cmdCnt,
+		nl
+	);
+	playerESI.inventory();
+	verb_score( p, null, null, "quit" );
+	exit adventure;
+	
+end quit;
+
+begin adventure;
+
+	console.setAttrs( console.white, console.blue );	
+	console.cls();
+	console.setAttrs( console.yellow, console.blue );
+	stdout.puts( "HLA Adventure" nl );
+	console.setAttrs( console.white, console.blue );
+	stdout.puts
+	( 
+		"By: Paul Panks" nl 
+		"Fixed by Frank Kotler" nl
+		"Conversion to AGE begun by Randall Hyde" nl
+		nl 
+	);
+	console.setAttrs( console.white, console.magenta );
+	stdout.puts
+	( 
+		"                                                                 " nl 
+	);
+	stdout.puts
+	( 
+		" Based on HLA Adventure Version 2.78                             " nl 
+	);
+	stdout.puts
+	( 
+		" This is, however, an imperfect translation                      " nl 
+	);
+	stdout.puts
+	( 
+		" so don't expect the game play to be exactly                     " nl 
+	);
+	stdout.puts
+	( 
+		" the same as Paul's version.                                     " nl 
+	);
+	stdout.puts
+	( 
+		"                                                                 " nl 
+	);
+	console.setAttrs( console.white, console.blue );
+
+	console.setAttrs( console.white, console.red );
+	stdout.puts
+	(
+		"                                                                 " nl 
+		" You can learn more about the HLA Adventure project by visiting: " nl 
+		"                                                                 " nl 
+	);
+	console.setAttrs( console.green, console.red );
+	stdout.puts
+	(
+		"       http://members.tripod.com/~panks/hlaadv.html              " nl 
+		"                                                                 " nl 
+		nl
+	);
+	console.setAttrs( console.white, console.blue );
+	stdout.puts
+	(
+		"This project was ported cross-platform on May 15, 2003." nl
+		"Conversion to AGE (Adventure Game Engine) started on Dec 13, 2004." nl
+	);
+	stdout.puts
+	(
+		"Originally written for Win32 and Linux SuSe Professional." nl
+	);
+	console.setAttrs( console.cyan, console.blue );
+	stdout.puts
+	(
+		"Various contributions by: Frank Kotler, "
+		"Sevag Krikorian, and others." nl
+	);
+	console.setAttrs( console.white, console.red );
+	console.gotoxy( 0,23 );
+	stdout.puts("Press the ENTER key to begin playing!" );
+	
+	// Get the ENTER key from the user:
+	
+	stdin.getc();
+	stdin.flushInput();
+	
+	
+	// Okay, on to the game!
+	
+	console.setAttrs( console.yellow, console.blue );
+	console.cls();
+
+	stdout.puts
+	(
+		"                          " nl
+		"        PLOT INTRODUCTION " nl nl
+	);
+	console.setAttrs( gameFGColor, gameBGColor );
+	stdout.puts
+	(
+		"             A long time ago, when mystics, warriors and villagers" nl
+		"        with smelly socks roamed the land, things were great." nl
+		"        You could slay dragons, beat up no-good thieves, and " nl
+		"        even go on adventures with your drinking buddies. To " nl
+		"        add to it all, there was a princess to chase after and" nl
+		"        a king to swear allegiance to. All in all, life was" nl
+		"        grand." nl nl
+		"        Until one day, that is...An evil dragon has taken refuge" nl
+		"        in a nearby cave. As the King's chief dragon hunter, it is" nl
+		"        up to you to slay the dragon dead. Good luck!" nl nl
+	);
+
+	// Initialize the game-specific stuff:
+
+	initializeGame();
+
+	console.setAttrs( gameFGColor, gameBGColor );
+	console.cls();
+
+
+	// Need to describe the current room before we start the game --
+	// this doesn't happen automatically:
+	
+	mov( thePlayer, esi );
+	mov( playerESI.curRoom, esi );
+	roomESI.fullyDescribe();
+	
+	// Game logic goes here:
+	
+	forever
+	
+		console.setAttrs( gameFGColor, gameBGColor );
+		stdout.newln();
+	
+		// Execute the player's command:
+		
+		thePlayer.doCmd();
+		
+		// For each agent in the room that the player is in, give
+		// that agent a "turn":
+		
+		mov( thePlayer, esi );
+		mov( playerESI.curRoom, esi );
+		mov( roomESI.agents, esi );
+		foreach objListESI.nodeInList() do
+		
+			mov( objNodeESI.theObject, esi );
+			agentESI.agentAction( thePlayer, esi );
+		
+		endfor;
+		
+		// Call the game-specific code after each turn by the
+		// player and any agents in the room.
+		
+		eachTurn( thePlayer );
+		
+	endfor;	
+		
+
+end adventure;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

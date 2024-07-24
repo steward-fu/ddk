@@ -1,0 +1,85 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+#include( "strings.hhf" );
+#include( "conv.hhf" );
+
+
+
+
+
+
+// setTitle-
+//
+//	This procedure sets the title caption on the console
+//	window title bar.
+
+procedure win32cons.setTitle( title:string ); @nodisplay;
+begin setTitle;
+
+	pushad();
+	win.SetConsoleTitle( title );
+	popad();
+	
+end setTitle;
+
+
+
+// getTitle-
+// a_getTitle-
+//
+//	These procedures retrieve the current console window title.
+//	getTitle stores the string into an existing buffer.
+//	a_getTitle allocates storage for the string and returns
+//	the pointer to the new title in EAX.
+
+procedure win32cons.getTitle( title:string ); @nodisplay; 
+begin getTitle;
+
+	pushad();
+	mov( title, ebx );
+	win.GetConsoleTitle( (type str.strRec [ebx]).MaxStrLen, ebx );
+	
+	// Store away the returned length.
+	
+	mov( title, ebx );
+	mov( eax, (type str.strRec [ebx]).length );
+	popad();
+	
+end getTitle;
+
+
+procedure win32cons.a_getTitle; @nodisplay;
+var
+	title: 	char[ 256 ];
+	
+begin a_getTitle;
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	
+	lea( ebx, title );
+	win.GetConsoleTitle( 255, ebx );
+
+	// Allocate a string for return to caller:
+
+	lea( eax, title );
+	str.a_cpyz( eax );	
+
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+		
+end a_getTitle;
+
+
+
+
+
+
+
+end consoleUnit;

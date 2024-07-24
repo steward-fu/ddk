@@ -1,0 +1,24 @@
+[Version]
+Signature = "$Windows NT$"
+Class = Unknown
+ClassGUID = {4d36e97e-e325-11ce-bfc1-08002be10318}
+
+
+[PnpFilter]
+DriverVer = 03/10/2000,5.0.2195.0
+
+
+[PnpFilter.Services]
+AddService=pnpstress,0,FilterServiceInstall
+
+[FilterServiceInstall]
+DisplayName   = "Plug and Play Stress Filter Driver"
+ServiceType   = 1 ; SERVICE_KERNEL_DRIVER
+StartType     = 0 ; SERVICE_BOOT_START
+ErrorControl  = 1 ; ERROR_CONTROL_NORMAL
+ServiceBinary = %10%\system32\drivers\pnpfiltr.sys
+AddReg        = FilterServiceAddReg
+
+[FilterServiceAddReg]
+HKR, Parameters, "FilterDebugMask", 0x00010003, 0x8F
+

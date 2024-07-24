@@ -1,0 +1,76 @@
+[Project]
+Assembler=hla
+Type=DLL
+Description=Call HLA from VB
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+
+[MakeDef]
+Menu=1,1,1,1,1,1,1,0
+1=4,O,nmake compilerc,
+2=7,O,nmake buildall,
+3=3,O,nmake build,
+4=0,0,,5
+5=0,O,nmake syntax,
+7=
+6=
+11=0,O,make dbg_build,
+12=0,O,make dbg_buildall,
+13=0,O,make dbg_compilerc,
+14=0,O,make dbg_syntax,
+15=
+16=
+
+[MakeFiles]
+0=HLAexVB.rap
+1=HLAexVB.rc
+2=HLAexVB.asm
+3=HLAexVB.obj
+4=HLAexVB.res
+5=HLAexVB.exe
+6=HLAexVB.def
+7=HLAexVB.dll
+8=HLAexVB.txt
+9=HLAexVB.lib
+10=HLAexVB.mak
+11=HLAexVB.hla
+
+[Files]
+1=HLAexVB.hla
+
+
+[Find]
+1="HLAexC"
+
+[Version-Inc]
+Options=52
+
+[Colref]
+0=00FFFFFF
+1=00FFFFFF
+2=00FFFFFF
+3=00FFFFFF
+4=00FFFFFF
+5=00FFFFFF
+6=00FFFFFF
+7=00FFFFFF
+
+[Size]
+1=0,0,0,0,3089
+
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+
+
+[BreakPoint]

@@ -1,0 +1,1300 @@
+// A program that translates HLA's MASM output so it
+// can be compiled by TASM.
+
+program TASMator;
+
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+
+// Define ExitProcess so we can set the exit code.
+
+procedure ExitProcess( ErrCode:uns32 ); external( "_ExitProcess@4" );
+
+
+// Define DeleteFile so we can clean up after ourselves.
+
+procedure DeleteFile( Filename: string ); external( "_DeleteFileA@4" );
+
+
+// Define Seek so we can rewind files.
+
+procedure Seek
+( 
+	HowToMove:dword; 
+	HODist:dword; 
+	LODist:dword; 
+	Handle:dword 
+);
+	external( "_SetFilePointer@16" );
+	
+	
+
+
+const
+
+	// Characters that compose a MASM-style identifier.
+	// Note that the way this character set is used, it
+	// also matches unsigned integer constants, but for
+	// the purposes of this program, that's okay.
+	
+	MasmIDset: cset :=
+		{
+			'a'..'z',
+			'A'..'Z',
+			'0'..'9',
+			'_',
+			'?',
+			'@'
+		};
+		
+		
+type
+	filePtr: pointer to file;
+
+static
+
+	asm: 			file;				// Input file.
+	csout:			file;				// code segment output (temp)
+	bssout:			file;				// bss segment output (temp)
+	dsout:			file;				// data segment output (temp)
+	roout:			file;				// readonly segment output (temp)
+	strout:			file;				// strings segment output (temp)
+	mainOut:		file;				// Output file.
+	output:			filePtr;			// Used to redirect output to
+										//  one of the above files.
+	fileStack:		filePtr[32];		// Stack of file pointers.
+	fileSP:			uns32 := 0;			// Index into fileStack.
+										
+	filename:		string;				// Input filename
+	basename:		string;				// Base name of filename.
+	mainName:		string;				// Output filename.
+	csname:			string;				// Code segment filename.
+	bssname:		string;				// bss segment filename.
+	dsname:			string;				// data segment filename.
+	strname:		string;				// string segment filename.
+	roname:			string;				// readonly segment filename.
+
+	CsegParms:		string;
+	DsegParms:		string;
+	BSSsegParms:	string;
+	ROsegParms:		string;
+	STRsegParms:	string;
+		
+	line:			string;				// Used to copy temp files to output.
+	
+	ExternNames:	table;				// Names appearing in externdef's.
+	Equates:		table;				// Isomorphic equates.
+	Publics:		table;				// Names appearing in public stmts.
+	Calls:			table;				// All symbols referenced in pgm.
+	
+
+
+
+	// FreeStr- Slightly safer version of strfree
+	
+	#macro FreeStr( id );
+	
+		if( id <> NULL ) then
+		
+			strfree( id );
+			mov( NULL, id );
+			
+		endif;
+		
+	#endmacro;
+
+
+
+	procedure pushFile( newFile:dword ); @nodisplay; @noalignstack;
+	begin pushFile;
+	
+		push( eax );
+		push( ebx );
+		inc( fileSP );
+		mov( fileSP, ebx );
+		mov( output, eax );
+		mov( eax, fileStack[ ebx* 4 ]);
+		mov( newFile, eax );
+		mov( eax, output );
+		pop( ebx );
+		pop( eax );
+		
+	end pushFile;
+	
+	procedure popFile; @nodisplay; @noalignstack; @noframe;
+	begin popFile;
+	
+		push( eax );
+		mov( fileSP, eax );
+		if( eax > 0 ) then
+		
+			dec( fileSP );
+			
+		endif;
+		mov( fileStack[ eax*4 ], eax );
+		mov( eax, output );
+		pop( eax );
+		ret();
+		
+	end popFile;
+		
+		
+
+
+
+	// Pass1-
+	//
+	//	This pass enters important identifiers into the
+	// appropriate tables so we can make various modifications
+	// to the file during pass two.
+	//
+	//	Specifically, this code looks for external and public
+	// symbols (so we can clean up the giant externdef list
+	// emitted by HLA, ignoring the symbols that aren't actually
+	// referenced);  this code stores away simple name isomorphisms
+	// (that is, using an equate to change the name of a symbol in
+	// the event of a forward reference) so forward references can
+	// be eliminated during pass two; this code also generates a
+	// list of all referenced symbols (to aid in the removal of
+	// unneeded externdef statements).
+
+	procedure Pass1; @nodisplay;
+	var
+		input:		string;
+		identifier:	string;
+		idType:		string;
+		theEquate:	string;
+		
+	begin Pass1;
+	
+		// Allocate only once, storage for the input line and
+		// the string to hold an identifier.  Hopefully, these
+		// will be large enough for the job.
+		
+		stralloc( 4096 );
+		mov( eax, input );
+		
+		stralloc( 256 );
+		mov( eax, identifier );
+		
+
+		// Process each line in the file until we encounter EOF.
+			
+		while(
+		#{
+			asm.eof();
+			cmp( al, true );
+			je false;
+		}# ) do
+		
+			// Read a line from the input file:
+			
+			asm.gets( input );
+
+			// Parse the line.
+			// Look for the following statements:
+			//
+			//	externdef id:type
+			//	id equ id	;equate isomorphisms (generally, a fwd ref).
+			//  public id
+			//
+			// In addition to the above statements, this code seeks
+			// out anything that remotely resembles an identifier and
+			// enters it into the "Calls" table that keeps track of
+			// references.
+			
+			pat.match( input );
+			
+				pat.zeroOrMoreWS();
+				pat.matchStr( "externdef" );
+				pat.zeroOrMoreWS();
+				pat.upToChar( ':' );
+				pat.extract( identifier );
+								
+				inc( esi );				// skip ":".
+				pat.zeroOrMoreWS();
+				
+				pat.oneOrMoreCset( MasmIDset );
+				pat.a_extract( idType );
+				
+				// Insert the name and type into the ExternNames table:
+				
+				ExternNames.getNode( identifier );
+				mov( idType, edx );
+				mov( edx, (type tableNode [eax]).Value );
+				
+				
+				
+			  pat.alternate
+			  
+				
+			  
+			  	// Look for "ID1 equ ID2" but
+				// reject "ID1 equ this ..."
+				// and other equate forms that are not
+				// simple isomorphisms.
+		
+			  	pat.oneOrMoreCset( MasmIDset );
+				pat.extract( identifier );
+				pat.oneOrMoreWS();
+				pat.matchStr( "equ" );
+				pat.oneOrMoreWS();
+				pat.oneOrMoreCset( MasmIDset );
+				pat.a_extract( theEquate );
+				pat.WSthenEOS();
+				
+				Equates.getNode( identifier );
+				mov( theEquate, edx );
+				mov( edx, (type tableNode [eax]).Value );
+					
+				
+				
+			  pat.alternate
+			  
+			  	// Look for "   public ID"
+				
+				pat.oneOrMoreWS();
+				pat.matchStr( "public" );
+				pat.oneOrMoreWS();
+				pat.oneOrMoreCset( MasmIDset );
+				pat.extract( identifier );
+				Publics.getNode( identifier );
+				
+				
+				
+			  pat.alternate
+			  
+			  	// This section, which must be last
+				// in Pass1, looks for any identifiers
+				// appearing on the line.  If there
+				// are any IDs that are referenced,
+				// enter them into the "Calls" table
+				// so we will emit the appropriate
+				// "extrn" statements during Pass 2.
+				//
+				// Note: to simplify things, this
+				// code treats everything that looks
+				// like an ID (reserved words, numbers,
+				// etc.) as an ID.  That's okay, because
+				// this other stuff never appears in
+				// externdef declarations, so it will
+				// ultimately be ignored.
+				
+				forever
+				
+					pat.match( esi, edi );
+					
+						pat.upToCset( MasmIDset );
+						pat.oneOrMoreCset( MasmIDset );
+						pat.extract( identifier );
+						
+						push( esi );
+						push( edi );
+						Calls.getNode( identifier );
+						pop( edi );
+						pop( esi );
+						
+					  pat.if_failure
+
+					  	break;
+						
+					pat.endmatch;
+					
+				endfor;
+				
+				
+				
+			  pat.if_failure
+			  
+				// If none of the above match, then just ignore
+				// this line.
+								
+			pat.endmatch;
+			
+		
+		endwhile;
+		
+		// Free the storage allocated earlier.
+		
+		FreeStr( input );
+		FreeStr( identifier );
+			
+	end Pass1;
+	
+	
+	
+	
+
+	// Pass2
+	//
+	// This pass outputs the TASM-compatible source code file(s).
+	// This code actually writes the data to four files:
+	//
+	//		filename.cseg-	Machine instructions go here.
+	//		filename.dseg-	Initialized data values go here.
+	//		filename.bss-	Uninitialized data values go here.
+	//		filename.tas-	External and public declarations go here.
+	//
+	// This code also makes several transformations to the source
+	// code so that TASM 4.0 and later can assemble the code (in MASM
+	// compatible mode).
+	//
+	//	Here are the transformations:
+	//
+	//	externdef -> extrn	(and only necessary items are emitted)
+	//	byte -> db			(data declarations only!)
+	//	word -> dw
+	//	dword -> dd
+	//	qword -> dq
+	//  tbyte -> dt
+	//  real4 -> dd
+	//	real8 -> dq
+	//	real10 -> dt
+	//
+	//	label equ $\n -> label	(Moves label to beginning of next line).
+	//	label equ this byte\n -> label
+	//	label equ this word\n -> label
+	//	label equ this dword\n -> label
+	//
+	//	pushd -> push
+	//  popd -> pop
+	//
+	//	deletes "label equ label\n" statements.
+	//	deletes "end\n" statement (supplied later).
+	//
+	//	Looks up all identifiers in the Equates table and 
+	//	translates them as appropriate if they are present in Equates.
+	//
+	//	This pass emits all other text semantically unchanged.
+	
+	procedure Pass2; @nodisplay;
+	var
+		input:		string;
+		identifier:	string;
+		idType:		string;
+		extra:		string;
+		
+		startStr:	dword;
+		endStr:		dword;
+		
+		startType:	dword;
+		
+	begin Pass2;
+	
+		// allocate storage for our string variables.
+		
+		stralloc( 4096 );
+		mov( eax, input );
+		
+		stralloc( 256 );
+		mov( eax, identifier );
+		
+		stralloc( 256 );
+		mov( eax, idType );
+		
+		stralloc( 256 );
+		mov( eax, extra );
+		
+
+		// Read the file until EOF.
+				
+		while
+		(#{
+			asm.eof();
+			cmp( al, true );
+			je false;
+		}#) do
+		
+			asm.gets( input );
+			
+
+			
+			// Process the line itself
+
+			pat.match( input );
+				
+				// Process an externdef declaration here.
+				// If the symbol has been called in this code
+				// and is not also a public object, then emit
+				// an "EXTRN" directive.
+				
+				pat.zeroOrMoreWS();
+				pat.matchStr( "externdef" );
+				pat.zeroOrMoreWS();
+				pat.upToChar( ':' );
+				pat.extract( identifier );
+				inc( esi );		// Skip ':'
+				pat.zeroOrMoreWS();
+				
+				pat.oneOrMoreCset( MasmIDset );
+				pat.extract( idType );
+				
+				mov( idType, edx );
+				str.eq( idType, "near32" );
+				if( al ) then
+
+					Calls.lookup( identifier );
+					if( eax <> NULL ) then
+					
+						Publics.lookup( identifier );
+						if( eax = NULL ) then
+						
+							mainOut.put
+							( 
+								#9 #9 "extrn" #9, 
+								identifier,
+								":near",
+								nl
+							);
+							
+						endif;
+						
+					endif;
+					
+				else
+				
+					// If the symbol exits, but it's a public symbol,
+					// don't emit the EXTRN directive.
+					
+					Publics.lookup( identifier );
+					if( eax = NULL ) then
+					
+						// If the symbol is not a public symbol,
+						// verify that it's been referenced before
+						// emitting the EXTRN directive.
+						
+						Calls.lookup( identifier );
+						if( eax <> NULL ) then
+						
+							mainOut.put
+							(
+								#9 #9 "extrn" #9, 
+								identifier, 
+								":", 
+								idType, 
+								nl 
+							);
+							
+						endif;
+						
+					endif;
+					
+				endif;
+					
+					 
+			  pat.alternate
+			  
+				
+			  	// Process the PUBLIC declarations here.
+				
+				pat.oneOrMoreWS();
+				pat.matchStr( "public" );
+				pat.oneOrMoreWS();
+				pat.oneOrMoreCset( MasmIDset );
+				pat.extract( identifier );
+
+				mainOut.put( #9 #9 "public" #9, identifier, nl );
+
+			  pat.alternate
+
+				// Look for a line that switches us over
+				// to the code segment here.
+							  
+			  	pat.matchStr( "cseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "segment" );
+				pat.arb();
+				pat.extract( CsegParms );
+				pushFile( &csout );
+				
+				
+			  pat.alternate
+
+				// Look for a line that switches us out
+				// of the code segment here (just throw
+				// the line away, we don't do anything
+				// with it.
+
+			  	pat.matchStr( "cseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "ends" );
+
+				popFile();
+				
+								
+				
+				
+			  pat.alternate
+
+				// Look for a line that switches us over
+				// to the data segment here.
+							  
+			  	pat.matchStr( "dseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "segment" );
+				pat.arb();
+				pat.extract( DsegParms );
+				
+				pushFile( &dsout );
+				
+				
+				
+			  pat.alternate
+
+				// Look for a line that switches us out
+				// of the data segment here.
+
+			  	pat.matchStr( "dseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "ends" );
+
+				popFile();
+				
+								
+				
+			  pat.alternate
+
+				// Look for a line that switches us over
+				// to the bss segment here.
+							  
+			  	pat.matchStr( "bssseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "segment" );
+				pat.arb();
+				pat.extract( BSSsegParms );
+				
+				pushFile( &bssout );
+				
+				
+			
+			  pat.alternate
+
+				// Look for a line that switches us out
+				// of the bss segment here.
+							  
+			  	pat.matchStr( "bssseg" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "ends" );
+				
+				popFile();
+				
+				
+			  
+			  
+				
+								
+				
+			  pat.alternate
+
+				// Look for a line that switches us over
+				// to the strings segment here.
+							  
+			  	pat.matchStr( "strings" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "segment" );
+				pat.arb();
+				pat.extract( STRsegParms );
+				
+				pushFile( &strout );
+				
+				
+			
+			  pat.alternate
+
+				// Look for a line that switches us out
+				// of the strings segment here.
+							  
+			  	pat.matchStr( "strings" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "ends" );
+				
+				popFile();
+				
+				
+			  
+			  
+								
+				
+			  pat.alternate
+
+				// Look for a line that switches us over
+				// to the readonly segment here.
+							  
+			  	pat.matchStr( "readonly" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "segment" );
+				pat.arb();
+				pat.extract( ROsegParms );
+				
+				pushFile( &roout );
+				
+				
+			
+			  pat.alternate
+
+				// Look for a line that switches us out
+				// of the strings segment here.
+							  
+			  	pat.matchStr( "readonly" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "ends" );
+				
+				popFile();
+				
+				
+			  
+			  
+			  pat.alternate
+			  
+			  	// Deal with data declarations here.
+				//
+				// These are instructions of the form:
+				//
+				//	{optional_label}  byte   operand
+				//	{optional_label}  word   operand
+				//	{optional_label}  dword  operand
+				//	{optional_label}  qword  operand
+				//	{optional_label}  tbyte  operand
+				//	{optional_label}  real4  operand
+				//	{optional_label}  real8  operand
+				//	{optional_label}  real10 operand
+				//
+				//	Special case for operand = "0 dup (?)"
+				//  Just output as
+				//
+				//	{optional_label} equ this *type* 
+				
+				
+				
+				// Match the optional identifier at the
+				// beginning of the line.
+
+				pat.match( esi, edi )
+				
+					pat.oneOrMoreCset( MasmIDset );
+					pat.extract( identifier );
+					pat.oneOrMoreWS();
+					
+				  pat.alternate
+				  
+				  	pat.oneOrMoreWS();
+					str.cpy( " ", identifier );
+					
+				  pat.if_failure
+				  
+				  	pat.fail();
+					
+				pat.endmatch;
+				
+				// Match one of the data definition objects:
+				
+				pat.match( esi, edi )
+				
+					pat.matchStr( "byte" );
+					str.cpy( "byte", idType );
+					str.cpy( "db", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "word" );
+					str.cpy( "word", idType );
+					str.cpy( "dw", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "dword" );
+					str.cpy( "dword", idType );
+					str.cpy( "dd", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "qword" );
+					str.cpy( "qword", idType );
+					str.cpy( "dq", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "tbyte" );
+					str.cpy( "tbyte", idType );
+					str.cpy( "dt", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "real4" );
+					str.cpy( "real4", idType );
+					str.cpy( "dd", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "real8" );
+					str.cpy( "real8", idType );
+					str.cpy( "dq", extra );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "real10" );
+					str.cpy( "real10", idType );
+					str.cpy( "dt", extra );
+					
+				  pat.if_failure
+				  
+				  	pat.fail();
+					
+				pat.endmatch;
+						
+						
+				pat.match( esi, edi )
+				
+					pat.oneOrMoreWS();
+					pat.oneChar( '0' );
+					pat.oneOrMoreWS();
+					pat.matchStr( "dup" );
+					pat.oneOrMoreWS();
+					pat.matchStr( "(?)" );
+					
+					output.put( identifier, " equ this ", idType );
+					pat.arb();
+					pat.extract( extra );
+					output.put( extra, nl );
+					
+				  pat.if_failure
+					  
+					// Okay, if we've gotten this far, we've got
+					// a match.  Just grab the rest of the line
+					// for use as the operand:
+					
+					output.put( identifier, "  ", extra, " " );
+					
+					pat.arb();
+					pat.extract( extra );
+					output.put( extra, nl );
+				  
+				 pat.endmatch;
+					
+						
+				
+								
+				
+			  pat.alternate
+			  
+			  	// Look for a line of the form
+				//
+				//	label equ $
+				//
+				// and just emit the label with no return
+				// so it will be precatenated to the next line.
+				
+				pat.oneOrMoreCset( MasmIDset );
+				mov( ebx, startStr );
+				mov( esi, endStr );
+				pat.oneOrMoreWS();
+				pat.matchStr( "equ" );
+				pat.oneOrMoreWS();
+				pat.oneChar( '$' );
+				pat.WSorEOS();
+				
+				mov( startStr, ebx );
+				mov( endStr, esi );
+				pat.extract( identifier );
+				
+				output.put( identifier, "  " );
+				
+				
+			  pat.alternate
+			  
+			  	// Handle statements of the form:
+				//
+				//	label equ this byte
+				//	label equ this word
+				//	label equ this dword
+				//
+				// by the line as-is.
+				//
+				// Note: any statement of the form
+				//
+				//	label equ this type
+				//
+				// where type is something besides byte, word,
+				// or dword, should never occur.
+				
+				pat.oneOrMoreCset( MasmIDset );
+				mov( ebx, startStr );
+				mov( esi, endStr );
+				pat.oneOrMoreWS();
+				pat.matchStr( "equ" );
+				pat.oneOrMoreWS();
+				pat.matchStr( "this" );
+				pat.oneOrMoreWS();
+				pat.match( esi, edi );
+				
+					pat.matchStr( "byte" );
+					pat.extract( idType );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "word" );
+					pat.extract( idType );
+					
+				  pat.alternate
+				  
+				  	pat.matchStr( "dword" );
+					pat.extract( idType );
+					
+				  pat.if_failure
+				  
+				  	stdout.put( "Error: unexpected type (equ this type)" nl );
+					pat.fail();
+						
+				pat.endmatch;
+				
+				mov( startStr, ebx );
+				mov( endStr, esi );
+				pat.extract( identifier );
+				output.put( identifier, "  equ this ", idType );
+				
+				
+			  pat.alternate
+			  
+			  	// Handle (by throwing away) all statements of
+				// the form:
+				//
+				//	label equ label
+				//
+				// These were handled in pass one.
+				
+				pat.oneOrMoreCset( MasmIDset );
+				pat.oneOrMoreWS();
+				pat.matchStr( "equ" );
+				pat.oneOrMoreWS();
+				pat.oneOrMoreCset( MasmIDset );
+				pat.WSthenEOS();
+				
+			  pat.alternate
+			  
+			  	// Throw away the end directive.
+				// We'll supply our own later.
+				
+				pat.oneOrMoreWS();
+				pat.matchStr( "end" );
+				pat.WSthenEOS();
+				
+				
+			  pat.alternate
+				
+				// Look for a generic instruction of the form:
+				//
+				//	label mnemonic operand ;comment
+				//
+				// and emit the line to the appropriate output file.
+				// Note that EQU translation must take place here!
+				
+				forever
+
+									
+					pat.match( esi, edi )
+					
+						pat.upToCset( MasmIDset );
+						
+						pat.extract( extra );
+						output.put( extra );
+						
+						pat.oneOrMoreCset( MasmIDset );
+						pat.extract( identifier );
+					
+						
+						push( esi );
+						push( edi );
+						Equates.lookup( identifier );
+						pop( edi );
+						pop( esi );
+
+						
+						if( eax <> NULL ) then
+
+							output.put
+							( 
+								(type string (type tableNode [eax]).Value) 
+							);
+							
+						else
+						
+							if
+							(#{
+								str.eq( identifier, "pushd" );
+								jne false;
+							}#) then
+							
+								output.put( "push dword" );
+															
+							elseif( str.eq( identifier, "popd" )) then
+							
+								output.put( "pop dword" );
+								
+							elseif( str.eq( identifier, "pushw" )) then
+							
+								output.put( "push word" );
+								
+							elseif( str.eq( identifier, "popw" )) then
+							
+								output.put( "pop word" );
+								
+							else
+								
+								output.put( identifier );
+
+							endif;
+							
+						endif;
+						
+					  pat.if_failure
+					  
+					  	pat.arb();
+						pat.extract( extra );
+						output.put( extra, nl );
+						break;
+						
+					pat.endmatch;
+					
+				endfor;						
+							
+						
+								
+			  pat.if_failure
+				
+			
+			pat.endmatch;
+
+		endwhile;
+		FreeStr( input );
+		FreeStr( identifier );
+		FreeStr( idType );
+		FreeStr( extra );		
+		
+	end Pass2;
+	
+	
+	
+	
+	
+	
+	
+	// FreeValueStr-
+	//
+	//	Used by the Table destructor to free the
+	//  tableNode Value field if it is a pointer
+	//  to a string.
+	
+	procedure FreeValueStr; @nodisplay; @noframe;
+	begin FreeValueStr;
+	
+		strfree( (type tableNode [ebx]).Value );
+		ret();
+		
+	end FreeValueStr;
+	
+	
+	// DummyFree- Needed by some of the table destructors.
+	
+	procedure DummyFree; @nodisplay; @noframe;
+	begin DummyFree;
+	
+		ret();
+		
+	end DummyFree;
+	
+	
+	
+
+
+begin TASMator;
+
+	stdout.put
+	( 
+		nl 
+		"TASMator:" nl
+		"MASM (HLA output) to TASM Translator" nl
+		nl 
+	);
+	
+	// Initialize all the lookup tables:
+	
+	ExternNames.create( 16384 );
+	Equates.create( 16384 );
+	Publics.create( 1024 );
+	Calls.create( 8192 );
+	
+	
+	// Process the filename on the command line parameter.
+	
+	if( arg.c() <> 2 ) then
+
+		stdout.put( "Usage: m2t asmfile.asm" nl );
+		arg.c();
+		stdout.put( "Arguments: ", (type uns32 eax ), nl );
+		arg.cmdLn();
+		stdout.put( "Current command line: '", (type string eax ), "'", nl );
+		ExitProcess( 1 );
+
+	endif;
+	
+	// Grab the filename from the line and
+	// extract the base portion of the name.
+	
+	arg.v(1);
+	mov( eax, filename );
+	str.lower( filename );
+	pat.match( filename );
+
+		pat.upToStr( ".asm" );
+		pat.a_extract( basename );
+		add( 4, esi );
+		pat.EOS();
+		
+	  pat.alternate;
+	  
+	  	pat.upToStr( ".masm" );
+		pat.a_extract( basename );
+		add( 5, esi );
+		pat.EOS();
+
+	  pat.alternate;
+	  
+	  	pat.upToStr( ".txt" );
+		pat.a_extract( basename );
+		add( 4, esi );
+		pat.EOS();
+
+	  pat.if_failure;
+
+		// If there wasn't a ".asm",
+		// ".masm", or ".txt" at the
+		// end of the name, append ".asm"
+		
+		str.a_cpy( filename );
+		mov( eax, basename );
+		str.a_cat( filename, ".asm" );
+		strfree( filename );
+		mov( eax, filename );
+
+	pat.endmatch;
+
+	// Construct the output filenames from the base name:
+	
+	str.a_cat( basename, ".tas" );
+	mov( eax, mainName );
+	
+	str.a_cat( basename, ".cseg" );
+	mov( eax, csname );
+	
+	str.a_cat( basename, ".dseg" );
+	mov( eax, dsname );
+	
+	str.a_cat( basename, ".bss" );
+	mov( eax, bssname );
+	
+	str.a_cat( basename, ".ro" );
+	mov( eax, roname );
+	
+	str.a_cat( basename, ".str" );
+	mov( eax, strname );
+	
+	
+	// Open all the files:
+	
+	asm.create();
+	asm.open( filename, fileio.r );
+	
+	mainOut.create();
+	mainOut.openNew( mainName );
+	
+	csout.create();
+	csout.openNew( csname );
+	
+	dsout.create();
+	dsout.openNew( dsname );
+	
+	bssout.create();
+	bssout.openNew( bssname );
+	
+	roout.create();
+	roout.openNew( roname );
+	
+	strout.create();
+	strout.openNew( strname );
+	
+	
+	mov( &csout, fileStack[ 0 ] );
+	
+	
+	mov( &mainOut, output );
+
+	// Allocate storage for the input line string and other strings::
+	
+	stralloc( 4096 );
+	mov( eax, line );
+	
+	mov( stralloc( 256 ), CsegParms );
+	mov( stralloc( 256 ), DsegParms );
+	mov( stralloc( 256 ), BSSsegParms );
+	mov( stralloc( 256 ), ROsegParms );
+	mov( stralloc( 256 ), STRsegParms );
+	
+	
+	
+	
+	// Okay, make a quick pass over the source file
+	// to collect all the symbols.
+	// Begin by eating the first seven lines of the file
+	
+	for( mov(0, eax ); eax < 10; inc( eax )) do
+	
+		asm.gets( line );
+		
+	endfor;
+	
+	Pass1();
+
+	
+	// Rewind the file pointer and try again:
+	
+	
+	Seek( w.FILE_BEGIN, 0, 0, asm.handle() );
+
+	for( mov(0, eax ); eax < 10; inc( eax )) do
+	
+		asm.gets( line );
+		
+	endfor;
+	mainOut.puts( #9 #9 ".586" nl );
+		
+	mov( &mainOut, output );
+	Pass2();	
+
+	// Close the data, bss, and cseg files and reopen
+	// for reading.
+	
+	csout.close();
+	dsout.close();
+	bssout.close();
+	roout.close();
+	strout.close();	
+
+	csout.open( csname, fileio.r );
+	dsout.open( dsname, fileio.r );
+	bssout.open( bssname, fileio.r );
+	roout.open( roname, fileio.r );
+	strout.open( strname, fileio.r );
+
+	// Output the appropriate stuff to the ".tasm" file.
+	
+	mainOut.put
+	(
+		"strings" #9 #9 "segment" #9, STRsegParms, nl nl 
+	);
+	
+	forever
+	
+		strout.eof();
+		breakif( al );
+		strout.gets( line );
+		mainOut.put( line, nl );
+		
+	endfor;
+	
+	
+	
+	mainOut.put
+	(
+		"strings" #9 #9 "ends" nl nl 
+		"readonly" #9 #9 "segment" #9, ROsegParms, nl nl 
+	);
+	
+	forever
+	
+		roout.eof();
+		breakif( al );
+		roout.gets( line );
+		mainOut.put( line, nl );
+		
+	endfor;
+	
+	
+	mainOut.put
+	(
+		"readonly" #9 #9 "ends" nl nl
+		"dseg" #9 #9 "segment" #9, DsegParms, nl nl 
+	);
+	
+	forever
+	
+		dsout.eof();
+		breakif( al );
+		dsout.gets( line );
+		mainOut.put( line, nl );
+		
+	endfor;
+	
+	mainOut.put
+	(
+		nl
+		"dseg" #9 #9 "ends" nl
+		nl
+		"bssseg" #9 #9 "segment" #9, BSSsegParms, nl nl
+	);
+	forever
+	
+		bssout.eof();
+		breakif( al );
+		bssout.gets( line );
+		mainOut.put( line, nl );
+		
+	endfor;
+	
+	mainOut.put
+	(
+		nl
+		"bssseg" #9 #9 "ends" nl
+		nl
+		"cseg" #9 #9 "segment" #9, CsegParms, nl nl
+	);
+	
+	forever
+	
+		csout.eof();
+		breakif( al );
+		csout.gets( line );
+		mainOut.put( line, nl );
+		
+	endfor;
+	
+	mainOut.put
+	(
+		nl
+		"cseg" #9 #9 "ends" nl,
+		#9 #9 "end" nl
+	);
+
+	// Close all the files and quit.
+	
+	asm.close();
+	mainOut.close();
+	csout.close();
+	dsout.close();
+	bssout.close();
+	roout.close();
+	strout.close();	
+	
+	DeleteFile( dsname );
+	DeleteFile( csname );
+	DeleteFile( bssname );
+	DeleteFile( roname );
+	DeleteFile( strname );
+	
+	ExternNames.destroy( &FreeValueStr );
+	Equates.destroy( &FreeValueStr );
+	Publics.destroy( &DummyFree );
+	Calls.destroy( &DummyFree );
+	
+	
+end TASMator;

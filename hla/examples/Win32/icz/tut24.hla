@@ -1,0 +1,112 @@
+//Iczelion's tutorial #24: Windows Hooks
+program aWindowsHooks;
+
+#include("w.hhf")
+#include("mousehook.hhf")
+
+readonly
+	HookText : string := "&Hook";
+	UnhookText : string := "&Unlock";
+	template : string := "%lx";
+	
+static
+	hInstance : dword;
+	hHook : dword;
+    HookFlag : boolean := false;
+	wsprintf : procedure(p0:dword;p1:dword;p2:dword); @stdcall;external("__imp__wsprintfA");
+    
+const 
+  	IDD_MAINDLG     :=  101;
+ 	IDC_CLASSNAME   :=  1000;
+ 	IDC_HANDLE      :=  1001;
+ 	IDC_WNDPROC     :=  1002;
+ 	IDC_HOOK        :=  1004;
+ 	IDC_EXIT        :=  1005;
+	WM_MOUSEHOOK    :=  w.WM_USER + 6;
+	
+procedure DlgProc(hDlg:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	hLib : dword;
+	buffer : byte[128];
+	buffer1 : byte[128];
+	rect : w.RECT;
+
+begin DlgProc;
+	if(uMsg = w.WM_CLOSE) then 
+    	 if(HookFlag = true) then
+    	 	UninstallHook();
+    	 endif;
+    	 w.EndDialog(hDlg,NULL);
+    elseif(uMsg = w.WM_INITDIALOG) then
+		w.GetWindowRect(hDlg,&rect);
+		w.SetWindowPos(hDlg,w.HWND_TOPMOST,rect.left,rect.top,rect.right,rect.bottom,w.SWP_SHOWWINDOW);
+    elseif(uMsg = WM_MOUSEHOOK) then  
+    	w.GetDlgItemText(hDlg,IDC_HANDLE,&buffer1,128);
+    	wsprintf(&buffer,template,wParam);
+    	w.lstrcmpi(&buffer,&buffer1);
+    	  if(eax <> 0) then
+    		 w.SetDlgItemText(hDlg,IDC_HANDLE,&buffer); 
+    	  endif;
+    	w.GetDlgItemText(hDlg,IDC_CLASSNAME,&buffer1,128); 
+    	w.GetClassName(wParam,&buffer,128);
+    	w.lstrcmpi(&buffer,&buffer1);
+    	  if(eax <> 0) then
+    		 w.SetDlgItemText(hDlg,IDC_CLASSNAME,&buffer); 
+    	  endif;
+    	w.GetDlgItemText(hDlg,IDC_WNDPROC,&buffer1,128); 
+    	w.GetClassLong(wParam,w.GCL_WNDPROC);
+    	wsprintf(&buffer,template,eax);
+    	w.lstrcmpi(&buffer,&buffer1);
+    	  if(eax <> 0) then
+    		 w.SetDlgItemText(hDlg,IDC_WNDPROC,&buffer); 
+    	  endif;    	
+    elseif(uMsg = w.WM_COMMAND) then 
+        if(lParam <> 0) then 
+            mov(wParam,eax); 
+            mov (eax,edx); 
+            shr (16,edx);
+            if( dx = w.BN_CLICKED ) then
+                if( ax = IDC_EXIT) then 
+                    w.SendMessage(hDlg,w.WM_CLOSE,0,0);
+                else
+                	if(HookFlag = false) then
+                		InstallHook(hDlg);
+                			if(eax <> NULL) then
+                				mov(true,HookFlag);
+                				w.SetDlgItemText(hDlg,IDC_HOOK,UnhookText);
+                			endif;
+                	else 
+                		UninstallHook();
+                			mov(false,HookFlag);
+						w.SetDlgItemText(hDlg,IDC_HOOK,HookText);
+						w.SetDlgItemText(hDlg,IDC_CLASSNAME,NULL);
+					    w.SetDlgItemText(hDlg,IDC_HANDLE,NULL);
+					    w.SetDlgItemText(hDlg,IDC_WNDPROC,NULL);
+                	endif;
+                endif;
+            endif;
+        endif;
+    else
+        mov(false,eax);
+        exit DlgProc;
+    endif;
+
+	mov(true,eax);
+end DlgProc;
+	
+	
+begin aWindowsHooks;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+    w.DialogBoxParam( hInstance, val IDD_MAINDLG , NULL, &DlgProc, NULL );
+	w.ExitProcess(eax);
+end aWindowsHooks;
+
+
+	
+
+
+
+	
+

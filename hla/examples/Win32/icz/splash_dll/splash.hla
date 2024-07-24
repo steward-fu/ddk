@@ -1,0 +1,179 @@
+// Iczelion's tutorial #24: Windows Hooks (DLL Module)
+
+//  ==================================================
+//  = For RadASM users:                              = 
+//  =           1.Compile RC with Make > Compile RC  =
+//  =           2.Compile with Make > Assemble       =
+//  =			3.Link with Make > Link              =
+//  ==================================================
+
+//You can also manually assemble the example with the commands below:
+//rc /v splash.rc
+//hla -v -c splash.hla
+//link /dll /subsystem:windows /entry:DLLEntry /def:splash.def /libpath:c:\masm32\lib user32.lib kernel32.lib gdi32.lib splash.obj splash.rec
+
+unit SplashDLL;
+
+#include("w.hhf")
+
+	
+	procedure DLLEntry(hInst:dword; reason:dword; reserved:dword); @stdcall;external("_DLLEntry@12");
+	//procedure InstallHook(hwin : dword);external;
+	procedure ShowBitmap;external;
+    procedure WndProc(hWnd:dword; uMsg:dword; wParam:dword; lParam:dword);@stdcall;external;
+	
+
+static
+	hInstance : dword;
+	hBitMap : dword := 0;
+	TimerID : dword := 0;
+	ClassName : string := "SplashWndClass";
+	BitmapName : string := "MySplashBMP";
+	
+procedure WndProc(hWnd:dword; uMsg:dword; wParam:dword; lParam:dword);
+
+static
+	hdc : dword;
+	ps : w.PAINTSTRUCT;
+	hMemoryDC : dword;
+	hOldBmp : dword;
+	bitmap : w.BITMAP;
+	DlgHeight : dword;
+	DlgWidth : dword;
+	DlgRect : w.RECT;
+	DesktopRect : w.RECT;
+	
+	buffer2 : byte[128];
+	template : string := "%ld";
+	wsprintf : procedure(p0:dword;p1:dword;p2:dword); @stdcall;external("__imp__wsprintfA");
+	
+begin WndProc;
+	
+	if(uMsg = w.WM_CREATE) then
+		w.GetWindowRect(hWnd,&DlgRect);
+		w.GetDesktopWindow();
+			mov(eax,ecx);
+		w.GetWindowRect(ecx,&DesktopRect);
+		    mov(0,eax);
+			push(eax);   //bRepaint
+			mov(DlgRect.bottom,eax);
+			sub(DlgRect.top,eax);
+			mov(eax,DlgHeight);
+			push(eax);     //nHeight
+			mov(DlgRect.right,eax);
+			sub(DlgRect.left,eax);
+			mov(eax,DlgWidth);
+			push(eax);    //nWidth
+			mov(DesktopRect.bottom,eax);
+			sub(DlgHeight,eax);
+			shr(1,eax);
+			push(eax);   //y
+			mov(DesktopRect.right,eax);
+			sub(DlgWidth,eax);
+			shr(1,eax);
+			push(eax);   //x
+			push(hWnd);  //hWnd
+			lea(eax,w.MoveWindow);
+			call([eax]);
+		w.LoadBitmap(hInstance,BitmapName);
+			mov(eax,hBitMap);
+		w.SetTimer(hWnd,1,2000,NULL);
+			mov(eax,TimerID);
+	elseif(uMsg = w.WM_TIMER) then
+		w.SendMessage(hWnd,w.WM_LBUTTONDOWN,NULL,NULL);
+		w.KillTimer(hWnd,TimerID);
+	elseif(uMsg = w.WM_PAINT) then
+		w.BeginPaint(hWnd,&ps);
+			mov(eax, hdc);
+		w.CreateCompatibleDC(hdc);
+			mov(eax,hMemoryDC);
+		w.SelectObject(hMemoryDC,hBitMap);
+			mov(eax,hOldBmp);
+		w.GetObject(hBitMap,@size(w.BITMAP),bitmap);
+		w.StretchBlt(hdc,0,0,250,250,hMemoryDC,0,0,bitmap.bmWidth,bitmap.bmHeight,w.SRCCOPY);
+		w.SelectObject(hMemoryDC,hOldBmp);
+		w.DeleteDC(hMemoryDC);
+		w.EndPaint(hWnd,&ps);
+	elseif(uMsg = w.WM_LBUTTONDOWN) then
+		w.DestroyWindow(hWnd);
+	elseif(uMsg = w.WM_DESTROY) then
+		if(hBitMap <> 0) then
+			w.DeleteObject(hBitMap);
+		endif;
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+
+
+procedure ShowBitmap;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin ShowBitmap; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInstance, wc.hInstance ); 
+	w.LoadIcon ( NULL, w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_WINDOW + 1  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx (wc); 
+	
+	w.CreateWindowEx
+	(
+		NULL, 
+		ClassName, 
+		NULL, 
+		w.WS_POPUP, 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		250,
+		250,
+		NULL,
+		NULL,
+		hInstance, 
+		NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	w.ShowWindow ( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow ( hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.TranslateMessage ( msg ) ; 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end ShowBitmap;
+
+	
+	procedure DLLEntry(hInst:dword; reason:dword; reserved:dword);
+	begin DLLEntry;
+		if( reason = w.DLL_PROCESS_ATTACH) then
+			mov(hInst,hInstance);
+			ShowBitmap();
+		endif;
+			mov(true,eax);
+	end DLLEntry;
+
+end SplashDLL;
+

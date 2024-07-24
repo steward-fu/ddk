@@ -1,0 +1,561 @@
+// gssupport.hla
+//
+// Code to support the game-specific modules.
+
+unit gssupport_hla;
+?@nodisplay := true;
+?@nostackalign := true;
+#includeonce( "stdlib.hhf" )
+#includeonce( "age.hhf" )
+#includeonce( "gamespecific.hhf" )
+
+_procedure( links )
+(
+	r:dword; 
+	n:dword; 
+	s:dword; 
+	e:dword; 
+	w:dword; 
+	u:dword; 
+	d:dword 
+);
+begin links; debug( "links");
+
+	// linkRoom prototype:
+	//
+	// _procedure( linkRoom )      
+	// (                           
+	// 	destRoom		:roomPtr;  
+	// 	northRoom		:roomPtr;  
+	// 	southRoom		:roomPtr;  
+	// 	eastRoom		:roomPtr;  
+	// 	westRoom		:roomPtr;  
+	// 	northEastRoom	:roomPtr;  
+	// 	northWestRoom	:roomPtr;  
+	// 	southEastRoom	:roomPtr;  
+	// 	southWestRoom	:roomPtr;  
+	// 	upRoom			:roomPtr;  
+	// 	downRoom		:roomPtr   
+	// );                          
+
+
+	// Push first parameter to linkRoom:
+
+	mov( r, eax );
+	assert( eax <> NULL );
+	push( rooms[ eax ] );
+
+	// Push second parameter to linkRoom:
+
+	mov( n, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	// Push third parameter to linkRoom:
+
+	mov( s, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	// Push fourth parameter to linkRoom:
+
+	mov( e, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	// Push fifth parameter to linkRoom:
+
+	mov( w, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	// 6th-9th (ne, nw, se, sw) parameters are always NULL
+
+	xor( eax, eax );
+	push( eax );
+	push( eax );
+	push( eax );
+	push( eax );
+
+
+	// Push 10th parameter to linkRoom:
+
+	mov( u, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	// Push 11th parameter to linkRoom:
+
+	mov( d, eax );
+	if( eax <> NULL ) then
+
+		mov( rooms[ eax ], eax );
+
+	endif;
+	push( eax );
+
+	call linkRoom;
+	
+end links;
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createAgent-
+//
+//	A utility routine used to initialize an agent in the game.
+// Returns a pointer to the agent object in EAX.
+
+_procedure( createAgent )
+(
+	objName			:string;
+	shortDesc		:string;
+	longDesc		:string;
+	inscription		:string;
+	initialRoom		:dword;
+	initialPower	:int32;
+	strength 		:int32
+);
+begin createAgent; debug( "createAgent");
+
+	push( ebx );
+	push( ecx );
+	push( esi );
+	push( edi );
+
+	agent.create( objName );
+	agentESI.initAgent
+	(
+		shortDesc,		
+		longDesc,		
+		inscription,	
+		initialRoom,	
+		initialPower,
+		strength	
+	);
+	
+	mov( esi, ebx );					// Save pointer to agent object
+	mov( initialRoom, ecx );			// Room that will hold this agent
+	mov( rooms[ ecx*4 ], ecx );
+	mov( roomECX.agents, edx );			// List to hold object
+	mov( agentEBX.agentObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add agent to room's "agents" list
+
+	// Allow "examine", "fight", "kill", and 
+	// "read" verbs on this object:
+
+	mov( &verb_fight, nounEBX.actions[ uns32( v_fight )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to agent object here.
+	pop( edi );
+	pop( esi );
+	pop( ecx );
+	pop( ebx );
+
+end createAgent;
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createPossession-
+//
+//	A utility routine used to initialize a specific possession for this code.
+// Used to attach possessions to a room.
+//
+//	This function returns a pointer to the possession object in the EAX
+// register.
+
+_procedure( createPossession )
+(
+	objName		:string;
+	shortDesc	:string;
+	longDesc	:string;
+	inscription	:string;
+	retail		:real64;
+	wholesale	:real64;
+	initialRoom	:dword
+);
+begin createPossession; debug( "createPossession");
+
+	push( ebx );
+	push( ecx );
+	push( esi );
+	push( edi );
+
+	possession.create( objName );
+	possessionESI.initPossession
+	(
+		shortDesc,		// sdString
+		longDesc,		// ldStr
+		inscription,	// inscription
+		0.0,			// theValue
+		0.0,			// weight
+		retail,			// retail
+		wholesale,		// wholesale
+		infiniteUses	// numUses
+	);
+	mov( esi, ebx );					// Save pointer to possession object
+	mov( initialRoom, ecx );			// Room that will hold this object
+	mov( rooms[ ecx*4 ], ecx );
+	mov( roomECX.contains, edx );		// List to hold object
+	mov( possessionEBX.possObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add object to room's "contains" list
+
+	// Allow "get", "drop", "buy", "sell",
+	// "examine", and "read" verbs on this object:
+
+	mov( &verb_get, nounEBX.actions[ uns32( v_get )*4 ] );
+	mov( &verb_drop, nounEBX.actions[ uns32( v_drop )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+	mov( &verb_buy, nounEBX.actions[ uns32( v_buy )*4 ] );
+	mov( &verb_sell, nounEBX.actions[ uns32( v_sell )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to possession object in EAX.
+	pop( edi );
+	pop( esi );
+	pop( ecx );
+	pop( ebx );
+
+end createPossession;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createInv-
+//
+//	A utility routine used to initialize a specific possession for this code.
+// Used to attach possessions to an agent.
+//
+// Returns a pointer to the new possession in EAX so the caller can do
+// other things with this guy.
+
+_procedure( createInv )
+(
+	objName		:string;
+	shortDesc	:string;
+	longDesc	:string;
+	inscription	:string;
+	retail		:real64;
+	wholesale	:real64;
+	theAgent	:agentPtr
+);
+begin createInv; debug( "createInv");
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	possession.create( objName );
+	possessionESI.initPossession
+	(
+		shortDesc,		// sdString
+		longDesc,		// ldStr
+		inscription,	// inscription
+		0.0,			// theValue
+		0.0,			// weight
+		retail,			// retail
+		wholesale,		// wholesale
+		infiniteUses	// numUses
+	);
+	
+	mov( esi, ebx );					// Save pointer to possession object
+	mov( theAgent, ecx );				// Agent that will hold this object
+	mov( agentECX.contains, edx );		// List to hold object
+	mov( possessionEBX.possObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add object to agents's "contains" list
+
+	// Allow "get", "drop", "buy", "sell", 
+	// "examine", and "read" verbs on this object:
+
+	mov( &verb_get, nounEBX.actions[ uns32( v_get )*4 ] );
+	mov( &verb_drop, nounEBX.actions[ uns32( v_drop )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+	mov( &verb_buy, nounEBX.actions[ uns32( v_buy )*4 ] );
+	mov( &verb_sell, nounEBX.actions[ uns32( v_sell )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to possession in EAX.
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+	
+
+end createInv;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createWeapon-
+//
+//	A utility routine used to initialize a weapon for this code.
+//
+// Returns a pointer to the new weapon in EAX so the caller can do
+// other things with this guy.
+
+_procedure( createWeapon )
+(
+	objName			:string;
+	shortDesc		:string;
+	longDesc		:string;
+	inscription		:string;
+	retail			:real64;
+	wholesale		:real64;
+	power			:int32;
+	theContainer	:containerPtr
+);
+begin createWeapon; debug( "createWeapon");
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	weapon.create( objName );
+	weaponESI.initWeapon
+	(
+		shortDesc,		// sdString
+		longDesc,		// ldStr
+		inscription,	// inscription
+		0.0,			// reward
+		0.0,			// weight
+		retail,			// retail
+		wholesale,		// wholesale
+		infiniteUses,	// numUses
+		power
+	);
+	mov( esi, ebx );					// Save pointer to weapon object
+	mov( theContainer, ecx );			// Agent that will hold this object
+	mov( containerECX.contains, edx );	// List to hold object
+	mov( weaponEBX.possObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add object to weapon's "contains" list
+
+
+	// Allow "get", "drop", "buy", "sell", "wield", "unwield", 
+	// "examine", and "read" verbs on this object:
+
+	mov( &verb_wield, nounEBX.actions[ uns32( v_wield )*4 ] );
+	mov( &verb_unwield, nounEBX.actions[ uns32( v_unwield )*4 ] );
+	mov( &verb_get, nounEBX.actions[ uns32( v_get )*4 ] );
+	mov( &verb_drop, nounEBX.actions[ uns32( v_drop )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+	mov( &verb_buy, nounEBX.actions[ uns32( v_buy )*4 ] );
+	mov( &verb_sell, nounEBX.actions[ uns32( v_sell )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to possession in EAX.
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+	
+
+end createWeapon;
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createProtection-
+//
+//	A utility routine used to initialize a weapon for this code.
+//
+// Returns a pointer to the new weapon in EAX so the caller can do
+// other things with this guy.
+
+_procedure( createProtection )
+(
+	objName			:string;
+	sdString		:string; 
+	ldStr			:string;
+	inscription		:string;
+	retail			:real64;
+	wholesale		:real64;
+	ability			:int32;
+	theContainer	:containerPtr 
+);
+begin createProtection; debug( "createProtection");
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	protection.create( objName );
+	protectionESI.initProtection
+	(
+		sdString,		// sdString
+		ldStr,			// ldStr
+		inscription,	// inscription
+		0.0,			// reward
+		0.0,			// weight
+		retail,			// retail
+		wholesale,		// wholesale
+		infiniteUses,	// numUses
+		ability
+	);
+	mov( esi, ebx );					// Save pointer to protection object
+	mov( theContainer, ecx );			// Agent that will hold this object
+	mov( containerECX.contains, edx );	// List to hold object
+	mov( protectionEBX.possObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add object to protection's 
+										// "contains" list
+
+	// Allow "get", "drop", "buy", "sell", "wear", "remove", 
+	// "examine", and "read" verbs on this object:
+
+	mov( &verb_wear, nounEBX.actions[ uns32( v_wear )*4 ] );
+	mov( &verb_remove, nounEBX.actions[ uns32( v_remove )*4 ] );
+	mov( &verb_get, nounEBX.actions[ uns32( v_get )*4 ] );
+	mov( &verb_drop, nounEBX.actions[ uns32( v_drop )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+	mov( &verb_buy, nounEBX.actions[ uns32( v_buy )*4 ] );
+	mov( &verb_sell, nounEBX.actions[ uns32( v_sell )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to possession in EAX.
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+	
+
+end createProtection;
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// createConsumable-
+//
+//	A utility routine used to initialize a weapon for this code.
+//
+// Returns a pointer to the new weapon in EAX so the caller can do
+// other things with this guy.
+
+_procedure( createConsumable )
+(
+	objName			:string;
+	sdString		:string; 
+	ldStr			:string;
+	inscription		:string;
+	numUses			:uns32;
+	score			:int32;
+	power			:int32;
+	food			:int32;
+	health			:int32;
+	reward			:real64;
+	weight			:real64;
+	retail			:real64;
+	wholesale		:real64;
+	wealth			:real64;
+	theContainer	:containerPtr
+);
+begin createConsumable; debug( "createConsumable");
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	consumable.create( objName );
+	consumableESI.initConsumable
+	(
+		sdString,		// sdString
+		ldStr,			// ldStr
+		inscription,	// inscription
+		numUses,		// numUses
+		score,			// score
+		power,			// power
+		food,			// food
+		health,			// health
+		reward,			// reward
+		weight,			// weight
+		retail,			// retail
+		wholesale,		// wholesale
+		wealth			// wealth
+	);	
+	mov( esi, ebx );					// Save pointer to protection object
+	mov( theContainer, ecx );			// Agent that will hold this object
+	mov( containerECX.contains, edx );	// List to hold object
+	mov( consumableEBX.possObjNode, ecx );
+	objListEDX.appendLast( [ecx] );	// Add object to container's 
+										// "contains" list
+
+	// Allow "get", "drop", "buy", "sell", 
+	// "use", "examine", and "read" verbs on this object:
+
+	mov( &verb_use, nounEBX.actions[ uns32( v_use )*4 ] );
+	mov( &verb_get, nounEBX.actions[ uns32( v_get )*4 ] );
+	mov( &verb_drop, nounEBX.actions[ uns32( v_drop )*4 ] );
+	mov( &verb_buy, nounEBX.actions[ uns32( v_buy )*4 ] );
+	mov( &verb_sell, nounEBX.actions[ uns32( v_sell )*4 ] );
+	mov( &verb_read, nounEBX.actions[ uns32( v_read )*4 ] );
+	mov( &verb_examine, nounEBX.actions[ uns32( v_examine )*4 ] );
+
+	mov( ebx, eax );	// Return pointer to possession in EAX.
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+	
+
+end createConsumable;
+
+
+
+
+end gssupport_hla;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

@@ -1,0 +1,46 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly-Fonts
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=Fonts.rap
+1=Fonts.rc
+2=Fonts.asm
+3=Fonts.obj
+4=Fonts.res
+5=Fonts.exe
+6=Fonts.def
+7=Fonts.dll
+8=Fonts.txt
+9=Fonts.lib
+10=Fonts.mak
+11=Fonts.hla
+[Files]
+1=Fonts.hla
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Size]
+1=0,0,0,0,0

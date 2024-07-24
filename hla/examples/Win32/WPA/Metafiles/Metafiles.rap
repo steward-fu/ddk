@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Metafiles Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=Metafiles.rap
+1=Metafiles.rc
+2=Metafiles.asm
+3=Metafiles.obj
+4=Metafiles.res
+5=Metafiles.exe
+6=Metafiles.def
+7=Metafiles.dll
+8=Metafiles.txt
+9=Metafiles.lib
+10=Metafiles.mak
+11=Metafiles.hla
+[Files]
+1=Metafiles.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,1906
+3=0,0,0,0,272
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

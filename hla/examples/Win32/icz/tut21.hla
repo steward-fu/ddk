@@ -1,0 +1,157 @@
+//Iczelion's tutorial #21: Pipe
+program aPipe;
+
+#include("w.hhf")
+
+const
+	IDR_MENU := 10000;
+	IDM_ASSEMBLE := 10002;
+		
+readonly
+	ClassName : string := "PipeWinClass";
+	AppName : string := "One-way Pipe Example";
+	EditClass :string :=	"edit";
+	CreatePipeError : string := "Error during pipe creating";
+	CreateProcessError : string := "Error during process creation";
+	CommandLine : string := "HLA.EXE -v -w tut02.hla";
+			
+static
+	hInstance : dword;
+	hwndEdit : dword;
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	rect : w.RECT;
+	startupinfo : w.STARTUPINFO;
+	pinfo : w.PROCESS_INFORMATION;
+	sat : w.SECURITY_ATTRIBUTES;
+	hRead : dword;
+	hWrite : dword;
+	bytesRead : dword;
+	hdc : dword;
+	buffer : byte[1024];
+	
+begin WndProc;
+	if(uMsg = w.WM_CREATE) then
+		w.CreateWindowEx(NULL,EditClass,NULL,
+		                 w.WS_CHILD | w.WS_VISIBLE
+		                 | w.WS_HSCROLL | w.WS_VSCROLL | w.ES_MULTILINE
+		                 | w.ES_AUTOHSCROLL | w.ES_AUTOVSCROLL,
+		                  0,0,0,0,hWnd,NULL,hInstance,NULL);
+		    mov(eax,hwndEdit);
+	elseif(uMsg = w.WM_CTLCOLOREDIT) then
+		w.SetTextColor(wParam,w.Yellow);
+		w.SetBkColor(wParam,w.Black);
+		w.GetStockObject(w.BLACK_BRUSH);
+		exit WndProc;
+	elseif(uMsg = w.WM_SIZE) then
+		mov(lParam,edx);
+		mov(edx,ecx);
+		shr(16,ecx);
+		and($ffff,edx);
+		w.MoveWindow(hwndEdit,0,0,edx,ecx,true);
+	elseif(uMsg = w.WM_COMMAND) then	
+		if(lParam = 0) then
+			mov(wParam,eax);
+		  if(ax = IDM_ASSEMBLE) then
+		  	mov(@size(w.SECURITY_ATTRIBUTES),sat.niLength);
+		  	mov(NULL,sat.lpSecurityDescriptor); 
+		  	mov(true,sat.bInheritHandle);
+		  	w.CreatePipe(&hRead,&hWrite,&sat,NULL);
+		  		if(eax = NULL) then
+		  			w.MessageBox(hWnd,CreatePipeError,AppName,
+		  			             w.MB_OK | w.MB_ICONERROR);
+		  		else 
+		  			mov(@size(w.STARTUPINFO),startupinfo.cb);
+		  			w.GetStartupInfo(&startupinfo);
+		  			mov(hWrite,eax);
+		  			mov(eax,startupinfo.hStdOutput);
+		  			mov(eax,startupinfo.hStdError);
+		  			mov(w.STARTF_USESHOWWINDOW | w.STARTF_USESTDHANDLES,startupinfo.dwFlags);
+		  			mov(w.SW_HIDE,startupinfo.wShowWindow);
+		  			w.CreateProcess(NULL,CommandLine,
+		  						  NULL,NULL,true,NULL,NULL,NULL,
+		  						  &startupinfo,&pinfo);
+		  			if(eax = NULL) then
+		  				w.MessageBox(hWnd,CreateProcessError,AppName,
+		  			                 w.MB_OK | w.MB_ICONERROR);
+		  			else 
+		  				w.CloseHandle(hWrite);
+		  				forever
+		  				  w.RtlZeroMemory(&buffer,1024);
+		  				  w.ReadFile(hRead,&buffer,1023,&bytesRead,NULL);
+		  				  breakif(eax = NULL);
+		  				  w.SendMessage(hwndEdit,w.EM_SETSEL,-1,0);
+		  				  w.SendMessage(hwndEdit,w.EM_REPLACESEL,false,&buffer);	 	  				  
+		  				endfor;
+		  			endif;
+		  		 w.CloseHandle(hRead);			  
+		  		endif;
+		  endif;
+		endif;
+	elseif(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_APPWORKSPACE  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( IDR_MENU, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW | w.WS_VISIBLE , 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		600,400,
+		NULL,NULL,hInst, NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aPipe;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	WinMain( hInstance, NULL, NULL, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aPipe;

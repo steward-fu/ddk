@@ -1,0 +1,881 @@
+// Sysmet.hla-
+//
+//	System metrics display program.
+
+program systemMetrics;
+#include( "conv.hhf" )
+#include( "strings.hhf" )
+#include( "memory.hhf" )
+#include( "w.hhf" )
+#include( "wpa.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+
+type
+	// Data type for the system metrics data array:
+	
+	MetricRec_t:
+		record
+		
+			MetConst	:uns32;
+			MetStr		:string;
+			MetDesc		:string;
+		
+		endrecord;
+
+
+	// Message and dispatch table related definitions:
+		  
+	MsgProc_t:	procedure( hwnd:dword; wParam:dword; lParam:dword );
+	
+	MsgProcPtr_t:
+		record
+			
+			MessageValue	:dword;
+			MessageHndlr	:MsgProc_t;
+			
+		endrecord;
+	
+
+
+
+static
+	hInstance			:dword;			// "Instance Handle" Windows supplies.
+
+	wc					:w.WNDCLASSEX;	// Our "window class" data.
+	msg					:w.MSG;			// Windows messages go here.
+	hwnd				:dword;			// Handle to our window.
+	
+	AverageCapsWidth	:dword;			// Font metric values.
+	AverageCharWidth	:dword;
+	AverageCharHeight	:dword;
+	
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+	MaxWidth			:int32 := 0;	// Maximum output width
+	VscrollPos			:int32 := 0;	// Tracks where we are in the document
+	VscrollMax 			:int32 := 0;	// Max display position (vertical).
+	HscrollPos			:int32 := 0;	// Current Horz position.
+	HscrollMax			:int32 := 0;	// Max Horz position.
+	
+	
+readonly
+
+	ClassName	:string := "SMWinClass";				// Window Class Name
+	AppCaption	:string := "System Metrics Program";	// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			MsgProcPtr_t:[ w.WM_HSCROLL, &HScroll			],
+			MsgProcPtr_t:[ w.WM_VSCROLL, &VScroll			],
+			MsgProcPtr_t:[ w.WM_SIZE,	 &Size				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+			
+readonly
+
+	MetricData: MetricRec_t[] :=
+	[
+		MetricRec_t:[ w.SM_CXSCREEN, "w.SM_CXSCREEN", "Screen width" ],
+		MetricRec_t:[ w.SM_CYSCREEN, "w.SM_CYSCREEN", "Screen height" ],
+		MetricRec_t:[ w.SM_CXVSCROLL, "w.SM_CXVSCROLL", "Vert scroll arrow width" ],
+		MetricRec_t:[ w.SM_CYVSCROLL, "w.SM_CYVSCROLL", "Vert scroll arrow ht" ], 
+		MetricRec_t:[ w.SM_CXHSCROLL, "w.SM_CXHSCROLL", "Horz scroll arrow width" ],
+		MetricRec_t:[ w.SM_CYHSCROLL, "w.SM_CYHSCROLL", "Horz scroll arrow ht" ],
+		MetricRec_t:[ w.SM_CYCAPTION, "w.SM_CYCAPTION", "Caption bar ht" ],
+		MetricRec_t:[ w.SM_CXBORDER, "w.SM_CXBORDER", "Window border width" ],
+		MetricRec_t:[ w.SM_CYBORDER, "w.SM_CYBORDER", "Window border height" ],
+		MetricRec_t:[ w.SM_CXDLGFRAME, "w.SM_CXDLGFRAME", "Dialog frame width" ],
+		MetricRec_t:[ w.SM_CYDLGFRAME, "w.SM_CYDLGFRAME", "Dialog frame height" ],
+		MetricRec_t:[ w.SM_CXHTHUMB, "w.SM_CXHTHUMB", "Horz scroll thumb width" ],
+		MetricRec_t:[ w.SM_CYVTHUMB, "w.SM_CYVTHUMB", "Vert scroll thumb width" ],
+		MetricRec_t:[ w.SM_CXICON, "w.SM_CXICON", "Icon width" ],
+		MetricRec_t:[ w.SM_CYICON, "w.SM_CYICON", "Icon height" ],
+		MetricRec_t:[ w.SM_CXCURSOR, "w.SM_CXCURSOR", "Cursor width" ],
+		MetricRec_t:[ w.SM_CYCURSOR, "w.SM_CYCURSOR", "Cursor height" ],
+		MetricRec_t:[ w.SM_CYMENU,	"w.SM_CYMENU", "Menu bar height" ],
+		MetricRec_t:[ w.SM_CXFULLSCREEN, "w.SM_CXFULLSCREEN", "Largest client width" ],
+		MetricRec_t:[ w.SM_CYFULLSCREEN, "w.SM_CYFULLSCREEN", "Largets client ht" ],
+		MetricRec_t:[ w.SM_DEBUG, "w.SM_CDEBUG", "Debug version flag" ],
+		MetricRec_t:[ w.SM_SWAPBUTTON, "w.SM_CSWAPBUTTON", "Mouse buttons swapped" ],
+		MetricRec_t:[ w.SM_CXMIN, "w.SM_CXMIN", "Minimum window width" ],
+		MetricRec_t:[ w.SM_CYMIN, "w.SM_CYMIN", "Minimum window height" ],
+		MetricRec_t:[ w.SM_CXSIZE, "w.SM_CXSIZE", "Minimize/maximize icon width" ],
+		MetricRec_t:[ w.SM_CYSIZE, "w.SM_CYSIZE", "Minimize/maximize icon height" ],
+		MetricRec_t:[ w.SM_CXFRAME, "w.SM_CXFRAME", "Window frame width" ],
+		MetricRec_t:[ w.SM_CYFRAME, "w.SM_CYFRAME", "Window frame height" ],
+		MetricRec_t:[ w.SM_CXMINTRACK,	"w.SM_CXMINTRACK", "Minimum tracking width" ],
+		MetricRec_t:[ w.SM_CXMAXTRACK,	"w.SM_CXMAXTRACK", "Maximum tracking width" ],
+		MetricRec_t:[ w.SM_CYMINTRACK,	"w.SM_CYMINTRACK", "Minimum tracking ht" ],
+		MetricRec_t:[ w.SM_CYMAXTRACK,	"w.SM_CYMAXTRACK", "Maximum tracking ht" ],
+		MetricRec_t:[ w.SM_CXDOUBLECLK, "w.SM_CXDOUBLECLK", "Dbl-click X tolerance" ],
+		MetricRec_t:[ w.SM_CYDOUBLECLK, "w.SM_CYDOUBLECLK", "Dbl-click Y tolerance" ],
+		MetricRec_t:[ w.SM_CXICONSPACING, "w.SM_CXICONSPACING", "Horz icon spacing" ],
+		MetricRec_t:[ w.SM_CYICONSPACING, "w.SM_CYICONSPACING", "Vert icon spacing" ],
+		MetricRec_t:[ w.SM_CMOUSEBUTTONS, "w.SM_CMOUSEBUTTONS", " # of mouse btns" ]
+	];
+	
+const
+	NumMetrics := @elements( MetricData );
+	
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Create-
+//
+//	This procedure responds to the w.WM_CREATE message.
+//	Windows sends this message once when it creates the
+//	main window for the application.  We will use this
+//	procedure to do any one-time initialization that
+//	must take place in a message handler.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc:	dword;				// Handle to video display device context
+	tm:		w.TEXTMETRIC;
+begin Create;
+
+	GetDC( hwnd, hdc );
+	
+		// Initialization:
+		//
+		//	Get the text metric information so we can compute
+		//	the average character heights and widths.
+		
+		GetTextMetrics( tm );
+
+		mov( tm.tmHeight, eax );
+		add( tm.tmExternalLeading, eax );
+		mov( eax, AverageCharHeight );
+
+		mov( tm.tmAveCharWidth, eax );
+		mov( eax, AverageCharWidth );
+		
+		// If bit #0 of tm.tmPitchAndFamily is set, then
+		// we've got a proportional font.  In that case
+		// set the average capital width value to 1.5 times
+		// the average character width.  If bit #0 is clear,
+		// then we've got a fixed-pitch font and the average
+		// capital letter width is equal to the average
+		// character width.
+		
+		mov( eax, ebx );
+		shl( 1, tm.tmPitchAndFamily );
+		if( @c ) then
+		
+			shl( 1, ebx );				// 2*AverageCharWidth
+			
+		endif;
+		add( ebx, eax );				// Computes 2 or 3 times eax.
+		shr( 1, eax );					// Computes 1 or 1.5 times eax.
+		mov( eax, AverageCapsWidth );
+		
+	ReleaseDC;
+	intmul( 40, AverageCharWidth, eax );
+	intmul( 25, AverageCapsWidth, ecx );
+	add( ecx, eax );
+	mov( eax, MaxWidth );	
+	
+end Create;
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+//	For this System Metrics program, the Paint procedure
+//	displays three columns of text in the main window.
+//	This procedure computes and displays the appropriate text.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	x			:int32;			// x-coordinate of start of output str.
+	y			:int32;			// y-coordinate of start of output str.
+	
+	CurVar		:string;		// Current system metrics variable name.
+	CVlen		:uns32;			// Length of CurVar string.
+	
+	CurDesc		:string;		// Current system metrics description.
+	CDlen		:string;		// Length of the above.
+	CDx			:int32;			// X position for CurDesc string.
+	
+	value		:string;
+	valData		:char[32];
+	CVx			:int32;			// X position for value string.
+	vallen		:uns32;			// Length of value string.
+	
+	firstMet	:int32;			// Starting metric to begin drawing
+	lastMet		:int32;			// Ending metric index to draw.
+
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+begin Paint;
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+
+	// Initialize the value->valData string object:
+	
+	mov( str.init( (type char valData), 32 ), value );
+	
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., w.DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Figure out which metric we should start drawing
+		// (firstMet = 
+		//		max( 0, VscrollPos + ps.rcPaint.top/AverageCharHeight - 1)):
+		
+		mov( ps.rcPaint.top, eax );
+		cdq();
+		idiv( AverageCharHeight );
+		add( VscrollPos, eax );
+		dec( eax );
+		if( (type int32 eax) < 0 ) then
+		
+			xor( eax, eax );
+			
+		endif;
+		mov( eax, firstMet );
+		
+		
+		// Figure out the last metric we should be drawing
+		// ( lastMet =
+		//		min( NumMetrics, 
+		//			 VscrollPos + ps.rcPaint.bottom/AverageCharHeight )):
+
+		mov( ps.rcPaint.bottom, eax );
+		cdq();
+		idiv( AverageCharHeight );
+		add( VscrollPos, eax );
+		if( (type int32 eax) > NumMetrics ) then
+		
+			mov( NumMetrics, eax );
+			
+		endif;
+		mov( eax, lastMet );
+		
+		
+		// The following loop processes each entry in the
+		// MetricData array.  The loop control variable (EDI)
+		// also determines the Y-coordinate where this code
+		// will display each line of text in the window.
+		// Note that this loop counts on the fact that Windows
+		// API calls preserve the EDI register.
+				
+		for( mov( firstMet, edi ); edi < lastMet; inc( edi )) do
+
+			// Before making any Windows API calls (which have
+			// a nasty habit of wiping out registers), compute
+			// all the values we will need for these calls
+			// and save those values in local variables.
+			//
+			//	A typical "high level language solution" would
+			// be to compute these values as needed, immediately
+			// before each Windows API calls.  By moving this
+			// code here, we can take advantage of values previously
+			// computed in registers without having to worry about
+			// Windows wiping out the values in those registers.
+			
+			// Compute index into MetricData:
+					
+			intmul( @size( MetricRec_t ), edi, esi );
+			
+			// Grab the string from the current MetricData element:
+			
+			mov( MetricData.MetStr[ esi ], eax );
+			mov( eax, CurVar );
+			mov( (type str.strRec [eax]).length, eax );
+			mov( eax, CVlen );
+			
+			mov( MetricData.MetDesc[ esi ], eax );
+			mov( eax, CurDesc );
+			mov( (type str.strRec [eax]).length, eax );
+			mov( eax, CDlen );
+			
+			// Column one begins at X-position AverageCharWidth (ACW).
+			// Col 2 begins at ACW + 25*AverageCapsWidth.
+			// Col 3 begins at ACW + 25*AverageCapsWidth + 40*ACW.
+			// Compute the Col 2 and Col 3 values here.
+			
+			mov( 1, eax );
+			sub( HscrollPos, eax );
+			intmul( AverageCharWidth, eax );
+			mov( eax, x );
+			
+			intmul( 25, AverageCapsWidth, eax );
+			add( x, eax );
+			mov( eax, CDx );
+			
+			intmul( 40, AverageCharWidth, ecx );
+			add( ecx, eax );
+			mov( eax, CVx );
+			
+			// The Y-coordinate for the line of text we're writing
+			// is computed as AverageCharHeight * (1-VscrollPos+edi).  
+			// Compute that value here:
+			
+			mov( 1, eax );
+			sub( VscrollPos, eax );
+			add( edi, eax );
+			intmul( AverageCharHeight, eax );
+			mov( eax, y );
+
+			
+			// Now generate the string we're going to print
+			// as the value for the current metric variable:
+			
+			w.GetSystemMetrics( MetricData.MetConst[ esi ] );
+			conv.i32ToStr( eax, 0, ' ', value );
+			mov( str.length( value ), vallen );
+						
+		
+			// First two columns have left-aligned text:
+			
+			SetTextAlign( w.TA_LEFT | w.TA_TOP );
+
+			// Output the name of the metric variable:
+			
+			TextOut( x, y, CurVar, CVlen );
+
+			// Output the description of the metric variable:
+			
+			TextOut( CDx, y, CurDesc, CDlen );
+
+			// Output the metric's value in the third column.  This is
+			// a numeric value, so we'll right align this data.
+			
+			SetTextAlign( w.TA_RIGHT | w.TA_TOP );
+			TextOut( CVx, y, value, vallen );
+						
+			// Although not strictly necessary for this program,
+			// it's a good idea to always restore the alignment
+			// back to the default (top/left) after you done using
+			// some other alignment.
+			
+			SetTextAlign( w.TA_LEFT | w.TA_TOP );
+
+			
+		endfor;				
+
+			
+	EndPaint;
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+	
+	// VscrollMax = max( 0, NumMetrics+2 - ClientSizeY/AverageCharHeight )
+	
+	cdq();
+	idiv( AverageCharHeight );
+	mov( NumMetrics+2, ecx );
+	sub( eax, ecx );
+	if( @s ) then
+	
+		xor( ecx, ecx );
+		
+	endif;
+	mov( ecx, VscrollMax );
+	
+	// VscrollPos = min( VscrollPos, VscrollMax )
+	
+	if( ecx > VscrollPos ) then
+	
+		mov( VscrollPos, ecx );
+		
+	endif;
+	mov( ecx, VscrollPos );
+
+	w.SetScrollRange( hwnd, w.SB_VERT, 0, VscrollMax, false );
+	w.SetScrollPos( hwnd, w.SB_VERT, VscrollPos, true );
+	
+	// HscrollMax = 
+	//	max( 0, 2 + (MaxWidth - ClientSizeX) / AverageCharWidth);
+	
+	mov( MaxWidth, eax );
+	sub( ClientSizeX, eax );
+	cdq();
+	idiv( AverageCharWidth );
+	add( 2, eax );
+	if( @s ) then
+	
+		xor( eax, eax );
+		
+	endif;
+	mov( eax, HscrollMax );
+
+	// HscrollPos = min( HscrollMax, HscrollPos )
+	
+	if( eax > HscrollPos ) then
+	
+		mov( HscrollPos, eax );
+		
+	endif;
+	mov( eax, HscrollPos );
+	w.SetScrollRange( hwnd, w.SB_HORZ, 0, HscrollMax, false );
+	w.SetScrollPos( hwnd, w.SB_HORZ, HscrollPos, true );
+	xor( eax, eax ); // return success.
+	
+
+end Size;
+
+
+
+// HScroll-
+//
+//	Handles w.WM_HSCROLL messages.
+//	On entry, L.O. word of wParam contains the scroll bar activity.
+
+procedure HScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin HScroll;
+
+	// Convert 16-bit command to 32 bits so we can use switch macro:
+
+	movzx( (type word wParam), eax );
+	switch( eax )
+		
+		case( w.SB_LINELEFT )
+		
+			mov( -1, eax );
+			
+		case( w.SB_LINERIGHT )
+		
+			mov( 1, eax );
+			
+		case( w.SB_PAGELEFT )
+		
+			mov( -8, eax );
+			
+		case( w.SB_PAGERIGHT )
+			
+			mov( 8, eax );
+			
+		case( w.SB_THUMBPOSITION )
+			
+			movzx( (type word wParam[2]), eax );
+			sub( HscrollPos, eax );
+			
+		default
+		
+			xor( eax, eax );
+			
+	endswitch;
+	
+	// eax = 
+	//	max( -HscrollPos, min( eax, HscrollMax - HscrollPos ))
+	
+	mov( HscrollPos, edx );
+	neg( edx );
+	mov( HscrollMax, ecx );
+	add( edx, ecx );
+	if( eax > (type int32 ecx) ) then
+	
+		mov( ecx, eax );
+		
+	endif;
+	if( eax < (type int32 edx )) then
+	
+		mov( edx, eax );
+		
+	endif;
+	if( eax <> 0 ) then
+	
+		add( eax, HscrollPos );
+		imul( AverageCharWidth, eax );
+		neg( eax );
+		w.ScrollWindow( hwnd, eax, 0, NULL, NULL );
+		w.SetScrollPos( hwnd, w.SB_HORZ, HscrollPos, true );
+		
+	endif;
+	xor( eax, eax ); // return success
+	
+end HScroll;
+
+
+
+// VScroll-
+//
+//	Handles the w.WM_VSCROLL messages from Windows.
+//	The L.O. word of wParam contains the action/command to be taken.
+//	The H.O. word of wParam contains a distance for the w.SB_THUMBTRACK
+//	message.
+
+procedure VScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin VScroll;
+
+	movzx( (type word wParam), eax );
+	switch( eax )
+	
+		case( w.SB_TOP )
+		
+			mov( VscrollPos, eax );
+			neg( eax );
+			
+		case( w.SB_BOTTOM )
+		
+			mov( VscrollMax, eax );
+			sub( VscrollPos, eax );
+			
+		case( w.SB_LINEUP )
+		
+			mov( -1, eax );
+			
+		case( w.SB_LINEDOWN )
+		
+			mov( 1, eax );
+			
+		case( w.SB_PAGEUP )
+		
+			mov( ClientSizeY, eax );
+			cdq();
+			idiv( AverageCharHeight );
+			neg( eax );
+			if( (type int32 eax) > -1 ) then
+			
+				mov( -1, eax );
+				
+			endif;
+			
+		case( w.SB_PAGEDOWN )
+		
+			mov( ClientSizeY, eax );
+			cdq();
+			idiv( AverageCharHeight );
+			if( (type int32 eax) < 1 ) then
+			
+				mov( 1, eax );
+				
+			endif;
+			
+		case( w.SB_THUMBTRACK )
+		
+			movzx( (type word wParam[2]), eax );
+			sub( VscrollPos, eax );
+			
+		default
+		
+			xor( eax, eax );
+			
+	endswitch;
+	
+	// eax = max( -VscrollPos, min( eax, VscrollMax - VscrollPos ))
+	
+	mov( VscrollPos, edx );
+	neg( edx );
+	mov( VscrollMax, ecx );
+	add( edx, ecx );
+	if( eax > (type int32 ecx) ) then
+	
+		mov( ecx, eax );
+		
+	endif;
+	if( eax < (type int32 edx)) then
+	
+		mov( edx, eax );
+		
+	endif;
+	
+	if( eax <> 0 ) then
+	
+		add( eax, VscrollPos );
+		intmul( AverageCharHeight, eax );
+		neg( eax );
+		w.ScrollWindow( hwnd, 0, eax, NULL, NULL );
+		w.SetScrollPos( hwnd, w.SB_VERT, VscrollPos, true );
+		w.UpdateWindow( hwnd );
+		
+	endif;
+	xor( eax, eax ); // return success.
+			
+			
+end VScroll;
+
+
+
+/**************************************************************************/
+/*                   End of Application Specific Code                     */
+/**************************************************************************/
+
+
+
+
+// The window procedure.  
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword );
+	@stdcall;
+
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+
+// Here's the main program for the application.
+	
+begin systemMetrics;		
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	mov( hInstance, wc.hInstance );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW | w.WS_VSCROLL | 	w.WS_HSCROLL,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+				
+end systemMetrics;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

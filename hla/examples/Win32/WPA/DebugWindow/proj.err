@@ -1,0 +1,15 @@
+
+Microsoft (R) Program Maintenance Utility   Version 6.00.8168.0
+Copyright (C) Microsoft Corp 1988-1998. All rights reserved.
+
+	hla -p:tmp -w DebugWindow
+Error in file "DebugWindow.hla" at line 127 [errid:4031/hlaparse.bsn]:
+Expected ';', encountered 'procedure'.
+Near: << procedure >>
+
+Error in file "DebugWindow.hla" at line 127 [errid:13533/hlaparse.bsn]:
+Identifier <<Com>> after 'begin' must match procedure name <<ComputeWidth>>.
+Near: << procedure >>
+
+NMAKE : fatal error U1077: 'hla' : return code '0x1'
+Stop.

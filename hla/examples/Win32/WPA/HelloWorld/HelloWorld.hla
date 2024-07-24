@@ -1,0 +1,269 @@
+// HelloWorld.hla:
+//
+// Displays "Hello World" in a window.
+
+program HelloWorld;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "wpa.hhf" )		// "Windows Programming in Assembly" specific stuff.
+
+
+static
+	hInstance:	dword;			// "Instance Handle" supplied by Windows.
+
+	wc:		w.WNDCLASSEX;		// Our "window class" data.
+	msg:	w.MSG;				// Windows messages go here.
+	hwnd:	dword;				// Handle to our window.
+	
+	
+readonly
+
+	ClassName:	string := "TextAttrWinClass";		// Window Class Name
+	AppCaption:	string := "Text Attributes";		// Caption for Window
+	
+// The following data type and DATA declaration
+// defines the message handlers for this program.
+
+type
+	MsgProc_t:	procedure( hwnd:dword; wParam:dword; lParam:dword );
+	
+	MsgProcPtr_t:
+		record
+			
+			MessageValue:	dword;
+			MessageHndlr:	MsgProc_t;
+			
+		endrecord;
+	
+	
+	
+// The dispatch table:
+//
+//	This table is where you add new messages and message handlers
+//	to the program.  Each entry in the table must be a tMsgProcPtr
+//	record containing two entries: the message value (a constant,
+//	typically one of the wm.***** constants found in windows.hhf)
+//	and a pointer to a "tMsgProc" procedure that will handle the
+//	message.
+ 
+readonly
+	
+	Dispatch:	MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+// QuitApplication:
+//
+//	This procedure handles the "wm.Destroy" message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+@nodisplay;
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Paint:
+//
+//	This procedure handles the "wm.Paint" message.
+//	For this simple "Hello World" application, this
+//	procedure simply displays "Hello World" centered in the
+//	application's window.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword ); @nodisplay;
+var
+	hdc:	dword;				// Handle to video display device context
+	ps:		w.PAINTSTRUCT;		// Used while painting text.
+	rect:	w.RECT;				// Used to invalidate client rectangle.
+	
+begin Paint;
+
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., w.DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	w.BeginPaint( hwnd, ps );
+	mov( eax, hdc );
+
+	w.GetClientRect( hwnd, rect );
+	w.DrawText
+	(
+		hdc, 
+		"Hello World!", 
+		-1, 
+		rect, 
+		w.DT_SINGLELINE | w.DT_CENTER | w.DT_VCENTER
+	);
+		
+	w.EndPaint( hwnd, ps );
+
+end Paint;
+
+/**************************************************************************/
+/*                   End of Application Specific Code                     */
+/**************************************************************************/
+
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword  );
+	@stdcall;
+	@nodisplay;
+	@noalignstack;
+	
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+
+// Here's the main program for the application.
+	
+begin HelloWorld;
+
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	mov( eax, wc.hInstance );
+
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+
+end HelloWorld;

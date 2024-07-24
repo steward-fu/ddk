@@ -1,0 +1,52 @@
+// Iczelion's tutorial #17: Dynamic Link Libraries (DLL Module)
+// DLL module usage examples are in "17_DLL1" and "17_DLL2" folders 
+
+//  ============================================
+//  = For RadASM users:                        =
+//  =           1.Compile with Make > Assemble =
+//  =			2.Link with Make > Link        =
+//  ============================================
+
+//You can also manually assemble the example with the commands below:
+//hla -v -c DLLSkeleton.hla
+//link /dll /subsystem:windows /entry:DLLEntry /def:DLLSkeleton.def /libpath:c:\masm32\lib user32.lib DLLSkeleton.obj
+
+unit DLLSkeleton;
+
+#include("w.hhf")
+
+readonly
+	AppName :string := "DLL Skeleton";
+	HelloMsg :string := "Hello, you're calling a function in this DLL";
+	LoadMsg :string := "The DLL is loaded";
+	UnloadMsg :string := "The DLL is unloaded";
+	ThreadCreated :string := "A thread is created in this process";
+	ThreadDestroyed :string := "A thread is destroyed in this process";
+	
+	
+	procedure DLLEntry(hInstDLL:dword; reason:dword; reserved:dword);external("_DLLEntry@12");
+	procedure TestFunction;external;
+	
+	procedure DLLEntry(hInstDLL:dword; reason:dword; reserved:dword);@nodisplay;
+	begin DLLEntry;
+		if( reason = w.DLL_PROCESS_ATTACH) then
+			w.MessageBox(NULL,LoadMsg,AppName,w.MB_OK);
+		elseif(reason = w.DLL_PROCESS_DETACH) then
+			w.MessageBox(NULL,UnloadMsg,AppName,w.MB_OK);
+		elseif(reason = w.DLL_THREAD_ATTACH) then
+			w.MessageBox(NULL, ThreadCreated, AppName,w.MB_OK);
+		else        // w.DLL_THREAD_DETACH
+			w.MessageBox(NULL, ThreadDestroyed, AppName,w.MB_OK);
+		endif;
+			mov(true,eax);
+	end DLLEntry;
+	
+	procedure TestFunction;@nodisplay;@noframe;
+	
+	begin TestFunction;
+	    w.MessageBox(NULL, HelloMsg, AppName,w.MB_OK);
+		ret();
+	end TestFunction;
+
+end DLLSkeleton;
+

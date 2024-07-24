@@ -1,0 +1,2352 @@
+$0400_1674: (mnemonic:$0018): add
+	size: 0000_0002
+	First operand: dl
+	Second operand: cl
+$0400_1676: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_167C: (mnemonic:$0018): add
+	size: 0000_0003
+	is 16-bit
+	First operand: dx
+	Second operand: cx
+$0400_167F: (mnemonic:$0018): add
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1686: (mnemonic:$0018): add
+	size: 0000_0002
+	First operand: edx
+	Second operand: ecx
+$0400_1688: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_168E: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: bl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1694: (mnemonic:$0018): add
+	size: 0000_0007
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_169B: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_16A1: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand:  size: 1 base: ebp index:  scale: 00 offset: -1
+	Second operand: al
+$0400_16A4: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 1 base: ebp index: ebx scale: 01 offset: -1
+	Second operand: al
+$0400_16A8: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 01 offset: -3
+	Second operand: ax
+$0400_16AD: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 01 offset: -7
+	Second operand: eax
+$0400_16B1: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 01 offset: -1
+$0400_16B5: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 01 offset: -3
+$0400_16BA: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 01 offset: -7
+$0400_16BE: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 1 base: ebp index: ebx scale: 02 offset: -1
+	Second operand: al
+$0400_16C2: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 02 offset: -3
+	Second operand: ax
+$0400_16C7: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 02 offset: -7
+	Second operand: eax
+$0400_16CB: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 02 offset: -1
+$0400_16CF: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 02 offset: -3
+$0400_16D4: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 02 offset: -7
+$0400_16D8: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 1 base: ebp index: ebx scale: 04 offset: -1
+	Second operand: al
+$0400_16DC: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 04 offset: -3
+	Second operand: ax
+$0400_16E1: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 04 offset: -7
+	Second operand: eax
+$0400_16E5: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 04 offset: -1
+$0400_16E9: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 04 offset: -3
+$0400_16EE: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 04 offset: -7
+$0400_16F2: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 1 base: ebp index: ebx scale: 08 offset: -1
+	Second operand: al
+$0400_16F6: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 08 offset: -3
+	Second operand: ax
+$0400_16FB: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 08 offset: -7
+	Second operand: eax
+$0400_16FF: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 08 offset: -1
+$0400_1703: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 08 offset: -3
+$0400_1708: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 08 offset: -7
+$0400_170C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 1 base: ebp index: ebx scale: 01 offset: 128
+	Second operand: al
+$0400_1713: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 01 offset: 126
+	Second operand: ax
+$0400_1718: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 01 offset: 122
+	Second operand: eax
+$0400_171C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 01 offset: 128
+$0400_1723: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 01 offset: 126
+$0400_1728: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 01 offset: 122
+$0400_172C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 1 base: ebp index: ebx scale: 02 offset: 128
+	Second operand: al
+$0400_1733: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 02 offset: 126
+	Second operand: ax
+$0400_1738: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 02 offset: 122
+	Second operand: eax
+$0400_173C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 02 offset: 128
+$0400_1743: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 02 offset: 126
+$0400_1748: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 02 offset: 122
+$0400_174C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 1 base: ebp index: ebx scale: 04 offset: 128
+	Second operand: al
+$0400_1753: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 04 offset: 126
+	Second operand: ax
+$0400_1758: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 04 offset: 122
+	Second operand: eax
+$0400_175C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 04 offset: 128
+$0400_1763: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 04 offset: 126
+$0400_1768: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 04 offset: 122
+$0400_176C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 1 base: ebp index: ebx scale: 08 offset: 128
+	Second operand: al
+$0400_1773: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand:  size: 2 base: ebp index: ebx scale: 08 offset: 126
+	Second operand: ax
+$0400_1778: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 08 offset: 122
+	Second operand: eax
+$0400_177C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: bl
+	Second operand:  size: 1 base: ebp index: ebx scale: 08 offset: 128
+$0400_1783: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base: ebp index: ebx scale: 08 offset: 126
+$0400_1788: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ebx
+	Second operand:  size: 4 base: ebp index: ebx scale: 08 offset: 122
+$0400_178C: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: al
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1792: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_1798: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: bl
+	Second operand:  size: 1 base: ebx index:  scale: 00 offset: sb+4, sb1
+$0400_179E: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand:  size: 1 base: ebx index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_17A4: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: eax
+	Second operand:  size: 4 base: ebp index:  scale: 00 offset: 12
+$0400_17A7: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand:  size: 4 base: ebp index:  scale: 00 offset: 8
+	Second operand: eax
+$0400_17AA: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: al
+	Second operand:  size: 1 base:  index: ebx scale: 01 offset: sb+4, sb1
+$0400_17B1: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: al
+	Second operand:  size: 1 base:  index: ebx scale: 02 offset: 16
+$0400_17B8: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: al
+	Second operand:  size: 1 base:  index: ebx scale: 04 offset: 0
+$0400_17BF: (mnemonic:$0018): add
+	size: 0000_0002
+	First operand: edi
+	Second operand: esi
+$0400_17C1: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: eax
+	Second operand:  size: 4 base: ebp index:  scale: 00 offset: -7
+$0400_17C4: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: eax
+	Second operand:  size: 4 base: ebp index: ebx scale: 01 offset: -7
+$0400_17C8: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 02 offset: -7
+	Second operand: ebx
+$0400_17CC: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: ecx
+	Second operand:  size: 4 base: ebp index: ebx scale: 04 offset: 122
+$0400_17D0: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand:  size: 4 base: ebp index: ebx scale: 08 offset: 122
+	Second operand: edx
+$0400_17D4: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: eax
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_17DA: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  size: 4 base: ebx index:  scale: 00 offset: sb+16, sd1
+$0400_17E0: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: ecx
+	Second operand:  size: 4 base:  index: ebx scale: 04 offset: sb+16, sd1
+$0400_17E7: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand: edx
+	Second operand:  size: 4 base: ecx index: ebx scale: 08 offset: sb+16, sd1
+$0400_17EE: (mnemonic:$0018): add
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_17F0: (mnemonic:$0018): add
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_17F5: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: eseg
+$0400_17F6: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: eseg
+$0400_17F7: (mnemonic:$04A0): or
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_17FD: (mnemonic:$04A0): or
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1804: (mnemonic:$04A0): or
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_180A: (mnemonic:$04A0): or
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1810: (mnemonic:$04A0): or
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1817: (mnemonic:$04A0): or
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_181D: (mnemonic:$04A0): or
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_181F: (mnemonic:$04A0): or
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_1824: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: cseg
+$0400_1825: (mnemonic:$0014): adc
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_182B: (mnemonic:$0014): adc
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1832: (mnemonic:$0014): adc
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1838: (mnemonic:$0014): adc
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_183E: (mnemonic:$0014): adc
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1845: (mnemonic:$0014): adc
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_184B: (mnemonic:$0014): adc
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_184D: (mnemonic:$0014): adc
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_1852: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: sseg
+$0400_1853: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: sseg
+$0400_1854: (mnemonic:$05E8): sbb
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_185A: (mnemonic:$05E8): sbb
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1861: (mnemonic:$05E8): sbb
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1867: (mnemonic:$05E8): sbb
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_186D: (mnemonic:$05E8): sbb
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1874: (mnemonic:$05E8): sbb
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_187A: (mnemonic:$05E8): sbb
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_187C: (mnemonic:$05E8): sbb
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_1881: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: dseg
+$0400_1882: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: dseg
+$0400_1883: (mnemonic:$0034): and
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1889: (mnemonic:$0034): and
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1890: (mnemonic:$0034): and
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1896: (mnemonic:$0034): and
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_189C: (mnemonic:$0034): and
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_18A3: (mnemonic:$0034): and
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_18A9: (mnemonic:$0034): and
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_18AB: (mnemonic:$0034): and
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_18B0: (mnemonic:$0034): and
+	size: 0000_0007
+	has ES prefix
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_18B7: (mnemonic:$014C): daa
+	size: 0000_0001
+$0400_18B8: (mnemonic:$0668): sub
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_18BE: (mnemonic:$0668): sub
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_18C5: (mnemonic:$0668): sub
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_18CB: (mnemonic:$0668): sub
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_18D1: (mnemonic:$0668): sub
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_18D8: (mnemonic:$0668): sub
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_18DE: (mnemonic:$0668): sub
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_18E0: (mnemonic:$0668): sub
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_18E5: (mnemonic:$0668): sub
+	size: 0000_0007
+	has CS prefix
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_18EC: (mnemonic:$0150): das
+	size: 0000_0001
+$0400_18ED: (mnemonic:$06C8): xor
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_18F3: (mnemonic:$06C8): xor
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_18FA: (mnemonic:$06C8): xor
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1900: (mnemonic:$06C8): xor
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1906: (mnemonic:$06C8): xor
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_190D: (mnemonic:$06C8): xor
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1913: (mnemonic:$06C8): xor
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_1915: (mnemonic:$06C8): xor
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_191A: (mnemonic:$06C8): xor
+	size: 0000_0007
+	has SS prefix
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_1921: (mnemonic:$0004): aaa
+	size: 0000_0001
+$0400_1922: (mnemonic:$00C8): cmp
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1928: (mnemonic:$00C8): cmp
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_192F: (mnemonic:$00C8): cmp
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1935: (mnemonic:$00C8): cmp
+	size: 0000_0006
+	First operand: cl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_193B: (mnemonic:$00C8): cmp
+	size: 0000_0007
+	is 16-bit
+	First operand: cx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1942: (mnemonic:$00C8): cmp
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1948: (mnemonic:$00C8): cmp
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0008
+$0400_194A: (mnemonic:$00C8): cmp
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0100
+$0400_194F: (mnemonic:$00C8): cmp
+	size: 0000_0007
+	has DS prefix
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_1956: (mnemonic:$0010): aas
+	size: 0000_0001
+$0400_1957: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: eax
+$0400_1958: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: ebx
+$0400_1959: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: ecx
+$0400_195A: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: edx
+$0400_195B: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: esi
+$0400_195C: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: edi
+$0400_195D: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: ebp
+$0400_195E: (mnemonic:$02F8): inc
+	size: 0000_0001
+	First operand: esp
+$0400_195F: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: ax
+$0400_1961: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: bx
+$0400_1963: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+$0400_1965: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+$0400_1967: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: si
+$0400_1969: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: di
+$0400_196B: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: bp
+$0400_196D: (mnemonic:$02F8): inc
+	size: 0000_0002
+	is 16-bit
+	First operand: sp
+$0400_196F: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: eax
+$0400_1970: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: ebx
+$0400_1971: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: ecx
+$0400_1972: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: edx
+$0400_1973: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: esi
+$0400_1974: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: edi
+$0400_1975: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: ebp
+$0400_1976: (mnemonic:$0154): dec
+	size: 0000_0001
+	First operand: esp
+$0400_1977: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: ax
+$0400_1979: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: bx
+$0400_197B: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+$0400_197D: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+$0400_197F: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: si
+$0400_1981: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: di
+$0400_1983: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: bp
+$0400_1985: (mnemonic:$0154): dec
+	size: 0000_0002
+	is 16-bit
+	First operand: sp
+$0400_1987: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: eax
+$0400_1988: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: ebx
+$0400_1989: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: ecx
+$0400_198A: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: edx
+$0400_198B: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: esi
+$0400_198C: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: edi
+$0400_198D: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: ebp
+$0400_198E: (mnemonic:$0590): push
+	size: 0000_0001
+	First operand: esp
+$0400_198F: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: ax
+$0400_1991: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: bx
+$0400_1993: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+$0400_1995: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+$0400_1997: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: si
+$0400_1999: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: di
+$0400_199B: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: bp
+$0400_199D: (mnemonic:$0590): push
+	size: 0000_0002
+	is 16-bit
+	First operand: sp
+$0400_199F: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: eax
+$0400_19A0: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: ebx
+$0400_19A1: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: ecx
+$0400_19A2: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: edx
+$0400_19A3: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: esi
+$0400_19A4: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: edi
+$0400_19A5: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: ebp
+$0400_19A6: (mnemonic:$050C): pop
+	size: 0000_0001
+	First operand: esp
+$0400_19A7: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: ax
+$0400_19A9: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: bx
+$0400_19AB: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+$0400_19AD: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+$0400_19AF: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: si
+$0400_19B1: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: di
+$0400_19B3: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: bp
+$0400_19B5: (mnemonic:$050C): pop
+	size: 0000_0002
+	is 16-bit
+	First operand: sp
+$0400_19B7: (mnemonic:$0598): pushad
+	size: 0000_0001
+$0400_19B8: (mnemonic:$0594): pusha
+	size: 0000_0002
+	is 16-bit
+$0400_19BA: (mnemonic:$0514): popad
+	size: 0000_0001
+$0400_19BB: (mnemonic:$0510): popa
+	size: 0000_0002
+	is 16-bit
+$0400_19BD: (mnemonic:$004C): bound
+	size: 0000_0006
+	First operand: eax
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_19C3: (mnemonic:$0048): arpl
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: ax
+$0400_19C9: (mnemonic:$0018): add
+	size: 0000_0004
+	has FS prefix
+	First operand: al
+	Second operand:  size: 1 base: ebp index:  scale: 00 offset: -1
+$0400_19CD: (mnemonic:$0018): add
+	size: 0000_0004
+	has GS prefix
+	First operand: al
+	Second operand:  size: 1 base: ebp index:  scale: 00 offset: -1
+$0400_19D1: (mnemonic:$0018): add
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+	Second operand: ax
+$0400_19D4: (mnemonic:$0018): add
+	size: 0000_0004
+	First operand: al
+	Second operand:  size: 1 base: ebp index:  scale: 00 offset: -1
+$0400_19D8: (mnemonic:$059C): pushd
+	size: 0000_0005
+	First operand:  immediate: 1234_5678
+$0400_19DD: (mnemonic:$05A8): pushw
+	size: 0000_0004
+	is 16-bit
+	First operand:  immediate: 0000_9012
+$0400_19E1: (mnemonic:$0310): intmul
+	size: 0000_0006
+	First operand: ebx
+	Second operand: eax
+	Third operand:  immediate: 0000_0100
+$0400_19E7: (mnemonic:$0310): intmul
+	size: 0000_000A
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Third operand:  immediate: 0000_0200
+$0400_19F1: (mnemonic:$0310): intmul
+	size: 0000_0005
+	is 16-bit
+	First operand: si
+	Second operand: dx
+	Third operand:  immediate: 0000_0300
+$0400_19F6: (mnemonic:$0310): intmul
+	size: 0000_0009
+	is 16-bit
+	First operand: di
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Third operand:  immediate: 0000_0400
+$0400_19FF: (mnemonic:$05A8): pushw
+	size: 0000_0003
+	is 16-bit
+	First operand:  immediate: 0000_0010
+$0400_1A02: (mnemonic:$05A8): pushw
+	size: 0000_0003
+	is 16-bit
+	First operand:  immediate: FFFF_FFF0
+$0400_1A05: (mnemonic:$059C): pushd
+	size: 0000_0002
+	First operand:  immediate: 0000_0020
+$0400_1A07: (mnemonic:$059C): pushd
+	size: 0000_0002
+	First operand:  immediate: FFFF_FFE0
+$0400_1A09: (mnemonic:$0310): intmul
+	size: 0000_0003
+	First operand: ebx
+	Second operand: eax
+	Third operand:  immediate: 0000_0001
+$0400_1A0C: (mnemonic:$0310): intmul
+	size: 0000_0007
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Third operand:  immediate: 0000_0002
+$0400_1A13: (mnemonic:$0310): intmul
+	size: 0000_0004
+	is 16-bit
+	First operand: si
+	Second operand: dx
+	Third operand:  immediate: 0000_0003
+$0400_1A17: (mnemonic:$0310): intmul
+	size: 0000_0008
+	is 16-bit
+	First operand: di
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Third operand:  immediate: 0000_0004
+$0400_1A1F: (mnemonic:$02FC): insb
+	size: 0000_0001
+$0400_1A20: (mnemonic:$0304): insw
+	size: 0000_0002
+	is 16-bit
+$0400_1A22: (mnemonic:$0300): insd
+	size: 0000_0001
+$0400_1A23: (mnemonic:$04B0): outsb
+	size: 0000_0001
+$0400_1A24: (mnemonic:$04B8): outsw
+	size: 0000_0002
+	is 16-bit
+$0400_1A26: (mnemonic:$04B4): outsd
+	size: 0000_0001
+$0400_1A27: (mnemonic:$0368): jo
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A29: (mnemonic:$0358): jno
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A2B: (mnemonic:$0330): jc
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A2D: (mnemonic:$0354): jnc
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A2F: (mnemonic:$0374): jz
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A31: (mnemonic:$0364): jnz
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A33: (mnemonic:$032C): jbe
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A35: (mnemonic:$0328): ja
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A37: (mnemonic:$0370): js
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A39: (mnemonic:$0360): jns
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A3B: (mnemonic:$036C): jp
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A3D: (mnemonic:$035C): jnp
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A3F: (mnemonic:$0344): jl
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A41: (mnemonic:$0340): jge
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A43: (mnemonic:$0348): jle
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A45: (mnemonic:$033C): jg
+	size: 0000_0002
+	First operand:  displacement: 0400_1A47
+$0400_1A47: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: bl
+	Second operand:  immediate: 0000_0001
+$0400_1A4A: (mnemonic:$0018): add
+	size: 0000_0004
+	is 16-bit
+	First operand: bx
+	Second operand:  immediate: 0000_0002
+$0400_1A4E: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: ebx
+	Second operand:  immediate: 0000_0003
+$0400_1A51: (mnemonic:$0018): add
+	size: 0000_0005
+	is 16-bit
+	First operand: bx
+	Second operand:  immediate: 0000_1234
+$0400_1A56: (mnemonic:$0018): add
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  immediate: 0000_1234
+$0400_1A5C: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand:  immediate: 0000_0004
+$0400_1A63: (mnemonic:$0018): add
+	size: 0000_0008
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_0005
+$0400_1A6B: (mnemonic:$0018): add
+	size: 0000_0007
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_0006
+$0400_1A72: (mnemonic:$0018): add
+	size: 0000_0009
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_1234
+$0400_1A7B: (mnemonic:$0018): add
+	size: 0000_000A
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_1234
+$0400_1A85: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: bl
+	Second operand:  immediate: 0000_0012
+$0400_1A88: (mnemonic:$0018): add
+	size: 0000_0003
+	First operand: bl
+	Second operand:  immediate: 0000_0034
+$0400_1A8B: (mnemonic:$0684): test
+	size: 0000_0002
+	First operand: cl
+	Second operand: dl
+$0400_1A8D: (mnemonic:$0684): test
+	size: 0000_0003
+	is 16-bit
+	First operand: cx
+	Second operand: dx
+$0400_1A90: (mnemonic:$0684): test
+	size: 0000_0002
+	First operand: ecx
+	Second operand: edx
+$0400_1A92: (mnemonic:$0684): test
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1A98: (mnemonic:$0684): test
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1A9F: (mnemonic:$0684): test
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1AA5: (mnemonic:$0684): test
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1AAB: (mnemonic:$0684): test
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1AB2: (mnemonic:$0684): test
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1AB8: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	First operand: cl
+	Second operand: dl
+$0400_1ABA: (mnemonic:$06C0): xchg
+	size: 0000_0003
+	is 16-bit
+	First operand: cx
+	Second operand: dx
+$0400_1ABD: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	First operand: ecx
+	Second operand: edx
+$0400_1ABF: (mnemonic:$06C0): xchg
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1AC5: (mnemonic:$06C0): xchg
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1ACC: (mnemonic:$06C0): xchg
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1AD2: (mnemonic:$06C0): xchg
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1AD8: (mnemonic:$06C0): xchg
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1ADF: (mnemonic:$06C0): xchg
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1AE5: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1AEB: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand:  size: 1 base: ebx index:  scale: 00 offset: sb+4, sb1
+	Second operand: bl
+$0400_1AF1: (mnemonic:$0400): mov
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: bx
+$0400_1AF8: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: ebx
+$0400_1AFE: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand: bl
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1B04: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand: bl
+	Second operand:  size: 1 base: ebx index:  scale: 00 offset: sb+4, sb1
+$0400_1B0A: (mnemonic:$0400): mov
+	size: 0000_0007
+	is 16-bit
+	First operand: bx
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1B11: (mnemonic:$0400): mov
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1B17: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: dseg
+	Second operand: bx
+$0400_1B1A: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: eseg
+	Second operand: cx
+$0400_1B1D: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: fseg
+	Second operand: dx
+$0400_1B20: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: gseg
+	Second operand: bp
+$0400_1B23: (mnemonic:$038C): lea
+	size: 0000_0006
+	First operand: edx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1B29: (mnemonic:$038C): lea
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1B2F: (mnemonic:$038C): lea
+	size: 0000_0006
+	First operand: ecx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1B35: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: ax
+	Second operand: cseg
+$0400_1B38: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+	Second operand: dseg
+$0400_1B3B: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: cx
+	Second operand: eseg
+$0400_1B3E: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: dx
+	Second operand: fseg
+$0400_1B41: (mnemonic:$0400): mov
+	size: 0000_0003
+	is 16-bit
+	First operand: bp
+	Second operand: gseg
+$0400_1B44: (mnemonic:$050C): pop
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1B4B: (mnemonic:$050C): pop
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1B51: (mnemonic:$050C): pop
+	size: 0000_0002
+	First operand: eax
+$0400_1B53: (mnemonic:$0498): nop
+	size: 0000_0001
+$0400_1B54: (mnemonic:$0498): nop
+	size: 0000_0001
+$0400_1B55: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: ecx
+	Second operand: eax
+$0400_1B56: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: ecx
+	Second operand: eax
+$0400_1B57: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: edx
+	Second operand: eax
+$0400_1B58: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: ebx
+	Second operand: eax
+$0400_1B59: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: esp
+	Second operand: eax
+$0400_1B5A: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: ebp
+	Second operand: eax
+$0400_1B5B: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: esi
+	Second operand: eax
+$0400_1B5C: (mnemonic:$06C0): xchg
+	size: 0000_0001
+	First operand: edi
+	Second operand: eax
+$0400_1B5D: (mnemonic:$0498): nop
+	size: 0000_0002
+	is 16-bit
+$0400_1B5F: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+	Second operand: ax
+$0400_1B61: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: cx
+	Second operand: ax
+$0400_1B63: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+	Second operand: ax
+$0400_1B65: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: bx
+	Second operand: ax
+$0400_1B67: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: sp
+	Second operand: ax
+$0400_1B69: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: bp
+	Second operand: ax
+$0400_1B6B: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: si
+	Second operand: ax
+$0400_1B6D: (mnemonic:$06C0): xchg
+	size: 0000_0002
+	is 16-bit
+	First operand: di
+	Second operand: ax
+$0400_1B6F: (mnemonic:$006C): cbw
+	size: 0000_0002
+	is 16-bit
+$0400_1B71: (mnemonic:$0148): cwde
+	size: 0000_0001
+$0400_1B72: (mnemonic:$0144): cwd
+	size: 0000_0002
+	is 16-bit
+$0400_1B74: (mnemonic:$0070): cdq
+	size: 0000_0001
+$0400_1B75: (mnemonic:$02B8): fwait
+	size: 0000_0001
+$0400_1B76: (mnemonic:$02B8): fwait
+	size: 0000_0001
+$0400_1B77: (mnemonic:$05A0): pushf
+	size: 0000_0002
+	is 16-bit
+$0400_1B79: (mnemonic:$05A4): pushfd
+	size: 0000_0001
+$0400_1B7A: (mnemonic:$0518): popf
+	size: 0000_0002
+	is 16-bit
+$0400_1B7C: (mnemonic:$051C): popfd
+	size: 0000_0001
+$0400_1B7D: (mnemonic:$05E0): sahf
+	size: 0000_0001
+$0400_1B7E: (mnemonic:$0378): lahf
+	size: 0000_0001
+$0400_1B7F: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: al
+	Second operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1B84: (mnemonic:$0400): mov
+	size: 0000_0006
+	is 16-bit
+	First operand: ax
+	Second operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1B8A: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: eax
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1B8F: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: al
+$0400_1B94: (mnemonic:$0400): mov
+	size: 0000_0006
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: ax
+$0400_1B9A: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: eax
+$0400_1B9F: (mnemonic:$0458): movsb
+	size: 0000_0001
+$0400_1BA0: (mnemonic:$046C): movsw
+	size: 0000_0002
+	is 16-bit
+$0400_1BA2: (mnemonic:$045C): movsd
+	size: 0000_0001
+$0400_1BA3: (mnemonic:$00D4): cmpsb
+	size: 0000_0001
+$0400_1BA4: (mnemonic:$00E0): cmpsw
+	size: 0000_0002
+	is 16-bit
+$0400_1BA6: (mnemonic:$00D8): cmpsd
+	size: 0000_0001
+$0400_1BA7: (mnemonic:$0684): test
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0001
+$0400_1BA9: (mnemonic:$0684): test
+	size: 0000_0004
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0002
+$0400_1BAD: (mnemonic:$0684): test
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0003
+$0400_1BB2: (mnemonic:$0658): stosb
+	size: 0000_0001
+$0400_1BB3: (mnemonic:$0660): stosw
+	size: 0000_0002
+	is 16-bit
+$0400_1BB5: (mnemonic:$065C): stosd
+	size: 0000_0001
+$0400_1BB6: (mnemonic:$03B0): lodsb
+	size: 0000_0001
+$0400_1BB7: (mnemonic:$03B8): lodsw
+	size: 0000_0002
+	is 16-bit
+$0400_1BB9: (mnemonic:$03B4): lodsd
+	size: 0000_0001
+$0400_1BBA: (mnemonic:$05EC): scasb
+	size: 0000_0001
+$0400_1BBB: (mnemonic:$05F4): scasw
+	size: 0000_0002
+	is 16-bit
+$0400_1BBD: (mnemonic:$05F0): scasd
+	size: 0000_0001
+$0400_1BBE: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0000
+$0400_1BC0: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: bl
+	Second operand:  immediate: 0000_0001
+$0400_1BC2: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: cl
+	Second operand:  immediate: 0000_0002
+$0400_1BC4: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: dl
+	Second operand:  immediate: 0000_0003
+$0400_1BC6: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: ah
+	Second operand:  immediate: 0000_0004
+$0400_1BC8: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: bh
+	Second operand:  immediate: 0000_0005
+$0400_1BCA: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: ch
+	Second operand:  immediate: 0000_0006
+$0400_1BCC: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: dh
+	Second operand:  immediate: 0000_0007
+$0400_1BCE: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0000
+$0400_1BD2: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: bx
+	Second operand:  immediate: 0000_0001
+$0400_1BD6: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: cx
+	Second operand:  immediate: 0000_0002
+$0400_1BDA: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: dx
+	Second operand:  immediate: 0000_0003
+$0400_1BDE: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: si
+	Second operand:  immediate: 0000_0004
+$0400_1BE2: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: di
+	Second operand:  immediate: 0000_0005
+$0400_1BE6: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: bp
+	Second operand:  immediate: 0000_0006
+$0400_1BEA: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: sp
+	Second operand:  immediate: 0000_0007
+$0400_1BEE: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: eax
+	Second operand:  immediate: 0000_0000
+$0400_1BF3: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: ebx
+	Second operand:  immediate: 0000_0001
+$0400_1BF8: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: ecx
+	Second operand:  immediate: 0000_0002
+$0400_1BFD: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: edx
+	Second operand:  immediate: 0000_0003
+$0400_1C02: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: esi
+	Second operand:  immediate: 0000_0004
+$0400_1C07: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: edi
+	Second operand:  immediate: 0000_0005
+$0400_1C0C: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: ebp
+	Second operand:  immediate: 0000_0006
+$0400_1C11: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: esp
+	Second operand:  immediate: 0000_0007
+$0400_1C16: (mnemonic:$05D0): rol
+	size: 0000_0003
+	First operand: al
+	Second operand:  immediate: 0000_0002
+$0400_1C19: (mnemonic:$05D4): ror
+	size: 0000_0007
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand:  immediate: 0000_0003
+$0400_1C20: (mnemonic:$05AC): rcl
+	size: 0000_0004
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0004
+$0400_1C24: (mnemonic:$05B8): rcr
+	size: 0000_0008
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_0005
+$0400_1C2C: (mnemonic:$061C): shl
+	size: 0000_0003
+	First operand: eax
+	Second operand:  immediate: 0000_0006
+$0400_1C2F: (mnemonic:$0624): shr
+	size: 0000_0007
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_0007
+$0400_1C36: (mnemonic:$05E4): sar
+	size: 0000_0003
+	First operand: ebx
+	Second operand:  immediate: 0000_0008
+$0400_1C39: (mnemonic:$05C8): ret
+	size: 0000_0003
+	First operand:  immediate: 0000_0004
+$0400_1C3C: (mnemonic:$05C8): ret
+	size: 0000_0001
+$0400_1C3D: (mnemonic:$0394): les
+	size: 0000_0006
+	First operand: eax
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1C43: (mnemonic:$0388): lds
+	size: 0000_0006
+	First operand: ebx
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1C49: (mnemonic:$0400): mov
+	size: 0000_0002
+	First operand: bl
+	Second operand:  immediate: 0000_0000
+$0400_1C4B: (mnemonic:$0400): mov
+	size: 0000_0004
+	is 16-bit
+	First operand: bx
+	Second operand:  immediate: 0000_0001
+$0400_1C4F: (mnemonic:$0400): mov
+	size: 0000_0005
+	First operand: ebx
+	Second operand:  immediate: 0000_0002
+$0400_1C54: (mnemonic:$0400): mov
+	size: 0000_0007
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand:  immediate: 0000_0003
+$0400_1C5B: (mnemonic:$0400): mov
+	size: 0000_0009
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_0004
+$0400_1C64: (mnemonic:$0400): mov
+	size: 0000_000A
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_0005
+$0400_1C6E: (mnemonic:$0170): enter
+	size: 0000_0004
+	First operand:  immediate: 0000_0001
+	Second operand:  immediate: 0000_0002
+$0400_1C72: (mnemonic:$0390): leave
+	size: 0000_0001
+$0400_1C73: (mnemonic:$05CC): retf
+	size: 0000_0003
+	First operand:  immediate: 0000_0001
+$0400_1C76: (mnemonic:$05CC): retf
+	size: 0000_0001
+$0400_1C77: (mnemonic:$0308): int
+	size: 0000_0001
+	First operand:  immediate: 0000_0003
+$0400_1C78: (mnemonic:$0308): int
+	size: 0000_0002
+	First operand:  immediate: 0000_0000
+$0400_1C7A: (mnemonic:$0308): int
+	size: 0000_0002
+	First operand:  immediate: 0000_0001
+$0400_1C7C: (mnemonic:$0308): int
+	size: 0000_0002
+	First operand:  immediate: 0000_00FF
+$0400_1C7E: (mnemonic:$0314): into
+	size: 0000_0001
+$0400_1C7F: (mnemonic:$0320): iret
+	size: 0000_0002
+	is 16-bit
+$0400_1C81: (mnemonic:$0324): iretd
+	size: 0000_0001
+$0400_1C82: (mnemonic:$05D0): rol
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0001
+$0400_1C84: (mnemonic:$05D4): ror
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand:  immediate: 0000_0001
+$0400_1C8A: (mnemonic:$05AC): rcl
+	size: 0000_0003
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0001
+$0400_1C8D: (mnemonic:$05B8): rcr
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_0001
+$0400_1C94: (mnemonic:$061C): shl
+	size: 0000_0002
+	First operand: eax
+	Second operand:  immediate: 0000_0001
+$0400_1C96: (mnemonic:$0624): shr
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_0001
+$0400_1C9C: (mnemonic:$05E4): sar
+	size: 0000_0002
+	First operand: ebx
+	Second operand:  immediate: 0000_0001
+$0400_1C9E: (mnemonic:$05D0): rol
+	size: 0000_0002
+	First operand: al
+	Second operand: cl
+$0400_1CA0: (mnemonic:$05D4): ror
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand: cl
+$0400_1CA6: (mnemonic:$05AC): rcl
+	size: 0000_0003
+	is 16-bit
+	First operand: ax
+	Second operand: cl
+$0400_1CA9: (mnemonic:$05B8): rcr
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand: cl
+$0400_1CB0: (mnemonic:$061C): shl
+	size: 0000_0002
+	First operand: eax
+	Second operand: cl
+$0400_1CB2: (mnemonic:$0624): shr
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand: cl
+$0400_1CB8: (mnemonic:$05E4): sar
+	size: 0000_0002
+	First operand: ebx
+	Second operand: cl
+$0400_1CBA: (mnemonic:$000C): aam
+	size: 0000_0002
+	First operand:  immediate: 0000_000A
+$0400_1CBC: (mnemonic:$0008): aad
+	size: 0000_0002
+	First operand:  immediate: 0000_000A
+$0400_1CBE: (mnemonic:$0000): undef_instr
+	size: 0000_0001
+$0400_1CBF: (mnemonic:$06C4): xlat
+	size: 0000_0001
+$0400_1CC0: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st0
+$0400_1CC2: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st1
+$0400_1CC4: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st2
+$0400_1CC6: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st3
+$0400_1CC8: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st4
+$0400_1CCA: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st5
+$0400_1CCC: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st6
+$0400_1CCE: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st7
+$0400_1CD0: (mnemonic:$01B0): fcom
+	size: 0000_0002
+	First operand: st0
+	Second operand: st1
+$0400_1CD2: (mnemonic:$028C): fsub
+	size: 0000_0002
+	First operand: st0
+	Second operand: st2
+$0400_1CD4: (mnemonic:$01CC): fdiv
+	size: 0000_0002
+	First operand: st0
+	Second operand: st3
+$0400_1CD6: (mnemonic:$0240): fmul
+	size: 0000_0002
+	First operand: st0
+	Second operand: st4
+$0400_1CD8: (mnemonic:$01BC): fcomp
+	size: 0000_0002
+	First operand: st0
+	Second operand: st5
+$0400_1CDA: (mnemonic:$0294): fsubr
+	size: 0000_0002
+	First operand: st0
+	Second operand: st6
+$0400_1CDC: (mnemonic:$01D4): fdivr
+	size: 0000_0002
+	First operand: st0
+	Second operand: st7
+$0400_1CDE: (mnemonic:$0218): fld
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1CE4: (mnemonic:$027C): fst
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1CEA: (mnemonic:$0284): fstp
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1CF0: (mnemonic:$0224): fldenv
+	size: 0000_0006
+	First operand:  size: 28 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1CF6: (mnemonic:$0224): fldenv
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 14 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1CFD: (mnemonic:$0254): fnstenv
+	size: 0000_0006
+	First operand:  size: 28 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1D03: (mnemonic:$0254): fnstenv
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 14 base:  index:  scale: 00 offset: sb+32, sr32
+$0400_1D0A: (mnemonic:$0220): fldcw
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1D10: (mnemonic:$02B8): fwait
+	size: 0000_0001
+$0400_1D11: (mnemonic:$0280): fstcw
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1D17: (mnemonic:$0218): fld
+	size: 0000_0002
+	First operand: st0
+	Second operand: st1
+$0400_1D19: (mnemonic:$02C0): fxch
+	size: 0000_0002
+	First operand: st0
+	Second operand: st2
+$0400_1D1B: (mnemonic:$0250): fnop
+	size: 0000_0002
+$0400_1D1D: (mnemonic:$018C): fchs
+	size: 0000_0002
+$0400_1D1F: (mnemonic:$0178): fabs
+	size: 0000_0002
+$0400_1D21: (mnemonic:$029C): ftst
+	size: 0000_0002
+$0400_1D23: (mnemonic:$02BC): fxam
+	size: 0000_0002
+$0400_1D25: (mnemonic:$0174): f2xm1
+	size: 0000_0002
+$0400_1D27: (mnemonic:$02D0): fyl2x
+	size: 0000_0002
+$0400_1D29: (mnemonic:$0264): fptan
+	size: 0000_0002
+$0400_1D2B: (mnemonic:$0258): fpatan
+	size: 0000_0002
+$0400_1D2D: (mnemonic:$02CC): fxtract
+	size: 0000_0002
+$0400_1D2F: (mnemonic:$0260): fprem1
+	size: 0000_0002
+$0400_1D31: (mnemonic:$01C8): fdecstp
+	size: 0000_0002
+$0400_1D33: (mnemonic:$0200): fincstp
+	size: 0000_0002
+$0400_1D35: (mnemonic:$021C): fld1
+	size: 0000_0002
+$0400_1D37: (mnemonic:$022C): fldl2t
+	size: 0000_0002
+$0400_1D39: (mnemonic:$0228): fldl2e
+	size: 0000_0002
+$0400_1D3B: (mnemonic:$0238): fldpi
+	size: 0000_0002
+$0400_1D3D: (mnemonic:$0230): fldlg2
+	size: 0000_0002
+$0400_1D3F: (mnemonic:$0234): fldln2
+	size: 0000_0002
+$0400_1D41: (mnemonic:$023C): fldz
+	size: 0000_0002
+$0400_1D43: (mnemonic:$025C): fprem
+	size: 0000_0002
+$0400_1D45: (mnemonic:$02D4): fyl2xp1
+	size: 0000_0002
+$0400_1D47: (mnemonic:$0278): fsqrt
+	size: 0000_0002
+$0400_1D49: (mnemonic:$0274): fsincos
+	size: 0000_0002
+$0400_1D4B: (mnemonic:$0268): frndint
+	size: 0000_0002
+$0400_1D4D: (mnemonic:$026C): fscale
+	size: 0000_0002
+$0400_1D4F: (mnemonic:$0270): fsin
+	size: 0000_0002
+$0400_1D51: (mnemonic:$01C4): fcos
+	size: 0000_0002
+$0400_1D53: (mnemonic:$01E4): fiadd
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D59: (mnemonic:$01E8): ficom
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D5F: (mnemonic:$01EC): ficomp
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D65: (mnemonic:$01FC): fimul
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D6B: (mnemonic:$0210): fisub
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D71: (mnemonic:$0214): fisubr
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D77: (mnemonic:$01F0): fidiv
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D7D: (mnemonic:$01F4): fidivr
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D83: (mnemonic:$0190): fcmovb
+	size: 0000_0002
+	First operand: st0
+	Second operand: st1
+$0400_1D85: (mnemonic:$0194): fcmovbe
+	size: 0000_0002
+	First operand: st0
+	Second operand: st2
+$0400_1D87: (mnemonic:$01AC): fcmovu
+	size: 0000_0002
+	First operand: st0
+	Second operand: st3
+$0400_1D89: (mnemonic:$01A8): fcmovnu
+	size: 0000_0002
+	First operand: st0
+	Second operand: st4
+$0400_1D8B: (mnemonic:$02B4): fucompp
+	size: 0000_0002
+$0400_1D8D: (mnemonic:$01F8): fild
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D93: (mnemonic:$020C): fisttp
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D99: (mnemonic:$0204): fist
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1D9F: (mnemonic:$0208): fistp
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1DA5: (mnemonic:$0218): fld
+	size: 0000_0006
+	First operand:  size: 10 base:  index:  scale: 00 offset: sb+48, sr80
+$0400_1DAB: (mnemonic:$0284): fstp
+	size: 0000_0006
+	First operand:  size: 10 base:  index:  scale: 00 offset: sb+48, sr80
+$0400_1DB1: (mnemonic:$019C): fcmovnb
+	size: 0000_0002
+	First operand: st0
+	Second operand: st1
+$0400_1DB3: (mnemonic:$01A0): fcmovnbe
+	size: 0000_0002
+	First operand: st0
+	Second operand: st2
+$0400_1DB5: (mnemonic:$01B4): fcomi
+	size: 0000_0002
+	First operand: st0
+	Second operand: st3
+$0400_1DB7: (mnemonic:$01A4): fcmovne
+	size: 0000_0002
+	First operand: st0
+	Second operand: st4
+$0400_1DB9: (mnemonic:$01A8): fcmovnu
+	size: 0000_0002
+	First operand: st0
+	Second operand: st5
+$0400_1DBB: (mnemonic:$02A4): fucomi
+	size: 0000_0002
+	First operand: st0
+	Second operand: st6
+$0400_1DBD: (mnemonic:$02B8): fwait
+	size: 0000_0001
+$0400_1DBE: (mnemonic:$0248): fnclex
+	size: 0000_0002
+$0400_1DC0: (mnemonic:$02B8): fwait
+	size: 0000_0001
+$0400_1DC1: (mnemonic:$024C): fninit
+	size: 0000_0002
+$0400_1DC3: (mnemonic:$017C): fadd
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DC9: (mnemonic:$0240): fmul
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DCF: (mnemonic:$01B0): fcom
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DD5: (mnemonic:$01BC): fcomp
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DDB: (mnemonic:$028C): fsub
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DE1: (mnemonic:$0294): fsubr
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DE7: (mnemonic:$01CC): fdiv
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DED: (mnemonic:$01D4): fdivr
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+40, sr64
+$0400_1DF3: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st0
+	Second operand: st0
+$0400_1DF5: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st1
+	Second operand: st0
+$0400_1DF7: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st2
+	Second operand: st0
+$0400_1DF9: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st3
+	Second operand: st0
+$0400_1DFB: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st4
+	Second operand: st0
+$0400_1DFD: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st5
+	Second operand: st0
+$0400_1DFF: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st6
+	Second operand: st0
+$0400_1E01: (mnemonic:$017C): fadd
+	size: 0000_0002
+	First operand: st7
+	Second operand: st0
+$0400_1E03: (mnemonic:$0294): fsubr
+	size: 0000_0002
+	First operand: st2
+	Second operand: st0
+$0400_1E05: (mnemonic:$01D4): fdivr
+	size: 0000_0002
+	First operand: st3
+	Second operand: st0
+$0400_1E07: (mnemonic:$0240): fmul
+	size: 0000_0002
+	First operand: st4
+	Second operand: st0
+$0400_1E09: (mnemonic:$028C): fsub
+	size: 0000_0002
+	First operand: st5
+	Second operand: st0
+$0400_1E0B: (mnemonic:$01CC): fdiv
+	size: 0000_0002
+	First operand: st6
+	Second operand: st0
+$0400_1E0D: (mnemonic:$01E0): ffree
+	size: 0000_0002
+	First operand: st1
+$0400_1E0F: (mnemonic:$027C): fst
+	size: 0000_0002
+	First operand: st2
+$0400_1E11: (mnemonic:$02A0): fucom
+	size: 0000_0002
+	First operand: st3
+	Second operand: st0
+$0400_1E13: (mnemonic:$0284): fstp
+	size: 0000_0002
+	First operand: st4
+$0400_1E15: (mnemonic:$02AC): fucomp
+	size: 0000_0002
+	First operand: st5
+$0400_1E17: (mnemonic:$0180): faddp
+	size: 0000_0002
+	First operand: st0
+	Second operand: st0
+$0400_1E19: (mnemonic:$0180): faddp
+	size: 0000_0002
+	First operand: st1
+	Second operand: st0
+$0400_1E1B: (mnemonic:$0298): fsubrp
+	size: 0000_0002
+	First operand: st2
+	Second operand: st0
+$0400_1E1D: (mnemonic:$01D8): fdivrp
+	size: 0000_0002
+	First operand: st3
+	Second operand: st0
+$0400_1E1F: (mnemonic:$0244): fmulp
+	size: 0000_0002
+	First operand: st4
+	Second operand: st0
+$0400_1E21: (mnemonic:$01C0): fcompp
+	size: 0000_0002
+$0400_1E23: (mnemonic:$0290): fsubp
+	size: 0000_0002
+	First operand: st5
+	Second operand: st0
+$0400_1E25: (mnemonic:$01D0): fdivp
+	size: 0000_0002
+	First operand: st6
+	Second operand: st0
+$0400_1E27: (mnemonic:$01F8): fild
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1E2D: (mnemonic:$020C): fisttp
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1E33: (mnemonic:$0204): fist
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1E39: (mnemonic:$0208): fistp
+	size: 0000_0006
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1E3F: (mnemonic:$0184): fbld
+	size: 0000_0006
+	First operand:  size: 10 base:  index:  scale: 00 offset: sb+64, stb1
+$0400_1E45: (mnemonic:$01F8): fild
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+24, sq1
+$0400_1E4B: (mnemonic:$0188): fbstp
+	size: 0000_0006
+	First operand:  size: 10 base:  index:  scale: 00 offset: sb+64, stb1
+$0400_1E51: (mnemonic:$0208): fistp
+	size: 0000_0006
+	First operand:  size: 8 base:  index:  scale: 00 offset: sb+24, sq1
+$0400_1E57: (mnemonic:$03C0): loopnz
+	size: 0000_0002
+	First operand:  displacement: 0400_1E70
+$0400_1E59: (mnemonic:$03C4): loopz
+	size: 0000_0002
+	First operand:  displacement: 0400_1E70
+$0400_1E5B: (mnemonic:$03BC): loop
+	size: 0000_0002
+	First operand:  displacement: 0400_1E70
+$0400_1E5D: (mnemonic:$0334): jcxz
+	size: 0000_0003
+	First operand:  displacement: 0400_1E70
+$0400_1E60: (mnemonic:$0338): jecxz
+	size: 0000_0002
+	First operand:  displacement: 0400_1E70
+$0400_1E62: (mnemonic:$02F4): in
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0080
+$0400_1E64: (mnemonic:$02F4): in
+	size: 0000_0003
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0081
+$0400_1E67: (mnemonic:$02F4): in
+	size: 0000_0002
+	First operand: eax
+	Second operand:  immediate: 0000_0082
+$0400_1E69: (mnemonic:$04AC): out
+	size: 0000_0002
+	First operand: al
+	Second operand:  immediate: 0000_0080
+$0400_1E6B: (mnemonic:$04AC): out
+	size: 0000_0003
+	is 16-bit
+	First operand: ax
+	Second operand:  immediate: 0000_0081
+$0400_1E6E: (mnemonic:$04AC): out
+	size: 0000_0002
+	First operand: eax
+	Second operand:  immediate: 0000_0082
+$0400_1E70: (mnemonic:$0060): call
+	size: 0000_0005
+	First operand:  displacement: 0400_1E7C
+$0400_1E75: (mnemonic:$034C): jmp
+	size: 0000_0002
+	First operand:  displacement: 0400_1E7C
+$0400_1E77: (mnemonic:$034C): jmp
+	size: 0000_0005
+	First operand:  displacement: 0400_1674
+$0400_1E7C: (mnemonic:$02F4): in
+	size: 0000_0001
+	First operand: al
+	Second operand: dx
+$0400_1E7D: (mnemonic:$02F4): in
+	size: 0000_0002
+	is 16-bit
+	First operand: ax
+	Second operand: dx
+$0400_1E7F: (mnemonic:$02F4): in
+	size: 0000_0001
+	First operand: eax
+	Second operand: dx
+$0400_1E80: (mnemonic:$04AC): out
+	size: 0000_0001
+	First operand: dx
+	Second operand: al
+$0400_1E81: (mnemonic:$04AC): out
+	size: 0000_0002
+	is 16-bit
+	First operand: dx
+	Second operand: ax
+$0400_1E83: (mnemonic:$04AC): out
+	size: 0000_0001
+	First operand: dx
+	Second operand: eax
+$0400_1E84: (mnemonic:$0018): add
+	size: 0000_0007
+	has lock
+	First operand: eax
+	Second operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1E8B: (mnemonic:$00D4): cmpsb
+	size: 0000_0002
+	has repne
+$0400_1E8D: (mnemonic:$00D4): cmpsb
+	size: 0000_0002
+	has repe/rep
+$0400_1E8F: (mnemonic:$02E0): hlt
+	size: 0000_0001
+$0400_1E90: (mnemonic:$0088): cmc
+	size: 0000_0001
+$0400_1E91: (mnemonic:$0684): test
+	size: 0000_0007
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+	Second operand:  immediate: 0000_0001
+$0400_1E98: (mnemonic:$049C): not
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1E9E: (mnemonic:$049C): not
+	size: 0000_0002
+	First operand: bl
+$0400_1EA0: (mnemonic:$0494): neg
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1EA6: (mnemonic:$0494): neg
+	size: 0000_0002
+	First operand: cl
+$0400_1EA8: (mnemonic:$047C): mul
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1EAE: (mnemonic:$047C): mul
+	size: 0000_0002
+	First operand: bl
+$0400_1EB0: (mnemonic:$02F0): imul
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1EB6: (mnemonic:$02F0): imul
+	size: 0000_0002
+	First operand: bl
+$0400_1EB8: (mnemonic:$0158): div
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1EBE: (mnemonic:$0158): div
+	size: 0000_0002
+	First operand: bl
+$0400_1EC0: (mnemonic:$02EC): idiv
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1EC6: (mnemonic:$02EC): idiv
+	size: 0000_0002
+	First operand: bl
+$0400_1EC8: (mnemonic:$0684): test
+	size: 0000_0009
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+	Second operand:  immediate: 0000_0001
+$0400_1ED1: (mnemonic:$049C): not
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1ED8: (mnemonic:$049C): not
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+$0400_1EDB: (mnemonic:$0494): neg
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1EE2: (mnemonic:$0494): neg
+	size: 0000_0003
+	is 16-bit
+	First operand: cx
+$0400_1EE5: (mnemonic:$047C): mul
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1EEC: (mnemonic:$047C): mul
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+$0400_1EEF: (mnemonic:$02F0): imul
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1EF6: (mnemonic:$02F0): imul
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+$0400_1EF9: (mnemonic:$0158): div
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1F00: (mnemonic:$0158): div
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+$0400_1F03: (mnemonic:$02EC): idiv
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1F0A: (mnemonic:$02EC): idiv
+	size: 0000_0003
+	is 16-bit
+	First operand: bx
+$0400_1F0D: (mnemonic:$0684): test
+	size: 0000_000A
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+	Second operand:  immediate: 0000_0001
+$0400_1F17: (mnemonic:$049C): not
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F1D: (mnemonic:$049C): not
+	size: 0000_0002
+	First operand: ebx
+$0400_1F1F: (mnemonic:$0494): neg
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F25: (mnemonic:$0494): neg
+	size: 0000_0002
+	First operand: ecx
+$0400_1F27: (mnemonic:$047C): mul
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F2D: (mnemonic:$047C): mul
+	size: 0000_0002
+	First operand: ebx
+$0400_1F2F: (mnemonic:$02F0): imul
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F35: (mnemonic:$02F0): imul
+	size: 0000_0002
+	First operand: ebx
+$0400_1F37: (mnemonic:$0158): div
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F3D: (mnemonic:$0158): div
+	size: 0000_0002
+	First operand: ebx
+$0400_1F3F: (mnemonic:$02EC): idiv
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F45: (mnemonic:$02EC): idiv
+	size: 0000_0002
+	First operand: ebx
+$0400_1F47: (mnemonic:$02F8): inc
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1F4D: (mnemonic:$02F8): inc
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1F54: (mnemonic:$02F8): inc
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F5A: (mnemonic:$0154): dec
+	size: 0000_0006
+	First operand:  size: 1 base:  index:  scale: 00 offset: sb+4, sb1
+$0400_1F60: (mnemonic:$0154): dec
+	size: 0000_0007
+	is 16-bit
+	First operand:  size: 2 base:  index:  scale: 00 offset: sb+8, sw1
+$0400_1F67: (mnemonic:$0154): dec
+	size: 0000_0006
+	First operand:  size: 4 base:  index:  scale: 00 offset: sb+16, sd1
+$0400_1F6D: (mnemonic:$0060): call
+	size: 0000_0002
+	First operand: ebx
+$0400_1F6F: (mnemonic:$0060): call
+	size: 0000_0002
+	First operand:  size: 4 base: ebx index:  scale: 00 offset: 0
+$0400_1F71: (mnemonic:$034C): jmp
+	size: 0000_0002
+	First operand: ebx
+$0400_1F73: (mnemonic:$034C): jmp
+	size: 0000_0002
+	First operand:  size: 4 base: ebx index:  scale: 00 offset: 0
+$0400_1F75: (mnemonic:$0590): push
+	size: 0000_0003
+	is 16-bit
+	First operand:  size: 2 base: ebx index:  scale: 00 offset: 0
+$0400_1F78: (mnemonic:$0590): push
+	size: 0000_0002
+	First operand:  size: 4 base: ebx index:  scale: 00 offset: 0
+Disassembly ended at address $0400_1F7A

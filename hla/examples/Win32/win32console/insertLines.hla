@@ -1,0 +1,60 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+
+
+procedure win32cons.insertLines( n:word ); @nodisplay;
+var
+	csbi: 	win.CONSOLE_SCREEN_BUFFER_INFO;
+
+begin insertLines;
+
+	pushad();
+	win32cons.info( csbi );
+	
+	// If we're inserting too many lines, just call clrToEOScrn.
+
+	mov( csbi.dwCursorPosition.Y, ax );
+	add( n, ax );
+	if( ax >= csbi.dwSize.Y ) then
+
+		sub( n, ax );
+		win32cons.gotoxy( ax, 0 );
+		win32cons.clrToEOScrn();
+		win32cons.gotoxy
+		( 
+			csbi.dwCursorPosition.Y, 
+			csbi.dwCursorPosition.X 
+		);
+
+	else
+
+		mov( csbi.dwSize.Y, ax );
+		sub( n, ax );
+		dec( ax );
+
+		mov( csbi.dwSize.X, bx );
+		dec( bx );
+
+		win32cons.scrollDnRect
+		( 
+			n, 
+			' ', 
+			csbi.wAttributes, 
+			csbi.dwCursorPosition.Y,
+			0,
+			ax,
+			bx
+		);
+
+	endif;
+	popad();			
+
+end insertLines;
+
+
+
+
+
+
+
+end consoleUnit;

@@ -1,0 +1,7444 @@
+// gsinit.hla
+//
+// Code to initialize the room data structures and other
+// game-specific objects.
+
+unit gsinit_hla;
+?@nodisplay := true;
+?@nostackalign := true;
+#includeonce( "stdlib.hhf" )
+#includeonce( "age.hhf" )
+#includeonce( "gamespecific.hhf" )
+
+
+
+static
+	goblinAgent		:agentPtr;
+	sorcererAgent	:agentPtr;
+	vampireAgent	:agentPtr;
+	butlerAgent		:agentPtr;
+	werewolfAgent	:agentPtr;
+	hellhoundAgent	:agentPtr;
+	dragonAgent		:agentPtr;
+
+	emptyStr		:string := "";
+	
+
+// Okay, begin creating the room objects for this game.
+// Begin by defining some string constants and macros
+// that we can use to automate the initialization of the
+// rooms.
+
+const
+
+	dirStrs :=
+		[
+			"north",
+			"south",
+			"east",
+			"west",
+			"northeast",
+			"northwest",
+			"southeast",
+			"southwest",
+			"up",
+			"down"
+		];
+		
+	nothingToSeeStrs :=
+		[
+			"NothingToSeeNorth",
+			"NothingToSeeSouth",
+			"NothingToSeeEast",
+			"NothingToSeeWest",
+			"NothingToSeeNorthEast",
+			"NothingToSeeNorthWest",
+			"NothingToSeeSouthEast",
+			"NothingToSeeSouthWest",
+			"NothingToSeeUp",
+			"NothingToSeeDown"
+		];
+		
+	seeAPathStrs :=
+		[
+			"SeeAPathLeadingNorth",
+			"SeeAPathLeadingSouth",
+			"SeeAPathLeadingEast",
+			"SeeAPathLeadingWest",
+			"SeeAPathLeadingNorthEast",
+			"SeeAPathLeadingNorthWest",
+			"SeeAPathLeadingSouthEast",
+			"SeeAPathLeadingSouthWest",
+			"SeeAPathLeadingUp",
+			"SeeAPathLeadingDown"
+		];
+		
+	noPathStrs :=
+		[
+			"NoPathLeadingNorth",
+			"NoPathLeadingSouth",
+			"NoPathLeadingEast",
+			"NoPathLeadingWest",
+			"NoPathLeadingNorthEast",
+			"NoPathLeadingNorthWest",
+			"NoPathLeadingSouthEast",
+			"NoPathLeadingSouthWest",
+			"NoPathLeadingUp",
+			"NoPathLeadingDown"
+		];
+		
+	goStrs :=
+		[
+			"GoingNorth",
+			"GoingSouth",
+			"GoingEast",
+			"GoingWest",
+			"GoingNorthEast",
+			"GoingNorthWest",
+			"GoingSouthEast",
+			"GoingSouthWest",
+			"GoingUp",
+			"GoingDown"
+		];
+		
+// The following macro automatically generates
+// all the initialization strings for the rooms.
+// You supply only the directions where the player
+// can actually travel and the macro generates the rest.
+
+#macro initRoomStrs( _dirs_[] ): _present_, _index_, _last_;
+
+	?_last_ := (@elements( dirStrs ) - 1);
+	#for( _index_ := 0 to _last_ )
+
+		?_present_ :boolean := false;
+		#for( _thisDir_ in _dirs_ )
+		
+			?_present_ := _present_ | (_thisDir_ = dirStrs[ _index_ ]);
+			
+		#endfor
+		#if( _present_ )
+		
+			@text( seeAPathStrs[ _index_ ]),
+			@text( goStrs[ _index_ ])
+			
+		#else
+		
+			@text( nothingToSeeStrs[ _index_ ]),
+			@text( noPathStrs[ _index_ ])
+		
+		#endif
+		#if( _index_ <> _last_ )
+			,
+		#endif
+		
+	#endfor
+	
+#endmacro
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// initializePlayer-
+//
+//	Game-specific initialization of the game's player
+
+_procedure( initializePlayer)( p:playerPtr );
+begin initializePlayer;
+
+	push( eax );
+	push( ebx );
+	push( esi );
+
+	mov( p, esi );	// Get the player.
+
+	stdout.put( EnterYourName );
+	stdin.a_gets();
+	mov( eax, ebx );
+	str.a_cat( eax, AnAgePlayer );
+
+	playerESI.initPlayer
+	(
+		(type string ebx),
+		(type string eax),
+		n_guild10,				// Start player in guild room.
+		0,						// initial score
+		playerInitialFood_c,	// initial food level
+		playerInitialHealth_c,	// initial health
+		playerInitialPower_c,	// initial power (experience)
+		playerInitialWealth_c	// initial wealth (200 gold pieces)
+	);
+	mov( lantern_quest_c, playerESI.quest );
+	
+	// We need to patch into all the "GO" verbs so we can
+	// determine when certain quests are complete.
+	
+	#macro setgo( n );
+	
+		mov( n, esi );
+		mov(&gs_go, nounESI.actions[ uns32( v_go )*4 ] );
+		
+	#endmacro
+	
+	setgo( northNoun );
+	setgo( southNoun );		
+	setgo( eastNoun );		
+	setgo( westNoun );		
+	setgo( northEastNoun );
+	setgo( northWestNoun );
+	setgo( southEastNoun );
+	setgo( southWestNoun );
+	setgo( upNoun );			
+	setgo( downNoun );		
+
+	pop( esi );
+	pop( ebx );
+	pop( eax );
+		 
+end initializePlayer;
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// initAgents-
+//
+//	The AGE main program calls this procedure in order to initialize any
+// agents appearing in various rooms in the game.
+
+_procedure( initAgents );
+begin initAgents; debug( "initAgents" );
+
+	createAgent
+	(
+		"clerk",
+		"Stout Clerk",
+		"A stout clerk. He looks well fed.",
+		"A tatoo that says ""Mom""",
+		n_villageStore3,
+		10,				// maxPower
+		0				// strength
+	);
+	mov( eax, edx );	// Save agent ptr in edx.
+	mov( eax, villageClerk );
+	
+	// Inventory header item for the clerk:
+	
+	readonly
+		forSale	:string := ClerkOffersForSale;
+	endreadonly;
+	mov( forSale, ebx );
+	mov( ebx, agentEAX.invHeader );
+	
+	// Inventory items the clerk possesses:
+	
+	createInv
+	(
+		"oil",
+		"Flask of oil",
+		"A flask of oil used with the lantern.",
+		"Not for internal use",
+		oilRetail_c,
+		oilWholesale_c,
+		edx
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+	mov( &must_buy, possessionEAX.actions[ uns32( v_get )*4 ] );
+	
+	createWeapon
+	(
+		"sword",
+		"Sword",
+		"A small metal sword with a diamond hilt.",
+		"Keep away from small children",
+		swordRetail_c,		// Retail
+		swordWholesale_c,	// Wholesale
+		swordPower_c,		// power
+		edx					// clerk
+	);
+	mov( &must_buy, possessionEAX.actions[ uns32( v_get )*4 ] );
+	
+	createWeapon
+	(
+		"cleaver",
+		"Meat Cleaver",
+		"A dull meat cleaver, unevenly sharpened.",
+		emptyStr,
+		cleaverRetail_c,  	// Retail
+		cleaverWholesale_c,	// Wholesale
+		cleaverPower_c,	  	// power
+		edx				  	// clerk
+	);
+	mov( &must_buy, possessionEAX.actions[ uns32( v_get )*4 ] );
+	
+
+	//---------------------------
+	// Villager agent:
+	
+	createAgent
+	(
+		"villager",
+		"Common Villager",
+		"A common villager. He smiles at you briefly before passing.",
+		emptyStr,
+		n_villageWell6,
+		10,				// Maxpower
+		1				// Strength
+	);
+
+	createAgent
+	(
+		"wolf",
+		"Friendly wolf",
+		"A friendly wolf with yellow eyes. He seems content on watching you.",
+		emptyStr,
+		n_intersection14,
+		50,
+		10
+	);
+
+	//---------------------------
+	// Warrior agent:
+	
+	createAgent
+	(
+		"warrior",
+		"Warrior",
+		"A warrior with flowing hair and a trim beard. He looks mean.",
+		emptyStr,
+		n_windingRoad30,
+		rand.urange( 100,500),
+		25
+	);
+	mov( eax, edx );	// Save agent ptr in EDX
+	mov( emptyStr, eax );
+	mov( eax, agentEDX.invHeader );
+
+	// Inventory items the warrior possesses:
+	
+	createWeapon
+	(
+		"broadsword",
+		"Broadsword",
+		"A long metal broadsword with a sapphire hilt.",
+		"He who lives by the sword, dies by the sword.",
+		broadswordRetail_c,		// Retail
+		broadswordWholesale_c,	// Wholesale
+		broadSwordPower_c,	 	// power
+		edx					 	// warrior
+	);
+	
+	createProtection
+	(
+		"gauntlets",
+		"Gauntlets",
+		"A pair of full metal gauntlets",
+		emptyStr,
+		gauntletRetail_c,
+		gauntletWholesale_c,
+		gauntletProtection_c,
+		edx
+	);
+
+
+	//---------------------------
+	// Spectre agent:
+	
+	createAgent
+	(
+		"spectre",
+		"Translucent spectre",
+		"A translucent spectre. It haunts the surrounding forest.",
+		emptyStr,
+		n_redwoodForest20,
+		rand.urange( 100, 700 ),
+		25
+	);
+
+	//---------------------------
+	// Goblin agent:
+	
+	createAgent
+	(
+		"goblin",
+		"Goblin",
+		"An ugly goblin with brown teeth. He looks vicious and cunning.",
+		"I'm not just for Halloween anymore.",
+		n_brokenPath22,
+		rand.urange( 100, 400 ),
+		10
+	);
+	mov( eax, edx );
+	mov( eax, goblinAgent );
+	mov( &quest_goblin, agentEAX.actions[ uns32( v_fight )*4 ] );
+	readonly
+		goblinPossesses :string := "The goblin carries: ";
+	endreadonly;
+	mov( goblinPossesses, eax );
+	mov( eax, agentEDX.invHeader );
+
+	// Inventory items the goblin possesses:
+	
+	createWeapon
+	(
+		"axe",
+		"Axe",
+		"A sharp metal axe. It is dual bladed.",
+		emptyStr,
+		axeRetail_c,
+		axeWholesale_c,
+		axePower_c,
+		edx
+	);
+	
+	createProtection
+	(
+		"helmet",
+		"Helmet",
+		"A sturdy brass helmet.",
+		"Not intended for professional sports use.",
+		helmetRetail_c,
+		helmetWholesale_c,
+		helmetProtection_c,
+		edx
+	);
+
+	//---------------------------
+	// Elf agent:
+	
+	createAgent
+	(
+		"elf",
+		"Elf",
+		"An elf of the surrounding forest. He seems peaceful.",
+		"Property of Keebler",
+		n_grassyHillside27,
+		rand.urange( 100, 500 ),
+		50
+	);
+	mov( eax, edx );
+	readonly
+		elfPossesses :string := "The Elf has: ";
+	endreadonly;
+	mov( elfPossesses, eax );
+	mov( eax, agentEDX.invHeader );
+
+	// Inventory items the Elf possesses:
+	
+	createProtection
+	(
+		"cloak",
+		"Elven Cloak",
+		"An elven cloak tied at the waist by a small rope.",
+		emptyStr,
+		cloakRetail_c,
+		cloakWholesale_c,
+		cloakProtection_c,
+		edx
+	);
+	
+	createProtection
+	(
+		"ring",
+		"Ring",
+		"A magical ring of protection. It glows with a soft hue.",
+		emptyStr,
+		ringRetail_c,
+		ringWholesale_c,
+		ringProtection_c,
+		edx
+	);
+	
+
+	//---------------------------
+	// Hobbit agent:
+	
+	createAgent
+	(
+		"hobbit",
+		"Hobbit",
+		"A small hobbit with furry feet.",
+		emptyStr,
+		n_grassRoomHut18,
+		25,		// Maxpower
+		10		// strength
+	);
+
+	//---------------------------
+	// Paladin agent:
+	
+	createAgent
+	(
+		"paladin",
+		"Strong Paladin",
+		"A strong paladin wearing a metal pendant. He seems of noble blood.",
+		emptyStr,
+		n_guild10,
+		rand.urange( 100, 500 ),
+		30
+	);
+	mov( eax, edx );
+	readonly
+		paladinPossesses :string := "The Paladin currently possesses: ";
+	endreadonly;
+	mov( paladinPossesses, eax );
+	mov( eax, agentEDX.invHeader );
+	
+
+	// Inventory items the paladin possesses:
+	
+	createWeapon
+	(
+		"scimitar",
+		"Scimitar",
+		"A gleaming metal scimitar. It looks deadly.",
+		emptyStr,
+		scimitarRetail_c,
+		scimitarWholesale_c,
+		scimitarPower_c,
+		edx
+	);
+	
+	createProtection
+	(
+		"armor",
+		"Armor",
+		"A fine suit of chain-linked armor.",
+		emptyStr,
+		armorRetail_c,
+		armorWholesale_c,
+		armorProtection_c,
+		edx
+	);
+	
+	createProtection
+	(
+		"shield",
+		"Shield",
+		"A crusader shield stained with blood.",
+		emptyStr,
+		shieldRetail_c,
+		shieldWholesale_c,
+		shieldProtection_c,
+		edx
+	);
+	
+
+	//---------------------------
+	// Skeleton agent:
+	
+	createAgent
+	(
+		"skeleton",
+		"Undead Skeleton",
+		"An undead skeleton. He is covered with blood and rotting flesh.",
+		emptyStr,
+		n_subterraneanPassageway85,
+		rand.urange( 100, 600 ),	//maxPower
+		10							//strength
+	);
+	mov( eax, edx );
+	
+	readonly
+		skeletonPossesses :string := "The skeleton carries: ";
+	endreadonly;
+	mov( skeletonPossesses, eax );
+	mov( eax, agentEDX.invHeader );
+
+	// Inventory items the skeleton possesses:
+	
+	createWeapon
+	(
+		"longsword",
+		"Longsword",
+		"A metal longsword with a ruby hilt.",
+		emptyStr,
+		longswordRetail_c,
+		longswordWholesale_c,
+		longswordPower_c,
+		edx
+	);
+
+	//---------------------------
+	// Vampire agent:
+	
+	createAgent
+	(
+		"vampire",
+		"Evil vampire",
+		"An evil vampire. He sucks the blood of unwitting victims.",
+		emptyStr,
+		n_narrowTunnel92,
+		rand.urange( 200, 600 ),	// maxPower
+		25							// strength
+	);
+	mov( eax, vampireAgent );
+	mov( &quest_vampire, agentEAX.actions[ uns32( v_fight )*4 ] );
+
+	createAgent
+	(
+		"sorcerer",
+		"Sorcerer",
+		"Once honorable, this sorcerer has turned to the arts of black magic.",
+		emptyStr,
+		n_smallThrone72,
+		rand.urange( 100, 500 ),
+		rand.urange( 1, 40 )
+	);
+	mov( eax, sorcererAgent );
+	mov( &quest_sorcerer, agentEAX.actions[ uns32( v_fight )*4 ] );
+
+	createAgent
+	(
+		"dragon",
+		"Large Dragon",
+		"A large dragon with tough scales and powerful claws.",
+		emptyStr,
+		n_largeWaterfall94,
+		rand.urange( 250, 750 ),
+		rand.urange( 25, 75 )
+	);
+	mov( eax, dragonAgent );
+	mov( &quest_dragon, agentEAX.actions[ uns32( v_fight )*4 ] );
+
+	createAgent
+	(
+		"knight",
+		"Unholy knight",
+		"An unholy knight, he serves only those with impure hearts.",
+		emptyStr,
+		n_castleMoat67,
+		rand.urange( 100, 400 ),	// maxpower
+		rand.urange( 10, 40 )		// strength
+	);
+
+	createAgent
+	(
+		"barbarian",
+		"Savage Barbarian",
+		"A savage barbarian. He craves destruction and greed.",
+		emptyStr,
+		n_smallBridge54,
+		rand.urange( 50, 350 ),		// maxpower
+		rand.urange( 5, 25 )		// strength
+	);
+
+	createAgent
+	(
+		"bear",
+		"Grizzly Bear",
+		"A large grizzly bear. It looks dangerous.",
+		emptyStr,
+		n_redwoodForest102,
+		rand.urange( 50, 150 ),
+		rand.urange( 1, 15 )
+	);
+
+	createAgent
+	(
+		"kingcrab",
+		"Kingcrab",
+		"This is a large kingcrab. It has claws and several legs.",
+		"I am the King!",
+		n_sandyBeach117,
+		rand.urange( 10, 50 ),
+		rand.urange( 1, 5 )
+	);
+
+	createAgent
+	(
+		"crab",
+		"Small Crab",
+		"This is a small crab. It has claws and several legs.",
+		emptyStr,
+		n_sandyBeach117,
+		rand.urange( 10, 30 ),
+		rand.urange( 1, 3 )
+	);
+
+	createAgent
+	(
+		"thief",
+		"Thief",
+		"A no-good thief.",
+		emptyStr,
+		n_intersection141,
+		rand.urange( 50, 250 ),		// maxPower
+		rand.urange( 10, 33 )		// strength
+	);
+
+	createAgent
+	(
+		"werewolf",
+		"Werewolf",
+		"This vicious werewolf eyes you with a deadly gaze.",
+		emptyStr,
+		n_frontOfMansion151,
+		rand.urange( 100, 500 ),	// maxPower
+		rand.urange( 10, 100 )		// strength
+	);
+	mov( eax, edx );
+	mov( eax, werewolfAgent );
+	mov( &quest_werewolf, agentEAX.actions[ uns32( v_fight )*4 ] );
+	mov( emptyStr, eax );
+	mov( eax, agentEDX.invHeader );
+
+
+	createAgent
+	(
+		"butler",
+		"Butler",
+		"A tall butler. He looks old and cranky.",
+		emptyStr,
+		n_livingRoom161,
+		rand.urange( 25, 100 ),		// maxPower
+		rand.urange( 5, 25 )		// strength
+	);
+	mov( eax, edx );
+	mov( eax, butlerAgent );
+	mov( &quest_mansion, agentEAX.actions[ uns32( v_fight )*4 ] );
+	mov( emptyStr, eax );
+	mov( eax, agentEDX.invHeader );
+
+	createAgent
+	(
+		"eddie",
+		"Eddie",
+		"This is Eddie. He managed to get up here (somehow...).",
+		emptyStr,
+		n_topOfLighthouse135,
+		rand.urange( 50, 150 ),		// maxPower
+		rand.urange( 10, 15 )		// strength
+	);
+
+	createAgent
+	(
+		"bum",
+		"Beach Bum",
+		"A beach bum. He appears to be drinking something.",
+		emptyStr,
+		n_sandyBeach109,
+		rand.urange( 50, 100 ),		// maxPower
+		rand.urange( 10, 15 )		// strength
+	);
+
+	createAgent
+	(
+		"demigorgon",
+		"Demigorgon",
+		"This is an EVIL demigorgon! He has towering wings and strong claws.",
+		emptyStr,
+		n_middleForest53,
+		rand.urange( 50, 500 ),		// maxPower
+		rand.urange( 10, 75 )		// strength
+	);
+
+	createAgent
+	(
+		"kukai",
+		"Kukai",
+		"This is Kukai, founder of the Shinden Villa. " nl
+		"He smiles at you with wisdom.",
+		emptyStr,
+		n_eastOfVilla184,
+		rand.urange( 50, 150 ),		// maxPower
+		rand.urange( 10, 50 )		// strength
+	);
+
+	createAgent
+	(
+		"hellhound",
+		"Hellhound",
+		"A large hellhound with fiery eyes. " nl
+		"It guards the entrance to the caverns.",
+		emptyStr,
+		n_intersection14,
+		rand.urange( 100, 500 ),	// maxPower
+		rand.urange( 10, 100 )		// strength
+	);
+	mov( eax, edx );
+	mov( eax, hellhoundAgent );
+	mov( &quest_caverns, agentEAX.actions[ uns32( v_fight )*4 ] );
+
+	createAgent
+	(
+		"ghoul",
+		"Ghoul",
+		"This nearly invisible spectre guards the surrounding tomb.",
+		emptyStr,
+		n_magicalPool209,
+		rand.urange( 100, 300 ),	// maxPower
+		rand.urange( 10, 75 )		// strength
+	);
+
+	createAgent
+	(
+		"valkyrie",
+		"Valkyrie",
+		"A magical valkyrie with flowing red hair. It has an impish look to it.",
+		emptyStr,
+		n_secretTunnel212,
+		rand.urange( 100, 300 ),	// maxPower
+		rand.urange( 10, 75 )		// strength
+	);
+
+	createAgent
+	(
+		"lich",
+		"Lich",
+		"A shadowy creature moving about the darkness. It looks like death.",
+		emptyStr,
+		n_smallWaterfall210,
+		rand.urange( 100, 300 ),	// maxPower
+		rand.urange( 10, 50 )		// strength
+	);
+
+	createAgent
+	(
+		"tursk",
+		"Tursk",
+		"This is Tursk, an adventurer from out of town. He might prove useful.",
+		emptyStr,
+		n_twistingPassageway200,
+		rand.urange( 100, 500 ),	// maxPower
+		rand.urange( 10, 50 )		// strength
+	);
+
+	createAgent
+	(
+		"wannabee",
+		"Wannabee",
+		"This is a monster known as a 'wannabee'. " nl
+		"It flutters around like a normal bee,  " nl
+		"but is invincible to attacks and unable to damage the player. " nl
+		"The game will enter into an infinite loop if an unsuspecting " nl
+		"player decides to attack it.",
+		emptyStr,
+		n_twistingPassageway200,
+		rand.urange( 100, 700 ),	// maxPower
+		rand.urange( 10, 75 )		// strength
+	);
+
+
+end initAgents;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// initPossessions-
+//
+//	The AGE main program calls this procedure in order to initialize
+// all the "possession" nouns left laying around in the various rooms.
+
+
+_procedure( initPossessions);
+begin initPossessions; debug( "initPossessions");
+
+	pushad();
+
+	// put lantern in small room r#4:
+
+	createPossession
+	(
+		"lantern",
+		"Brass Lantern",
+		"A brass lantern with rusted hinges.",
+		"Made in China",
+		lanternRetail_c,
+		lanternWholesale_c,
+		n_smallRoom4
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+	mov( &verb_light, possessionEAX.actions[ uns32( v_light )*4 ] );
+	mov( &verb_extinguish, possessionEAX.actions[ uns32( v_extinguish )*4 ] );
+	
+	// Getting the lantern (the first time, anyway) completes the lantern quest.
+	
+	mov( &quest_lantern, possessionEAX.actions[ uns32( v_get )*4 ] );
+
+	// put rope in storage room r#9:
+
+	createPossession
+	(
+		"rope",
+		"Coil of Rope",
+		"A coil of rope about 20' long.",
+		emptyStr,
+		ropeRetail_c,
+		ropeWholesale_c,
+		n_storageRoom9
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+
+	// put key in storage room r#9:
+
+	createPossession
+	(
+		"key",
+		"Wooden Key",
+		"A small wooden key.",
+		"Quikset",
+		keyRetail_c,
+		keyWholesale_c,
+		n_storageRoom9
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+	
+	// The key is used to unlock the GUILD room, so attach the
+	// key to the door impediment here:
+	
+	mov( rooms[ r_villageWell6 ], ebx );
+	mov( roomEBX.impedeWest, ebx );
+	mov( eax, impedimentEBX.key );
+	
+
+	// put bottle in grassroof hut r#18:
+
+	createPossession
+	(
+		"bottle",
+		"Smokey Bottle",
+		"A smokey glass bottle.",
+		emptyStr,
+		bottleRetail_c,
+		bottleWholesale_c,
+		n_grassRoomHut18
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+
+	// put dagger in cottage r#24:
+
+	createWeapon
+	(
+		"dagger",
+		"Metal Dagger",
+		"A small metal dagger with a jeweled hilt.",
+		"Do not run while holding this knife.",
+		daggerRetail_c,
+		daggerWholesale_c,
+		daggerPower_c,
+		rooms[ r_abandonedCottage24 ]
+	);
+
+	// put battleaxe in grassroof hut r#18:
+
+	createWeapon
+	(
+		"battleaxe",
+		"Metal Battleaxe",
+		"A sturdy metal battleaxe. It looks sharp and lethal!",
+		"Caution, may cause injury or death if misused.",
+		battleaxeRetail_c,
+		battleaxeWholesale_c,
+		battleaxePower_c,
+		rooms[ r_grassRoomHut18 ]
+	);
+
+	// put food in upstairs of tavern r#4:
+
+	createConsumable
+	(
+		"food",
+		"Food",
+		"These are standard food rations, lasting two weeks.",
+		"Not intended for human consumption.",
+		1,					// numUses
+		0,					// score
+		0,					// power
+		foodQuantity_c,		// food
+		foodHealth_c,  		// health
+		0.0,				// reward
+		0.0,				// weight
+		foodRetail_c,		// retail
+		foodWholesale_c,	// wholesale
+		0.0,				// wealth
+		rooms[ r_smallRoom4 ]
+	);
+	mov( &verb_eat, consumableEAX.actions[ uns32( v_eat )*4 ] );
+
+	// put apple in apple tree r#223:
+
+	createConsumable
+	(
+		"apple",
+		"Red Apple",
+		"A small red apple. It looks slightly rotten.",
+		emptyStr,
+		1,					// numUses
+		0,					// score
+		0,					// power
+		0,					// food
+		-1000,				// health
+		0.0,				// reward
+		0.0,				// weight
+		appleRetail_c,		// retail
+		appleWholesale_c,	// wholesale
+		0.0,				// wealth
+		rooms[ r_topAppleTree223 ]
+	);
+	mov( &verb_eat, possessionEAX.actions[ uns32( v_eat )*4 ] );
+
+	// put iron in tavern r#1:
+
+	createPossession
+	(
+		"iron",
+		"Iron",
+		"These are standard iron rations (lasting two weeks).",
+		emptyStr,
+		ironRetail_c,
+		ironWholesale_c,
+		n_tavern1
+	);
+	mov( &verb_use, possessionEAX.actions[ uns32( v_use )*4 ] );
+
+	// put shroud in Shinden Villa Main r#193:
+
+	createProtection
+	(
+		"shroud",
+		"Shroud",
+		"This is the holy shroud of Saint Nepan, an ancient "
+		"cleric of the temple.",
+		"Personal property of Saint Nepan",
+		0.0,
+		0.0,
+		shroudProtection_c,
+		rooms[ r_insideShinden193 ]
+	);
+
+	// put wooden buckler in Sacred Keep r#204:
+
+	createProtection
+	(
+		"buckler",
+		"Buckler",
+		"A wooden buckler. Useful as a shield.",
+		emptyStr,
+		bucklerRetail_c,
+		bucklerWholesale_c,
+		bucklerProtection_c,
+		rooms[ r_smallKeep204 ]
+	);
+
+	// put wooden flute in Sacred Keep r#204:
+
+	createPossession
+	(
+		"flute",
+		"Flute",
+		"A small wooden flute. You can 'play flute' to hear music.",
+		"Hoener",
+		fluteRetail_c,
+		fluteWholesale_c,
+		n_smallKeep204
+	);
+	mov( &play_flute, possessionEAX.actions[ uns32( v_use )*4 ] );
+
+	// Put bulletin board in guild r#10.
+
+	createPossession
+	(
+		"board",
+		"Bulletin board",
+		"This is a small bulletin board. You should read it.",
+		emptyStr,
+		0.0,
+		0.0,
+		n_guild10
+	);
+	
+	// The bulletin board is not "get-able" by the player,
+	// so disable the GET verb for the board to ensure this:
+	
+	mov( NULL, possessionEAX.actions[ uns32( v_get )*4 ] );
+		
+	// We have to overload the "examine" and "read" verbs for
+	// the bulletin board because it contains dynamic content:
+	
+	mov( &readBulletinBoard, possessionEAX.actions[ uns32( v_read )*4 ] );
+	mov( &readBulletinBoard, possessionEAX.actions[ uns32( v_examine )*4 ] );
+
+	popad();
+
+end initPossessions;
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// initRooms-
+//
+//	The main AGE program calls this user-supplied function
+// in order to initialize all the room objects in the game.
+// This procedure must initialize all the "room" array elements
+// and set up all the links between the rooms.
+
+
+_procedure( initRooms ); @noframe;	
+begin initRooms; debug( "initRooms");
+	
+	// Create all the rooms in this game:
+	
+	room.create( "tavern1" );
+	mov( esi, rooms[ r_tavern1 ] );
+	roomESI.initroom
+	(
+		n_tavern1,
+		
+		"Village Tavern",
+		
+		"You are standing in a tavern with creaky wooden floors. " nl
+		"Laughter and commotion surround you as the bartender tends " nl
+		"to his customers. A few tables and chairs are visible here." nl
+		"A staircase heads upstairs to the second floor of the tavern.", 
+
+		initRoomStrs( south, up )
+		
+	);
+
+
+	room.create( "upstairshallway2" );
+	mov( esi, rooms[ r_upstairsHallway2 ] );
+	roomESI.initroom
+	(
+		n_upstairsHallway2,
+		
+		"Upstairs Hallway",
+		
+		"You are standing on the upstairs hallway of the tavern. A few" nl
+		"rooms are visible up ahead, the largest of which stands to the" nl
+		"east. It appears unoccupied at the moment.", 
+		
+		initRoomStrs( east, down )
+	);
+
+
+	room.create( "villagestore3" );
+	mov( esi, rooms[ r_villageStore3 ] );
+	roomESI.initroom
+	(
+		n_villageStore3,
+		
+		"Village Store",
+		
+		"You are standing in the village shop. Commands here include" nl
+		"'buy <item>','sell <item>' and 'list'. A clerk is normally" nl
+		"here attending to customers.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "smallroom4" );
+	mov( esi, rooms[ r_smallRoom4 ] );
+	roomESI.initroom
+	(
+		n_smallRoom4,
+		
+		"Small Room",
+		
+		"You are standing in a small room. It is mostly bare, save for" nl
+		"a few wooden barrels. The only exit is back west.", 
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "villagepath5" );
+	mov( esi, rooms[ r_villagePath5 ] );
+	roomESI.initroom
+	(
+		n_villagePath5,
+		
+		"Village Path",
+		
+		"You are standing on a path in the middle of town. The road" nl
+		"is quite muddy, and you notice wheel ruts in the ground. To the" nl
+		"east stands a village shop.", 
+		
+		initRoomStrs( north, south, east )
+	);
+
+
+
+	room.create( "villagewell6" );
+	mov( esi, rooms[ r_villageWell6 ] );
+	roomESI.initroom
+	(
+		n_villageWell6,
+		
+		"Village Well",
+		
+		"You are looking down on your reflection over a deep artisian" nl
+		"well. The water rises some 100 feet below ground level, and" nl
+		"the sides are green with moss.", 
+		
+		initRoomStrs( north, south, east, west )
+	);
+	mov( esi, ebx );	
+	impediment.create( "door" );
+	impedimentESI.initImpediment
+	(
+		"Guild Door",
+		"Door to the Guild room",
+		"Adventurer's Guild -- Members Only -- Keyed entry",
+		NULL, 	// We'll add the key later
+		"A locked door bars your progress in that direction",
+		"You unlock the door and enter the Guild room"
+	);
+	mov( esi, roomEBX.impedeWest );
+
+
+
+	room.create( "smallcathedral7" );
+	mov( esi, rooms[ r_smallCathedral7 ] );
+	roomESI.initroom
+	(
+		n_smallCathedral7,
+		
+		"Small Cathedral",
+		
+		"You are standing in a small cathedral. Several pews adorn the" nl
+		"room here, while high stained glass windows dominate the interior." nl
+		"An altar stands to the north.",
+		
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "stonealtar8" );
+	mov( esi, rooms[ r_stoneAltar8 ] );
+	roomESI.initroom
+	(
+		n_stoneAltar8,
+		
+		"Stone Altar",
+		
+		"You are facing a stone altar in the front of the cathedral." nl
+		"The nave in the apse extends some twenty-five feet from center" nl
+		"to ground. A small storage room is east.",
+		
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "storageroom9" );
+	mov( esi, rooms[ r_storageRoom9 ] );
+	roomESI.initroom
+	(
+		n_storageRoom9,
+		
+		"Storage Room",
+		
+		"You are standing inside a small storage room. It is used to" nl
+		"store items pertaining to the church. However, some of these" nl
+		"items do not even belong to the church! (go figure)",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "guild10" );
+	mov( esi, rooms[ r_guild10 ] );
+	roomESI.initroom
+	(
+		n_guild10,
+		
+		"Guild",
+		
+		"You are standing in a large guild room. A large crescent flag" nl
+		"with a star emblazoned on it drapes down from the ceiling. A few" nl
+		"tables and chairs are here, as well as a large fireplace.",
+		
+		NothingToSeeNorth,
+		NoPathLeadingNorth,
+		NothingToSeeSouth,
+		NoPathLeadingSouth,
+		ThereIsAnOpenDoorToTheEast,
+		YouPassThroughDoorItLocks,
+		NothingToSeeWest,
+		NoPathLeadingWest,
+		NothingToSeeNorthEast,
+		NoPathLeadingNorthEast,
+		NothingToSeeNorthWest,
+		NoPathLeadingNorthWest,
+		NothingToSeeSouthEast,
+		NoPathLeadingSouthEast,
+		NothingToSeeSouthWest,
+		NoPathLeadingSouthWest,
+		NothingToSeeUp,
+		NoPathLeadingUp,
+		NothingToSeeDown,
+		NoPathLeadingDown
+	);
+	
+
+
+	room.create( "townentrance11" );
+	mov( esi, rooms[ r_townEntrance11 ] );
+	roomESI.initroom
+	(
+		n_townEntrance11,
+		
+		"Entrance to Town",
+		
+		"You are standing near a stone archway. Vines grow on" nl
+		"either pillar. The road into town heads north" nl
+		"past an old cathedral.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "welllitpath12" );
+	mov( esi, rooms[ r_wellLitPath12 ] );
+	roomESI.initroom
+	(
+		n_wellLitPath12,
+		
+		"Well-lit Path",
+		
+		"You are walking down a well-lit path beyond the"
+		"forest. The path heads north here past a stone"
+		"archway.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "forestpath13" );
+	mov( esi, rooms[ r_forestPath13 ] );
+	roomESI.initroom
+	(
+		n_forestPath13,
+		
+		"Forest Path",
+		
+		"You are walking down a narrow path near the outskirts" nl
+		"of the forest. Trees surround you to the south, with" nl
+		"a fork in the road visible nearby.",
+		
+		initRoomStrs( north, south, east )
+	);
+
+
+	room.create( "intersection14" );
+	mov( esi, rooms[ r_intersection14 ] );
+	roomESI.initroom
+	(
+		n_intersection14,
+		
+		"Intersection",
+		
+		"You are facing an intersection in the forest. Paths head" nl
+		"off in four directions here. To the south, the forest becomes" nl
+		"oppressive and dark. To the east, there is far more sunlight.",
+		
+		initRoomStrs( north, south, east, down )
+	);
+
+
+	room.create( "redwoodforest15" );
+	mov( esi, rooms[ r_redwoodForest15 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest15,
+		
+		"Redwood Forest",
+		
+		"You are walking in a tall RedWood forest. The trees are among" nl
+		"the tallest on Earth -- some reaching over 100 feet high. The" nl
+		"forest thins out some to the west.",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "oaktree16" );
+	mov( esi, rooms[ r_oldOakTree16 ] );
+	roomESI.initroom
+	(
+		n_oldOakTree16,
+		
+		"Old Oak Tree",
+		
+		"You are facing a large oak tree. The branches are twisted" nl
+		"and tangled, aged by the ravages of time. The branches" nl
+		"are low-lying and appear to be climbable.",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "atopforest17" );
+	mov( esi, rooms[ r_atopForest17 ] );
+	roomESI.initroom
+	(
+		n_atopForest17,
+		
+		"High Atop the Forest",
+		
+		"You are standing on a branch high atop the forest. To the" nl
+		"east, you notice a small grassroof hut. The only exit" nl
+		"is back down (unless you can fly, that is!)",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "grassroofhut18" );
+	mov( esi, rooms[ r_grassRoomHut18 ] );
+	roomESI.initroom
+	(
+		n_grassRoomHut18,
+		
+		"Grassroof Hut",
+		
+		"You are standing inside a small grassroof hut. A few tables" nl
+		"and chairs adorn the hut, while a small bookcase is visible" nl
+		"near the backwall. The only exit is west.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "redwoodforest19" );
+	mov( esi, rooms[ r_redwoodForest19 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest19,
+		
+		"Redwood Forest",
+		
+		"You are walking in a tall Redwood forest. These trees are" nl
+		"among the oldest and tallest in the world. The forest thickens" nl
+		"somewhat to the east. An intersection is to the southwest.",
+		
+		initRoomStrs( north, south, east )
+	);
+
+
+	room.create( "redwoodforest20" );
+	mov( esi, rooms[ r_redwoodForest20 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest20,
+		
+		"Redwood Forest",
+		
+		"You are walking in a tall Redwood forest. These trees" nl
+		"are among the oldest and tallest in the world. To the north" nl
+		"stands an old oak tree, aged by time.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "redwoodforest21" );
+	mov( esi, rooms[ r_redwoodForest21 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest21,
+		
+		"Redwood Forest",
+		
+		"You are walking in a tall Redwood forest. Further passage" nl
+		"west is blocked by fallen trees. The only exit is back" nl
+		"west. A cottage is visible far to the south.",
+		
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "brokenpath22" );
+	mov( esi, rooms[ r_brokenPath22 ] );
+	roomESI.initroom
+	(
+		n_brokenPath22,
+		
+		"Broken Path",
+		
+		"You are standing on a broken path of an intersection." nl
+		"To the north stands a tall Redwood forest. Up ahead to" nl
+		"east lies a small cottage.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "brokenpath23" );
+	mov( esi, rooms[ r_brokenPath23 ] );
+	roomESI.initroom
+	(
+		n_brokenPath23,
+		
+		"Broken Path",
+		
+		"You are walking on a broken path. There is a cottage" nl
+		"directly east (formerly obscured by trees). Someone" nl
+		"obviously lives (or lived) here.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "abandonedCottage24" );
+	mov( esi, rooms[ r_abandonedCottage24 ] );
+	roomESI.initroom
+	(
+		n_abandonedCottage24,
+		
+		"Abandoned Cottage",
+		
+		"You are standing in a small cottage. The area is mostly" nl
+		"bare save for an old bed and a small fireplace. Everything" nl
+		"else has been moved (or stolen).",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "bythelake25" );
+	mov( esi, rooms[ r_byTheLake25 ] );
+	roomESI.initroom
+	(
+		n_byTheLake25,
+		
+		"By the Lake",
+		
+		"You are standing by a small lake. The water glistens" nl
+		"vibrantly in the fading sunlight, as clouds drift by on" nl
+		"the horizon. A clearing is visible to the west.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "smallclearing26" );
+	mov( esi, rooms[ r_smallClearing26 ] );
+	roomESI.initroom
+	(
+		n_smallClearing26,
+		
+		"Small Clearing",
+		
+		"You are standing in a small clearing. There is nothing around" nl
+		"buy blue sky. A lake is visible to the east, about one" nl
+		"or two leagues distance.",
+		
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "grassyhillside27" );
+	mov( esi, rooms[ r_grassyHillside27 ] );
+	roomESI.initroom
+	(
+		n_grassyHillside27,
+		
+		"Grassy Hillside",
+		
+		"You are standing on a grassy hillside. The grass tickles" nl
+		"your feet as you walk on by. To the north, just beyond a" nl
+		"large hill, lies a path near the forest.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "onthepath28" );
+	mov( esi, rooms[ r_onThePath28 ] );
+	roomESI.initroom
+	(
+		n_onThePath28,
+		
+		"On the Path",
+		
+		"You are on a path in the middle of a large forest." nl
+		"Trees surround you in all directions here, while the" nl
+		"path heads south leading you deeper into the forest.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "windingroad29" );
+	mov( esi, rooms[ r_windingRoad29 ] );
+	roomESI.initroom
+	(
+		n_windingRoad29,
+		
+		"Winding Road",
+		
+		"You are standing on a winding road. The path heads" nl
+		"east to west across the landscape. Far to the west, you" nl
+		"can see majestic purple mountains.",
+		
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "windingroad30" );
+	mov( esi, rooms[ r_windingRoad30 ] );
+	roomESI.initroom
+	(
+		n_windingRoad30,
+		
+		"Winding Road",
+		
+		"You are walking down a winding road. The path heads" nl
+		"east and west in both directions here. You notice a" nl
+		"small wooden bridge to the northwest.",
+
+		initRoomStrs( east, west )
+	);
+	
+
+	room.create( "junction31" );
+	mov( esi, rooms[ r_junction31 ] );
+	roomESI.initroom
+	(
+		n_junction31,
+		
+		"Junction",
+		
+		"You have reached a junction near the winding road. The path" nl
+		"splits off here to the north over a small wooden bridge. It appears" nl
+		"to go over a small ravine about twenty feet wide.",
+
+		initRoomStrs( north, east, west )
+	);
+	
+
+	room.create( "woodenbridge32" );
+	mov( esi, rooms[ r_woodenBridge32 ] );
+	roomESI.initroom
+	(
+		n_woodenBridge32,
+		
+		"Wooden Bridge",
+		
+		"You are walking on a wooden bridge north of a junction. The" nl
+		"bridge is worn and the wood splintered, suggesting an ancient" nl
+		"time and age. A bronze statue is visible to the north.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "bronzestatue33" );
+	mov( esi, rooms[ r_bronzeStatue33 ] );
+	roomESI.initroom
+	(
+		n_bronzeStatue33,
+		
+		"Bronze Statue",
+		
+		"You are facing a bronze statue. It appears to depict a" nl
+		"man shrouded in traditional priesthood garb. He is holding" nl
+		"a bronze staff (in the shape of a snake).",
+
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "windingroad34" );
+	mov( esi, rooms[ r_windingRoad34 ] );
+	roomESI.initroom
+	(
+		n_windingRoad34,
+		
+		"Winding Road",
+		
+		"You are walking on a winding road. Purple mountains" nl
+		"surround you in all directions here. You notice a" nl
+		"small cave to the northwest.",
+
+		initRoomStrs( north, east, west )
+	);
+	
+
+	room.create( "purplemountains35" );
+	mov( esi, rooms[ r_purpleMountains35 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains35,
+		
+		"Purple Mountains",
+		
+		"You are standing near a purple mountain range. The terrain" nl
+		"becomes rockier to the north and west. The path slopes" nl
+		"down to the southeast.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "purplemountains36" );
+	mov( esi, rooms[ r_purpleMountains36 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains36,
+		
+		"Purple Mountains",
+		
+		"You are standing in a purple mountain range. The path becomes" nl
+		"steadily unclimbable to the north. The only viable exit is" nl
+		"back south (100 feet below).",
+
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "purplemountains37" );
+	mov( esi, rooms[ r_purpleMountains37 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains37,
+		
+		"Purple Mountains",
+		
+		"You are walking in a purple mountain terrain. The rockier" nl
+		"it becomes, the less steady your feet! A tumble here could" nl
+		"spell the death of one thousand chickens.",
+
+		initRoomStrs( north, west )
+	);
+	
+
+	room.create( "purplemountains38" );
+	mov( esi, rooms[ r_purpleMountains38 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains38,
+		
+		"Purple Mountains",
+		
+		"You are standing south from a series of small caves." nl
+		"There is very little light here, as the sun sinks below" nl
+		"the horizon. Better head back east.",
+
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "darkcave39" );
+	mov( esi, rooms[ r_darkCave39 ] );
+	roomESI.initroom
+	(
+		n_darkCave39,
+		
+		"Dark Cave",
+		
+		"You are standing in a dark cave. Tunnels head off in all" nl
+		"directions here. You notice one particularly wide cavern" nl
+		"heading north into the darkened abyss.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "purplemountains40" );
+	mov( esi, rooms[ r_purpleMountains40 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains40,
+		
+		"Purple Mountains",
+		
+		"The terrain becomes steadily unclimbable to the west." nl
+		"You notice a small Shinto shrine to the north, just" nl
+		"across a small river.",
+
+		initRoomStrs( north, east )
+	);
+	
+
+	room.create( "purplemountains41" );
+	mov( esi, rooms[ r_purpleMountains41 ] );
+	roomESI.initroom
+	(
+		n_purpleMountains41,
+		
+		"Purple Mountains",
+		
+		"You have reached a dead end in these purple mountains." nl
+		"The terrain becomes far too rocky to the west and north." nl
+		"The only way back is east.",
+
+		initRoomStrs( east )
+	);
+	
+
+	room.create( "onthepathsouth42" );
+	mov( esi, rooms[ r_onThePathSouth42 ] );
+	roomESI.initroom
+	(
+		n_onThePathSouth42,
+		
+		"On the Path (heading south)",
+		
+		"You are walking on a path heading south. You notice a" nl
+		"decaying forest to the west, while small hills run" nl
+		"east. Far to the south lies a stone castle.",
+
+		initRoomStrs( north, south, west )
+	);
+	
+
+	room.create( "smallhillside43" );
+	mov( esi, rooms[ r_smallHillside43 ] );
+	roomESI.initroom
+	(
+		n_smallHillside43,
+		
+		"Small Hillside",
+		
+		"You are standing in a grassy hillside. The grass" nl
+		"tickles your feet as you walk by. To the east" nl
+		"lies a steady slope (heading downward).",
+
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "grassyslopedown44" );
+	mov( esi, rooms[ r_grassySlopeDown44 ] );
+	roomESI.initroom
+	(
+		n_grassySlopeDown44,
+		
+		"Grassy Hillside (sloping downward)",
+		
+		"You are standing on a grassy slope. It continues" nl
+		"south towards a run at the bottom of the hill. The" nl
+		"grassy plain continues westward.",
+
+		initRoomStrs( south, west )
+	);
+	
+
+	room.create( "decayingforest45" );
+	mov( esi, rooms[ r_decayingForest45 ] );
+	roomESI.initroom
+	(
+		n_decayingForest45,
+		
+		"Decaying Forest",
+		
+		"You are standing in a decayed forest. Most of the" nl
+		"trees appear to be dying. Twisted by age and time," nl
+		"there is nothing left but echoed embers." nl,
+
+		initRoomStrs( south, east )
+	);
+	
+
+	room.create( "dyingforest46" );
+	mov( esi, rooms[ r_dyingForest46 ] );
+	roomESI.initroom
+	(
+		n_dyingForest46,
+		
+		"Dying Forest",
+		
+		"You are walking in a forest that appears to be dying." nl
+		"The undergrowth is overgrown with weeds and flattened" nl
+		"leaves. To the south, the forest thins out some.",
+
+		initRoomStrs( south, east )
+	);
+	
+
+	room.create( "withindyingforest47" );
+	mov( esi, rooms[ r_withinDyingForest47 ] );
+	roomESI.initroom
+	(
+		n_withinDyingForest47,
+		
+		"Within the Dying Forest",
+		
+		"You are standing in the middle of a forest that" nl
+		"appears to be dying. Many of the trees have succumbed" nl
+		"to waste rot. A few mushrooms litter the ground here.",
+
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "southernroad48" );
+	mov( esi, rooms[ r_southernRoad48 ] );
+	roomESI.initroom
+	(
+		n_southernRoad48,
+		
+		"Southern Road",
+		
+		"You are on a path south of the forest. Up ahead lies" nl
+		"a small bridge (traversing a tiny creek). Just beyond" nl
+		"the bridge, the path widens near a stone castle.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "grassyhillside49" );
+	mov( esi, rooms[ r_grassyHillside49 ] );
+	roomESI.initroom
+	(
+		n_grassyHillside49,
+		
+		"Grassy Hillside (on the southern slope)",
+		
+		"You are heading south on a narrow slope. The hillside" nl
+		"steepens to the south, driven downward by erosion and" nl
+		"contact metamorphism.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "southhillside50" );
+	mov( esi, rooms[ r_southHillside50 ] );
+	roomESI.initroom
+	(
+		n_southHillside50,
+		
+		"South of a Large Hillside",
+		
+		"You are standing due south from a grassy hillside." nl
+		"The path winds east, then drops off some fifty feet" nl
+		"into a small ravine.",
+
+		initRoomStrs( north, east )
+	);
+	
+
+	room.create( "easternpath51" );
+	mov( esi, rooms[ r_easternPath51 ] );
+	roomESI.initroom
+	(
+		n_easternPath51,
+		
+		"Eastern Path (near a ravine)",
+		
+		"You are walking on a gradient path descending near" nl
+		"a small ravine. The descending slope of the curve" nl
+		"leaves little to chance. Be careful!",
+
+		initRoomStrs( south, west )
+	);
+	
+
+	room.create( "dyingforest52" );
+	mov( esi, rooms[ r_dyingForest52 ] );
+	roomESI.initroom
+	(
+		n_dyingForest52,
+		
+		"Dying forest (western perimeter)",
+		
+		"You are standing by the western edge of a decaying" nl
+		"forest. The path west is blocked by fallen trees." nl
+		"To the south, the forest continues to widen.",
+
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "middleforest53" );
+	mov( esi, rooms[ r_middleForest53 ] );
+	roomESI.initroom
+	(
+		n_middleForest53,
+		
+		"Middle forest (east of bridge)",
+		
+		"You are walking in a dying forest. It is vastly" nl
+		"decayed and overgrown with weeds and mushrooms." nl
+		"To the east lies a stone bridge, crossing a creek.",
+
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "smallbridge54" );
+	mov( esi, rooms[ r_smallBridge54 ] );
+	roomESI.initroom
+	(
+		n_smallBridge54,
+		
+		"Small Bridge (traversing a creek)",
+		
+		"You are standing on a small wooden bridge. It overlaps" nl
+		"a small creek below. The water is moving gently to" nl
+		"the southwest. There doesn't appear to be many fish.",
+
+		initRoomStrs( north, south, west )
+	);
+	
+
+	room.create( "southernslope55" );
+	mov( esi, rooms[ r_southernSlope55 ] );
+	roomESI.initroom
+	(
+		n_southernSlope55,
+		
+		"Southern Slope",
+		
+		"You have reached the end of a southern slope. The" nl
+		"path south is blocked by a small ravine. The only" nl
+		"exit is back north (up the hill).",
+
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "northerncell56" );
+	mov( esi, rooms[ r_northernCell56 ] );
+	roomESI.initroom
+	(
+		n_northernCell56,
+		
+		"Northern cell (in the dungeon)",
+		
+		"You are standing in a cramped cell within the" nl
+		"dungeon walls. There isn't much here save for" nl
+		"a small bed and a wooden table.",
+
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "smallravine57" );
+	mov( esi, rooms[ r_smallRavine57 ] );
+	roomESI.initroom
+	(
+		n_smallRavine57,
+		
+		"Atop a small ravine",
+		
+		"You are standing overlooking a small ravine. The" nl
+		"path steepens quickly into the rocky ravine below." nl
+		"A fall from this distance could prove fatal.",
+
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "endofforest58" );
+	mov( esi, rooms[ r_endOfForest58 ] );
+	roomESI.initroom
+	(
+		n_endOfForest58,
+		
+		"End of forest (western edge)",
+		
+		"You have reached the end of the forest. The path" nl
+		"west is further obstructed by fallen trees," nl
+		"large rocks, and sturdy undergrowth.",
+
+		initRoomStrs( east )
+	);
+	
+
+	room.create( "dyingforest59" );
+	mov( esi, rooms[ r_dyingForest59 ] );
+	roomESI.initroom
+	(
+		n_dyingForest59,
+		
+		"Dying Forest (near some tree stumps)",
+		
+		"You are walking in a dying forest. The undergrowth" nl
+		"is full of weeds, rocks and mushrooms. You notice" nl
+		"a few tree stumps to the east.",
+
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "dyingforest60" );
+	mov( esi, rooms[ r_dyingForest60 ] );
+	roomESI.initroom
+	(
+		n_dyingForest60,
+		
+		"Dying Forest (by some tree stumps)",
+		
+		"You are heading south in a decayed forest. The path" nl
+		"narrows some to the west here. You notice quite a few" nl
+		"tree stumps upon the ground here.",
+
+		initRoomStrs( north,south,west )
+	);
+
+
+	room.create( "widepath61" );
+	mov( esi, rooms[ r_widePath61 ] );
+	roomESI.initroom
+	(
+		n_widePath61,
+		
+		"Wide path (north of castle)",
+		
+		"You are walking on a path just south of a small" nl
+		"bridge. A few trees dot the landscape, but the area" nl
+		"remains relatively clear. The castle is south.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "smallcell62" );
+	mov( esi, rooms[ r_smallCell62 ] );
+	roomESI.initroom
+	(
+		n_smallCell62,
+		
+		"Inside a small cell",
+		
+		"You are standing inside a small cell within the" nl
+		"dungeon. It is mostly empty, save for a small bed" nl
+		"and a wooden table. The table is clear.",
+
+		initRoomStrs( east )
+	);
+	
+
+	room.create( "darkeneddungeon63" );
+	mov( esi, rooms[ r_darkenedDungeon63 ] );
+	roomESI.initroom
+	(
+		n_darkenedDungeon63,
+		
+		"In a darkened dungeon",
+		
+		"You are standing in a darkened dungeon. There is naturally" nl
+		"very little light here, as your lantern casts ominous shadows" nl
+		"upon either wall. You begin to wonder why you're down here.",
+
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "smallcell64" );
+	mov( esi, rooms[ r_smallCell64 ] );
+	roomESI.initroom
+	(
+		n_smallCell64,
+		
+		"Inside a small cell",
+		
+		"You are standing inside a small cell. Unlike the" nl
+		"others, this one is completely empty of items. This" nl
+		"strikes you as rather odd indeed!",
+
+		initRoomStrs( west )
+	);
+	
+
+	room.create( "endofforest65" );
+	mov( esi, rooms[ r_endOfForest65 ] );
+	roomESI.initroom
+	(
+		n_endOfForest65,
+		
+		"End of forest (southern edge)",
+		
+		"You have reached the end of the dying forest. To the" nl
+		"south, fallen trees and large rocks parallel your path" nl
+		"in all directions. The only exit is back north.",
+
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "endofforest66" );
+	mov( esi, rooms[ r_endOfForest66 ] );
+	roomESI.initroom
+	(
+		n_endOfForest66,
+		
+		"End of forest (southern edge)",
+		
+		"You have reached the end of the forest. To the" nl
+		"south, large rocks and storm-tossed trees block" nl
+		"your path in all directions.",
+
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "castlemoat67" );
+	mov( esi, rooms[ r_castleMoat67 ] );
+	roomESI.initroom
+	(
+		n_castleMoat67,
+		
+		"Castle moat (on the drawbridge)",
+		
+		"You are standing before a large, hulking stone castle." nl
+		"Vines grow on either column, spiraling upwards like" nl
+		"a nefarious weed. To the south lies the main hall.",
+
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "darkeneddungeon68" );
+	mov( esi, rooms[ r_darkenedDungeon68 ] );
+	roomESI.initroom
+	(
+		n_darkenedDungeon68,
+		
+		"Inside a darkened dungeon",
+		
+		"You are standing inside a darkened dungeon below the" nl
+		"castle. There is very little light here, as your eyes" nl
+		"take a moment to adjust to the surrounding. There" nl
+		"are several cells here, each apparently unoccupied.",
+
+		initRoomStrs( north, up )
+	);
+	
+
+	room.create( "guestchambers69" );
+	mov( esi, rooms[ r_guestChambers69 ] );
+	roomESI.initroom
+	(
+		n_guestChambers69,
+		
+		"Guest Chambers",
+		
+		"You are standing inside a small bedroom. Visitors" nl
+		"can come and rest here while awaiting an audience" nl
+		"with the king. But no one is here at the moment.",
+
+		initRoomStrs( east )
+	);
+	
+
+	room.create( "mainhallway70" );
+	mov( esi, rooms[ r_mainHallway70 ] );
+	roomESI.initroom
+	(
+		n_mainHallway70,
+		
+		"Main hallway (inside the castle)",
+		
+		"You are standing in a long, tall hallway inside" nl
+		"the castle. Ceremonial flags hang down from either" nl
+		"column above you. A few rooms lie to the east and" nl
+		"west. A throne room is to the south.",
+
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "smalllibrary71" );
+	mov( esi, rooms[ r_smallLibrary71 ] );
+	roomESI.initroom
+	(
+		n_smallLibrary71,
+		
+		"Small library (east of main hall)",
+		
+		"You are standing inside a small library within the" nl
+		"castle. Rows of shelves line the walls, containing many" nl
+		"books and parchments. A stairwell is also here, descending" nl
+		"into darkness below. Where it leads (or why it exists)" nl
+		"remains a mystery.",
+
+		initRoomStrs( west, down )
+	);
+	
+
+	room.create( "smallthrone72" );
+	mov( esi, rooms[ r_smallThrone72 ] );
+	roomESI.initroom
+	(
+		n_smallThrone72,
+		
+		"Small Throne Room",
+		
+		"You are standing before a large throne. Tall drapes" nl
+		"hang down on either side (across stone columns). The" nl
+		"columns support a stone archway, the apex of which" nl
+		"stands wide and rotund. You notice a few jewels" nl
+		"encrusted on either side of the throne.",
+
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "twistedpassageway73" );
+	mov( esi, rooms[ r_twistedPassageway73 ] );
+	roomESI.initroom
+	(
+		n_twistedPassageway73,
+		
+		"Twisted passageway (heading north)",
+		
+		"You are in a darkened, twisted passageway within" nl
+		"the caves. The tunnel drifts downward near a" nl
+		"small crevice (a fissure or cleft within the" nl
+		"cavern wall).",
+
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "narrowtunnel74" );
+	mov( esi, rooms[ r_narrowTunnel74 ] );
+	roomESI.initroom
+	(
+		n_narrowTunnel74,
+		
+		"Narrow Tunnel",
+		
+		"You are walking in a darkened tunnel. There is a" nl
+		"narrow crack to the east, but it appears impossible" nl
+		"to reach from here.",
+
+		initRoomStrs( west )
+	);
+	
+
+	room.create( "twistedpassageway75" );
+	mov( esi, rooms[ r_twistedPassageway75 ] );
+	roomESI.initroom
+	(
+		n_twistedPassageway75,
+		
+		"Twisted passageway (heading east)",
+		
+		"You are heading east in a twisted passage. The tunnel" nl
+		"narrows to the east, just beyond a small fissure. The" nl
+		"tunnel widens substantially to the north.",
+
+		initRoomStrs( north, east )
+	);
+	
+
+	room.create( "eastwestpassageway76" );
+	mov( esi, rooms[ r_eastWestPassageway76 ] );
+	roomESI.initroom
+	(
+		n_eastWestPassageway76,
+		
+		"East-west passageway",
+		
+		"You are walking on an east-west passage near a" nl
+		"small fissure. The tunnel walls become quite" nl
+		"narrow to the east.",
+		
+		initRoomStrs( east, west )
+	);
+	
+
+	room.create( "narrowopening77" );
+	mov( esi, rooms[ r_narrowOpening77 ] );
+	roomESI.initroom
+	(
+		n_narrowOpening77,
+		
+		"Narrow opening (inaccessible)",
+		
+		"You are facing a narrow opening in the cavern" nl
+		"wall. It appears inaccessible from this vantage" nl
+		"point. Only a few feet wide, you cannot possibly" nl
+		"squeeze through the opening.",
+		
+		initRoomStrs( west )
+	);
+	
+
+	room.create( "smallintersection78" );
+	mov( esi, rooms[ r_smallIntersection78 ] );
+	roomESI.initroom
+	(
+		n_smallIntersection78,
+		
+		"Small Intersection",
+		
+		"You are facing a small intersection. There are tunnels" nl
+		"heading north, south, and east here. The largest tunnel" nl
+		"heads north towards the center of the cave.",
+		
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "smallcrevice79" );
+	mov( esi, rooms[ r_smallCrevice79 ] );
+	roomESI.initroom
+	(
+		n_smallCrevice79,
+		
+		"Small Crevice (narrow crack)",
+		
+		"You have reached a narrow crack, a small opening (or" nl
+		"cleft) within the cavern wall. It appears to head" nl
+		"downward along the edge of the wall towards an" nl
+		"an abyss below. From somewhere, far below, you" nl
+		"can hear the sound of rushing water.",
+		
+		initRoomStrs( west )
+	);
+	
+
+	room.create( "smallintersection80" );
+	mov( esi, rooms[ r_smallIntersection80 ] );
+	roomESI.initroom
+	(
+		n_smallIntersection80,
+		
+		"Small intersection",
+		
+		"You are facing a small intersection within the" nl
+		"cavern. Tunnels head off in all directions here," nl
+		"although the eastern tunnel is blocked by a" nl
+		"very large boulder. Who placed it there (and why)" nl
+		"remains a perplexing mystery.",
+		
+		initRoomStrs( north, south, west )
+	);
+	
+
+	room.create( "tinyfissure81" );
+	mov( esi, rooms[ r_tinyFissure81 ] );
+	roomESI.initroom
+	(
+		n_tinyFissure81,
+		
+		"Tiny Fissure (or cleft)",
+		
+		"You have reached a narrow crack, a small opening" nl
+		"(or fissure) within the cavern wall. It is far too" nl
+		"narrow to pass through.",
+		
+		initRoomStrs( east )
+	);
+	
+
+	room.create( "endoftunnel82" );
+	mov( esi, rooms[ r_endOfTunnel82 ] );
+	roomESI.initroom
+	(
+		n_endOfTunnel82,
+		
+		"End of Tunnel (by a narrow fissure)",
+		
+		"You have reached the end of the tunnel. A narrow" nl
+		"fissure is visible to the south. The only exit" nl
+		"is to the north.",
+		
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "tunneljunction83" );
+	mov( esi, rooms[ r_tunnelJunction83 ] );
+	roomESI.initroom
+	(
+		n_tunnelJunction83,
+		
+		"Tunnel Junction (east of main tunnel)",
+		
+		"You are walking near a small junction within the" nl
+		"caves. To the south, a larger tunnel opens up and" nl
+		"gives way to a small keep. This unusual room was" nl
+		"chiseled (carved) out of the surrounding stone" nl
+		"of the cavern (a subterraneanly vast cavity).",
+		
+		initRoomStrs( north, south, east )
+	);
+	
+
+	room.create( "smalltunnel84" );
+	mov( esi, rooms[ r_smallTunnel84 ] );
+	roomESI.initroom
+	(
+		n_smallTunnel84,
+		
+		"Small tunnel (west of main passageway)",
+		
+		"You are walking in a narrow tunnel just west of the" nl
+		"main passageway. The cavern is hollow and the walls" nl
+		"are quite porous (from multiple interstices). As an" nl
+		"underground enclosure, the cavern hollows out towards" nl
+		"the middle and spreads westward from the main" nl
+		"passageway.",
+		
+		initRoomStrs( north, east, west )
+	);
+	
+
+	room.create( "subterraneanpassageway85" );
+	mov( esi, rooms[ r_subterraneanPassageway85 ] );
+	roomESI.initroom
+	(
+		n_subterraneanPassageway85,
+		
+		"Subterranean Passageway",
+		
+		"You are standing in the middle of a large, subterraneanly" nl
+		"vast passageway (tunnels head off here in multiple directions)." nl
+		"The cavern slopes downward underground, heading northwest from" nl
+		"the main passageway. The light is very dim here, with faint" nl
+		"light casting shadows against either wall.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "easternjunction86" );
+	mov( esi, rooms[ r_easternJunction86 ] );
+	roomESI.initroom
+	(
+		n_easternJunction86,
+		
+		"Eastern Junction (west of main passageway)",
+		
+		"You are walking near an eastern junction within" nl
+		"the caves. A series of tunnels head north and" nl
+		"east from here, while a small fissure is visible" nl
+		"to the south.",
+		
+		initRoomStrs( north, east, west )
+	);
+	
+
+	room.create( "smalltunnel87" );
+	mov( esi, rooms[ r_smallTunnel87 ] );
+	roomESI.initroom
+	(
+		n_smallTunnel87,
+		
+		"Small tunnel (heading south)",
+		
+		"You are walking in a narrow tunnel, heading south" nl
+		"past a jagged crevice. However, the opening is far" nl
+		"too narrow to pass through.",
+		
+		initRoomStrs( south, west )
+	);
+	
+
+	room.create( "deadend88" );
+	mov( esi, rooms[ r_deadEnd88 ] );
+	roomESI.initroom
+	(
+		n_deadEnd88,
+		
+		"Dead end (blocked by fallen rocks)",
+		
+		"The tunnel ahead is blocked by fallen rocks. Something" nl
+		"(or perhaps someone) has caused a collapsing of the" nl
+		"cavern ceiling. The only way back is south.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "twistingpassageway89" );
+	mov( esi, rooms[ r_twistingPassageway89 ] );
+	roomESI.initroom
+	(
+		n_twistingPassageway89,
+		
+		"Twisting Passageway",
+		
+		"You are walking in a twisting passageway. The tunnel" nl
+		"ahead widens somewhat before giving way to a large" nl
+		"opening. You can't be certain, but you think you" nl
+		"hear the sound of rushing water (nearby).",
+		
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "neardeadend90" );
+	mov( esi, rooms[ r_nearDeadEnd90 ] );
+	roomESI.initroom
+	(
+		n_nearDeadEnd90,
+		
+		"Near a Dead End (northern caves)",
+		
+		"You have reached a dead end within the caves. There" nl
+		"isn't much waggle room to be found here. The only" nl
+		"exit is back south.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "narrowpassageway91" );
+	mov( esi, rooms[ r_narrowPassageway91 ] );
+	roomESI.initroom
+	(
+		n_narrowPassageway91,
+		
+		"Narrow passageway (heading north)",
+		
+		"You are walking in a narrow passageway within the" nl
+		"caves. A large fissure lies ahead to the north," nl
+		"permitting passage.",
+		
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "narrowtunnel92" );
+	mov( esi, rooms[ r_narrowTunnel92 ] );
+	roomESI.initroom
+	(
+		n_narrowTunnel92,
+		
+		"Narrow tunnel (south of fissure)",
+		
+		"You are walking in a narrow tunnel (just south of" nl
+		"a large fissure). Up ahead, carved directly into" nl
+		"the rock face itself, lies a small keep.",
+		
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "widetunnel93" );
+	mov( esi, rooms[ r_wideTunnel93 ] );
+	roomESI.initroom
+	(
+		n_wideTunnel93,
+		
+		"Wide tunnel (south of waterfall)",
+		
+		"You are walking in a wide tunnel just south of" nl
+		"a small waterfall. The steep descent of water" nl
+		"cascades from a height of about twenty feet." nl
+		"Just beyond it lies a small fissure (inaccess-" nl
+		"able from here).",
+		
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "largewaterfall94" );
+	mov( esi, rooms[ r_largeWaterfall94 ] );
+	roomESI.initroom
+	(
+		n_largeWaterfall94,
+		
+		"By a large waterfall",
+		
+		"You are standing before a large waterfall. The" nl
+		"water cascades downward into a flowing pool" nl
+		"below. The ripples on the water move swiftly" nl
+		"from the force of the waterfall. It may be" nl
+		"possible to follow the pool east, although" nl
+		"the fissure is narrow at best.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "smallkeep95" );
+	mov( esi, rooms[ r_smallKeep95 ] );
+	roomESI.initroom
+	(
+		n_smallKeep95,
+		
+		"Inside a small keep",
+		
+		"You are standing in a small keep within the" nl
+		"cavern walls. The room is impressively chiseled" nl
+		"out of the rock face above. A few candles line" nl
+		"the room, while a small table rests in the" nl
+		"center. The only exit is back south.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "smallkeep96" );
+	mov( esi, rooms[ r_smallKeep96 ] );
+	roomESI.initroom
+	(
+		n_smallKeep96,
+		
+		"Inside a small keep",
+		
+		"You are standing in a small keep within the" nl
+		"cavern walls. The room is impressively chiseled" nl
+		"out of the rock face above. A few candles line" nl
+		"the room, while a small table rests in the" nl
+		"center. The only exit is back south.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "redwoodforest97" );
+	mov( esi, rooms[ r_redwoodForest97 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest97,
+		
+		"Redwood Forest (heading east)",
+		
+		"You are walking in a tall Redwood forest. The forest" nl
+		"spreads out towards the east, while a small clearing" nl
+		"is plainly visible nearby. A path heads south" nl
+		"from the clearing towards a rock formation." nl
+		"A small cottage lies to the southwest.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+	
+
+	room.create( "redwoodforest98" );
+	mov( esi, rooms[ r_redwoodForest98 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest98,
+		
+		"Redwood Forest",
+		
+		"You are standing in a Redwood forest. The path" nl
+		"you are traveling on ends abruptly here. The bank" nl
+		"of a swiftly moving river is plainly visible as" nl
+		"well. The river does not appear too deep, although" nl
+		"crossing it may prove hazardous.",
+		
+		initRoomStrs( south )
+	);
+	
+
+	room.create( "redwoodforest99" );
+	mov( esi, rooms[ r_redwoodForest99 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest99,
+		
+		"Redwood Forest (southern edge)",
+		
+		"You are standing in a tall Redwood forest. The" nl
+		"path ends here rather abruptly near a large" nl
+		"rock formation. It appears that these rocks" nl
+		"cut across another rock formation purely" nl
+		"by chance. Either that, or you're going nuts!",
+		
+		initRoomStrs( north )
+	);
+	
+
+	room.create( "narrowpath100" );
+	mov( esi, rooms[ r_narrowPath100 ] );
+	roomESI.initroom
+	(
+		n_narrowPath100,
+		
+		"Narrow path (heading east to west)",
+		
+		"You are walking on a narrow dirt path heading" nl
+		"east to west across a large forest. The surrounding" nl
+		"area is quite beautiful, with trees providing ample" nl
+		"shading. Light filters down from the canopy above" nl
+		"you. The path continues east.",
+		
+		initRoomStrs( south, east )
+	);
+	
+
+	room.create( "smallclearing101" );
+	mov( esi, rooms[ r_smallClearing101 ] );
+	roomESI.initroom
+	(
+		n_smallClearing101,
+		
+		"Small clearing (middle forest)",
+		
+		"You are standing in a small clearing. Two forests" nl
+		"meet at this point: a tall Redwood forest, and a" 
+		"smaller forest comprised of Spruce trees. It" nl
+		"is obvious that someone (or something?) cleared" nl
+		"the area of trees in either direction.",
+		
+		initRoomStrs( north, south )
+	);
+	
+
+	room.create( "redwoodforest102" );
+	mov( esi, rooms[ r_redwoodForest102 ] );
+	roomESI.initroom
+	(
+		n_redwoodForest102,
+		
+		"Redwood forest",
+		
+		"You are walking in a tall Redwood forest. To the" nl
+		"north lies a small clearing. The forest thins out" nl
+		"some to the east, while southwest of here you" nl
+		"notice a swiftly-moving river. The path south" nl
+		"takes you past the forest into a large hillside.",
+		
+		initRoomStrs( north, south, west )
+	);
+	
+
+	room.create( "dirtpath103" );
+	mov( esi, rooms[ r_dirtPath103 ] );
+	roomESI.initroom
+	(
+		n_dirtPath103,
+		
+		"Dirt path (heading south)",
+		
+		"You are on a dirt path heading south. The forest" nl
+		"gives way here to a large, open field. Further" nl
+		"south the path descends past a rocky formation" nl
+		"towards a sandy beach. The breeze from the ocean" nl
+		"becomes more obvious south.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "dirtpath104" );
+	mov( esi, rooms[ r_dirtPath104 ] );
+	roomESI.initroom
+	(
+		n_dirtPath104,
+		
+		"Dirt path (west of forest)",
+		
+		"You are walking on a dirt path just south of a" nl
+		"large Redwood forest. The path heads south past" nl
+		"a large, open field. You notice a few animals" nl
+		"grazing the field to the west, but elsewhere" nl
+		"remains quite empty.",
+		
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "smallkeep105" );
+	mov( esi, rooms[ r_smallKeep105 ] );
+	roomESI.initroom
+	(
+		n_smallKeep105,
+		
+		"Inside a small keep",
+		
+		"You are standing in a small keep within the" nl
+		"cavern walls. The room is impressively chiseled" nl
+		"out of the rock face above. A few candles line" nl
+		"the room, while a small table rests in the" nl
+		"center. The only exit is back south.",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "wellwornpath106" );
+	mov( esi, rooms[ r_wellWornPath106 ] );
+	roomESI.initroom
+	(
+		n_wellWornPath106,
+		
+		"Well-worn path (heading east)",
+		
+		"You are walking on a well-worn path near a" nl
+		"large rock formation. The formation itself is" nl
+		"largely comprised of granite and shale, although" nl
+		"transformation has taken place in larger areas" nl
+		"of the rock face.",
+		
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "wellwornpath107" );
+	mov( esi, rooms[ r_wellWornPath107 ] );
+	roomESI.initroom
+	(
+		n_wellWornPath107,
+		
+		"Well-worn path (heading east to west)",
+		
+		"You are walking on a well-worn path. The beach is" nl
+		"plainly visible to the southeast, while a hefty rock" nl
+		"formation extends down to the beach below. A slight" nl
+		"breeze is also apparent here. The path continues" nl
+		"east and west.",
+		
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "sandybeach108" );
+	mov( esi, rooms[ r_sandyBeach108 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach108,
+		
+		"Sandy beach (western edge)",
+		
+		"You are walking on the western edge of a large, sandy" nl
+		"beach. The sand feels soft to the touch, as the minute" nl
+		"grains sift endlessly through your hands. A gentle" nl
+		"breeze swirls around you from the north. You can" nl
+		"head east from here towards the middle of the beach." nl,
+		
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "sandybeach109" );
+	mov( esi, rooms[ r_sandyBeach109 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach109,
+		
+		"Sandy Beach",
+		
+		"You are walking on a sandy beach. The sand is mostly" nl
+		"a mixture of gray and white, although muddier sections" nl
+		"are visible near the coastline. The tide appears to come" nl
+		"with regularity here. You notice a stiff breeze to the" nl
+		"northeast. There are also some seashells here.",
+		
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "sandybeach110" );
+	mov( esi, rooms[ r_sandyBeach110 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach110,
+		
+		"Sandy Beach (southern edge)",
+		
+		"You have reached the southern edge of the beach. Further" nl
+		"travel south takes you directly into the ocean. A stiff" nl
+		"breeze hits your front side from the northeast. The edge" nl
+		"of the beach is littered with seashells. The ground" nl
+		"has borrow marks across the coastline.",
+		
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "sandybeach111" );
+	mov( esi, rooms[ r_sandyBeach111 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach111,
+		
+		"Sandy Beach (southern edge)",
+		
+		"You are walking on a sandy beach. It curves north" nl
+		"here past a large rock formation. Waves splash up" nl
+		"against the shore with regularity, sending shells" nl
+		"well past your feet. Far to the east, you notice a" nl
+		"tall lighthouse.",
+		
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "dirtpath112" );
+	mov( esi, rooms[ r_dirtPath112 ] );
+	roomESI.initroom
+	(
+		n_dirtPath112,
+		
+		"Dirt Path (south of rock formation)",
+		
+		"You are walking on a dirt path near a large" nl
+		"rock formation. The beach is visible some fifty" nl
+		"feet below your position. It appears just steep" nl
+		"enough for you to climb down, although caution" nl
+		"should be taken when carrying heavy objects.",
+		
+		initRoomStrs( south, west )
+	);
+
+
+	room.create( "sandybeach113" );
+	mov( esi, rooms[ r_sandyBeach113 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach113,
+		
+		"Sandy Beach (south of rock formation)",
+		
+		"You are walking on a sandy beach near a large" nl
+		"rock formation. The rock face is jagged and" nl
+		"unstable, although a small path ascends the" nl
+		"base of the formation to the north." nl
+		"The ocean is directly south.",
+		
+		initRoomStrs( north, east, west )
+	);
+
+
+	room.create( "sandybeach114" );
+	mov( esi, rooms[ r_sandyBeach114 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach114,
+		
+		"Sandy Beach",
+		
+		"You are standing on a sandy beach. The beach" nl
+		"extends east and west in both directions here." nl
+		"Several small rocks and seashells are also" nl
+		"visible, while waves crash against the" nl
+		"shoreline to the south.",
+		
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "sandybeach115" );
+	mov( esi, rooms[ r_sandyBeach115 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach115,
+		
+		"Sandy Beach (mid-line coast)",
+		
+		"You are walking on a sandy beach near the" nl
+		"mid line of the western coast. Waves splash" nl
+		"against your feet, as the sun sinks slowly" nl
+		"below the horizon. A stiff breeze has" nl
+		"increased (from a gentle wind).",
+		
+		initRoomStrs( north,east,west )
+	);
+
+
+	room.create( "sandybeach116" );
+	mov( esi, rooms[ r_sandyBeach116 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach116,
+		
+		"Sandy Beach (south of rock formation)",
+		
+		"You are on a long, sandy beach. The coastline" nl
+		"is rather flat, while a heavy rock formation" nl
+		"towers above you to the south. You also notice" nl
+		"a few palm trees overhanging the formation" nl
+		"near the base of the beach.",
+		
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "sandybeach117" );
+	mov( esi, rooms[ r_sandyBeach117 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach117,
+		
+		"Sandy Beach (middle coast)",
+		
+		"You are walking across a long, sandy beach. Waves" nl
+		"move in and shift objects up towards the south. It" nl
+		"becomes steadily flat to the east, as the coastline" nl
+		"extends to the northeast (near a lighthouse)."
+		"The ocean is fifty feet to the south.",
+		
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "sandybeach118" );
+	mov( esi, rooms[ r_sandyBeach118 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach118,
+		
+		"Sandy Beach (at the coast)",
+		
+		"You are standing on a sandy beach. The coastline" nl
+		"lies in front of you, retreating south. A few" nl
+		"way-ward seashells are visible to the west, while " nl
+		"seaweed is strewn haphazardly to the southeast." nl
+		"The only exit is back north.",
+		
+		initRoomStrs( north, east, west )
+	);
+
+
+	room.create( "sandybeach119" );
+	mov( esi, rooms[ r_sandyBeach119 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach119,
+		
+		"Sandy Beach (south of rock formation)",
+		
+		"You are on a sandy beach just south of a large" nl
+		"rock formation. The rock face looks jagged and" nl
+		"tilts downward at an awkward angle. Several" nl
+		"rocks have fallen and hit the base of the beach" nl
+		"to the south.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "sandybeach120" );
+	mov( esi, rooms[ r_sandyBeach120 ] );
+	roomESI.initroom
+	(
+		n_sandyBeach120,
+		
+		"Sandy Beach (eastern coastline)",
+		
+		"You have reached the eastern edge of the sandy" nl
+		"beach. The coastline is directly south from" nl
+		"here. To the east stands a tall lighthouse, the" nl
+		"base of which is finitely rotund (sort of)." nl
+		"There are some rocks to the north.",
+		
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "easterncoastline121" );
+	mov( esi, rooms[ r_easternCoastline121 ] );
+	roomESI.initroom
+	(
+		n_easternCoastline121,
+		
+		"Eastern Coastline",
+		
+		"The sandy beach gives way here to the eastern" nl
+		"coastline. A shallow lagoon is directly east." nl
+		"Although crossing it does not appear to be" nl
+		"too difficult, caution should be taken." nl
+		"The only exit is back west.",
+		
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "eastofsmalllagoon122" );
+	mov( esi, rooms[ r_eastOfSmallLagoon122 ] );
+	roomESI.initroom
+	(
+		n_eastOfSmallLagoon122,
+		
+		"East of Small Lagoon",
+		
+		"You are standing east of a small lagoon. To" nl
+		"the west (across the lagoon) stands a long" nl
+		"beach. North of the beach is a tall rock" nl
+		"formation. You notice a tall lighthouse" nl
+		"directly east.",
+		
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "lighthouseatflora123" );
+	mov( esi, rooms[ r_lighthouseAtFlora123 ] );
+	roomESI.initroom
+	(
+		n_lighthouseAtFlora123,
+		
+		"Lighthouse at Flora",
+		
+		"You have reached a tall lighthouse near Flora" nl
+		"Island. The structure is soundly rotund, spiraling" nl
+		"upward at a perfectly straight angle. The top of" nl
+		"the lighthouse provides light for ships several" nl
+		"kilometers out to sea. ",
+		
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "forestwoodlands124" );
+	mov( esi, rooms[ r_forestWoodlands124 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands124,
+		
+		"Forest Woodlands",
+		
+		"You are walking in a woodland forest. The ground" nl
+		"is covered with dirt, leaves and many small rocks." nl
+		"To the north lies a small path, heading east to west" nl
+		"across the landscape. A rock formation stands to" nl
+		"the south.",
+		
+		initRoomStrs( north )
+	);
+
+
+	room.create( "forestwoodlands125" );
+	mov( esi, rooms[ r_forestWoodlands125 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands125,
+		
+		"Forest Woodlands (western edge)",
+		
+		"You are standing at the western edge of the" nl
+		"forest. Light filters down from the canopy" nl
+		"above, while forest critters scurry about" nl
+		"the ground. A path heads west from here" nl
+		"across a large, open field.",
+		
+		initRoomStrs( east )
+	);
+
+
+	room.create( "forestwoodlands126" );
+	mov( esi, rooms[ r_forestWoodlands126 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands126,
+		
+		"Forest Woodlands",
+		
+		"You are standing in the middle of a small" nl
+		"forest. Several trees parallel your path" nl
+		"in multiple directions here. To the north" nl
+		"lies an eastern path (partially obscured" nl
+		"by trees and foliage).",
+		
+		initRoomStrs( north,south,east,west )
+	);
+
+
+	room.create( "middlewoodlands127" );
+	mov( esi, rooms[ r_middleWoodlands127 ] );
+	roomESI.initroom
+	(
+		n_middleWoodlands127,
+		
+		"Middle Woodlands",
+		
+		"You are standing in the middle of a small" nl
+		"forest. The surrounding woodlands are populated" nl
+		"by hundreds of tall Spruce trees. Further to the" nl
+		"north lies a well-worn path." nl
+		"The only exit is west.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "forestwoodlands128" );
+	mov( esi, rooms[ r_forestWoodlands128 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands128,
+		
+		"Forest Woodlands",
+		
+		"You are walking in a small forest. The woodlands" nl
+		"surrounding you are populated with hundreds of" nl
+		"tall Spruce trees. The ground is mostly bare, save" nl
+		"for fallen trees and abandoned shrubbery. To the" nl
+		"north lies a well-worn path (heading east).",
+		
+		initRoomStrs( north,south )
+	);
+
+
+	room.create( "forestwoodlands129" );
+	mov( esi, rooms[ r_forestWoodlands129 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands129,
+		
+		"Forest Woodlands (south of path)",
+		
+		"You are facing south in a well-lit forest. Trees" nl
+		"surround you in multiple directions here, while" nl
+		"light filters down from the canopy above. A path" nl
+		"breaks off here and heads north (before bending" nl
+		"eastward).",
+		
+		initRoomStrs( north,south )
+	);
+
+
+	room.create( "forestwoodlands130" );
+	mov( esi, rooms[ r_forestWoodlands130 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands130,
+		
+		"Forest Woodlands",
+		
+		"You are walking in a well-lit forest. The surrounding" nl
+		"area is densely populated with tall Spruce trees. Further" nl
+		"travel west is blocked by storm-tossed trees and many large" nl
+		"boulders (which look very out of place!). The only exit" nl
+		"is back north.",
+		
+		initRoomStrs( north,east )
+	);
+
+
+	room.create( "forestwoodlands131" );
+	mov( esi, rooms[ r_forestWoodlands131 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands131,
+		
+		"Forest Woodlands (northern edge)",
+		
+		"You are walking in a well-lit forest. Trees parallel" nl
+		"your path in multiple directions here. To the south, the" nl
+		"forest widens somewhat past a large rock formation." nl
+		"The only exit is south." nl
+		"(Others are blocked).",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "forestwoodlands132" );
+	mov( esi, rooms[ r_forestWoodlands132 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands132,
+		
+		"Forest Woodlands (middle forest)",
+		
+		"You are in the middle of a large forest. The surrounding" nl
+		"woodland is overgrown with hundreds of tall Spruce trees." nl
+		"To the west, the forest opens up somewhat near a small" nl
+		"clearing. A narrow path heads south towards a large" nl
+		"rock formation.",
+		
+		initRoomStrs( north,south,east,west )
+	);
+
+
+	room.create( "forestwoodlands133" );
+	mov( esi, rooms[ r_forestWoodlands133 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands133,
+		
+		"Forest Woodlands (southern edge)",
+		
+		"The forest ends abruptly here near the top of a" nl
+		"large rock formation. The rock face is jagged and" nl
+		"unmerciful, permitting only stunted climbing" nl
+		"to a long beach below. A few seagulls stand perched" nl
+		"at the edge of the cliff.",
+		
+		initRoomStrs( north,south )
+	);
+
+
+	room.create( "forestwoodlands134" );
+	mov( esi, rooms[ r_forestWoodlands134 ] );
+	roomESI.initroom
+	(
+		n_forestWoodlands134,
+		
+		"Forest Woodlands (eastern edge)",
+		
+		"You have reached the limits of the forest. The" nl
+		"eastern perimeter is obstructed by fallen trees" nl
+		"and the continuation of a massive rock formation." nl
+		"The only exit is back west (unless you'd rather" nl
+		"jump!)",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "topoflighthouse135" );
+	mov( esi, rooms[ r_topOfLighthouse135 ] );
+	roomESI.initroom
+	(
+		n_topOfLighthouse135,
+		
+		"Top of Lighthouse",
+		
+		"You have reached the top of the lighthouse. The" nl
+		"entire room is constructed of wood, rock and" nl
+		"bronze. You notice a large pit where charred" nl
+		"ashes are visible. Apparently, this is where" nl
+		"the lighthouse is lit (not on fire!!).",
+		
+		initRoomStrs( down )
+	);
+
+
+	room.create( "insidelighthouse136" );
+	mov( esi, rooms[ r_insideLighthouse136 ] );
+	roomESI.initroom
+	(
+		n_insideLighthouse136,
+		
+		"Inside a tall lighthouse (staircase)",
+		
+		"You are ascending a spiraling staircase which" nl
+		"heads upwards towards the top of the lighthouse." nl
+		"The staircase is well-lit, as several small lanterns" nl
+		"provide ample light on either wall. The stairs" nl
+		"continue up and down from this point.",
+		
+		initRoomStrs( up, down )
+	);
+
+
+	room.create( "insidelighthouse137" );
+	mov( esi, rooms[ r_insideLighthouse137 ] );
+	roomESI.initroom
+	(
+		n_insideLighthouse137,
+		
+		"Inside a tall lighthouse (base of stairs)",
+		
+		"You are standing in a tall lighthouse. A staircase" nl
+		"is immediately visible, ascending upwards" nl
+		"in a spiraling fashion. The door leading" nl
+		"out of the lighthouse stands to the" nl
+		"south.",
+		
+		initRoomStrs( south,up )
+	);
+
+
+	room.create( "onthepath138" );
+	mov( esi, rooms[ r_onThePath138 ] );
+	roomESI.initroom
+	(
+		n_onThePath138,
+		
+		"On the Path (heading east)",
+		
+		"You are walking on a well-worn path (heading" nl
+		"east). A tall forest of Spruce trees is directly" nl
+		"north. To the west, the path breaks off near a" nl
+		"large clearing and heads south. You notice a" nl
+		"large Redwood forest to the southwest.",
+		
+		initRoomStrs( north,east,west )
+	);
+
+
+	room.create( "onthepath139" );
+	mov( esi, rooms[ r_onThePath139 ] );
+	roomESI.initroom
+	(
+		n_onThePath139,
+		
+		"On the Path (heading east to west)",
+		
+		"You are walking on a well-worn path (heading" nl
+		"east to west). A tall forest of Spruce trees" nl
+		"is directly south. The path continues to the" nl
+		"east. You notice a much wider path up ahead" nl
+		"to the northeast.",
+		
+		initRoomStrs( south,east,west )
+	);
+
+
+	room.create( "forestjunction140" );
+	mov( esi, rooms[ r_forestJunction140 ] );
+	roomESI.initroom
+	(
+		n_forestJunction140,
+		
+		"Forest Junction",
+		
+		"You are standing before an intersection on a" nl
+		"well-worn path. The path widens to the north" nl
+		"past a tall forest of Spruce trees. To the" nl
+		"south, the path breaks off into a narrow" nl
+		"woodland (again, mostly Spruce trees).",
+		
+		initRoomStrs( north,east )
+	);
+
+
+	room.create( "intersection141" );
+	mov( esi, rooms[ r_intersection141 ] );
+	roomESI.initroom
+	(
+		n_intersection141,
+		
+		"Intersection (near a junction)",
+		
+		"You are facing an intersection at the end" nl
+		"of a long path. To the north, the path breaks" nl
+		"off and heads deeper into the forest. To the" nl
+		"south, a narrow woodland grows (mostly" nl
+		"Spruce trees).",
+		
+		initRoomStrs( north,south,west )
+	);
+
+
+	room.create( "sprucewoodland142" );
+	mov( esi, rooms[ r_spruceWoodland142 ] );
+	roomESI.initroom
+	(
+		n_spruceWoodland142,
+		
+		"Spruce woodland (southern perimeter)",
+		
+		"You are walking in a forest of tall Spruce" nl
+		"trees. The surrounding woodland is comprised" nl
+		"of hundreds of trees, permitting only faint" nl
+		"light reaching the ground. A path lies to" nl
+		"the south, heading east across the landscape.",
+		
+		initRoomStrs( north,south )
+	);
+
+
+	room.create( "sprucewoodland143" );
+	mov( esi, rooms[ r_spruceWoodland143 ] );
+	roomESI.initroom
+	(
+		n_spruceWoodland143,
+		
+		"Spruce Woodland (eastern perimeter)",
+		
+		"You are standing in a dense forest. The forest" nl
+		"ends abruptly here at a wide path (heading north)." nl
+		"The path does not appear to be accessible from" nl
+		"your vantage point. You will need to head north" nl
+		"or south to reach it.",
+		
+		initRoomStrs( north,south )
+	);
+
+
+	room.create( "widepath144" );
+	mov( esi, rooms[ r_widePath144 ] );
+	roomESI.initroom
+	(
+		n_widePath144,
+		
+		"Wide path (heading north)",
+		
+		"You are walking on a wide path near a large" nl
+		"forest. A smaller trail breaks off here and" nl
+		"heads east (past a woodland mansion). As you" nl
+		"take notice of the mansion, it appears quite" nl
+		"odd and out of place for these parts.",
+		
+		initRoomStrs( east,south )
+	);
+
+
+	room.create( "endpath145" );
+	mov( esi, rooms[ r_endPath145 ] );
+	roomESI.initroom
+	(
+		n_endPath145,
+		
+		"End of path (near the mansion)",
+		
+		"You are standing at the edge of a path near" nl
+		"a large mansion. This wooded structure is crafted" nl
+		"in a Victorian age design (which doesn't appear" nl
+		"for another eight centuries!). Someone is" nl
+		"either way high-tech or very obscure." nl
+		"There is a portal here, pulsating yellow light.",
+		
+		initRoomStrs( north,west )
+	);
+
+
+	room.create( "forestwoodland146" );
+	mov( esi, rooms[ r_forestWoodland146 ] );
+	roomESI.initroom
+	(
+		n_forestWoodland146,
+		
+		"Forest woodland (western perimeter)",
+		
+		"You have reached the western perimeter of the" nl
+		"forest. The woodland becomes quite sparse near" nl
+		"the base of a swiftly moving river. On the other" nl
+		"side lies a transitional forest." nl
+		"(You can't cross from here).",
+		
+		initRoomStrs( east )
+	);
+
+
+	room.create( "forestwoodland147" );
+	mov( esi, rooms[ r_forestWoodland147 ] );
+	roomESI.initroom
+	(
+		n_forestWoodland147,
+		
+		"Forest woodlands (middle forest)",
+		
+		"You are standing in a dark forest. The surrounding" nl
+		"woodland is populated by tall Spruce trees. Further" nl
+		"travel east is obstructed by storm-tossed trees and" nl
+		"dense undergrowth. To the south lies a narrow" nl
+		"clearing (not really a clearing).",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "forestwoodland148" );
+	mov( esi, rooms[ r_forestWoodland148 ] );
+	roomESI.initroom
+	(
+		n_forestWoodland148,
+		
+		"Forest Woodland (middle forest)",
+		
+		"You are walking in a dense forest. The surrounding" nl
+		"woodland is populated by hundreds of towering Spruce" nl
+		"trees. The western path is obstructed by fallen" nl
+		"trees. To the north lies a swiftly moving river (sort" nl
+		"of a departure from the forest).",
+		
+		initRoomStrs( east )
+	);
+
+
+	room.create( "forestwoodland149" );
+	mov( esi, rooms[ r_forestWoodland149 ] );
+	roomESI.initroom
+	(
+		n_forestWoodland149,
+		
+		"Forest Woodland",
+		
+		"You are standing in a dense forest. To the south, the" nl
+		"forest is less dense, giving way to a wide path. It appears" nl
+		"from this juncture to head west, although your directions" nl
+		"are not remotely accurate. The space directly in front of" nl
+		"you is obstructed by tangled undergrowth.",
+		
+		initRoomStrs( south,east,west )
+	);
+
+
+	room.create( "smallclearing150" );
+	mov( esi, rooms[ r_smallClearing150 ] );
+	roomESI.initroom
+	(
+		n_smallClearing150,
+		
+		"Small Clearing (east of forest)",
+		
+		"You are standing in a small clearing. This clearing" nl
+		"seems very out of place (like someone...or something?..." nl
+		"cleared it abruptly). To the east lies a wooded mansion," nl
+		"a two-story complex built from the ground up. Atop the" nl
+		"mansion is built a square chimney.",
+		
+		initRoomStrs( west )
+	);
+
+
+	room.create( "frontofmansion151" );
+	mov( esi, rooms[ r_frontOfMansion151 ] );
+	roomESI.initroom
+	(
+		n_frontOfMansion151,
+		
+		"In Front of the Mansion",
+		
+		"You are standing in front of a large mansion. This" nl
+		"well-crafted, wooded structure seems futuristic and" nl
+		"astutely suited for the surrounding forest. Someone" nl
+		"was either a genius, or from the future (or both!)." nl
+		"The doorway leading into the mansion is north.",
+		
+		SeeAPathLeadingNorth,
+		"The werewolf blocks your path!" nl 
+		"He growls at you angrily! 'Grrrrrrr!'" nl,
+		SeeAPathLeadingSouth,
+		GoingSouth,
+		NothingToSeeEast,
+		NoPathLeadingEast,
+		NothingToSeeWest,
+		NoPathLeadingWest,
+		NothingToSeeNorthEast,
+		NoPathLeadingNorthEast,
+		NothingToSeeNorthWest,
+		NoPathLeadingNorthWest,
+		NothingToSeeSouthEast,
+		NoPathLeadingSouthEast,
+		NothingToSeeSouthWest,
+		NoPathLeadingSouthWest,
+		NothingToSeeUp,
+		NoPathLeadingUp,
+		NothingToSeeDown,
+		NoPathLeadingDown
+	);
+
+
+	room.create( "smallbedroom152" );
+	mov( esi, rooms[ r_smallBedroom152 ] );
+	roomESI.initroom
+	(
+		n_smallBedroom152,
+		
+		"Small bedroom (south of corridor)",
+		
+		"You are standing in a small bedroom just south" nl
+		"of a long corridor. The room has a bed, an armoire," nl
+		"and a spacious closet. You also notice a large" nl
+		"bearskin rug in the center of the room. A series of" nl
+		"small lanterns provide ample lighting for the room.",
+		
+		initRoomStrs( north )
+	);
+
+
+	room.create( "mainhallway153" );
+	mov( esi, rooms[ r_mainHallway153 ] );
+	roomESI.initroom
+	(
+		n_mainHallway153,
+		
+		"Main hallway (within the mansion)",
+		
+		"You are standing in the main hallway of the" nl
+		"mansion. A large mirror faces you on the western" nl
+		"wall (towards the front door). The hallway extends" nl
+		"past a small corridor to the north. A spacious" nl
+		"living room lies still further north.",
+		
+		initRoomStrs( north,south )
+	);
+
+
+
+	room.create( "masterbedroom154" );
+	mov( esi, rooms[ r_masterBedroom154 ] );
+	roomESI.initroom
+	(
+		n_masterBedroom154,
+		
+		"Master Bedroom",
+		
+		"You are standing in the Master bedroom. A king-sized" nl
+		"bed stands against the western wall, while a large" nl
+		"armoire occupies the eastern corner of the room. A double" nl
+		"door leads into a small bathroom to the northeast." nl
+		"You notice a chest of drawers here as well.",
+		
+		initRoomStrs( east )
+	);
+
+
+	room.create( "alongacorridor155" );
+	mov( esi, rooms[ r_alongACorridor155 ] );
+	roomESI.initroom
+	(
+		n_alongACorridor155,
+		
+		"Along a Corridor (near the Master bedroom)",
+		
+		"You are walking down a narrow corridor in the" nl
+		"mansion. Several small bedrooms occupy either" nl
+		"end of the hallway. Of particular importance" nl
+		"is a spacious Master bedroom to the west." nl
+		"A small bathroom stands to the north.",
+		
+		initRoomStrs( north,east,west )
+	);
+
+
+	room.create( "stonearchway156" );
+	mov( esi, rooms[ r_stoneArchway156 ] );
+	roomESI.initroom
+	(
+		n_stoneArchway156,
+		
+		"Stone archway (with a corridor west)",
+		
+		"You are standing near a stone archway (heading" nl
+		"west into a darkened corridor). Another hallway" nl
+		"opens up the east, just past the main living room" nl
+		"of the mansion. Three bedrooms occupy the western" nl
+		"corridor, with two directly ahead.",
+		
+		initRoomStrs( north,south,east,west )
+	);
+
+
+	room.create( "middlecorridor157" );
+	mov( esi, rooms[ r_middleCorridor157 ] );
+	roomESI.initroom
+	(
+		n_middleCorridor157,
+		
+		"Stone archway (with a corridor west)",
+		
+		"You are standing in the middle of a corridor" nl
+		"just south of the living room. The area opens" nl
+		"up into a well-lit, carefully crafted room complete" nl
+		"with a stone fireplace and mantle. Across the way," nl
+		"a sliding glass door leads to the backyard.",
+		
+		initRoomStrs( north,south,east,west )
+	);
+
+
+	room.create( "inthekitchen158" );
+	mov( esi, rooms[ r_inTheKitchen158 ] );
+	roomESI.initroom
+	(
+		n_inTheKitchen158,
+		
+		"In the kitchen",
+		
+		"You are standing in a small kitchen. A wood-burning" nl
+		"stove stands in the middle, surrounded by a metal enclosure." nl
+		"It appears to intersect the ceiling, but this doesn't seem" nl
+		"unusual to you. After all, who wants smoke in their" nl
+		"kitchen (not me!). A pantry lies to the north.",
+		
+		initRoomStrs( north,west )
+	);
+
+
+	room.create( "guestbathroom159" );
+	mov( esi, rooms[ r_guestBathroom159 ] );
+	roomESI.initroom
+	(
+		n_guestBathroom159,
+		
+		"Guest Bathroom",
+		
+		"You are standing in the guest bathroom. You are amazed" nl
+		"by the modern look of the stone basin, complete with" nl
+		"fixtures for manipulating water. You've never seen" nl
+		"such advanced plumbing before; usually it would" nl
+		"empty into a hole in the ground. But not here.",
+		
+		initRoomStrs( south )
+	);
+
+
+	room.create( "smallbedroom160" );
+	mov( esi, rooms[ r_smallBedroom160 ] );
+	roomESI.initroom
+	(
+		n_smallBedroom160,
+		
+		"Small Bedroom",
+		
+		"You are standing in a small bedroom. This unusual" nl
+		"room is without a bed of any kind. Instead, someone" nl
+		"has taken the unusual measure of crafting a large" nl
+		"hammock from leaves and bark of the surrounding" nl
+		"forest. This is very odd indeed!",
+		
+		initRoomStrs( south )
+	);
+
+
+
+
+
+
+
+	// Rooms 161..189 provided by Nathan Baker
+
+
+	room.create( "livingroom161" );
+	mov( esi, rooms[ r_livingRoom161 ] );
+	roomESI.initroom
+	(
+		n_livingRoom161,
+
+		"In the living room",
+
+		"You are standing in a spacious living room, complete" nl
+		"with fireplace, wooden mantle, and oak panel ceiling." nl
+		"The fireplace is constructed out of granite and" nl
+		"stone, both mixed together inbetween to form." nl
+		"a solid foundation. A mantle rests above it.",
+
+		NothingToSeeNorth,
+		"The butler stops you!" nl 
+		"He screams,'You're not allowed in here!'" nl,
+		SeeAPathLeadingSouth,
+		GoingSouth,
+		NothingToSeeEast,
+		NoPathLeadingEast,
+		NothingToSeeWest,
+		NoPathLeadingWest,
+		NothingToSeeNorthEast,
+		NoPathLeadingNorthEast,
+		NothingToSeeNorthWest,
+		NoPathLeadingNorthWest,
+		NothingToSeeSouthEast,
+		NoPathLeadingSouthEast,
+		NothingToSeeSouthWest,
+		NoPathLeadingSouthWest,
+		NothingToSeeUp,
+		NoPathLeadingUp,
+		NothingToSeeDown,
+		NoPathLeadingDown
+	);
+
+
+	room.create( "pantry162" );
+	mov( esi, rooms[ r_pantry162 ] );
+	roomESI.initroom
+	(
+		n_pantry162,
+
+		"Within the pantry (north of kitchen)",
+
+		"You are standing in a dark pantry. There is very" nl
+		"little light here. Although you can barely make" nl
+		"it out, rows of shelves line either side of the" nl
+		"room. From your point of view, they appear to be." nl
+		"densely flat. Bread lies on the western shelf.",
+
+		initRoomStrs( south )
+	);
+
+
+	room.create( "smalltoolshed163" );
+	mov( esi, rooms[ r_smallToolshed163 ] );
+	roomESI.initroom
+	(
+		n_smallToolshed163,
+
+		"Small toolshed",
+
+		"You have entered a small toolshed. Light is very" nl
+		"sparse here, obviously. The surrounding room is" nl
+		"covered with dust and soot, something not unusual" nl
+		"in most toolsheds. A few shelves line the walls," nl
+		"while a window overlooks a fountain to the north.",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "smallgarden164" );
+	mov( esi, rooms[ r_smallGarden164 ] );
+	roomESI.initroom
+	(
+		n_smallGarden164,
+
+		"Small garden",
+
+		"You are overlooking a small garden. Rows of flowers" nl
+		"grow in neat columns across the ground. To the west" nl
+		"stands a small toolshed. To the north, the garden" nl
+		"continues near a stone fountain. The patio lies" nl
+		"directly east of here.",
+
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "outdoorpatio165" );
+	mov( esi, rooms[ r_outdoorPatio165 ] );
+	roomESI.initroom
+	(
+		n_outdoorPatio165,
+
+		"Outdoor patio (near a lawn and garden)",
+
+		"You are standing on the outdoor patio of the mansion." nl
+		"The area is surrounded by a lawn and garden. A concrete" nl
+		"wall encloses the lawn in both directions here. To the" nl
+		"west lies a small garden. Further west, you notice" nl
+		"a small toolshed.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "lawn166" );
+	mov( esi, rooms[ r_lawn166 ] );
+	roomESI.initroom
+	(
+		n_lawn166,
+
+		"Lawn (southern edge)",
+
+		"You are standing on a grassy lawn. The grass tickles" nl
+		"your feet as you traverse it. A large wall blocks" nl
+		"passage to the south and east, while the lawn itself" nl
+		"continues north. It looks well-maintained and cared" nl
+		"for. The patio stands to the west.",
+
+		initRoomStrs( north )
+	);
+
+
+	room.create( "stonefountain167" );
+	mov( esi, rooms[ r_stoneFountain167 ] );
+	roomESI.initroom
+	(
+		n_stoneFountain167,
+
+		"Stone fountain (complete with statue)",
+
+		"You are standing before an impressive stone" nl
+		"fountain. A statue rests in the center, upholding" nl
+		"a tilted ornate jar. Water trickles down from the" nl
+		"jar into a motted basin below. The water appears " nl
+		"clear and devoid of algae.",
+
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "smallgarden168" );
+	mov( esi, rooms[ r_smallGarden168 ] );
+	roomESI.initroom
+	(
+		n_smallGarden168,
+
+		"Small garden (east of a stone fountain)",
+
+		"You are overlooking a small garden, just east of a" nl
+		"stone fountain. Flowers grow in neat little rows" nl
+		"across the ground. A tall olive tree grows to the north" nl
+		"here, hanging over the courtyard area by some degrees." nl
+		"A lawn grows to the east.",
+
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "lawn169" );
+	mov( esi, rooms[ r_lawn169 ] );
+	roomESI.initroom
+	(
+		n_lawn169,
+
+		"On the lawn",
+
+		"You are standing on a grassy lawn, just east from a" nl
+		"small garden. Further to the west, you notice a large" nl
+		"stone fountain. Just beyond the statue extends a" nl
+		"rotund courtyard, and beyond it, stands a concrete" nl
+		"enclosure wall.",
+
+		initRoomStrs(south, east, west)
+	);
+
+
+	room.create( "lawn170" );
+	mov( esi, rooms[ r_lawn170 ] );
+	roomESI.initroom
+	(
+		n_lawn170,
+
+		"On the lawn (eastern perimeter)",
+
+		"You are walking on a grassy lawn. A garden grows" nl
+		"to the west, just opposite a stone fountain. To the" nl
+		"east, the lawn continues towards a long retaining wall" nl
+		"(more like an enclosure wall). The outdoor patio" nl
+		"stands to the south.",
+
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "olivetree171" );
+	mov( esi, rooms[ r_oliveTree171 ] );
+	roomESI.initroom
+	(
+		n_oliveTree171,
+
+		"By the olive tree",
+
+		"You are standing before a large olive tree" nl
+		"in the center of a courtyard. The branches of" nl
+		"the olive tree extend westward toward a tall" nl
+		"enclosure wall. To the southwest stands an" nl
+		"impressive stone fountain.",
+
+		initRoomStrs( south )
+	);
+
+
+	room.create( "shindenvilla172" );
+	mov( esi, rooms[ r_shindenVilla172 ] );
+	roomESI.initroom
+	(
+		n_shindenVilla172,
+
+		"By the Shinden Villa",
+
+		"You are standing outside on a grassy lawn. The beautiful Shinden Villa stands" nl
+		"before you, the heavy tile roofs and vermilion columns vividly apparent in the" nl
+		"midday sun. To the west stands a narrow water source, traditional to Esoteric" nl
+		"practices of the Mikkyo warrior.",
+
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "narrowbridge173" );
+	mov( esi, rooms[ r_narrowBridge173 ] );
+	roomESI.initroom
+	(
+		n_narrowBridge173,
+
+		"Near a water source, by the bridge",
+
+		"You are facing due west near a vast water source south of Shinan Villa." nl
+		"There stands to the west a beautifully constructed wooden bridge. You may" nl
+		"cross it at any time.",
+
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "narrowbridge174" );
+	mov( esi, rooms[ r_narrowBridge174 ] );
+	roomESI.initroom
+	(
+		n_narrowBridge174,
+
+		"Atop a wooden bridge, facing west",
+
+		"You are standing atop a narrow wooden foot bridge (made from zelkova) just" nl
+		"in front of a narrow water source. There are small gardens to the west, but" nl
+		"they are not fully accessible on foot. You must reach the Western portico" nl 
+		"before entering the Zen gardens of Shinden Villa.",
+
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "shallowpond175" );
+	mov( esi, rooms[ r_shallowPond175 ] );
+	roomESI.initroom
+	(
+		n_shallowPond175,
+
+		"Wading in the pond, south of Villa",
+
+		"You are waist high in a small pond just south of the Shinden Villa. To the" nl
+		"north, the pond arcs in a zigzag fashion with accompanying wooden bridges" nl
+		"to facilitate access across the outlets of the pond (which flow past the" nl
+		"main shrine to the east).",
+
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "westernportico176" );
+	mov( esi, rooms[ r_westernPortico176 ] );
+	roomESI.initroom
+	(
+		n_westernPortico176,
+
+		"Before the Western Portico",
+
+		"You are standing before the Western Portico of Shinden Villa. The entry point" nl
+		"is marked by vermilion columns and above you stands impressive tile roofing." nl
+		"Beyond the entrance to the portico lies the Southern Hall into the heart of" nl
+		"the western portion of the Shinden Villa Shrine.",
+
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "shallowpond177" );
+	mov( esi, rooms[ r_shallowPond177 ] );
+	roomESI.initroom
+	(
+		n_shallowPond177,
+
+		"A shallow section of the pond, west of portico",
+
+		"You are wading with bare feet in a shallow section of the Shinden pond. The" nl
+		"water source ends abruptly at a large portico to the west.",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "shallowpond178" );
+	mov( esi, rooms[ r_shallowPond178 ] );
+	roomESI.initroom
+	(
+		n_shallowPond178,
+
+		"Knee-high in the pond, south of Shinden Villa",
+
+		"You are wading nearly knee-high in a large pond just south of the beautiful" nl
+		"Shinden Villa. To the east lies a small wooden foot bridge. However, you" nl
+		"cannot reach it from here (without fully submerging yourself in water -- a" nl
+		"'no-no' with heavy armor and a fat tummy).",
+
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "narrowbridge179" );
+	mov( esi, rooms[ r_narrowBridge179 ] );
+	roomESI.initroom
+	(
+		n_narrowBridge179,
+
+		"On the western bridge, facing west of course",
+
+		"You are standing on a narrow wooden bridge just west of the main outsource" nl
+		"for Shinden pond. The water is fairly clean -- from what you can tell, anyway" nl
+		"-- and you notice beautiful birch trees towering slightly above the ground" nl
+		"level on a grassy section that separates the eastern portion of the pond" nl 
+		"from the western section.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "shallowpond180" );
+	mov( esi, rooms[ r_shallowPond180 ] );
+	roomESI.initroom
+	(
+		n_shallowPond180,
+
+		"Chest-high in the pond, south of Shinden Villa",
+
+		"You are wading chest-high in a large pond directly south of Shinden Villa." nl
+		"Your access to the northern section is cutoff by a fallen bridge. Apparently" nl
+		"someone has taken it upon themselves to make your life more difficult. Oh" nl
+		"well.",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "shallowpond181" );
+	mov( esi, rooms[ r_shallowPond181 ] );
+	roomESI.initroom
+	(
+		n_shallowPond181,
+
+		"South of the main villa, within the pond",
+
+		"You are wading chest-high in a large and exasperating water source just south" nl
+		"of the main villa. You may follow the source of the water as it flows west, but" nl 
+		"be careful: Any excess items may wash away into the murky bottom below!",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "shallowpond182" );
+	mov( esi, rooms[ r_shallowPond182 ] );
+	roomESI.initroom
+	(
+		n_shallowPond182,
+
+		"By a shallow pond, near the foot bridge",
+
+		"You are wading with bare feet in a shallow section of the Shinden pond. To the" nl
+		"south lies a small foot bridge, but you must follow the water source north due" nl 
+		"to restrictions placed upon you by Kukai, the Buddhist priest who appears to" nl 
+		"run this place.",
+
+		initRoomStrs( south )
+	);
+
+
+	room.create( "grassysection183" );
+	mov( esi, rooms[ r_grassySection183 ] );
+	roomESI.initroom
+	(
+		n_grassySection183,
+
+		"Grassy section, Eastern Villa",
+
+		"You are walking along a grassy section in the eastern quadrant of the Shinden" nl
+		"Villa. The courtyard in front of you (yes, there is a small walkway heading" nl 
+		"north, lined with flowers) belies the beauty and magnificent stupor of the" nl
+		"villa itself. You may head north of here into the Zen gardens.",
+
+		initRoomStrs( north, east, west )
+	);
+
+
+	room.create( "eastofvilla184" );
+	mov( esi, rooms[ r_eastOfVilla184 ] );
+	roomESI.initroom
+	(
+		n_eastOfVilla184,
+
+		"East of Villa, near a large birch forest",
+
+		"You are facing due east near a vast water source east of Shinan Villa. The" nl
+		"grass is very green in this section, especially due to the water source" nl
+		"which seems to flow south of here into a large birch forest. From the" nl 
+		"northeast -- just beyond this Villa -- you can make out towering mountains" nl
+		"which seem to raise themselves to the sky without effort. The beauty is" nl
+		"breathtaking.",
+
+		initRoomStrs( west )
+	);
+
+
+	room.create( "easternportico185" );
+	mov( esi, rooms[ r_easternPortico185 ] );
+	roomESI.initroom
+	(
+		n_easternPortico185,
+
+		"Grassy area, near the Eastern Portico",
+
+		"You are walking across a grassy area nearest the Eastern Portico. The path you" nl
+		"are walking on ends abruptly in front of the portico to the east.",
+
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "easternportico186" );
+	mov( esi, rooms[ r_easternPortico186 ] );
+	roomESI.initroom
+	(
+		n_easternPortico186,
+
+		"Near the Portico, facing east",
+
+		"You are facing east near the portico. Interestingly, the vermilion columns" nl
+		"have eroded some and give evidence to the earthen material packed below it." nl
+		"Someone has been naughty.",
+
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "easternportico187" );
+	mov( esi, rooms[ r_easternPortico187 ] );
+	roomESI.initroom
+	(
+		n_easternPortico187,
+
+		"By the Eastern Portico, near Southern Hall",
+
+		"You stand before the Eastern Portico of Shinden Villa. Three vermilion columns" nl
+		"appraise your vision directly north, but much of the hard work to repaint them" nl
+		"has been tarnished by some vile character who shall remain anonymous. Is the" nl 
+		"Inspector around, people?",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "pond188" );
+	mov( esi, rooms[ r_pond188 ] );
+	roomESI.initroom
+	(
+		n_pond188,
+
+		"Wading in a pond, near some buildings",
+
+		"You are wading through a narrow and shallow section of the water source. Just" nl
+		"west of here lies a vertical stretch of buildings connected to each other by" nl
+		"'joints'. These small connecting points are actually built into the hallway" nl
+		"similar to the guard house concept of Western civilization.",
+
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "islandoverlook189" );
+	mov( esi, rooms[ r_islandOverlook189 ] );
+	roomESI.initroom
+	(
+		n_islandOverlook189,
+
+		"Overlooking the Island, across the Ohi River",
+
+		"You are overlooking the island near a series of arched bridges." nl
+		"These bridges are high enough to allow boats to pass underneath. You also" nl
+		"see many stone lanterns near the boat landing areas to the east and west." nl
+		"To the northeast, you notice the Onrin-do, a shrine of Hachi-jo. But it" nl 
+		"is not accessible from your vantage point, across the Ohi River.",
+
+		initRoomStrs( north, south )
+	);
+
+
+
+
+
+
+	
+	
+		
+	
+
+
+	// Rooms 190..223 provided by Nathan Baker
+	
+	// Rooms 190..223 provided by Nathan Baker
+	
+	room.create( "southernhall190" );
+	mov( esi, rooms[ r_southernHall190 ] );
+	roomESI.initroom
+	(
+		n_southernHall190,
+
+		"Inside the Southern Hall (Western Portico)",
+
+		"You are standing inside the Southern Hall near the Western Portico. The hallway" nl
+		"extends several feet towards the north, where it then turns sharply east. You" nl 
+		"notice a fishing pavilion (tsuri dono) to the south, extending from the edge" nl 
+		"of the pavilion down to the calm waters of the pond below.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "southernhall191" );
+	mov( esi, rooms[ r_southernHall191 ] );
+	roomESI.initroom
+	(
+		n_southernHall191,
+
+		"Inside the Southern Hall (Western Portico)",
+
+		"You are walking across the Southern Hall. It extends several more feet before" nl
+		"turning abruptly east. The interior of the hall is fairly simple, with only a" nl
+		"few ornamental objects of note. The Western Portico, overlooking a small" nl
+		"fishing pavilion, lies several feet to the south.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "hallwayturn192" );
+	mov( esi, rooms[ r_hallwayTurn192 ] );
+	roomESI.initroom
+	(
+		n_hallwayTurn192,
+
+		"A turn in the hallway (Western Portico)",
+
+		"You have reached an abrupt turn in the Southern Hall, heading east. The Shinden" nl
+		"opens up just ahead, into a brilliant expanse spanning the central interior of" nl
+		"the villa. You notice several shoji screens, separating the view of the garden" nl
+		"from the Shinden itself. Over 15 acres spread out from the main Shinden, look-" nl
+		"ing silently upon mountains to the southeast.",
+
+		initRoomStrs( south, east )
+	);
+
+
+	room.create( "insideshinden193" );
+	mov( esi, rooms[ r_insideShinden193 ] );
+	roomESI.initroom
+	(
+		n_insideShinden193,
+
+		"Inside the Shinden (Center Villa)",
+
+		"You are inside the Shinden, the main building of the Shinden Villa and Gardens." nl
+		"Several columns of shoji separate the view of the gardens from the house, but" nl 
+		"they can be pushed aside at will to open up the view from inside. The view is" nl
+		"what you've come to expect -- and then some! To say it is mildly exquisite and" nl
+		"innately beautiful would rob the breathtaking views their due justice. Towards" nl 
+		"the east, the Shinden narrows into a long hallway, stretching towards the" nl
+		"Eastern Portico, just beyond the Southern Hall.",
+
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "insideshinden194" );
+	mov( esi, rooms[ r_insideShinden194 ] );
+	roomESI.initroom
+	(
+		n_insideShinden194,
+
+		"Inside the Shinden (heading east)",
+
+		"You are facing a turn near the eastern portion of the Shinden. The Southern" nl
+		"hall heads south, stopping at a narrow spring pavilion, overlooking the beauty" nl
+		"of the main pond. You may also head east, into a small storage room (separated" nl
+		"by shoji).",
+
+		initRoomStrs( south, east, west )
+	);
+
+
+	room.create( "smallroom195" );
+	mov( esi, rooms[ r_smallRoom195 ] );
+	roomESI.initroom
+	(
+		n_smallRoom195,
+
+		"Inside a small room, separated by shoji",
+		"You are standing inside a small room, cut off from the rest of the Shinden by" nl
+		"large shoji. It is nothing more than a sleeping area for guests. Where the" nl
+		"master sleeps -- or even where the master is -- remains to a mystery." nl
+		"The only exit is back west.",
+
+		initRoomStrs( west )
+	);
+
+
+	room.create( "southernhall196" );
+	mov( esi, rooms[ r_southernHall196 ] );
+	roomESI.initroom
+	(
+		n_southernHall196,
+
+		"Inside the Southern Hall (Eastern Portico)",
+
+		"You are walking down a narrow hallway called the Southern Hall. To the north" nl
+		"lies the western portion of the main Shinden, heading west. It opens up into" nl
+		"a large living area, complete with removable shoji, for a better view of the" nl
+		"outside gardens. The hall continues north and south from this point.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "southernhall197" );
+	mov( esi, rooms[ r_southernHall197 ] );
+	roomESI.initroom
+	(
+		n_southernHall197,
+
+		"Inside the Southern Hall (Eastern Portico)",
+
+		"You are standing in the Southern Hall, near the Eastern Portico. The hall" nl
+		"extends several feet towards the north, before turning abruptly near the" nl
+		"main Shinden. A small spring pavilion is visible to the south, overlooking" nl
+		"the pond several feet below. In order to fish, though, you will need to" nl
+		"head across the complex to the Western Portico, where a fishing pavilion" nl
+		"is present.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "appleorchard198" );
+	mov( esi, rooms[ r_appleOrchard198 ] );
+	roomESI.initroom
+	(
+		n_appleOrchard198,
+
+		"In an orchard of apple trees",
+
+		"You are walking through an orchard of apple trees. Large trees grow in tall" nl
+		"rows as far as the eye can see. Looking up, you notice a large apple tree" nl
+		"by the side of the main path. It has low-lying branches and looks climbable," nl
+		"although caution should be taken. The orchard extends westward near a small" nl
+		"forest (heading south).",
+
+		initRoomStrs( west, up )
+	);
+
+
+	room.create( "vastcavern199" );
+	mov( esi, rooms[ r_vastCavern199 ] );
+	roomESI.initroom
+	(
+		n_vastCavern199,
+
+		"In a large, vast cavern (underground)",
+
+		"You have entered into an impossibly large and dark cavern just below the" nl
+		"main forest. It is obviously quite dark inside, with very little light" nl
+		"illuminating the darkness ahead. From what you can see, the cavern slopes" nl
+		"to the south somewhat before branching into smaller tunnels in either" nl
+		"direction. The air is quite foul here.",
+
+		initRoomStrs( south, up )
+	);
+
+
+	room.create( "twistingpassageway200" );
+	mov( esi, rooms[ r_twistingPassageway200 ] );
+	roomESI.initroom
+	(
+		n_twistingPassageway200,
+
+		"In a twisting passageway (heading in four directions)",
+
+		"You are standing at an intersection inside a vast network of small caves." nl
+		"Several tunnels head off in all directions here (some of them quite narrow" nl
+		"and dark). A larger tunnel heads south, possibly towards a pool of water." nl
+		"You hear the sound of water dripping nearby. Could water be far off, you" nl
+		"wonder?",
+
+		initRoomStrs( north, south, east, west )
+	);
+
+
+	room.create( "twistingpassageway201" );
+	mov( esi, rooms[ r_twistingPassageway201 ] );
+	roomESI.initroom
+	(
+		n_twistingPassageway201,
+
+		"In a twisting passageway (heading east)",
+
+		"You are crawling on your stomach in a dusty, terribly narrow passageway" nl
+		"just east of the main cavern. You may be able to doubleback and enter the" nl
+		"main cavern (to the west), but it looks risky at best! The air is almost" nl
+		"suffocating here, and you feel dizzy and out of breath! The only obvious" nl
+		"exit appears to be back south (unless you want to crawl even further...)",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "narrowpassage202" );
+	mov( esi, rooms[ r_narrowPassage202 ] );
+	roomESI.initroom
+	(
+		n_narrowPassage202,
+
+		"In a narrow passage (sloping down to the east)",
+
+		"At last you reach the end of this narrow passageway! You thought it would" nl
+		"never end! Looking out, you notice a small turnoff to the east (heading" nl
+		"north into darkness). The light appears to dance off the walls of this" nl
+		"tunnel, as if alive by itself! You wonder what magic lives beyond the" nl
+		"darkness ahead?",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "smalltunnel203" );
+	mov( esi, rooms[ r_smallTunnel203 ] );
+	roomESI.initroom
+	(
+		n_smallTunnel203,
+
+		"At the end of a small tunnel (heading north)",
+
+		"You have reached a small turnoff in the twisted passageway. It appears to" nl
+		"head north into a small room. Or is it a keep of some sort? You can barely" nl
+		"make out small candles flicking in the misty darkness in front of you. Who" nl
+		"lit these, and why do they still burn in this suffocating world? As you" nl
+		"ponder these mysteries, you feel an overwhelming urge to head north.",
+
+		initRoomStrs( north, west )
+	);
+
+
+	room.create( "smallkeep204" );
+	mov( esi, rooms[ r_smallKeep204 ] );
+	roomESI.initroom
+	(
+		n_smallKeep204,
+
+		"Inside a small keep (lit by candles)",
+
+		"You have entered into a small keep illuminated by several small candles. The" nl
+		"flames appear to dance in unison, as if moved by an unseen hand! The air is" nl
+		"remarkably thick here, as mist drifts throughout the room seamlessly. You" nl
+		"can't see much in here, although it appears to be a small treasure room of" nl
+		"some sort. Perhaps you can drop things here for points?",
+
+		initRoomStrs( south )
+	);
+
+
+	room.create( "darktunnel206" );
+	mov( esi, rooms[ r_darkTunnel206 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel206,
+
+		"In a dark tunnel (sloping down)",
+
+		"You are crawling in a narrow tunnel (sloping sharply downward). It feels like" nl
+		"a dusty trail of rocks and debris, although you can't be sure in this darkness!" nl
+		"The tunnel winds south several hundred feet. You feel a sinking feeling as you" nl
+		"climb down! This wasn't in the manual for the 'Greater Adventurer'! Who coded" nl
+		"this room, anyway?",
+
+		initRoomStrs( east, south )
+	);
+
+
+	room.create( "darktunnel207" );
+	mov( esi, rooms[ r_darkTunnel207 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel207,
+
+		"In a dark tunnel (twisting east)",
+
+		"You are crawling on your belly inside a dark tunnel. You can barely move" nl
+		"inside this thing! As you crawl slowly to the east, you notice a small rock" nl
+		"barring any further passage. It appears to have obstructed any view of the" nl
+		"remaining tunnel. You'll have to find another way towards the outer" nl
+		"entrance of this cavern...",
+
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "largerock208" );
+	mov( esi, rooms[ r_largeRock208 ] );
+	roomESI.initroom
+	(
+		n_largeRock208,
+
+		"By a large rock (within the cavern)",
+
+		"You are facing a large, jagged rock within the cavern. It has blocked off" nl
+		"the entrance to the east and is not easily moved. You wonder what might of" nl
+		"magic moved it here, but that's the least of your problems now! It appears" nl
+		"as though this entire tunnel is collapsing! You'll have to get out before" nl
+		"it entombs you inside...forever!",
+
+		initRoomStrs( west )
+	);
+
+
+	room.create( "magicalpool209" );
+	mov( esi, rooms[ r_magicalPool209 ] );
+	roomESI.initroom
+	(
+		n_magicalPool209,
+
+		"By a magical pool of water (near a cascading waterfall)",
+
+		"You are standing before a large pool of water. It gleams oddly in the" nl
+		"faded light of this cavern (as if enchanted by something). The pool extends" nl
+		"into a large waterfall to the east. It splashes down into the water below with" nl
+		"effortless ease. The waterfall cascades down from a small crack in the rock" nl
+		"above. A small tunnel is also here (heading west into darkness).",
+
+		initRoomStrs( north, east, west )
+	);
+
+
+	room.create( "smallwaterfall210" );
+	mov( esi, rooms[ r_smallWaterfall210 ] );
+	roomESI.initroom
+	(
+		n_smallWaterfall210,
+
+		"Within a small waterfall (splashing down from above)",
+
+		"You are standing inside a small waterfall just east of a mystical pool. The" nl
+		"water splashes down in front of you from above, cascading down from the nearby" nl
+		"rock. You hear a loud rushing sound as the waterfall nearly engulfs you! If it" nl
+		"weren't so dangerous being inside, you'd feel downright giddy! The only exit is" nl
+		"back west (out of the waterfall).",
+
+		initRoomStrs( west )
+	);
+
+
+	room.create( "secrettunnel211" );
+	mov( esi, rooms[ r_secretTunnel211 ] );
+	roomESI.initroom
+	(
+		n_secretTunnel211,
+
+		"In a secret tunnel (heading south)",
+
+		"You have reached a narrow tunnel deep within the cavern. It appears to be" nl
+		"unknown to anyone, as the walls are not marked in any discernable way. You" nl
+		"wonder where it leads (if anywhere)? The tunnel slopes to the south, before" nl
+		"heading into darkness ahead. Spooky!" nl
+		"The tunnel continues south.",
+
+		initRoomStrs( east, south )
+	);
+
+
+	room.create( "secrettunnel212" );
+	mov( esi, rooms[ r_secretTunnel212 ] );
+	roomESI.initroom
+	(
+		n_secretTunnel212,
+
+		"In a secret tunnel (scaling upward)",
+
+		"You are walking in a narrow tunnel (scaling upward some 200 feet). It appears" nl
+		"to head to an upper level within the caverns. Thankfully, you can reach it" nl
+		"by continuing the path towards the west. It slopes upward, requiring some" nl
+		"effort, but you'll manage. A rope will do little good here, as you can't" nl
+		"see a way to climb up..." nl
+		"The tunnel extends upward some 200 feet.",
+
+		initRoomStrs( north, up )
+	);
+
+
+	room.create( "darktunnel213" );
+	mov( esi, rooms[ r_darkTunnel213 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel213,
+
+		"In a dark tunnel (upper level of cavern)",
+
+		"The tunnel slopes south [100 feet]...",
+
+		initRoomStrs( south, down )
+	);
+
+
+	room.create( "darktunnel214" );
+	mov( esi, rooms[ r_darkTunnel214 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel214,
+
+		"In a dark tunnel (sloping to the south)",
+
+		"The tunnel slopes south [150 feet]...",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "darktunnel215" );
+	mov( esi, rooms[ r_darkTunnel215 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel215,
+
+		"In a dark tunnel (sloping to the south)",
+
+		"The tunnel slopes south [200 feet]...",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "darktunnel216" );
+	mov( esi, rooms[ r_darkTunnel216 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel216,
+
+		"In a dark tunnel (sloping to the south)",
+
+		"The tunnel slopes south [250 feet]...",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "darktunnel217" );
+	mov( esi, rooms[ r_darkTunnel217 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel217,
+
+		"In a dark tunnel (sloping to the south)",
+
+		"The tunnel slopes south [stopping at 300 feet]." nl
+		"A smaller tunnel is visible south of here.",
+
+		initRoomStrs( north, south )
+	);
+
+
+	room.create( "darktunnel218" );
+	mov( esi, rooms[ r_darkTunnel218 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel218,
+
+		"In a dark tunnel (at a narrow turnoff)",
+
+		"The tunnel heads east from here. There are only two visible" nl
+		"exits here: north and east. Any other direction is halted by" nl
+		"large vampires (only joking...) =).",
+
+		initRoomStrs( north, east )
+	);
+
+
+	room.create( "darktunnel219" );
+	mov( esi, rooms[ r_darkTunnel219 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel219,
+
+		"In a dark tunnel (heading east)",
+
+		"The tunnel slopes slightly east [250 feet]...",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "darktunnel220" );
+	mov( esi, rooms[ r_darkTunnel220 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel220,
+
+		"In a dark tunnel (heading east)",
+
+		"The tunnel slopes slightly east [265 feet]...",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "darktunnel221" );
+	mov( esi, rooms[ r_darkTunnel221 ] );
+	roomESI.initroom
+	(
+		n_darkTunnel221,
+
+		"In a dark tunnel (heading east)",
+
+		"The tunnel stops abruptly here (near a small keep). You notice" nl
+		"faint light dancing against the walls nearby. The light appears to" nl
+		"be alive, prompting a question: What manner of magic lit this" nl
+		"suffocating darkness? And what makes it work?" nl
+		"A keep stands to the east here.",
+
+		initRoomStrs( east, west )
+	);
+
+
+	room.create( "sacredkeep222" );
+	mov( esi, rooms[ r_sacredKeep222 ] );
+	roomESI.initroom
+	(
+		n_sacredKeep222,
+	
+		"Within a sacred keep (slightly darkened)",
+
+		"You are standing inside a sacred keep. It is slightly" nl
+		"darkened, lit up by small candles nearby. There isn't" nl
+		"much here at the moment, but perhaps you can find a" nl
+		"use for this room in the near future?" nl
+		"The only exit is back west.",
+
+		initRoomStrs( west )
+	);
+
+
+	room.create( "topappletree223" );
+	mov( esi, rooms[ r_topAppleTree223 ] );
+	roomESI.initroom
+	(
+		n_topAppleTree223,
+
+		"High atop an apple tree (standing on a tree branch).",
+
+		"You are standing on a branch atop a large apple tree. Your vision is" nl
+		"slightly shrouded by the leaves above, but you looking out you can see" nl
+		"a small town to the northwest (near a small forest). You also notice a" nl
+		"long path heading deeper into a forest of tall oak trees (to the south)." nl
+		"The only exit is back down (unless you can fly, that is!).",
+
+		initRoomStrs( down )
+	);
+
+
+
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	// The following code (machine-generated by "makelinks.hla, btw), 
+	// initializes the links between all the rooms.
+
+
+	links
+	(
+		r_tavern1, 
+		NULL,
+		r_villagePath5,
+		NULL,
+		NULL,
+		r_upstairsHallway2,
+		NULL
+	);
+
+	links
+	(
+		r_upstairsHallway2, 
+		NULL,
+		NULL,
+		r_smallRoom4,
+		NULL,
+		NULL,
+		r_tavern1
+	);
+
+	links
+	(
+		r_villageStore3, 
+		NULL,
+		NULL,
+		NULL,
+		r_villagePath5,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallRoom4, 
+		NULL,
+		NULL,
+		NULL,
+		r_upstairsHallway2,
+		NULL,
+		NULL
+	);
+
+	links									   
+	(
+		r_villagePath5, 
+		r_tavern1,
+		r_villageWell6,
+		r_villageStore3,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_villageWell6, 
+		r_villagePath5,
+		r_townEntrance11,
+		r_smallCathedral7,
+		r_guild10,
+		NULL,
+		NULL
+	);
+	
+
+	links
+	(
+		r_smallCathedral7, 
+		r_stoneAltar8,
+		NULL,
+		NULL,
+		r_villageWell6,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_stoneAltar8, 
+		NULL,
+		r_smallCathedral7,
+		r_storageRoom9,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_storageRoom9, 
+		NULL,
+		NULL,
+		NULL,
+		r_stoneAltar8,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_guild10, 
+		NULL,
+		NULL,
+		r_villageWell6,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_townEntrance11, 
+		r_villageWell6,
+		r_wellLitPath12,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_wellLitPath12, 
+		r_townEntrance11,
+		r_forestPath13,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestPath13, 
+		r_wellLitPath12,
+		r_intersection14,
+		r_appleOrchard198,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_intersection14, 
+		r_forestPath13,
+		r_onThePath28,
+		r_brokenPath22,
+		r_windingRoad29,
+		NULL,
+		r_vastCavern199
+	);
+
+	links
+	(
+		r_redwoodForest15, 
+		NULL,
+		r_redwoodForest19,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_oldOakTree16, 
+		NULL,
+		r_redwoodForest20,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_atopForest17, 
+		NULL,
+		NULL,
+		r_grassRoomHut18,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_grassRoomHut18, 
+		NULL,
+		NULL,
+		NULL,
+		r_atopForest17,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest19, 
+		r_redwoodForest15,
+		r_brokenPath22,
+		r_redwoodForest20,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest20, 
+		r_oldOakTree16,
+		r_brokenPath23,
+		r_redwoodForest21,
+		r_redwoodForest19,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest21, 
+		NULL,
+		NULL,
+		r_redwoodForest97,
+		r_redwoodForest20,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_brokenPath22, 
+		r_redwoodForest19,
+		r_grassyHillside27,
+		r_brokenPath23,
+		r_intersection14,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_brokenPath23, 
+		r_redwoodForest20,
+		r_smallClearing26,
+		r_abandonedCottage24,
+		r_brokenPath22,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_abandonedCottage24, 
+		NULL,
+		NULL,
+		NULL,
+		r_brokenPath23,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_byTheLake25, 
+		NULL,
+		NULL,
+		NULL,
+		r_smallClearing26,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallClearing26, 
+		r_brokenPath23,
+		NULL,
+		r_byTheLake25,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_grassyHillside27, 
+		r_brokenPath22,
+		r_smallHillside43,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_onThePath28, 
+		r_intersection14,
+		r_onThePathSouth42,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_windingRoad29, 
+		NULL,
+		NULL,
+		r_intersection14,
+		r_windingRoad30,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_windingRoad30, 
+		NULL,
+		NULL,
+		r_windingRoad29,
+		r_junction31,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_junction31, 
+		r_woodenBridge32,
+		NULL,
+		r_windingRoad30,
+		r_windingRoad34,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_woodenBridge32, 
+		r_bronzeStatue33,
+		r_junction31,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_bronzeStatue33, 
+		NULL,
+		r_woodenBridge32,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_windingRoad34, 
+		r_purpleMountains35,
+		NULL,
+		r_junction31,
+		r_purpleMountains38,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains35, 
+		r_purpleMountains36,
+		r_windingRoad34,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains36, 
+		NULL,
+		r_purpleMountains35,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains37, 
+		r_purpleMountains38,
+		NULL,
+		NULL,
+		r_purpleMountains41,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains38, 
+		r_darkCave39,
+		r_purpleMountains37,
+		r_windingRoad34,
+		r_purpleMountains40,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkCave39, 
+		r_twistedPassageway73,
+		r_purpleMountains38,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains40, 
+		r_islandOverlook189,
+		NULL,
+		r_purpleMountains38,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_purpleMountains41, 
+		NULL,
+		NULL,
+		r_purpleMountains37,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_onThePathSouth42, 
+		r_onThePath28,
+		r_southernRoad48,
+		NULL,
+		r_decayingForest45,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallHillside43, 
+		r_grassyHillside27,
+		r_grassyHillside49,
+		r_grassySlopeDown44,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_grassySlopeDown44, 
+		NULL,
+		r_southHillside50,
+		NULL,
+		r_smallHillside43,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_decayingForest45, 
+		NULL,
+		r_withinDyingForest47,
+		r_onThePathSouth42,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dyingForest46, 
+		NULL,
+		r_dyingForest52,
+		r_withinDyingForest47,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_withinDyingForest47, 
+		r_decayingForest45,
+		r_middleForest53,
+		NULL,
+		r_dyingForest46,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernRoad48, 
+		r_onThePathSouth42,
+		r_smallBridge54,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_grassyHillside49, 
+		r_smallHillside43,
+		r_southernSlope55,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southHillside50, 
+		r_grassySlopeDown44,
+		NULL,
+		r_easternPath51,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternPath51, 
+		NULL,
+		r_smallRavine57,
+		NULL,
+		r_southHillside50,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dyingForest52, 
+		r_dyingForest46,
+		r_dyingForest59,
+		r_middleForest53,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_middleForest53, 
+		r_withinDyingForest47,
+		r_dyingForest60,
+		r_smallBridge54,
+		r_dyingForest52,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallBridge54, 
+		r_southernRoad48,
+		r_widePath61,
+		NULL,
+		r_middleForest53,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernSlope55, 
+		r_grassyHillside49,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_northernCell56, 
+		NULL,
+		r_darkenedDungeon63,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallRavine57, 
+		r_easternPath51,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_endOfForest58, 
+		NULL,
+		NULL,
+		r_dyingForest59,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dyingForest59, 
+		r_dyingForest52,
+		r_endOfForest65,
+		r_dyingForest60,
+		r_endOfForest58,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dyingForest60, 
+		r_middleForest53,
+		r_endOfForest66,
+		NULL,
+		r_dyingForest59,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_widePath61, 
+		r_smallBridge54,
+		r_castleMoat67,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallCell62, 
+		NULL,
+		NULL,
+		r_darkenedDungeon63,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkenedDungeon63, 
+		r_northernCell56,
+		r_darkenedDungeon68,
+		r_smallCell64,
+		r_smallCell62,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallCell64, 
+		NULL,
+		NULL,
+		NULL,
+		r_darkenedDungeon63,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_endOfForest65, 
+		r_dyingForest59,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_endOfForest66, 
+		r_dyingForest60,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_castleMoat67, 
+		r_widePath61,
+		r_mainHallway70,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkenedDungeon68, 
+		r_darkenedDungeon63,
+		NULL,
+		NULL,
+		NULL,
+		r_smallLibrary71,
+		NULL
+	);
+
+	links
+	(
+		r_guestChambers69, 
+		NULL,
+		NULL,
+		r_mainHallway70,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_mainHallway70, 
+		r_castleMoat67,
+		r_smallThrone72,
+		r_smallLibrary71,
+		r_guestChambers69,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallLibrary71, 
+		NULL,
+		NULL,
+		NULL,
+		r_mainHallway70,
+		NULL,
+		r_darkenedDungeon68
+	);
+
+	links
+	(
+		r_smallThrone72, 
+		r_mainHallway70,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_twistedPassageway73, 
+		r_smallIntersection80,
+		r_darkCave39,
+		r_narrowTunnel74,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowTunnel74, 
+		NULL,
+		NULL,
+		NULL,
+		r_twistedPassageway73,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_twistedPassageway75, 
+		r_smallIntersection78,
+		NULL,
+		r_eastWestPassageway76,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_eastWestPassageway76, 
+		NULL,
+		NULL,
+		r_narrowOpening77,
+		r_twistedPassageway75,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowOpening77, 
+		NULL,
+		NULL,
+		NULL,
+		r_eastWestPassageway76,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallIntersection78, 
+		r_smallTunnel87,
+		r_twistedPassageway75,
+		r_smallCrevice79,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallCrevice79, 
+		NULL,
+		NULL,
+		NULL,
+		r_smallIntersection78,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallIntersection80, 
+		r_subterraneanPassageway85,
+		r_twistedPassageway73,
+		NULL,
+		r_tinyFissure81,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_tinyFissure81, 
+		NULL,
+		NULL,
+		r_smallIntersection80,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_endOfTunnel82, 
+		r_tunnelJunction83,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_tunnelJunction83, 
+		r_narrowPassageway91,
+		r_endOfTunnel82,
+		r_smallTunnel84,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallTunnel84, 
+		r_nearDeadEnd90,
+		NULL,
+		r_subterraneanPassageway85,
+		r_tunnelJunction83,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_subterraneanPassageway85, 
+		r_twistingPassageway89,
+		r_smallIntersection80,
+		r_easternJunction86,
+		r_smallTunnel84,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternJunction86, 
+		r_deadEnd88,
+		NULL,
+		r_smallTunnel87,
+		r_subterraneanPassageway85,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallTunnel87, 
+		NULL,
+		r_smallIntersection78,
+		NULL,
+		r_easternJunction86,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_deadEnd88, 
+		NULL,
+		r_easternJunction86,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_twistingPassageway89, 
+		r_wideTunnel93,
+		r_subterraneanPassageway85,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_nearDeadEnd90, 
+		NULL,
+		r_smallTunnel84,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowPassageway91, 
+		r_narrowTunnel92,
+		r_tunnelJunction83,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowTunnel92, 
+		r_smallKeep95,
+		r_narrowPassageway91,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_wideTunnel93, 
+		r_largeWaterfall94,
+		r_twistingPassageway89,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_largeWaterfall94, 
+		NULL,
+		r_wideTunnel93,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallKeep95, 
+		NULL,
+		r_narrowTunnel92,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallKeep96, 
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest97, 
+		r_redwoodForest98,
+		r_redwoodForest99,
+		r_redwoodForest102,
+		r_redwoodForest21,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest98, 
+		NULL,
+		r_redwoodForest97,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest99, 
+		r_redwoodForest97,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowPath100, 
+		NULL,
+		r_smallClearing101,
+		r_onThePath138,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallClearing101, 
+		r_narrowPath100,
+		r_redwoodForest102,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_redwoodForest102, 
+		r_smallClearing101,
+		r_dirtPath103,
+		NULL,
+		r_redwoodForest97,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dirtPath103, 
+		r_redwoodForest102,
+		r_dirtPath104,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dirtPath104, 
+		r_dirtPath103,
+		r_wellWornPath106,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallKeep105, 
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_wellWornPath106, 
+		r_dirtPath104,
+		NULL,
+		r_wellWornPath107,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_wellWornPath107, 
+		NULL,
+		NULL,
+		r_dirtPath112,
+		r_wellWornPath106,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach108, 
+		NULL,
+		r_sandyBeach110,
+		r_sandyBeach109,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach109, 
+		NULL,
+		r_sandyBeach111,
+		r_sandyBeach113,
+		r_sandyBeach108,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach110, 
+		r_sandyBeach108,
+		NULL,
+		r_sandyBeach111,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach111, 
+		r_sandyBeach109,
+		NULL,
+		NULL,
+		r_sandyBeach110,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_dirtPath112, 
+		NULL,
+		r_sandyBeach113,
+		NULL,
+		r_wellWornPath107,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach113, 
+		r_dirtPath112,
+		NULL,
+		r_sandyBeach115,
+		r_sandyBeach109,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach114, 
+		NULL,
+		r_sandyBeach115,
+		r_sandyBeach117,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach115, 
+		r_sandyBeach114,
+		NULL,
+		r_sandyBeach118,
+		r_sandyBeach113,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach116, 
+		NULL,
+		r_sandyBeach117,
+		r_sandyBeach119,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach117, 
+		r_sandyBeach116,
+		r_sandyBeach118,
+		r_sandyBeach120,
+		r_sandyBeach114,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach118, 
+		r_sandyBeach117,
+		NULL,
+		r_easternCoastline121,
+		r_sandyBeach115,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach119, 
+		NULL,
+		NULL,
+		NULL,
+		r_sandyBeach116,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sandyBeach120, 
+		NULL,
+		r_easternCoastline121,
+		r_eastOfSmallLagoon122,
+		r_sandyBeach117,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternCoastline121, 
+		r_sandyBeach120,
+		NULL,
+		NULL,
+		r_sandyBeach118,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_eastOfSmallLagoon122, 
+		NULL,
+		NULL,
+		r_lighthouseAtFlora123,
+		r_sandyBeach120,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_lighthouseAtFlora123, 
+		r_insideLighthouse137,
+		NULL,
+		NULL,
+		r_eastOfSmallLagoon122,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands124, 
+		r_forestWoodlands126,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands125, 
+		NULL,
+		NULL,
+		r_forestWoodlands126,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands126, 
+		r_forestWoodlands128,
+		r_forestWoodlands124,
+		r_middleWoodlands127,
+		r_forestWoodlands125,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_middleWoodlands127, 
+		NULL,
+		NULL,
+		NULL,
+		r_forestWoodlands126,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands128, 
+		r_onThePath139,
+		r_forestWoodlands126,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands129, 
+		r_intersection141,
+		r_forestWoodlands130,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands130, 
+		r_forestWoodlands129,
+		NULL,
+		r_forestWoodlands132,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands131, 
+		NULL,
+		r_forestWoodlands132,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands132, 
+		r_forestWoodlands131,
+		r_forestWoodlands133,
+		r_forestWoodlands134,
+		r_forestWoodlands130,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands133, 
+		r_forestWoodlands132,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodlands134, 
+		NULL,
+		NULL,
+		NULL,
+		r_forestWoodlands132,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_topOfLighthouse135, 
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		r_insideLighthouse136
+	);
+
+	links
+	(
+		r_insideLighthouse136, 
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		r_topOfLighthouse135,
+		r_insideLighthouse137
+	);
+
+	links
+	(
+		r_insideLighthouse137, 
+		NULL,
+		r_lighthouseAtFlora123,
+		NULL,
+		NULL,
+		r_insideLighthouse136,
+		NULL
+	);
+
+	links
+	(
+		r_onThePath138, 
+		r_spruceWoodland142,
+		NULL,
+		r_onThePath139,
+		r_narrowPath100,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_onThePath139, 
+		NULL,
+		r_forestWoodlands128,
+		r_forestJunction140,
+		r_onThePath138,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestJunction140, 
+		r_spruceWoodland143,
+		NULL,
+		r_intersection141,
+		r_onThePath139,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_intersection141, 
+		r_widePath144,
+		r_forestWoodlands129,
+		NULL,
+		r_forestJunction140,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_spruceWoodland142, 
+		r_forestWoodland147,
+		r_onThePath138,
+		NULL,
+		r_forestWoodland146,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_spruceWoodland143, 
+		r_forestWoodland149,
+		r_forestJunction140,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_widePath144, 
+		NULL,
+		r_intersection141,
+		r_endPath145,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_endPath145, 
+		r_frontOfMansion151,
+		NULL,
+		NULL,
+		r_widePath144,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodland146, 
+		NULL,
+		NULL,
+		r_forestWoodland147,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodland147, 
+		NULL,
+		r_spruceWoodland142,
+		NULL,
+		r_forestWoodland146,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodland148, 
+		NULL,
+		NULL,
+		r_forestWoodland149,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_forestWoodland149, 
+		NULL,
+		r_spruceWoodland143,
+		r_smallClearing150,
+		r_forestWoodland148,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallClearing150, 
+		NULL,
+		NULL,
+		NULL,
+		r_forestWoodland149,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_frontOfMansion151, 
+		r_frontOfMansion151, // becomes r_middleCorridor157 after werewolf qst,
+		r_endPath145,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallBedroom152, 
+		r_stoneArchway156,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_mainHallway153, 
+		r_middleCorridor157,
+		r_frontOfMansion151,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_masterBedroom154, 
+		NULL,
+		NULL,
+		r_alongACorridor155,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_alongACorridor155, 
+		r_guestBathroom159,
+		NULL,
+		r_stoneArchway156,
+		r_masterBedroom154,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_stoneArchway156, 
+		r_smallBedroom160,
+		r_smallBedroom152,
+		r_middleCorridor157,
+		r_alongACorridor155,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_middleCorridor157, 
+		r_livingRoom161,
+		r_mainHallway153,
+		r_inTheKitchen158,
+		r_stoneArchway156,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_inTheKitchen158, 
+		r_pantry162,
+		NULL,
+		NULL,
+		r_middleCorridor157,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_guestBathroom159, 
+		NULL,
+		r_alongACorridor155,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallBedroom160, 
+		NULL,
+		r_stoneArchway156,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_livingRoom161, 
+		r_livingRoom161,		// r_outdoorPatio165, after killing butler.
+		r_middleCorridor157,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_pantry162, 
+		NULL,
+		r_inTheKitchen158,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallToolshed163, 
+		NULL,
+		NULL,
+		r_smallGarden164,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallGarden164, 
+		r_smallGarden168,
+		NULL,
+		NULL,
+		r_smallToolshed163,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_outdoorPatio165, 
+		r_lawn169,
+		r_livingRoom161,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_lawn166, 
+		r_lawn170,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_stoneFountain167, 
+		NULL,
+		NULL,
+		r_smallGarden168,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallGarden168, 
+		r_oliveTree171,
+		r_smallGarden164,
+		r_lawn169,
+		r_stoneFountain167,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_lawn169, 
+		NULL,
+		r_outdoorPatio165,
+		r_lawn170,
+		r_smallGarden168,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_lawn170, 
+		NULL,
+		r_lawn166,
+		NULL,
+		r_lawn169,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_oliveTree171, 
+		NULL,
+		r_smallGarden168,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shindenVilla172, 
+		r_insideShinden193,
+		r_shallowPond175,
+		r_easternPortico185,
+		r_narrowBridge173,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowBridge173, 
+		NULL,
+		r_pond188,
+		r_shindenVilla172,
+		r_narrowBridge174,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowBridge174, 
+		r_shallowPond182,
+		NULL,
+		r_narrowBridge173,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond175, 
+		r_shindenVilla172,
+		r_narrowBridge179,
+		r_shallowPond180,
+		r_pond188,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_westernPortico176, 
+		r_southernHall190,
+		NULL,
+		r_shallowPond177,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond177, 
+		NULL,
+		NULL,
+		r_shallowPond178,
+		r_westernPortico176,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond178, 
+		r_shallowPond182,
+		NULL,
+		NULL,
+		r_shallowPond177,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowBridge179, 
+		r_shallowPond175,
+		r_shallowPond181,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond180, 
+		NULL,
+		NULL,
+		r_grassySection183,
+		r_shallowPond175,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond181, 
+		r_narrowBridge179,
+		r_islandOverlook189,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_shallowPond182, 
+		NULL,
+		r_shallowPond178,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_grassySection183, 
+		r_easternPortico185,
+		NULL,
+		r_eastOfVilla184,
+		r_shallowPond180,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_eastOfVilla184, 
+		NULL,
+		NULL,
+		NULL,
+		r_grassySection183,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternPortico185, 
+		NULL,
+		r_grassySection183,
+		r_easternPortico186,
+		r_shindenVilla172,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternPortico186, 
+		r_easternPortico187,
+		NULL,
+		NULL,
+		r_easternPortico185,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_easternPortico187, 
+		r_southernHall197,
+		r_easternPortico186,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_pond188, 
+		r_narrowBridge173,
+		NULL,
+		r_shallowPond175,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_islandOverlook189, 
+		r_shallowPond181,
+		r_purpleMountains40,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernHall190, 
+		r_southernHall191,
+		r_westernPortico176,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernHall191, 
+		r_hallwayTurn192,
+		r_southernHall190,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_hallwayTurn192, 
+		NULL,
+		r_southernHall191,
+		r_insideShinden193,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_insideShinden193, 
+		r_insideShinden193,
+		r_shindenVilla172,
+		r_insideShinden194,
+		r_hallwayTurn192,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_insideShinden194, 
+		NULL,
+		r_southernHall196,
+		r_smallRoom195,
+		r_insideShinden193,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallRoom195, 
+		NULL,
+		NULL,
+		NULL,
+		r_insideShinden194,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernHall196, 
+		r_insideShinden194,
+		r_southernHall197,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_southernHall197, 
+		r_southernHall196,
+		r_easternPortico187,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_appleOrchard198, 
+		NULL,
+		NULL,
+		NULL,
+		r_forestPath13,
+		r_topAppleTree223,
+		NULL
+	);
+
+	links
+	(
+		r_vastCavern199, 
+		NULL,
+		r_twistingPassageway200,
+		NULL,
+		NULL,
+		r_intersection14,
+		NULL
+	);
+
+	links
+	(
+		r_twistingPassageway200, 
+		r_vastCavern199,
+		r_magicalPool209,
+		r_twistingPassageway201,
+		r_darkTunnel206,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_twistingPassageway201, 
+		NULL,
+		NULL,
+		r_narrowPassage202,
+		r_twistingPassageway200,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_narrowPassage202, 
+		NULL,
+		NULL,
+		r_smallTunnel203,
+		r_twistingPassageway201,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallTunnel203, 
+		r_smallKeep204,
+		NULL,
+		NULL,
+		r_narrowPassage202,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallKeep204, 
+		NULL,
+		r_smallTunnel203,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	// Room 205 is missing in the original game...
+
+	links
+	(
+		r_darkTunnel206, 
+		NULL,
+		r_darkTunnel207,
+		r_twistingPassageway200,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel207, 
+		r_darkTunnel206,
+		NULL,
+		r_largeRock208,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_largeRock208, 
+		NULL,
+		NULL,
+		NULL,
+		r_darkTunnel207,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_magicalPool209, 
+		r_twistingPassageway200,
+		NULL,
+		r_smallWaterfall210,
+		r_secretTunnel211,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_smallWaterfall210, 
+		NULL,
+		NULL,
+		NULL,
+		r_magicalPool209,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_secretTunnel211, 
+		NULL,
+		r_secretTunnel212,
+		r_magicalPool209,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_secretTunnel212, 
+		r_secretTunnel211,
+		NULL,
+		NULL,
+		NULL,
+		r_darkTunnel213,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel213, 
+		NULL,
+		r_darkTunnel214,
+		NULL,
+		NULL,
+		NULL,
+		r_secretTunnel212
+	);
+
+	links
+	(
+		r_darkTunnel214, 
+		r_darkTunnel213,
+		r_darkTunnel215,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel215, 
+		r_darkTunnel214,
+		r_darkTunnel216,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel216, 
+		r_darkTunnel215,
+		r_darkTunnel217,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel217, 
+		r_darkTunnel216,
+		r_darkTunnel218,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel218, 
+		r_darkTunnel217,
+		NULL,
+		r_darkTunnel219,
+		NULL,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel219, 
+		NULL,
+		NULL,
+		r_darkTunnel220,
+		r_darkTunnel218,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel220, 
+		NULL,
+		NULL,
+		r_darkTunnel221,
+		r_darkTunnel219,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_darkTunnel221, 
+		NULL,
+		NULL,
+		r_sacredKeep222,
+		r_darkTunnel220,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_sacredKeep222, 
+		NULL,
+		NULL,
+		NULL,
+		r_darkTunnel221,
+		NULL,
+		NULL
+	);
+
+	links
+	(
+		r_topAppleTree223, 
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		r_appleOrchard198
+	);
+
+	ret();
+	
+end initRooms;
+
+
+		
+
+end gsinit_hla;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

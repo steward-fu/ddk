@@ -1,0 +1,430 @@
+program astyleAll;
+#include( "stdlib.hhf" )
+#include ("filter.hhf" )
+
+?@nodisplay := true;
+?@noalignstack := true;
+
+const
+	maxFiles := 64;
+	
+	// Set allMatchingFiles to true if you want this filter to process
+	// all files that match a filename containing wildcard characters.
+	// Set this constant false if you only want the filter program to
+	// process the *first* file that matches an ambiguous filename (one
+	// that contains wildcards).
+
+	allMatchingFiles := true;
+
+
+static
+	argc		:uns32;
+	fileCnt		:uns32;
+	files		:string[maxFiles];
+
+	recursive	:boolean := false;
+	verbose		:boolean := false;
+
+
+
+// processFile-
+//
+//	This procedure is responsible for doing whatever it is that
+// this filter program is supposed to do with the file.  The
+// filename parameter specifies the name of the file to process.
+// If this parameter contains NULL, then this procedure should read
+// its input from the standard input device.
+//
+// For demonstration purposes, this code simply displays the
+// filename of the file to process.	In other words, this is nothing
+// more than a fancy "DIR" command.
+
+procedure processFile( filename:string );
+begin processFile;
+
+	if( filename <> NULL ) then
+
+
+		stdout.put( "astyle -b -S ", filename, nl );
+
+	endif;
+
+end processFile;
+
+
+// FileInList-
+//
+// This iterator returns a string (in EAX) that corresponds
+// to a filename.  The parameter passed to this iterator is a filename,
+// one that typically contains wildcard characters (i.e., "*" and "?" ).
+// This iterator returns a list of filenames that match the, possibly
+// ambiguous, filename passed as a parameter.  This iterator fails
+// when there are no more matching filenames.
+//
+// Because the yield operation in an iterator doesn't share the
+// normal call/return semantics of a procedure, this procedure
+// preserves ECX and EDX across a yield/resume to prevent nasty
+// suprises in the calling code.
+
+iterator FileInList( FileList:string );
+var
+	handle		:dword;
+	_ecx		:dword;
+	_edx		:dword;
+	curFile		:string;
+	FileData:	Win32FindData;
+	
+begin FileInList;
+
+	// Save ECX and EDX for when we yield to the iterator.
+	// Preserve EAX acro
+
+	mov( ecx, _ecx );
+	mov( edx, _edx );
+
+	// Find the first matching file (if one exists).
+	// Save the handle for use by FindNextFile.
+	
+	FindFirstFile( FileList, FileData );
+	mov( eax, handle );
+	
+	// If we matched at least one filename, return
+	// the corresponding string and call the
+	// FindNextFile routine to match any additional
+	// filenames.
+	
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+	
+		repeat
+		
+			// FindFirstFile & FindNextFile return
+			// zero-terminated strings.  Convert these
+			// to HLA compatible strings and return
+			// the converted string:
+			
+			lea( eax, FileData.FileName );
+			str.a_cpyz( eax );
+			mov( eax, curFile );
+			
+			// Return the converted string to the FOREACH
+			// loop and then free the storage associated
+			// with the string.	 Note that this iterator
+			// does not return directory names, only real files.
+			
+			mov( FileData.FileAttributes, eax );
+			test( w.FILE_ATTRIBUTE_DIRECTORY, eax );
+			if( @z ) then
+
+				mov( curFile, eax );
+				mov( _ecx, ecx );
+				mov( _edx, edx );
+				yield();		// Return string to FOREACH loop.
+				mov( edx, _edx );
+				mov( ecx, _ecx );
+
+			endif;
+			strfree( curFile );
+		
+			// Get the next filename in the list (assuming, of course,
+			// we're compiling in support for processing all the matching
+			// files):
+			
+			#if( allMatchingFiles )
+
+				FindNextFile( handle, FileData );
+
+			#else
+
+				mov( false, al );
+
+			#endif
+			
+		until( al = false );
+		
+		// When we've processed all the filenames in the list,
+		// call FindClose to free the handle and other resources.
+		
+		FindClose( handle );
+		
+	endif;
+	mov( _ecx, ecx );	// Restore last values of ECX/EDX returned by
+	mov( _edx, edx );	// yield (or original entry, if loop didn't iterate)
+	pop( eax );			// Return original EAX value upon encountering foreach.
+
+end FileInList;
+
+
+/*
+** DirInCD-
+**
+**	This iterator returns a list of directory names found in
+** the current directory.
+*/
+
+iterator DirInCD;
+var
+	handle		:dword;
+	_ecx		:dword;
+	_edx		:dword;
+	dirName		:string;
+	FileData	:Win32FindData;
+	
+begin DirInCD;
+
+	// Preserve registers:
+
+	push( eax );
+	mov( ecx, _ecx );
+	mov( edx, _edx );
+
+	// Find the first matching file (if one exists).
+	// Save the handle for use by FindNextFile.
+	
+	FindFirstFile( "*", FileData );
+	mov( eax, handle );	
+	if( eax <> w.INVALID_HANDLE_VALUE ) then
+	
+		repeat
+		
+			mov( FileData.FileAttributes, eax );
+			and( w.FILE_ATTRIBUTE_DIRECTORY, eax );
+			if( @nz ) then
+
+				// FindFirstFile & FindNextFile return
+				// zero-terminated strings.  Convert these
+				// to HLA compatible strings and return
+				// the converted string:
+				
+				lea( eax, FileData.FileName );
+				str.a_cpyz( eax );
+				mov( eax, dirName );
+				
+				// Return the converted string to the FOREACH
+				// loop and then free the storage associated
+				// with the string.  Do not, however, return
+				// the "." and ".." directory entries.
+				
+				if
+				( 
+						(type char [eax]) <> '.'	
+					||	(
+								(type char [eax+1]) <> #0
+							&&	(
+										(type char [eax+1]) <> '.'
+									||	(type char [eax+2]) <> #0
+								)
+						)
+				) then
+
+
+					mov( dirName, eax );
+					mov( _ecx, ecx );
+					mov( _edx, edx );
+					yield();		// Return string to FOREACH loop.
+					mov( edx, _edx );
+					mov( ecx, _ecx );
+
+
+				endif;
+				strfree( dirName );
+
+			endif;
+			
+			// Get the next directory in the list:
+			
+			FindNextFile( handle, FileData );
+			
+		until( al = false );
+		
+		// When we've processed all the filenames in the list,
+		// call FindClose to free the handle and other resources.
+		
+		FindClose( handle );
+		
+	endif;
+	mov( _ecx, ecx );
+	mov( _edx, edx );
+	pop( eax );
+
+end DirInCD;
+
+
+
+/*
+** processAFilename-
+**
+** Given a filename (possibly ambiguous, with wildcards),
+** this procedure processes that particular file.  If the
+** filename is ambiguous (contains wildcard characters) then
+** this function processes all the files that match the
+** ambiguous filename specification.
+*/
+
+procedure processAFilename( filename:string );
+begin processAFilename;
+
+	foreach FileInList( filename ) do
+
+		mov( eax, ecx );
+		if( verbose ) then
+
+			stdout.put( "Processing file: ", (type string ecx), nl );
+
+		endif;
+		processFile( ecx );
+
+	endfor;
+
+end processAFilename;
+
+
+// processRecursive-
+//
+// This procedure recursively walks a directory tree starting
+// at the directory node specified by the 'pathName' parameter
+// (typically, the pathName is the string "." to process all the
+// directories starting with the current directory).  In each
+// directory this procedure (recursively) encounters, this
+// procedure calls "processAFilename" to process all the files
+// whose name is matched by the "filename" parameter.  Note that
+// filename may be an ambiguous filename (i.e., it may contain
+// wildcard characters). 
+
+procedure processRecursive( pathName:string; filename:string );
+var
+	dir			:string;
+	curDir		:char[260];
+
+begin processRecursive;
+
+
+	GetCurrentDirectory( 256, curDir );
+	SetCurrentDirectory( pathName );
+
+	/*
+	** Process the file(s) in the current directory first:
+	*/
+
+	processAFilename( filename );
+
+	/*
+	** If the recursive option was specified, process all the
+	** files in the subdirectories (contained within the current
+	** subdirectory) as well
+	*/
+
+	if( recursive ) then
+
+		foreach DirInCD() do
+
+			if( verbose ) then
+
+				stdout.put
+				( 
+					"Processing directory: '", 
+					(type string eax), 
+					"'" nl 
+				);
+
+			endif;
+			processRecursive( eax, filename );
+
+		endfor;
+
+	endif;
+	lea( eax, curDir );
+	SetCurrentDirectory( (type string eax) );
+
+end processRecursive;
+
+
+
+/*
+** Usage-
+**
+**	Must supply a "Usage" function that displays a short
+**	message describing the use of this filter program if
+**	there is a command line error.
+*/
+
+procedure Usage;
+begin Usage;
+
+	stdout.put( "Usage: astyleall  <options> <files>" nl );
+
+end Usage;
+
+
+
+const
+	ebxStr :text := "(type string ebx)";
+
+begin astyleAll;
+
+	// Miscellaneous initialization:
+
+	mov( false, recursive );
+
+	// Move all the command line arguments into a local array for
+	// processing:
+
+	mov( arg.c(), argc );
+	xor( edx, edx );
+	for( mov( 1, ecx ); ecx < argc; inc( ecx )) do
+
+		arg.v( ecx );
+		if( (type char [eax]) = '-' ) then
+
+			mov( eax, ebx );
+			str.lower( (type string eax) );
+			if( str.eq( ebxStr, "-r" )) then
+
+				mov( true, recursive );
+
+			elseif( str.eq( ebxStr, "-v" )) then
+
+				mov( true, verbose );
+
+			else
+
+				stdout.put( "Error: unexpected option: '", ebxStr, "'" nl );
+				Usage();
+				exit astyleAll;
+
+			endif;
+
+		else
+
+			mov( eax, files[ edx*4 ]);
+			inc( edx );
+
+		endif;
+
+	endfor;
+	mov( edx, fileCnt );
+
+	// Okay, process all the filenames found on the command line:
+
+	if( edx <> 0 ) then
+
+		for( mov( 0, edi ); edi < fileCnt; inc( edi )) do
+
+			// Process the current command line parameter if it isn't
+			// a command line option beginning with a '-':
+
+			processRecursive( ".", files[ edi*4 ] );
+			strfree( files[ edi*4 ] );
+
+		endfor;
+
+	else
+
+		processFile( NULL );
+
+	endif;
+
+
+	
+end astyleAll;
+           
+

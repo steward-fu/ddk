@@ -1,0 +1,237 @@
+unit disasmEngine;
+#includeonce( "stdlib.hhf" )
+#includeonce( "disasm.hhf" )
+										  
+?@nostackalign := true;
+?@nodisplay := true;
+?@noframe := true;
+
+
+// fpOpXlat-
+//
+// 	Floating point mnemonic translation table. See comments for fpOp2m_t 
+//	for a description of this table's purpose.
+
+readonly
+	align(4);
+	fpOpXlat	:fpOp2m_t[8,256] := fpOpXlat_c;
+
+////////////////////////////////////////////////////////////////////////////
+//
+// Floating-point instructions get handled here
+//
+////////////////////////////////////////////////////////////////////////////
+//
+// FPInstrs-
+//	Handles the floating-point instructions that begin with the
+//	$d8..$df prefix byte.
+//
+// The byte following the $D8..$DF prefix is a mod-reg-r/m byte
+// with the following characteristics:
+//
+//	1.	If the mod field (H.O. two bits) are %11, then the remaining
+//		six bits are interpreted as an FP opcode.
+//
+//	2.	If the mod field contains %00, %01, or %10, then the reg
+//		field is an opcode and the mod-r/m fields specify a memory
+//		address.
+
+
+_proc( FPInstrs, eax, ecx, edx, edi );
+
+	// ESI points at the mod-reg-r/m byte, [ESI-1] is the ESC
+	// byte (in the range $D8..$DF).
+
+	mov( [esi-1], dh );	// prefix byte in the range $d8..$db
+	mov( [esi], dl );	// mod-reg-r/m byte.
+	add( 1, esi );
+
+	// Merge the $dX opcode with the mod-reg-r/m byte to
+	// form an index into the fpOpXlat table:
+
+	and( %111_11_111_111, edx );
+	mov( fpOpXlat.mnemonic[ edx*8 ], eax );
+	mov( eax, instrEDI.mnemonic );
+
+	// Process the operands for this instruction:
+	// Note: instrPtr is in ESI, destination record address
+	// is in EDI, and FP opcode index is in EDX.
+
+	call( fpOpXlat.handleOprnds[ edx*8 ] );
+
+
+_endProc;
+
+
+// fModRm-
+// Same as modRm, but for FPU register operands:
+
+procedure fModRm
+(
+		modrmByte	:byte in al;
+		size		:dword in ecx; 
+		instrPtr	:dword in esi; 
+	var dest		:operand_t in edx
+);
+readonly
+	mapRRR2FReg	:byte[8] := 
+		[
+			st0_c, st1_c, st2_c, st3_c, st4_c, st5_c, st6_c, st7_c
+		];
+		 
+begin fModRm;
+
+	preserve( ebx, ecx );	// Save size (ecx) on stack ([esp])
+
+		modRmMacro( mapRRR2FReg, false, [esp] );
+	
+	restore;
+
+end fModRm;
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Functions that deal with floating-point instruction operands.
+//
+// fpOpProc-
+//	A simple macro to reduce redundant headers in these functions
+//	(as their declarations are all identical except for their names).
+
+#macro fpOpProc( funcName );
+
+	procedure funcName( fpOpFuncParms );
+	begin funcName;
+
+		push( edx );
+
+  #terminator _endProc;
+
+		pop( edx );
+		ret();
+
+	end funcName
+
+#endmacro
+
+// fpOp2Reg-
+//	Converts the floating-point opcode (passed in DL)
+//	into an enumerated floating-point register constant.
+
+#macro fpOp2reg( operand );
+
+	and( %111, dl );
+	add( st0_c, dl );
+	mov( dl, instrEDI.operand.register );
+	mov( register_c, instrEDI.operand.opClass );
+
+#endmacro
+
+
+// st0stn-
+//	Dest operand is st0, source operand is st(n)
+
+fpOpProc( st0stn );
+
+	mov( register_c, instrEDI.firstOp.opClass );
+	mov( st0_c, instrEDI.firstOp.register );
+	fpOp2reg( secondOp );
+	
+_endProc;
+
+// stnst0-
+//	Dest operand is st(n), source is st0
+
+fpOpProc( stnst0 );
+
+	mov( register_c, instrEDI.secondOp.opClass );
+	mov( st0_c, instrEDI.secondOp.register );
+	fpOp2reg( firstOp );
+
+_endProc;
+
+
+// stn-
+//	Single operand is st(n)
+
+fpOpProc( stn );
+
+	fpOp2reg( firstOp );
+
+_endProc;
+
+
+// fpAX-
+//	Single operand is the AX register.
+
+fpOpProc( fpAX );
+
+	mov( register_c, instrEDI.firstOp.opClass );
+	mov( ax_c, instrEDI.firstOp.register );
+
+_endProc;
+
+
+// fpMemOp-
+//	Memory operands for floating point instructions.
+//	The fpMemOp macro generates the functions for
+//	singleReal, doubleReal, extendedReal, wordMem,
+//	fpInt16, fpInt32, fpInt64, and fpBCD80 operands.
+
+#macro fpMemOp( func, size );
+
+	procedure func( fpOpFuncParms );
+	begin func;
+
+		push( edx );
+		fModRm( dl, size, esi, instrEDI.firstOp );
+		pop( edx );
+		ret();
+
+	end func;
+
+#endmacro
+
+fpMemOp( singleReal, 4 );
+fpMemOp( doubleReal, 8 );
+fpMemOp( extendedReal, 10 );
+fpMemOp( wordMem, 2 );
+fpMemOp( fpInt16, 2 );
+fpMemOp( fpInt32, 4 );
+fpMemOp( fpInt64, 8 );
+fpMemOp( fpBCD80, 10 );
+
+
+
+// fpEnv-
+//	Handles the memory operand for the fldenv and fstenv
+//	instructions.
+
+procedure fpEnv( fpOpFuncParms );
+begin fpEnv; 
+
+	preserve( edx, ecx );
+
+		if( instrEDI.sizePre ) then
+
+			// If we have a size prefix, then the FP environment
+			// variable is 14 bytes long.
+
+			mov( 14, ecx );
+
+		else
+
+			// If no size prefix, then the FP environment
+			// variable is 28 bytes long.
+
+			mov( 28, ecx );
+
+		endif;
+		fModRm( dl, ecx, esi, instrEDI.firstOp );
+
+	restore;
+
+end fpEnv;
+
+
+end disasmEngine;

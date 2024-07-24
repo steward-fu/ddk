@@ -1,0 +1,527 @@
+program testConsole;
+#include( "stdlib.hhf" );
+#include( "win32cons.hhf" );
+
+static
+
+	csbi:		win.CONSOLE_SCREEN_BUFFER_INFO;
+	inRec:		win.INPUT_RECORD;
+	Counter:	dword;
+	SaveMode:	dword;
+	buffer:		byte[4096];
+	
+
+	// Fill 3/4 of the screen with specified character:
+
+	procedure Fill3_4Screen( c:char ); nodisplay;
+	begin Fill3_4Screen;
+
+		movzx( csbi.srWindow.right, ebx );
+		movzx( csbi.srWindow.left, eax );
+		sub( eax, ebx );
+		
+		movzx( csbi.srWindow.bottom, ecx );
+		movzx( csbi.srWindow.top, eax );
+		sub( eax, ecx );
+		shr( 1, ecx );
+		mov( ecx, edx );
+		shr( 1, ecx );
+		add( edx, ecx );
+		for( mov( 0, esi ); esi < ecx; inc( esi )) do
+
+			for( mov( 0, edi ); edi < ebx; inc( edi )) do
+
+				stdout.put( c );
+
+			endfor;
+			stdout.newln();
+
+		endfor;
+
+	end Fill3_4Screen;
+
+
+	procedure GetNewln; nodisplay; noframe;
+	begin GetNewln;
+
+		// Save (x,y) coordinate because the user hitting enter
+		// is about to change it.
+
+		win32cons.getX();
+		push( eax );
+		win32cons.getY();
+		push( eax );
+
+		stdin.ReadLn();
+
+		// Restore (x,y) coordinate so clrtoEOScrn looks right.
+
+		pop( ebx );
+		pop( eax );
+		win32cons.gotoxy( bx, ax );
+		ret();
+
+	end GetNewln;
+
+
+
+static
+	OldHandle:	dword;
+
+begin testConsole;
+
+	// Grab the screen metric information:
+	
+	win32cons.info( csbi );
+	
+
+	// Clear the screen.
+	
+	win32cons.cls();
+	
+	// Set an screen to blue:
+	
+	movzx( csbi.dwSize.Y, eax );
+	movzx( csbi.dwSize.X, ebx );
+	dec( eax );
+	dec( ebx );
+	win32cons.fillRectAttr( 0, 0, ax, bx, win.bgnd_Blue );
+	win32cons.setOutputAttr( win.bgnd_Blue | win.fgnd_Yellow );
+	
+	// Read and display the current console window title:
+	
+	win32cons.a_getTitle();
+	stdout.put
+	( 
+		"Previous console window title was: '", 
+		(type string eax), 
+		"'" nl 
+	);
+	strfree( eax );
+	
+	// Set the console window title:
+	
+	win32cons.setTitle( "Randy's Console Window" );
+	
+	// Display the screen metric information:
+
+	win.GetLargestConsoleWindowSize( stdout.handle());
+	mov( eax, ebx );
+	rol( 16, eax );	
+	stdout.put
+	(
+		"Size X=", csbi.dwSize.X, nl,
+		"Size Y=", csbi.dwSize.Y, nl,
+		"Cursor X=", csbi.dwCursorPosition.X, nl,
+		"Cursor Y=", csbi.dwCursorPosition.Y, nl,
+		"Window Position Left=", csbi.srWindow.left, nl,
+		"Window Position Right=", csbi.srWindow.right, nl,
+		"Window Position Top=", csbi.srWindow.top, nl,
+		"Window Position Bottom=", csbi.srWindow.bottom, nl,
+		"Character display attribute=$", csbi.wAttributes, nl,
+		nl
+		"Maximum window height=", csbi.dwMaximumWindowSize.Y, nl,
+		"Maximum window width =", csbi.dwMaximumWindowSize.X, nl,
+		nl
+		"Largest possible window height=", (type uns16 ax), nl,
+		"Largest possible window width =", (type uns16 bx), nl
+	);
+	
+	// Test cursor position routines:
+	
+	win32cons.getX();
+	stdout.put( nl nl "Current X position=", (type uns32 eax ), nl );
+	win32cons.getY();
+	stdout.put( "Current Y position=", (type uns32 eax ), nl );
+	
+	win32cons.gotoxy( 20, 30 );
+	stdout.put( "Hello World" nl );
+	
+	// Test outputting rectangular blocks of color:
+	
+	win32cons.fillRect( 2,  50, 5,  55, ' ', win.bgnd_Black );
+	win32cons.fillRect( 6,  50, 9,  55, ' ', win.bgnd_Green );
+	win32cons.fillRect( 10, 50, 13, 55, ' ', win.bgnd_Cyan );
+	win32cons.fillRect( 14, 50, 17, 55, ' ', win.bgnd_Red );
+	win32cons.fillRect( 18, 50, 21, 55, ' ', win.bgnd_Magenta );
+	
+	win32cons.fillRect( 2,  60, 5,  65, ' ', win.bgnd_Brown );
+	win32cons.fillRect( 6,  60, 9,  65, ' ', win.bgnd_LightGray );
+	win32cons.fillRect( 10, 60, 13, 65, ' ', win.bgnd_DarkGray );
+	win32cons.fillRect( 14, 60, 17, 65, ' ', win.bgnd_LightBlue );
+	win32cons.fillRect( 18, 60, 21, 65, ' ', win.bgnd_LightGreen );
+	
+	win32cons.fillRect( 2,  70, 5,  75, ' ', win.bgnd_LightCyan );
+	win32cons.fillRect( 6,  70, 9,  75, ' ', win.bgnd_LightRed );
+	win32cons.fillRect( 10, 70, 13, 75, ' ', win.bgnd_LightMagenta );
+	win32cons.fillRect( 14, 70, 17, 75, ' ', win.bgnd_Yellow );
+	win32cons.fillRect( 18, 70, 21, 75, ' ', win.bgnd_White );
+	
+	
+	stdout.put( "Press enter to continue: " );
+	stdin.ReadLn();
+	win32cons.cls();
+	
+	// Wait until we get a keyboard event from the user:
+	
+	mov( 0, Counter );
+	stdout.put( "Press any key:" nl );
+	forever
+	
+		win32cons.peekInput( inRec );
+		if( eax ) then
+		
+			breakif( inRec.EventType = win.KEY_EVENT );
+			win32cons.readInput( inRec );
+			
+		endif;
+		inc( Counter );
+		stdout.put( (type uns32 Counter), stdio.cr );
+		
+	endfor;
+	win32cons.readInput( inRec );
+	stdout.put
+	( 
+		nl 
+		"Event=", inRec.EventType, nl,
+		"KeyDown=", inRec.Event.KeyEvent.bKeyDown, nl,
+		"Repeat =", inRec.Event.KeyEvent.wRepeatCount, nl
+		"KeyCode=", inRec.Event.KeyEvent.wVirtualKeyCode, nl 
+		"ScanCode=", inRec.Event.KeyEvent.wVirtualScanCode, nl,
+		"ASCIIcode=", inRec.Event.KeyEvent.AsciiChar, nl,
+		"CtrlState=", inRec.Event.KeyEvent.dwControlKeyState, nl,
+		nl 
+	);
+	win32cons.flushInput();
+	
+	stdout.put( nl "Press Enter to continue:" );
+	stdin.ReadLn();
+	win32cons.cls();
+	
+	
+		
+	
+	// Wait until we get a mouse event from the user:
+
+	win32cons.numButtons();
+	stdout.put( "Your mouse has ", (type uns32 eax), " buttons" nl );	
+	win32cons.getMode();
+	mov( eax, SaveMode );
+	or( win.ENABLE_MOUSE_INPUT, eax );
+	win32cons.setMode( eax );
+	
+	mov( 0, Counter );
+	stdout.put( "Click the mouse on the window: " nl );
+	forever
+	
+		win32cons.peekInput( inRec );
+		if( eax ) then
+
+			if( inRec.EventType = win.MOUSE_EVENT ) then
+			
+				breakif( inRec.Event.MouseEvent.dwButtonState );
+				
+			endif;
+			win32cons.readInput( inRec );
+			
+		endif;
+		inc( Counter );
+		stdout.put( (type uns32 Counter), stdio.cr );
+		
+	endfor;
+	win32cons.readInput( inRec );
+	win32cons.flushInput();
+	stdout.put
+	( 
+		nl 
+		"Event=", inRec.EventType, nl,
+		"PosnX=", inRec.Event.MouseEvent.dwMousePosition.X, nl,
+		"PosnY=", inRec.Event.MouseEvent.dwMousePosition.Y, nl,
+		"Button=", inRec.Event.MouseEvent.dwButtonState, nl,
+		"CtrlState=", inRec.Event.MouseEvent.dwControlKeyState, nl,
+		"EventFlags=", inRec.Event.MouseEvent.dwEventFlags, nl,
+		nl 
+	);
+
+	// Display character at cursor position:
+	
+	win32cons.getc
+	( 
+		movzx( inRec.Event.MouseEvent.dwMousePosition.Y, eax ),
+		movzx( inRec.Event.MouseEvent.dwMousePosition.X, eax )
+	);
+	stdout.put( "Char at cursor = '", (type char al), "'" nl );
+	
+	win32cons.a_gets
+	( 
+		0,
+		0,
+		40
+	);
+	stdout.put( "1st 40 chars of top line: '", (type string eax), "'" nl );
+	strfree( eax );
+
+	stdout.put( "Press enter to continue: " );
+	stdin.ReadLn();
+	win32cons.cls();
+
+	for( mov( 20, ecx); ecx > 0; dec( ecx )) do
+
+		stdout.put( (type uns32 ecx), nl );
+
+	endfor;
+	stdout.newln();
+
+
+	// Test scrolling the whole screen:
+
+	stdout.put( "Hit return three times to scroll up the screen:" );
+	stdin.ReadLn();
+	win32cons.scrollUp();
+	stdin.ReadLn();
+	win32cons.scrollUp();
+	stdin.ReadLn();
+	win32cons.scrollUp();
+
+	stdout.put( "Hit return to scroll up three lines on the screen: ");
+	stdin.ReadLn();
+	win32cons.scrollUpN( 3 );
+	
+	stdout.put( "Hit return to scroll up three lines using scrollUpx: " );
+	stdin.ReadLn();
+	win32cons.scrollUpx( '*', win.fgnd_Blue | win.bgnd_Yellow, 3 );
+	stdout.put( "Enter Enter to continue:" );
+	stdin.ReadLn();
+	win32cons.cls();
+	
+	
+
+	for( mov( 0, ecx); ecx < 20; inc( ecx )) do
+
+		stdout.put( (type uns32 ecx), nl );
+
+	endfor;
+	stdout.newln();
+	
+		
+	stdout.put( "Hit return to scroll down a line:" );
+	stdin.ReadLn();
+	win32cons.scrollDn();
+	
+	stdout.put( "Hit return to scroll down three lines:" );
+	stdin.ReadLn();
+	win32cons.scrollDnN( 3 );
+	
+	stdout.put( "Hit return to scroll down four lines using scrollDnx: " );
+	stdin.ReadLn();
+	win32cons.scrollDnx( '#', win.fgnd_Yellow | win.bgnd_Red, 4 );
+
+	stdout.put( "Press enter to continue: " );
+	stdin.ReadLn();
+	win32cons.cls();	
+
+	win32cons.fillRect( 10,  0, 20, 10, '^', win.bgnd_White | win.fgnd_Black );
+	win32cons.fillRect( 10, 20, 20, 30, 'V', win.bgnd_Cyan | win.fgnd_Red );
+	stdout.put( "Hit return to scroll the two new rectangles: " );
+	stdin.ReadLn();
+	win32cons.scrollUpRect
+	(
+		3,
+		' ',
+		win.bgnd_White | win.fgnd_Black,
+		11,
+		1,
+		19,
+		9
+	);
+
+	win32cons.scrollDnRect
+	(
+		3,
+		' ',
+		win.bgnd_Cyan | win.fgnd_Red,
+		11,
+		21,
+		19,
+		29
+	);
+	
+	stdout.put( "Press Return To Continue:" );
+	stdin.ReadLn();	
+	win32cons.cls();
+
+
+	// Fill half the screen with periods:
+
+	Fill3_4Screen( '.' );
+
+	// Demonstrate clrToEOLN:
+
+	for( mov(0, esi ); esi < ecx; inc( esi )) do
+
+		win32cons.gotoxy( si, si );
+		win32cons.clrToEOLN();
+
+	endfor;
+	inc( esi );
+	win32cons.gotoxy( si, 0 );
+	stdout.put( "Demo of clrToEOLN" nl "Hit Enter to continue:" );
+	stdin.ReadLn();
+	win32cons.cls();
+
+
+
+
+	// Fill half the screen with periods:
+
+	Fill3_4Screen( '.' );
+
+	win32cons.gotoxy( 10, 20 );
+	stdout.put( nl "Press enter to test clrToEOS: " #8 );
+
+	GetNewln();
+
+	win32cons.clrToEOScrn();
+	win32cons.gotoxy( 20, 0 );
+	stdout.put( "Press enter to continue:" );
+	stdin.ReadLn();
+	win32cons.cls();
+
+
+
+	// Test insertChars, insertLn, and insertLines here.
+
+	Fill3_4Screen( '@' );
+	win32cons.gotoxy( 10, 20 );
+	stdout.put( "Press Enter to insert four chars:" );
+	GetNewln();
+	win32cons.insertChars( 4 );
+
+	win32cons.gotoxy( 15, 20 );
+	stdout.put( "Press Enter to insert a new line:" );
+	GetNewln();
+	win32cons.insertLn();
+	
+	win32cons.gotoxy( 20, 20 );
+	stdout.put( "Press Enter to insert two new lines:" );
+	GetNewln();
+	win32cons.insertLines( 2 );
+
+	win32cons.gotoxy( 24, 0 );
+	stdout.put( "Press Enter to continue: " );
+	win32cons.clrToEOLN();
+	stdin.ReadLn();
+	win32cons.cls();
+
+
+
+	// Test deleteChars, deleteLn, and deleteLines here.
+
+	Fill3_4Screen( '!' );
+	win32cons.gotoxy( 10, 20 );
+	stdout.put( "Press Enter to delete four chars:" );
+	GetNewln();
+	win32cons.deleteChars( 4 );
+
+	win32cons.gotoxy( 15, 20 );
+	stdout.put( "Press Enter to delete this line:" );
+	GetNewln();
+	win32cons.deleteLn();
+
+	win32cons.gotoxy( 20, 20 );
+	stdout.put( "Press Enter to delete two lines:" );
+	GetNewln();
+	win32cons.deleteLines( 2 );
+
+	win32cons.gotoxy( 24, 0 );
+	stdout.put( "Press Enter to continue: " );
+	win32cons.clrToEOLN();
+	stdin.ReadLn();
+	win32cons.cls();
+
+
+	// Testing puts and putsx:
+
+	win32cons.puts( 10, 20, "Puts at (20, 10)" );
+	win32cons.puts( 20, 10, "Puts at (10, 20)" );
+
+	win32cons.putsx
+	( 
+		15, 
+		15, 
+		win.bgnd_White | win.fgnd_Blue,
+		35,
+		"Putsx at (15, 15) of length 35.........."
+	);
+
+	win32cons.putsx
+	( 
+		16, 
+		15, 
+		win.bgnd_White | win.fgnd_Red,
+		40,
+		"1234567890123456789012345678901234567890"
+	);
+
+	win32cons.gotoxy( 23, 0 );
+	stdout.put( "Press enter to continue:" );
+	stdin.ReadLn();
+	win32cons.cls();
+	
+
+
+	// Test getRect and putRect:
+
+	Fill3_4Screen( '-' );
+	win32cons.getRect( 0, 0, 10, 79, buffer );
+	win32cons.cls();
+	win32cons.putRect( 10, 0, 20, 79, buffer );
+	win32cons.gotoxy( 23, 0 );
+	stdout.put( "Output from putRect; press enter to continue: " );
+	stdin.ReadLn();
+	win32cons.cls();
+
+
+/*
+	
+
+	procedure putRect
+	( 
+			top:word; 
+			left:word; 
+			bottom:word; 
+			right:word;
+		var	buf:byte
+	);	external( "console_putRect" );
+
+
+
+	procedure getRect
+	( 
+			top:word; 
+			left:word; 
+			bottom:word; 
+			right:word;
+		var	buf:byte
+	);	external( "console_getRect" );
+
+
+	procedure a_getRect
+	( 
+		top:word; 
+		left:word; 
+		bottom:word; 
+		right:word
+	);	returns( "eax" );
+		external( "console_a_getRect" );
+
+*/
+	
+	// Be nice and set the console window back to black & white:
+	
+	win32cons.setOutputAttr( win.bgnd_Black | win.fgnd_White );
+	win32cons.cls();
+	
+	
+
+end testConsole;

@@ -1,0 +1,49 @@
+v1.1
+Fixed a problem with "defaultAgentAction" corrupting the stack.
+
+v1.0
+First official release
+
+v0.11
+
+Added the eat and fight verbs
+Added mansion quest
+
+v0.10
+
+Added buy and sell verbs.
+Added "experience" field to room; this field gets added to the player's
+power field (experience) when the player enters a room for the first time.
+Added PATH verb (sneaky cheat/trick, for debugging purpose!)
+Revised initialization of objects.
+Added several fields to possessions.
+Added weapon, protection, and consumable classes.
+Created symbolic names for a lot of magic numbers used in initialization.
+Display an object's retail/wholesale values when you examine the object.
+Modified look to behave like "describe" if no noun is present.
+Added door message to east path of guild10 room.
+Added impediment class.
+Added impede* fields to the room class.
+Added the hijack_verb field to the room class.
+Added a door impediment to the Guild room, must use wooden key to unlock.
+Lots of cleanup.
+
+
+v0.9
+
+New file organization:
+gamespecific.hla got split into gsinit.hla, gsactions.hla, and gssupport.hla.
+(gamespecific.hla was quite large and is going to get much larger).
+
+Cleaned up some fields in the possession class. Added the "stealable"
+field to this class.
+
+Removed a lot of junk verbs that aren't going to be used by HLA Adventure
+(IFDEF'd them out so they can be easily added in later).
+
+Put in code for "Quest #1" (the lantern quest).
+
+Added code to the player object to support wearing items.
+Added code for the wear and remove verbs.
+
+Added some minimalist help screens.

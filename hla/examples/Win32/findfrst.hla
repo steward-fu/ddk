@@ -1,0 +1,169 @@
+// HLA Demonstration program.
+//
+// This short program demonstrates two things:
+//
+//	(1) How to call the Windows "FindFirstFile",
+//      "FindNextFile", and "FindClose" routines
+//      to process filenames, possibly containing
+//		wildcard characters.
+//
+//	(2) The use of HLA iterators to process
+//		iterative objects (e.g., a file name list).
+//
+//	Randall Hyde
+//	10/7/99
+
+
+program FindFirstDemo;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+type
+		FileTime:
+			record
+			
+				LowDateTime: dword;
+				HighDateTime:dword;
+				
+			endrecord;
+
+	Win32FindData:
+		record
+
+		    FileAttributes:	dword; 
+    		CreationTime:	FileTime; 
+    		LastAccessTime:	FileTime; 
+    		LastWriteTime:	FileTime; 
+			FileSizeHigh:	dword; 
+			FileSizeLow:	dword; 
+			Reserved0:		dword; 
+			dwReserved1:	dword; 
+			FileName:		char[ 260 ]; 
+			AlternateFileName: char[ 14 ]; 
+			
+		endrecord;
+
+
+
+
+	// External declarations for Windows API calls:
+
+	procedure FindFirstFile( var WFD:Win32FindData; FileName:string );
+		@returns( "eax" ); // File Handle.
+		external( "_FindFirstFileA@8" );
+	
+	procedure FindNextFile( var WFD:Win32FindData; handle:dword );
+		@returns( "al" ); // Boolean result, true=got a file.
+		external( "_FindNextFileA@8" );
+		
+	procedure FindClose( handle:dword );
+		external( "_FindClose@4" );
+		
+
+	// These macros preserve registers that might get tweaked
+	// by Windows API calls.
+	
+	#macro pusha2;
+		push( ebx );
+		push( ecx );
+		push( edx );
+		push( esi );
+		push( edi );
+	#endmacro;
+	
+	#macro popa2;
+		pop( edi );
+		pop( esi );
+		pop( edx );
+		pop( ecx );
+		pop( ebx );
+	#endmacro;
+
+
+	// The following iterator returns a string (in EAX) that corresponds
+	// to a filename.  The parameter passed to this iterator is a filename,
+	// one that typically contains wildcard characters (i.e., "*" and "?" ).
+	// This iterator returns a list of filenames that match the, possibly
+	// ambiguous, filename passed as a parameter.  This iterator fails
+	// when there are no more matching filenames.
+	
+	iterator FileInList( FileList:string ); @nodisplay;
+	var
+		handle:		dword;
+		FileData:	Win32FindData;
+		
+	begin FileInList;
+	
+		// Find the first matching file (if one exists).
+		// Save the handle for use by FindNextFile.
+		
+		pusha2;
+		FindFirstFile( FileData, FileList );
+		popa2;
+		mov( eax, handle );
+		
+		// If we matched at least one filename, return
+		// the corresponding string and call the
+		// FindNextFile routine to match any additional
+		// filenames.
+		
+		if( eax <> w.INVALID_HANDLE_VALUE ) then
+		
+			repeat
+			
+				// FindFirstFile & FindNextFile return
+				// zero-terminated strings.  Convert these
+				// to HLA compatible strings and return
+				// the converted string:
+				
+				lea( eax, FileData.FileName );
+				str.a_cpyz( eax );
+				
+				// Return the converted string to the FOREACH
+				// loop and then free the storage associated
+				// with the string.
+				
+				push( eax );	// Save, so we can free string on return
+				yield();		// Return string to FOREACH loop.
+				pop( eax );		// Free the storage used by the string.
+				strfree( eax );
+			
+				// Get the next filename in the list:
+				
+				pusha2;	
+				FindNextFile( FileData, handle );
+				popa2;
+				
+			until( al = false );
+			
+			// When we've processed all the filenames in the list,
+			// call FindClose to free the handle and other resources.
+			
+			pusha2;
+			FindClose( handle );
+			popa2;
+			
+		endif;
+	
+	end FileInList;
+	
+	
+	
+	
+	
+var
+	FindData: Win32FindData; 
+	
+begin FindFirstDemo;
+
+	// Simple foreach loop that demonstrates the FileInList iterator
+	// by printing out all the filenames in the current directory.
+	
+	stdout.put( "FindFirst Demo:", nl, nl );
+	foreach FileInList( "*.*" ) do
+	
+		stdout.put( "file: ", (type string eax), nl );
+		
+	endfor;	
+	
+end FindFirstDemo;

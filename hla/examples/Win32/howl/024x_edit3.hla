@@ -1,0 +1,639 @@
+// editBox3x-
+//
+//	This program demonstrates editbox objects on a form.
+//
+// This version of the program implements the object manually, without using the
+// wForm..endwForm macro (the HOWL declarative language).
+
+program editBox3x;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+#includeOnce( "howl.hhf" )
+
+const
+	applicationName := "EditBox #4x";
+	formX			:= w.CW_USEDEFAULT;	// Let Windows position this guy
+	formY			:= w.CW_USEDEFAULT;
+	formW			:= 600;
+	formH			:= 600;
+
+
+
+
+	
+	
+// Forward declarations for the onClick widgetProcs that we're going to
+// call when an event occurs.
+
+proc selectEditBox			:widgetProc; @forward;
+proc resetSelection			:widgetProc; @forward;
+proc getSelection			:widgetProc; @forward;
+proc onQuit			   		:widgetProc; @forward;
+	
+
+type
+
+	// Create a new class for our main application window.
+	// All application forms must be derived from wForm_t:
+		
+	mainAppWindow_t:
+		class inherits( wForm_t );
+		
+			// We have to add VAR declarations for all our widgets
+			// here.
+			
+			var
+				editBox1		:wEditBox_p;
+				label1			:wLabel_p;
+				button2			:wPushButton_p;
+				button3			:wPushButton_p;
+				button4			:wPushButton_p;
+				button5			:wPushButton_p;
+				quitButton		:wPushButton_p;
+				showState		:boolean;
+				align(4);
+	
+		
+			// We need to override these (actually, onClose is the
+			// only one that is important):
+			
+			override method onClose;
+			override method onCreate;
+			
+			// Every main application window must have a
+			// constructor with the following prototype:
+			
+			procedure create_mainAppWindow
+			(
+			        caption :string;
+			        exStyle :dword;
+			        style   :dword;
+			        parent  :dword;
+			        x       :dword;
+			        y       :dword;
+			        width   :dword;
+			        height  :dword;
+			        bkgClr  :dword;
+			        visible :boolean
+			);
+			
+		endclass;
+		
+		mainAppWindow_p	:pointer to mainAppWindow_t;
+
+// Must have the following declarations in all (manually written) HOWL apps:
+	
+static
+    vmt( mainAppWindow_t );
+    mainAppWindow: mainAppWindow_t;
+    pmainAppWindow: mainAppWindow_p := &mainAppWindow;	
+
+
+
+
+
+// Here is the constructor we must supply for the mainAppWindow class:
+
+procedure mainAppWindow_t.create_mainAppWindow
+(
+        caption :string;
+        exStyle :dword;
+        style   :dword;
+        parent  :dword;
+        x       :dword;
+        y       :dword;
+        width   :dword;
+        height  :dword;
+        bkgClr  :dword;
+        visible :boolean
+);
+var
+    main 	:mainAppWindow_p;
+	rs		:wRadioSet_p;
+	rsHndl	:dword;
+
+begin create_mainAppWindow;
+
+    push( eax );
+    push( ebx );
+    push( ecx );
+    push( edx );
+	
+	// Standad main form initialization:
+	//
+	// If a class procedure call (not typical), then allocate storage
+	// for this object:
+	
+    if( esi = NULL ) then
+        mem.alloc( @size( mainAppWindow_t ));
+        mov( eax, esi );
+        mov( true, cl );
+    else
+        mov( this.wBase_private.onHeap, cl );
+    endif;
+	
+	// Call the wForm_t constructor to do all the default initialization:
+	
+    (type wForm_t [esi]).create_wForm
+    (
+        "mainAppWindow",
+        caption,
+        exStyle,
+        style,
+        parent,
+        x,
+        y,
+        width,
+        height,
+        bkgClr,
+        visible
+    );
+	
+	// Initialize the VMT pointer:
+	
+    mov( &mainAppWindow_t._VMT_, this._pVMT_ );
+	
+	// Retrieve the onHeap value from above and store it into
+	// the onHeap data field:
+	
+    mov( cl, this.wBase_private.onHeap );
+	
+	// Preserve "this" because we're about to make an object call
+	// that will overwrite this' value:
+	
+    mov( esi, main );
+	
+	//////////////////////////////////////////////
+	//
+	// Create all the widgets on this form:
+	//
+	//////////////////////////////////////////////
+	
+	// Put the EditBox on the form:
+	
+	wEditBox_t.create_wEditBox
+	(
+		"editBox1",						// Edit box name
+		"",								// Initial text value
+		this.handle,					// Parent window handle
+		10,								// x position 
+		10,								// y position 
+		200,							// width 
+		25,								// height
+		0,								// Style
+		NULL							// onChange handler
+	);
+	mov( esi, eax );					// Save ptr to new label		
+	(type wEditBox_t [esi]).show();		// Show the editbox.
+	mov( main, esi );					// Retrieve ptr to main app's object
+	mov( eax, this.editBox1 );			// Save editbox pointer.
+	this.insertWidget( eax );			// Add label to wForm's widget list.
+	
+	
+	
+	wLabel_t.create_wLabel
+	(
+		"label1",						// Edit box name
+		"",								// Initial text value
+		this.handle,					// Parent window handle
+		10,								// x position 
+		100,							// y position 
+		200,							// width 
+		25,								// height
+		0,								// alignment
+		RGB( 255, 255, 0 ),				// Forecolor=yellow
+		RGB( 0, 0, 255 )				// Back color = blue
+	);
+	mov( esi, eax );					// Save ptr to new label		
+	(type wLabel_t [esi]).show();		// Show the editbox.
+	mov( main, esi );					// Retrieve ptr to main app's object
+	mov( eax, this.label1 );			// Save editbox pointer.
+	this.insertWidget( eax );			// Add label to wForm's widget list.
+	
+	
+	
+	// The select edit box button on the form:
+	
+	mov( main, esi );				// Retrieve ptr to main app's object
+	wPushButton_t.create_wPushButton
+	(
+		"button2",					// Button name
+		"Select text",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		10,							// y position 
+		175,						// width 
+		25,							// height 
+		&selectEditBox				// initial "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button2 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The reset editbox button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button3",					// Button name
+		"Reset Selection",			// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		40,							// y position 
+		175,						// width 
+		25,							// height 
+		&resetSelection				// initial "on click" event handler 
+	);								
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button3 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The get selection editbox button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button4",					// Button name
+		"Get Selection",				// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		70,							// y position 
+		175,						// width 
+		25,							// height 
+		&getSelection				// initial "on click" event handler 
+	);								
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button4 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+	// The lose focus button on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"button5",					// Button name
+		"Press to lose focus",		// Caption for push button
+		this.handle,				// Parent window handle
+		250,						// x position 
+		100,						// y position 
+		175,						// width 
+		25,							// height 
+		NULL						// initial "on click" event handler 
+	);								
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.button5 );		// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+
+
+
+	
+	
+
+	
+	
+	// We need to create a quit button and store the pointer to the
+	// new button object in the this.button field on the form:
+	
+	wPushButton_t.create_wPushButton
+	(
+		"quitButton",				// Button name
+		"Quit",						// Caption
+		this.handle,				// parent window handle
+		450,						// x position 
+		525,						// y position 
+		125,						// width 
+		25,							// height 
+		&onQuit						// "on click" event handler 
+	);
+	mov( esi, eax );				// Save ptr to new button		
+	mov( main, esi );				// Retrieve ptr to main app's object
+	mov( eax, this.quitButton );	// Save button pointer.
+	this.insertWidget( eax );		// Add button to wForm's widget list.
+	
+    this.onCreate();				// Be nice, call this guy (even if empty).
+    pop( edx );
+    pop( ecx );
+    pop( ebx );
+    pop( eax );
+
+end create_mainAppWindow;	
+	
+	
+
+
+	
+
+
+
+
+
+	
+
+
+// The resetSelection widget proc will remove the selection
+// from the text in the edit box.
+
+proc resetSelection:widgetProc;
+begin resetSelection;
+
+	
+	// -1 for the start position is a magic value that
+	// tells Windows to remove the selection.
+	
+	mov( mainAppWindow.editBox1, esi );
+	(type wEditBox_t [esi]).set_selection( -1, 0 );
+	w.InvalidateRect( (type wEditBox_t [esi]).handle, NULL, true );
+	
+end resetSelection;
+	
+
+
+
+	
+
+
+// The getSelection widget proc will extract
+// and display the selected text in the widget.
+
+proc getSelection:widgetProc;
+var
+	startText	:dword;
+	endText		:dword;
+	caption		:string;
+	subCaption	:string;
+	
+begin getSelection;
+
+	mov( mainAppWindow.editBox1, esi );
+	(type wEditBox_t [esi]).get_selection( startText, endText );
+	(type wEditBox_t [esi]).a_get_text();
+	mov( eax, caption );
+	mov( endText, eax );
+	sub( startText, eax );
+	str.a_substr( caption, startText, eax );
+	mov( eax, subCaption );
+	mov( mainAppWindow.label1, esi );
+	(type wLabel_t [esi]).set_caption( eax );
+	str.free( caption );
+	str.free( subCaption );
+		
+end getSelection;
+	
+
+
+
+	
+
+
+	
+
+// The onSetFocus and onKillFocus event handlers must preserve
+// the editBox's current selection when the focus is lost and restored.
+
+static
+	startSelection	:int32 := -1;	// -1 means no selection
+	endSelection	:int32 := -1;
+	
+proc onSetFocus:widgetProc;
+begin onSetFocus;
+
+	mov( thisPtr, esi );
+	(type wEditBox_t [esi]).set_selection( startSelection, endSelection );
+
+end onSetFocus;
+	
+
+proc onKillFocus:widgetProc;
+begin onKillFocus;
+
+	mov( thisPtr, esi );
+	(type wEditBox_t [esi]).get_selection( startSelection, endSelection );
+	stdout.put
+	( 
+		"On loss of focus, selection = ", 
+		startSelection,
+		"..", 
+		endSelection, 
+		nl 
+	);
+	
+	
+end onKillFocus;
+	
+
+
+// The selectEditBox widget proc will select all the text in
+// the editBox widget.
+
+proc selectEditBox:widgetProc;
+begin selectEditBox;
+
+	mov( 0, startSelection );
+	mov( -1, endSelection );
+	mov( mainAppWindow.editBox1, esi );
+	(type wEditBox_t [esi]).setFocus();
+		
+end selectEditBox;
+	
+
+
+	
+
+
+	
+
+// Here's the onClick event handler for our quit button on the form.
+// This handler will simply quit the application:
+
+proc onQuit:widgetProc;
+begin onQuit;
+
+	// Quit the app:
+	
+	w.PostQuitMessage( 0 );
+
+end onQuit;
+
+
+
+
+
+// We'll use the main application form's onCreate method to initialize
+// the various buttons on the form.
+//
+// This could be done in appStart, but better to leave appStart mainly
+// as boilerplate code. Also, putting this code here allows us to use
+// "this" to access the mainAppWindow fields (a minor convenience).
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+
+	// Initialize the showState data field:
+		
+	mov( false, this.showState );
+	
+	// We have to patch into the onSetFocus and onKillFocus events in order
+	// to preserve the selection across a loss of focus on the edit control.
+	
+	mov( this.editBox1, esi );
+	(type wEditBox_t [esi]).set_onSetFocus( &onSetFocus );
+	(type wEditBox_t [esi]).set_onKillFocus( &onKillFocus );
+	
+	
+	
+
+end onCreate;
+	
+
+	
+	
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following is mostly boilerplate code for all apps (about the only thing
+// you would change is the size of the main app's form)
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+   
+
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+
+	// Create the main application window:
+	
+	mainAppWindow.create_mainAppWindow
+	(
+		applicationName,		// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		formX,					// x-coordinate for window. 
+		formY,					// y-coordinate for window.
+		formW,					// Width
+		formH,					// Height
+		howl.bkgColor_g,		// Background color
+		true					// Make visible on creation 
+	);
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException
+( 
+	theException	:dword in eax;
+	raiseAdrs		:dword in ebx;
+	filename		:string in ecx;
+	userCode		:dword in edx;
+	lineNum			:uns32 in edi 
+);
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must
+// call the HowlMainApp procedure.
+
+begin editBox3x;
+
+	// Set up the background and transparent colors that the
+	// form will use when registering the window_t class:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, howl.bkgColor_g );
+	or( $FF00_0000, eax );
+	mov( eax, howl.transparent_g );
+	w.CreateSolidBrush( howl.bkgColor_g );
+	mov( eax, howl.bkgBrush_g );
+
+	// Start the HOWL Framework Main Program:
+	
+	HowlMainApp();
+	
+	// Delete the brush we created earlier:
+	
+	w.DeleteObject( howl.bkgBrush_g );			
+				
+end editBox3x;
+ 

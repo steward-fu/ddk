@@ -1,0 +1,36 @@
+// Paint:
+//
+//	This is a generic paint procedure that handles the w.WM_PAINT message.
+// This code assumes that you've included the WPA.HHF header file.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Insert painting code here
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;

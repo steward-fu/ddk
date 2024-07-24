@@ -1,0 +1,800 @@
+// Fonts.hla:
+//
+// Displays all the fonts available in the system.
+
+program Fonts;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "wpa.hhf" )		// "Windows Programming in Assembly" specific stuff.
+#include( "strings.hhf" )	// String functions.
+#include( "memory.hhf" )	// tstralloc is in here
+#include( "lists.hhf" )		// List abstract data type appears here
+?@nodisplay := true;		// Disable extra code generation in each procedure.
+?@nostackalign := true; 	// Stacks are always aligned, no need for extra code.
+
+type
+	// font_t objects are nodes in a list of fonts belonging to a single
+	// family.  Such lists appearing in a font family object (class fFamily_t).
+
+	font_t:
+		class inherits( node );
+			var
+				tm			:w.TEXTMETRIC;
+				lf			:w.LOGFONT;
+				fontName	:string;
+
+			override procedure create;
+			override method destroy;
+
+		endclass;
+
+
+	// fFamily_t objects are nodes in a list of font families. Each node in
+	// this list represents a single font family in the system.  Also note
+	// that these objects contain a list of fonts that belong to that
+	// particular family.
+
+	fFamily_t:
+		class inherits( node );
+			var
+				familyName	:string;			// Font family name.
+				fonts		:pointer to list;	// List of fonts in family.
+
+			override procedure create;
+			override method destroy;
+
+		endclass;
+
+
+static
+	hInstance	:dword;			// "Instance Handle" supplied by Windows.
+
+	wc			:w.WNDCLASSEX;	// Our "window class" data.
+	msg			:w.MSG;			// Windows messages go here.
+	hwnd		:dword;			// Handle to our window.
+
+	fontFamList	:pointer to list;	// List of font families.
+	vmt( fFamily_t );
+	vmt( font_t ); 
+	
+readonly
+
+	ClassName:	string := "FontsWinClass";		// Window Class Name
+	AppCaption:	string := "Available Fonts";	// Caption for Window
+	
+// The following data type and DATA declaration
+// defines the message handlers for this program.
+
+type
+	MsgProc_t:	procedure( hwnd:dword; wParam:dword; lParam:dword );
+	
+	MsgProcPtr_t:
+		record
+			
+			MessageValue:	dword;
+			MessageHndlr:	MsgProc_t;
+			
+		endrecord;
+	
+	
+	
+// The dispatch table:
+//
+//	This table is where you add new messages and message handlers
+//	to the program.  Each entry in the table must be a tMsgProcPtr
+//	record containing two entries: the message value (a constant,
+//	typically one of the wm.***** constants found in windows.hhf)
+//	and a pointer to a "tMsgProc" procedure that will handle the
+//	message.
+ 
+readonly
+	
+	Dispatch:	MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// Methods and procedures for the font_t class.
+// Remember, ESI contains the "THIS" pointer upon entry to these procedures
+// and methods.
+//
+//
+// create-	Constructor for a font_t node in a font list.
+//			Note: returns pointer to object in ESI.  Allocates
+//			new storage for a node object if ESI contains NULL upon entry.
+
+procedure font_t.create;
+begin create;
+
+	push( eax );
+	if( esi == NULL ) then
+
+		// If this is a bare constructor call (font_t.create) then
+		// allocate storage for a new node:
+
+		malloc( @size( font_t ) );
+		mov( eax, esi );
+
+	endif;
+	mov( NULL, this.fontName );
+	push( ecx );
+	push( edi );
+	
+	// Zero out the tm and lf data structures:
+
+	lea( edi, this.tm );
+	mov( @size( w.TEXTMETRIC ), ecx );
+	xor( eax, eax );
+	rep.stosb;
+
+	lea( edi, this.lf );
+	mov( @size( w.LOGFONT ), ecx );
+	rep.stosb;
+
+	pop( ecx );
+	pop( edi );
+	pop( eax );
+
+end create;
+
+// font_t.destroy-
+//
+//	Destructor for a font_t node object.
+//	Because this program never frees any item in the list, there
+//	really is no purpose for this function; it is required by the
+//	node class, hence its presence here.  If this application wanted
+//	to free the items in the font lists, it would clear the storage
+//	allocated to the fontName field (if non-NULL and on the heap)
+//	and it would free the storage associated with the node itself.
+//	The following code demonstrates this, even though this program
+//	never actually calls this method.
+
+method font_t.destroy;
+begin destroy;
+
+	// Free the string name if it was allocated on the heap:
+
+	if( this.fontName <> NULL ) then
+
+		if( strIsInHeap( this.fontName )) then
+
+			strfree( this.fontName );
+
+		endif;
+
+	endif;
+
+	// Free the object if it was allocated on the heap:
+
+	if( isInHeap( esi /* this */ )) then
+
+		free( esi );
+
+	endif;
+
+end destroy;
+
+
+
+
+
+
+
+// Methods and procedures for the fFamily_t class.
+// Remember, ESI contains the "THIS" pointer upon entry to these procedures
+// and methods.
+//
+//
+// create-	Constructor for a fFamily_t node in a font family list.
+//			Note: returns pointer to object in ESI.  Allocates
+//			new storage for a node object if ESI contains NULL upon entry.
+
+procedure fFamily_t.create;
+begin create;
+
+	push( eax );
+	if( esi == NULL ) then
+
+		// If this is a bare constructor call (fFamily_t.create) then
+		// allocate storage for a new node:
+
+		malloc( @size( fFamily_t ) );
+		mov( eax, esi );
+
+	endif;
+
+	// Initialize the family name to NULL (it will be filled in
+	// by whomever is enumerating the family lists):
+
+	mov( NULL, this.familyName );
+
+	// Create a new list to hold the font information for this family:
+
+	push( esi );
+	font_t.create();
+	mov( esi, eax );
+	pop( esi );
+	mov( eax, this.fonts );
+	
+	pop( eax );
+
+end create;
+
+
+// fFamily_t.destroy-
+//
+//	Destructor for a fFamily_t node object.
+//	Because this program never frees any item in the list, there
+//	really is no purpose for this function; it is required by the
+//	node class, hence its presence here.  If this application wanted
+//	to free the items in the font lists, it would clear the storage
+//	allocated to the familyName field (if non-NULL and on the heap)
+//	and it would free the storage associated with the node itself.
+//	The following code demonstrates this, even though this program
+//	never actually calls this method.
+
+method fFamily_t.destroy;
+begin destroy;
+
+	// Free the string name if it was allocated on the heap:
+
+	if( this.familyName <> NULL ) then
+
+		if( strIsInHeap( this.familyName )) then
+
+			strfree( this.familyName );
+
+		endif;
+
+	endif;
+
+	// Free up the font list:
+
+	push( esi );
+	mov( this.fonts, esi );
+	(type list [esi]).destroy();
+	pop( esi );
+
+	// Free the object if it was allocated on the heap:
+
+	if( isInHeap( esi /* this */ )) then
+
+		free( esi );
+
+	endif;
+
+end destroy;
+
+
+
+
+
+// Font callback function that enumerates the font families.
+//
+//	On each call to this procedure we need to create a new
+// node of type fFamily_t, initialize that object with the
+// appropriate font information, and append the node to the
+// end of the "fontFamList" list. 
+
+procedure FontFamilyCallback
+(
+	var lplf		:w.LOGFONT;
+	var	lpntm		:w.TEXTMETRIC;
+		nFontType	:dword;
+		lparam		:dword
+);
+	@stdcall;
+	@returns( "eax" );
+var
+	curFam	:pointer to fFamily_t;
+
+begin FontFamilyCallback;
+
+	push( esi );
+	push( edi );
+
+	// Create a new fFamily_t node to hold this guy:
+
+	fFamily_t.create();
+	mov( esi, curFam );
+
+	// Append node to the end of the font families list:
+
+	fontFamList.append( curFam );
+
+	// Initialize the font family object we just created:
+
+	mov( curFam, esi );
+
+	// Initialize the string containing the font family name:
+
+	mov( lplf, eax );
+	lea( eax, (type w.LOGFONT [eax]).lfFaceName ); 
+	str.a_cpyz( [eax] );
+	mov( eax, (type fFamily_t [esi]).familyName );
+
+	// Create a new list to hold the fonts in this family (initially,
+	// this list is empty).
+
+	list.create();
+	mov( curFam, edi );
+	mov( esi, (type fFamily_t [edi]).fonts );
+
+	// Return success
+
+	mov( 1, eax ); 
+
+	pop( edi );
+	pop( esi );
+	
+end FontFamilyCallback;
+
+
+
+// Font callback function that enumerates a single font.
+// On entry, lparam points at a fFamily_t element whose
+// fonts list we append the information to.
+
+procedure EnumSingleFamily
+(
+	var lplf		:w.LOGFONT;
+	var	lpntm		:w.TEXTMETRIC;
+		nFontType	:dword;
+		lparam		:dword
+);
+	@stdcall;
+	@returns( "eax" );
+
+var
+	curFont	:pointer to font_t;
+
+begin EnumSingleFamily;
+
+	push( esi );
+	push( edi );
+
+	// Create a new font_t object to hold this font's information:
+
+	font_t.create();
+	mov( esi, curFont );
+
+	// Append the new font to the end of the family list:
+
+	mov( lparam, esi );
+	mov( (type fFamily_t [esi]).fonts, esi );
+	(type list [esi]).appendLast( curFont );
+
+	// Initialize the string containing the font family name:
+
+	mov( curFont, esi );
+	mov( lplf, eax );
+	lea( eax, (type w.LOGFONT [eax]).lfFaceName );
+	str.a_cpyz( [eax] );
+	mov( eax, (type font_t [esi]).fontName );
+
+	// Copy the parameter information passed to us into the
+	// new font_t object:
+
+	lea( edi, (type font_t [esi]).tm );
+	mov( lpntm, esi );
+	mov( @size( w.TEXTMETRIC), ecx );
+	rep.movsb();
+
+	mov( curFont, esi );
+	lea( edi, (type font_t [esi]).lf );
+	mov( lplf, esi );
+	mov( @size( w.LOGFONT ), ecx );
+	rep.movsb();
+
+	mov( 1, eax ); // Return success
+
+	pop( edi );
+	pop( esi );
+
+end EnumSingleFamily;
+
+
+
+/**************************************************************************
+**
+** Message Handling Procedures:
+*/
+
+// QuitApplication:
+//
+//	This procedure handles the "wm.Destroy" message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// create:
+//
+//	The procedure responds to the "w.WM_CREATE" message. It enumerates
+// the available font families.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword ); @returns( "eax" ); 
+var
+	hdc	:dword;
+
+begin Create;
+
+	push( esi );
+	push( edi );
+	GetDC( hwnd, hdc );
+
+		// Enumerate the families:
+
+		w.EnumFontFamilies( hdc, NULL, &FontFamilyCallback, NULL );
+
+		// Enumerate the fonts appearing in each family:
+
+		foreach fontFamList.nodeInList() do
+		
+			w.EnumFontFamilies
+			( 
+				hdc, 
+				(type fFamily_t [esi]).familyName, 
+				&EnumSingleFamily, 
+				[esi] 
+			);
+			 
+		endfor;
+
+	ReleaseDC;
+	pop( edi );
+	pop( esi );
+	mov( 0, eax );  // Return success.
+
+end Create;
+
+
+// Paint:
+//
+//	This procedure handles the "w.WM_PAINT" message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword ); @returns( "eax" );
+var
+	hdc			:dword;				// Handle to video display device context
+	yCoordinate	:dword;				// Y-Coordinate for text output.
+	newFont		:dword;				// Handle for new fonts we create.
+	oldFont		:dword;				// Saves system font while we use new font.
+	ps			:w.PAINTSTRUCT;		// Used while painting text.
+	outputMsg	:string;			// Holds output text.
+	defaultHt	:dword;				// Default font height.
+	tm			:w.TEXTMETRIC;		// Default font metrics
+		
+begin Paint;
+
+	tstralloc( 256 );		// Allocate string storage on the stack
+	mov( eax, outputMsg );	//  for our output string.
+
+	push( edi );
+	push( ebx );
+
+	BeginPaint( hwnd, ps, hdc );
+
+		// Get the height of the default font so we can output font family
+		// names using the default font (and properly skip past them as
+		// we output them):
+
+		w.GetTextMetrics( hdc, tm );
+		mov( tm.tmHeight, eax );
+		add( tm.tmExternalLeading, eax );
+		mov( eax, defaultHt );
+
+		// Initialize the y-coordinate before we draw the font samples:
+
+		mov( -10, yCoordinate );
+
+		// Okay, output a sample of each font:
+
+		push( esi );
+		foreach fontFamList.nodeInList() do
+
+			// Add in a little extra space for each new font family:
+
+			add( 10, yCoordinate );
+
+			// Write a title line in the system font (because some fonts
+			// are unreadable, we want to display the family name using
+			// the system font).
+			//
+			// Begin by computing the number of fonts so we can display
+			// that information along with the family title:
+			
+			push( esi );
+			mov( (type fFamily_t [esi]).fonts, ebx );
+			(type list [ebx]).numNodes();
+			pop( esi );
+
+			if( eax == 1 ) then
+
+				// Only one font in family, so write "1 font":
+
+				str.put
+				( 
+					outputMsg, 
+					"Font Family: ", 
+					(type fFamily_t [esi]).familyName,
+					" (1 font)"				 
+				);
+
+			else
+
+				// Two or more fonts in family, so write "n fonts":
+
+				str.put
+				( 
+					outputMsg, 
+					"Font Family: ", 
+					(type fFamily_t [esi]).familyName,
+					" (",
+					(type uns32 eax),
+					" fonts)"				 
+				);
+
+			endif;
+			w.TextOut
+			( 
+				hdc, 
+				10, 
+				yCoordinate, 
+				outputMsg, 
+				str.length(outputMsg) 
+			);
+
+			// Skip down vertically the equivalent of one line in the current
+			// font's size:
+
+			mov( defaultHt, eax );
+			add( eax, yCoordinate );
+
+			// For each of the fonts in the current font family,
+			// output a sample of that particular font:
+
+			mov( (type fFamily_t [esi]).fonts, ebx );
+			foreach (type list [ebx]).nodeInList() do
+
+				// Create a new font based on the current font
+				// we're processing on this loop iteration:
+
+				w.CreateFontIndirect( (type font_t [esi]).lf );
+				mov( eax, newFont );
+
+				// Select the new font into the device context:
+
+				w.SelectObject( hdc, eax );
+				mov( eax, oldFont );
+
+				// Compute the font size in points.  This is computed
+				// as:
+				//
+				//	( <font height> * 72 ) / <font's Y pixels/inch>
+
+				w.GetDeviceCaps( hdc, w.LOGPIXELSY ); // Y pixels/inch
+				mov( eax, ecx );
+				mov( (type font_t [esi]).lf.lfHeight, eax ); // Font Height
+				imul( 72, eax );
+				div( ecx, edx:eax );
+
+				// Output the font info:
+
+				str.put
+				( 
+					outputMsg, 
+					(type font_t [esi]).fontName, 
+					" (Size in points: ",
+					(type uns32 eax),
+					')'
+				);
+				w.TextOut
+				( 
+					hdc, 
+					20, 
+					yCoordinate, 
+					outputMsg, 
+					str.length( outputMsg ) 
+				);
+
+				// Adjust the y-coordinate to skip over the
+				// characters we just emitted:
+
+				mov( (type font_t [esi]).tm.tmHeight, eax );
+				add( (type font_t [esi]).tm.tmExternalLeading, eax );
+				add( eax, yCoordinate );
+
+				// Free the font resource and restore the original font:
+
+				w.SelectObject( hdc, oldFont );
+				w.DeleteObject( newFont );
+
+			endfor;
+			
+		endfor;
+		pop( esi );
+
+	EndPaint;
+
+	pop( ebx );
+	pop( edi );
+	mov( 0, eax );	// Return success
+
+end Paint;
+
+/**************************************************************************/
+/*                   End of Application Specific Code                     */
+/**************************************************************************/
+
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword  );
+	@stdcall;
+	@nodisplay;
+	@noalignstack;
+	
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+
+// Here's the main program for the application.
+	
+begin Fonts;
+
+	// Create the font family list here:
+
+	push( esi );
+	list.create();
+	mov( esi, fontFamList );
+	pop( esi );
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	mov( eax, wc.hInstance );
+
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+
+end Fonts;

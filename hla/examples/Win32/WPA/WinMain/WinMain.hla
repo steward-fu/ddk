@@ -1,0 +1,269 @@
+// WinMain.hla-
+//
+// This is the main program "stub" that we'll use as a "library" module
+// for win32 development (encapsulates all the common code present in
+// a typical win32 main program).
+
+program WinMain;
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+static
+	hInstance			:dword;			// "Instance Handle" Windows supplies.
+
+	wc					:w.WNDCLASSEX;	// Our "window class" data.
+	msg					:w.MSG;			// Windows messages go here.
+	hwnd				:dword;			// Handle to our window.
+	
+
+
+// The window procedure.  
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword );
+	@stdcall;
+
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+// Provide a defaultCreateWindow procedure that the
+// application can call if it doesn't need to worry
+// about passing different parameters to w.CreateWindowEX
+// or change the calls to w.ShowWindow/w.UpdateWindow.
+
+procedure defaultCreateWindow;
+begin defaultCreateWindow;
+
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	push( eax );
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	pop( eax ); // Return handle in EAX.
+
+end defaultCreateWindow;
+
+
+
+// Here's the main program for the application.
+	
+begin WinMain;		
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	mov( hInstance, wc.hInstance );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+
+	// Allow application-specific initialization of wc:
+
+	initWC();
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	// Have the application actually create the window -
+	// It may want to supply different parameters to
+	// w.CreateWindowEx, etc.
+
+	appCreateWindow();
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	try
+
+		forever
+		
+			w.GetMessage( msg, NULL, 0, 0 );
+			breakif( eax == 0 );
+			if( LocalProcessMsg( msg ) == 0) then
+
+				w.TranslateMessage( msg );
+
+			endif;
+			w.DispatchMessage( msg );
+			
+		endfor;
+
+	  anyexception
+
+		// If there was an unhandled exception, give the
+		// application the opportunity to do any necessary
+		// clean-up before aborting execution.
+
+		appException( eax );
+
+	endtry;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+				
+end WinMain;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

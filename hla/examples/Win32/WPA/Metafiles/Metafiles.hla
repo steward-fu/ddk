@@ -1,0 +1,237 @@
+// Metafiles.hla-
+//
+//	Program that demonstrates how to use a metafile.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit Metafiles;
+
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+static
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+	
+readonly
+
+	ClassName	:string := "MetafilesWinClass";		// Window Class Name
+	AppCaption	:string := "Metafiles Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			MsgProcPtr_t:[ w.WM_SIZE,	 &Size				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hMetafile	:dword;			// Handle for our metafile.
+	hmf			:dword;			// Handle for completed metafile.
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	rect		:w.RECT;
+	
+	
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Create the metafile here:
+	
+	w.CreateEnhMetaFile( NULL, NULL, NULL, NULL );
+	mov( eax, hMetafile );
+	
+	// Draw the objects we're recording to the metafile:
+	
+	w.Rectangle( hMetafile, 0, 0, 20, 20 );
+	w.Ellipse( hMetafile, 0, 0, 20, 20 );
+	w.MoveToEx( hMetafile, 0, 0, NULL );
+	w.LineTo( hMetafile, 20, 20 );
+	w.MoveToEx( hMetafile, 20, 0, NULL );
+	w.LineTo( hMetafile, 0, 20 );
+	
+	// Close the metafile and save the handle away:
+	
+	w.CloseEnhMetaFile( hMetafile );
+	mov( eax, hmf );
+	
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+	
+		// Play the meta file back several times across the screen:
+		
+		for( mov( 0, esi ); esi < 20; inc( esi )) do
+		
+			for( mov( 0, edi ); edi < 20; inc( edi )) do
+			
+				intmul( 20, esi, ecx );
+				intmul( 20, edi, edx );
+				mov( ecx, rect.left );
+				add( 20, ecx );
+				mov( ecx, rect.right );
+				mov( edx, rect.top );
+				add( 20, edx );
+				mov( edx, rect.bottom );
+				
+				w.PlayEnhMetaFile( hdc, hmf, rect );
+				
+			endfor;
+			
+		endfor;
+
+				
+	EndPaint;
+	w.DeleteMetaFile( hmf );
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//	Basically, it just saves the window's size so
+//	the Paint procedure knows when a line goes out of
+//	bounds.
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+	
+	xor( eax, eax ); // return success.
+	
+
+end Size;
+				
+end Metafiles;
+ 

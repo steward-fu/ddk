@@ -1,0 +1,38 @@
+program adventure;
+
+type
+	playerPtr	:pointer to player;
+	
+	noun	:class
+	
+		var
+			usage		:procedure( p:playerPtr );
+			
+	endclass;
+
+	physObj  :class inherits( noun );
+    
+    endclass;
+	
+	
+	
+
+begin adventure;
+			
+end adventure;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

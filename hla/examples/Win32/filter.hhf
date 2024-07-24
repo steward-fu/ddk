@@ -1,0 +1,213 @@
+#includeonce( "w.hhf" )
+
+#if( !@defined( filter_h) )
+?filter_h := true;
+
+type
+		FileTime:
+			record
+			
+				LowDateTime: dword;
+				HighDateTime:dword;
+				
+			endrecord;
+
+	Win32FindData:
+		record
+
+		    FileAttributes:	dword; 
+    		CreationTime:	FileTime; 
+    		LastAccessTime:	FileTime; 
+    		LastWriteTime:	FileTime; 
+			FileSizeHigh:	dword; 
+			FileSizeLow:	dword; 
+			Reserved0:		dword; 
+			dwReserved1:	dword; 
+			FileName:		char[ 260 ]; 
+			AlternateFileName: char[ 14 ]; 
+			
+		endrecord;
+
+
+
+// External declarations for Windows API calls:
+
+procedure FindFirstFile( FileName:string; var WFD:Win32FindData ); 
+	@stdcall;
+	@returns( "eax" ); // File Handle.
+	@external( "_FindFirstFileA@8" );
+
+procedure FindNextFile( handle:dword; var WFD:Win32FindData ); 
+	@stdcall;
+	@returns( "al" ); // Boolean result, true=got a file.
+	@external( "_FindNextFileA@8" );
+	
+procedure FindClose( handle:dword );
+	@stdcall;
+	@external( "_FindClose@4" );
+
+procedure GetStdHandle( handleID: int32 );
+	@stdcall;
+	@external( "_GetStdHandle@4" );
+
+procedure GetTempFileName
+(
+		lpPathName		:string;
+		lpPrefixString	:string;
+		uUnique			:uns32;
+	var	destBuf			:var
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_GetTempFileNameA@16" );
+
+procedure GetFullPathName
+(
+		lpFileName		:string;
+		nBufferLength	:uns32;
+	var	lpBuffer		:var;
+	var	lpFilePart		:dword
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_GetFullPathNameA@16" );
+
+
+procedure DeleteFile( filename:string );
+	@stdcall;
+	@returns( "eax" );
+	@external( "_DeleteFileA@4" );
+
+procedure SetCurrentDirectory( filename:string );
+	@stdcall;
+	@returns( "eax" );
+	@external( "_SetCurrentDirectoryA@4" );
+
+procedure GetCurrentDirectory( bufsize:dword; var buf:var );
+	@stdcall;
+	@returns( "eax" );
+	@external( "_GetCurrentDirectoryA@8" );
+
+procedure MoveFile( lpExistingFileName:string; lpNewFileName:string );
+	@stdcall;
+	@returns( "eax" );
+	@external( "_MoveFileA@8" );
+	
+
+
+procedure CreateFileMapping
+(
+  hFile				:dword;		// handle to file
+  lpAttributes		:dword;		// ptr to security info (NULL)
+  flProtect			:dword;		// protection bits
+  dwMaximumSize		:qword;     // 64-bit size
+  lpName			:string		// object name
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_CreateFileMappingA@24" );
+
+procedure MapViewOfFile
+(
+  hFileMappingObject	:dword;	// handle to file-mapping object
+  dwDesiredAccess		:dword;	// access mode
+  qwFileOffset			:qword; // offset
+  dwNumberOfBytesToMap	:dword	// number of bytes to map
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_MapViewOfFile@20" );
+
+procedure UnmapViewOfFile
+(
+  lpBaseAddress	:dword   // starting address
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_UnmapViewOfFile@4" );
+
+
+procedure GetFileSizeEx
+(
+  		hFile		:dword;		// handle to file
+  var	lpFileSize	:qword		// file size
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_GetFileSize@8" );
+
+
+procedure CreateFile
+( 
+	lpFileName:				string;
+	dwDesiredAccess:		dword;
+	dwShareMode: 			dword;
+	lpSecurityAttributes:	dword;
+	dwCreationDistribution:	dword;
+	dwFlagsAndAttributes:	dword;
+	hTemplateFile:	 		dword
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_CreateFileA@28" );
+
+procedure CloseHandle( handle:dword ); 
+	@stdcall;
+	@returns( "eax" );
+	@external( "_CloseHandle@4" );
+
+
+procedure WriteFile
+(
+		Handle:			dword;
+	var buffer:			var;
+		len:			dword;
+	var	bytesWritten:	dword;
+		overlapped:		dword
+); 
+	@stdcall;
+	@returns( "eax" );
+	@external( "_WriteFile@20" );
+
+
+procedure ReadFile
+(
+		Handle:			dword;
+	var buffer:			var;
+		len:			dword;
+	var	bytesWritten:	dword;
+		overlapped:		dword
+); 
+	@stdcall;
+	@returns( "eax" );
+	@external( "_ReadFile@20" );
+
+
+procedure SetFilePointer
+( 
+	Handle:			dword;
+	Dist:			dword;
+	PtrToHighDist:	dword;
+	HowToMove:		dword 
+);
+	@stdcall;
+	@returns( "eax" );
+	@external( "_SetFilePointer@16" );
+
+
+procedure SetEndOfFile( handle:dword );
+	@stdcall;
+	@returns( "eax" );
+	@external( "_SetEndOfFile@4" );
+			
+
+procedure GetLastError; 
+	@stdcall;
+	@returns( "eax" );
+	@external( "_GetLastError@0" );
+
+procedure ExitProcess( exitCode:dword );
+	@stdcall;
+	@external( "_ExitProcess@4" );
+
+#endif

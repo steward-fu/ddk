@@ -1,0 +1,30 @@
+// constants for dialog box
+#define IDC_EDIT                                       3000
+#define IDC_BUTTON                                     3001
+#define IDC_EXIT                                       3002
+#define DS_CENTER           0x0800L
+#define DS_CENTER           0x0800L
+#define WS_MINIMIZEBOX      0x00020000L
+#define WS_SYSMENU          0x00080000L
+#define WS_VISIBLE          0x10000000L
+#define WS_OVERLAPPED       0x00000000L
+#define DS_MODALFRAME       0x80L
+#define DS_3DLOOK           0x0004L
+#define WS_CAPTION          0xC00000L
+#define ES_AUTOHSCROLL      0x80L
+#define ES_LEFT             0
+
+// Constants for menu
+#define IDM_EXIT 1
+#define IDM_OPEN 2
+
+FirstMenu MENU
+{
+ POPUP "&File"
+        {
+         MENUITEM "O&pen",IDM_OPEN
+        }
+ MENUITEM "&Exit",IDM_EXIT
+}
+
+

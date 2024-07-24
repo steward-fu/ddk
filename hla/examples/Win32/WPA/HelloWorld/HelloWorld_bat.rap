@@ -1,0 +1,55 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly-Hello World
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,build.bat,
+2=0,O,build.bat,
+3=0,C,compilerc.bat,
+4=0,O,syntax.bat,
+5=0,C,run.bat,
+6=
+11=0,O,make dbg_build,
+12=0,O,make dbg_buildall,
+13=0,O,make dbg_compilerc,
+14=0,O,make dbg_syntax,
+15=0,C,make dbg_run,
+16=
+[MakeFiles]
+0=HelloWorld.rap
+1=HelloWorld.rc
+2=HelloWorld.asm
+3=HelloWorld.obj
+4=HelloWorld.res
+5=HelloWorld.exe
+6=HelloWorld.def
+7=HelloWorld.dll
+8=HelloWorld.txt
+9=HelloWorld.lib
+10=HelloWorld.mak
+11=HelloWorld.hla
+[Files]
+1=HelloWorld.hla
+2=
+[Size]
+2=
+1=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

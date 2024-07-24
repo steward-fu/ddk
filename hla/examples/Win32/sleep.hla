@@ -1,0 +1,33 @@
+program sleep;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+static
+	seconds	:int32;
+
+begin sleep;
+
+	arg.c();
+	if( eax <> 2 ) then
+
+		stdout.put( "usage: sleep n" nl );
+		exit sleep;
+
+	endif;
+	try
+
+		arg.v( 1 );
+		conv.strTou32( (type string eax), 0 );
+		mov( eax, seconds );
+
+	  anyexception
+
+		stdout.put( "usage: sleep n" nl );
+		exit sleep;
+
+	endtry;
+	mov( 1000, eax );
+	imul( seconds );
+	w.Sleep( eax );
+
+end sleep;

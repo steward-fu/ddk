@@ -1,0 +1,55 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+
+
+procedure win32cons.deleteLn; @nodisplay;
+var
+	csbi: 	win.CONSOLE_SCREEN_BUFFER_INFO;
+
+begin deleteLn;
+
+	pushad();
+	win32cons.info( csbi );
+	
+	// If we're at the last line, just clear the line.
+
+	mov( csbi.dwCursorPosition.Y, ax );
+	inc( ax );
+	if( ax >= csbi.dwSize.Y ) then
+
+		dec( ax );
+		win32cons.gotoxy( ax, 0 );
+		win32cons.clrToEOLN();
+		win32cons.gotoxy
+		( 
+			csbi.dwCursorPosition.Y, 
+			csbi.dwCursorPosition.X 
+		);
+
+	else
+
+		mov( csbi.dwSize.Y, ax );
+		dec( ax );
+		mov( csbi.dwSize.X, bx );
+		dec( bx );
+		win32cons.scrollUpRect
+		( 
+			1, 
+			' ', 
+			csbi.wAttributes, 
+			csbi.dwCursorPosition.Y,
+			0,
+			ax,
+			bx
+		);
+
+	endif;
+	popad();			
+
+end deleteLn;
+
+
+
+
+
+end consoleUnit;

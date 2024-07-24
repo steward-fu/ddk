@@ -1,0 +1,110 @@
+// dllExample-
+//
+//	This code demonstrates how to write a DLL module in HLA.
+//	The "dll" procedure must be a stdcall procedure; this means that the
+//	external name must take the form "_XXX@n" where n is the number of
+//	bytes of parameters and "XXX" is the procedure name.  Technically, the
+//	dllFunc1 and dllFunc2 procedures should also follow this naming convention
+//	if you intend to call this DLL from some language other than HLA.
+//
+//	Note: build this module with the command:
+//
+//	make -f dll.mak
+//
+// Here is dll.mak:
+//
+// dll.dll: dll.obj
+//   link -m dll.obj @dll.link
+//
+// dll.obj: dll.hla
+//   hla -@ -c dll.hla
+//
+// Here is dll.link:
+//
+// -DLL 
+// -entry:_dll 
+// -base:0x40000000 		-- Try and pick a global unique value for this.
+// -out:dll.dll
+// -export:_dll 
+// -export:_dllFunc1 
+// -export:_dllFunc2
+
+
+
+unit dllExample;
+#include( "w.hhf" );
+
+static
+	ThisInstance: dword;
+	
+procedure dll( instance:dword; reason:dword; reserved:dword ); 
+		@stdcall; @external( "_dll@12" );
+		
+procedure dllFunc1( dw:dword ); @stdcall; @external( "_dllFunc1@4" );
+procedure dllFunc2( dw2:dword ); @stdcall; @external( "_dllFunc2@4" );
+
+
+procedure dll( instance:dword; reason:dword; reserved:dword ); @nodisplay;
+begin dll;
+
+	// Save the instance value.
+	
+	mov( instance, eax );
+	mov( eax, ThisInstance );
+	
+	if( reason = w.DLL_PROCESS_ATTACH ) then
+	
+		// Do this code if we're attaching this DLL to a process...
+		
+	endif;
+	
+	// Return true if successful, false if unsuccessful.
+	
+	mov( true, eax );
+	
+end dll;
+
+	
+procedure dllFunc1( dw:dword ); @nodisplay;
+begin dllFunc1;
+
+	mov( dw, eax );
+	
+end dllFunc1;
+
+
+procedure dllFunc2( dw2:dword ); @nodisplay;
+begin dllFunc2;
+
+	push( edx );
+	mov( dw2, eax );
+	mul( dw2, eax );
+	pop( edx );
+	
+end dllFunc2;
+
+
+// The following must be provided to keep HLA stdlib calls happy:
+
+procedure HardwareException__hla_;			@external;
+procedure HWexcept__hla_;					@external;
+procedure HWexcept__hla_;
+begin HWexcept__hla_;
+
+        jmp        HardwareException__hla_;
+		
+end HWexcept__hla_;
+
+
+
+procedure DefaultExceptionHandler__hla_;	@external;
+procedure DfltExHndlr__hla_;   				@external;
+procedure DfltExHndlr__hla_;
+begin DfltExHndlr__hla_;
+
+        jmp        DefaultExceptionHandler__hla_;
+
+end DfltExHndlr__hla_;
+
+
+end dllExample;

@@ -1,0 +1,39 @@
+program adventure;
+
+procedure abc( i:int32 ); begin abc; end abc;
+
+type
+	p : pointer to procedure abc;				
+	playerPtr:pointer to int32;
+
+	noun	:class 
+	
+		var
+			usage		:procedure( p:playerPtr );
+			
+	endclass;
+
+	physObj  :class inherits( noun );
+    endclass;
+	
+begin adventure;
+
+		
+
+end adventure;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

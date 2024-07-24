@@ -1,0 +1,753 @@
+
+program howlDemo;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?compileAll		:= true;
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+
+#includeOnce( "howl.hhf" )
+#includeOnce( "howlDemo.hhf" )
+
+static
+	align( 4 );
+	bkgBrush_g	:dword;
+	bkgColor_g	:dword;
+	
+	
+// Implement the mainAppWindow create procedure and object instances:
+
+mainAppWindow_implementation();
+	
+
+
+
+		
+// Event handlers for the various buttons on the main application window.
+// widgetProc procedures have a standardized prototype:
+//
+//	widgetProc	:procedure( thisPtr:dword; wParam:dword; lParam:dword );
+//
+//	thisPtr-
+//		pointer to the object that triggered the event.
+//
+//	wParam-
+//		wParam value passed to the object when the event was triggered.
+//
+//	lParam-
+//		lParam value passed to the object in the message that triggered
+//		the event.
+//
+//	All of the event handlers conform to this prototype.
+//
+//	Note that multiple objects point at each of these event handlers.
+//	For example, "button" and "button2" both specify "onClick" as their
+//	"on click" event handler. Therefore, pressing either of these buttons
+//	will invoke the onClick procedure, below. 
+	
+proc
+
+
+	menuHandler:widgetProc;
+	begin menuHandler;
+	
+		stdout.put( "menu handler, name:",  (type wMenuItem_t [esi])._name, nl );
+		
+	end menuHandler;
+
+	exitHandler:widgetProc;
+	begin exitHandler;
+	
+		stdout.put( "Exit menu item selected" nl );
+		w.PostQuitMessage( 0 );
+		
+	end exitHandler;
+
+
+
+	// Event handler for the standard push button. This procedure "fires"
+	// whenever the user clicks on the push button.
+	
+	onClick:widgetProc;
+	var
+		txt		:string;
+		txtBuf	:char[256];
+		
+	begin onClick;
+		
+		push( eax );
+		push( esi );
+		str.init( txtBuf, 256 );
+		mov( eax, txt );
+		mov( thisPtr, esi );
+		(type wButton_t [esi]).get_text( txt );
+		if( str.ne( txt, "Push Button" )) then
+		
+			(type wButton_t [esi]).set_text( "Push Button" );
+			
+		else
+		
+			(type wButton_t [esi]).set_text( "Push Me" );
+			
+		endif;	
+		stdout.put( "onClick, thisPtr=", thisPtr, ", txt=", txt, nl );
+		w.InvalidateRect( (type wButton_t [esi]).handle, NULL, false );
+		pop( esi );
+		pop( eax );
+		
+	end onClick;
+		
+
+
+	// Event handler for the second standard push button. This procedure "fires"
+	// whenever the user clicks on the second push button.
+	
+	onClick2:widgetProc;
+	var
+		txt		:string;
+		txtBuf	:char[256];
+		
+	begin onClick2;
+		
+		push( eax );
+		push( esi );
+		str.init( txtBuf, 256 );
+		mov( eax, txt );
+		mov( thisPtr, esi );
+		(type wButton_t [esi]).get_text( txt );
+		#if( compileAll )
+		
+			if( str.ne( txt, "Hide" )) then
+			
+				(type wButton_t [esi]).set_text( "Hide" );
+				push( esi );
+				mov( mainAppWindow.radioSet, esi );
+				(type wRadioSet_t [esi]).show();
+				pop( esi );
+				
+			else
+			
+				(type wButton_t [esi]).set_text( "Show" );
+				push( esi );
+				mov( mainAppWindow.radioSet, esi );
+				(type wRadioSet_t [esi]).hide();
+				pop( esi );
+				
+			endif;
+			
+		#endif	
+		stdout.put( "onClick, thisPtr=", thisPtr, ", txt=", txt, nl );
+		w.InvalidateRect( (type wButton_t [esi]).handle, NULL, false );
+		
+		pop( esi );
+		pop( eax );
+		
+	end onClick2;
+		
+
+	// Event handler for the standard push button. This procedure "fires"
+	// whenever the user double-clicks on the push button (button2).
+	
+	onDblClick:widgetProc;
+	begin onDblClick;
+		
+		stdout.put( "onDblClick, thisPtr=", (type dword thisPtr), nl );
+		
+	end onDblClick;
+		
+		
+		
+	// Event handler for the check box. This procedure "fires"
+	// whenever the user clicks on one of the check boxes.
+	
+	onCheck:widgetProc;
+	begin onCheck;
+	
+		push( esi );
+		mov( thisPtr, esi );
+		(type wCheckBox_t [esi]).get_check();
+		inc( eax );
+		and( 1, eax );
+		(type wCheckBox_t [esi]).set_check( eax );
+		stdout.put
+		( 
+			"onCheck, state=", 
+			(type uns32 eax), 
+			", thisPtr=", 
+			thisPtr, 
+			nl 
+		);
+		pop( esi );
+		
+	end onCheck;
+		
+		
+	// Event handler for the check box. This procedure "fires"
+	// whenever the user clicks on one of the check3 boxes.
+	
+	onCheck3:widgetProc;
+	begin onCheck3;
+	
+		push( esi );
+		mov( thisPtr, esi );
+		(type wCheckBox3_t [esi]).get_check();
+		inc( eax );
+		if( eax > 2 ) then
+		
+			xor( eax, eax );
+			
+		endif;
+		(type wCheckBox3_t [esi]).set_check( eax );
+		stdout.put
+		( 
+			"onCheck3, state=", 
+			(type uns32 eax), 
+			", thisPtr=", 
+			thisPtr, 
+			nl 
+		);
+		pop( esi );
+		
+	end onCheck3;
+		
+		
+	// Event handler for the radio button. This procedure "fires"
+	// whenever the user clicks on one of the radio buttons.
+	
+	onPush:widgetProc;
+	begin onPush;
+	
+		push( esi );
+		mov( thisPtr, esi );
+		(type wRadioButton_t [esi]).get_check();
+		inc( eax );
+		and( 1, eax );
+		(type wRadioButton_t [esi]).set_check( eax );
+		stdout.put
+		( 
+			"onPush, state=", 
+			(type uns32 eax), 
+			", thisPtr=", 
+			thisPtr, 
+			nl 
+		);
+		pop( esi );
+		
+	end onPush;
+		
+		
+	// Event handler for the  edit box. This procedure "fires"
+	// whenever the user changes data in the edit box.
+	
+	onChange:widgetProc;
+	var
+		txt	:string;
+		txtBuf	:char[4096];
+		
+	begin onChange;
+
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		str.init( txtBuf, @size( txtBuf ));
+		mov( eax, txt );
+		mov( thisPtr, esi );
+		(type wabsEditBox_t [esi]).get_text( txt );
+		stdout.put( "EditBox onChange:" nl, txt, nl );
+		
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onChange;
+		
+		
+	// Event handler for the UpDown control.
+	
+	onUpDown:widgetProc;
+	begin onUpDown;
+
+		push( esi );
+		push( edi );
+		
+		mov( thisPtr, esi );
+		(type wUpDown_t [esi]).get_position();
+		stdout.put( "Up/Down, position:", (type uns32 eax), nl );
+		
+		mov( mainAppWindow.progressBar1, esi );
+		(type wProgressBar_t [esi]).set_position( ax );
+		
+		pop( edi );
+		pop( esi );
+		xor( eax, eax );	// Allow change.
+				
+	end onUpDown;
+		
+		
+	// Event handler for the second UpDown control.
+	
+	onUpDown2:widgetProc;
+	var
+		lowRange	:int32;
+		highRange	:int32;
+		strResult	:string;
+		strBuf		:char[256];
+	begin onUpDown2;
+
+		push( esi );
+		push( edi );
+		
+		str.init( strBuf, @size( strBuf ));
+		mov( eax, strResult );
+		
+		mov( thisPtr, esi );
+		(type wUpDownEditBox_t [esi]).get_lowerRange();
+		mov( eax, lowRange );
+		(type wUpDownEditBox_t [esi]).get_upperRange();
+		mov( eax, highRange );
+		
+		mov( lParam, edi );
+		mov( (type w.NM_UPDOWN [edi]).iPos, eax );
+		add( (type w.NM_UPDOWN [edi]).iDelta, eax );
+		if( eax  >= lowRange && eax <= highRange ) then
+		
+			stdout.put( "Up/Down2, position:", (type uns32 eax), nl );
+			str.put( strResult, (type uns32 eax));
+			(type wUpDownEditBox_t [esi]).set_text( strResult );
+			xor( eax, eax );	// Accept result
+			
+		else
+		
+			stdout.put( "Rejected result" nl );
+			
+			mov( true, eax );	// Reject result
+			
+		endif;
+		pop( edi );
+		pop( esi );
+				
+	end onUpDown2;
+
+	
+	
+
+
+
+	// Event handler for the list box click event.
+	
+	onListBoxClick:widgetProc;
+	begin onListBoxClick;
+		
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		(type wListBox_t [esi]).get_curSel();
+		stdout.put
+		( 
+			"onListBoxClick: ", 
+			(type uns32 eax), 
+			", thisPtr=", 
+			thisPtr, 
+			nl 
+		);
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onListBoxClick;
+	
+	
+	
+	// Event handler for the track bar onPosition event:
+	
+	trackPosition:widgetProc;
+	var
+		posn	:string;
+		posnBuf	:char[256];
+		
+	begin trackPosition;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		str.init( posnBuf, @size( posnBuf ));
+		mov( eax, posn );
+		mov( thisPtr, esi );
+		(type wTrackBar_t [esi]).get_position();
+		stdout.put( "track position=", (type uns32 eax), nl );
+		str.put( posn, (type uns32 eax) );
+		mov( mainAppWindow.trackLabel, esi );
+		(type wLabel_t [esi]).set_caption( posn );
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end trackPosition;
+	
+	
+	// TrackBar onChange event handler:
+	
+	onTBChange:widgetProc;
+	var
+		posn	:string;
+		posnBuf	:char[256];
+		
+	begin onTBChange;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		str.init( posnBuf, @size( posnBuf ));
+		mov( eax, posn );
+		mov( thisPtr, esi );
+		(type wTrackBar_t [esi]).get_position();
+		stdout.put( "TrackBar onChange=", (type uns32 eax), nl );
+		str.put( posn, (type uns32 eax) );
+		mov( mainAppWindow.trackLabel, esi );
+		(type wLabel_t [esi]).set_caption( posn );
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onTBChange;
+	
+	
+	// ScrollBar onChange event handler:
+	
+	onSBChange:widgetProc;
+	var
+		posn	:string;
+		posnBuf	:char[256];
+		
+	begin onSBChange;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		str.init( posnBuf, @size( posnBuf ));
+		mov( eax, posn );
+		mov( thisPtr, esi );
+		(type wScrollBar_t [esi]).get_position();
+		stdout.put( "ScrollBar onChange=", (type uns32 eax), nl );
+		str.put( posn, (type uns32 eax) );
+		mov( mainAppWindow.scrollLabel, esi );
+		(type wLabel_t [esi]).set_caption( posn );
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onSBChange;
+	
+	
+	// RoundRect click handler:
+	
+	onRRClick:widgetProc;
+	begin onRRClick;
+	
+		stdout.put( "Clicked on roundRect1" nl );
+		
+	end onRRClick;
+	
+	onCBEditChange:widgetProc;
+	begin onCBEditChange;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		mov( thisPtr, esi );
+		(type wComboBox_t [esi]).a_get_editBoxText();
+		stdout.put( "Combo Box text changed: ", (type string eax), nl );
+		str.free( eax );
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onCBEditChange;
+	
+	onCBSelChange:widgetProc;
+	begin onCBSelChange;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		mov( thisPtr, esi );
+		(type wComboBox_t [esi]).a_get_editBoxText();
+		stdout.put( "Combo Box selection changed: ", (type string eax), nl );
+		str.free( eax );
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onCBSelChange;
+	
+	restoreTab3:widgetProc;
+	begin restoreTab3;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		mov( pmainAppWindow, esi );
+		mov( (type mainAppWindow_t [esi]).tabs, esi );
+		(type wTabs_t [esi]).insertTab( 2, "Tab 3", mainAppWindow.saveTab3 );
+		mov( thisPtr, esi );
+		(type wPushButton_t [esi]).set_onClick( &delTab3 );
+		(type wPushButton_t [esi]).set_text( "Push to delete Tab 3" );
+		
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end restoreTab3;
+	
+	delTab3:widgetProc;
+	begin delTab3;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		mov( pmainAppWindow, esi );
+		mov( (type mainAppWindow_t [esi]).tabs, esi );
+		(type wTabs_t [esi]).deleteTab( 2 );
+		mov( eax, mainAppWindow.saveTab3 );
+		mov( thisPtr, esi );
+		(type wPushButton_t [esi]).set_onClick( &restoreTab3 );
+		(type wPushButton_t [esi]).set_text( "Push to restore Tab 3" );
+		
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end delTab3;
+	
+	onPieClick:widgetProc;
+	var
+		startAngle:real64;
+		endAngle:real64;
+		
+	begin onPieClick;
+	
+		push( eax );
+		push( esi );
+		push( edi );
+		
+		mov( thisPtr, esi );
+		(type wPie_t [esi]).get_startAngle();
+		fstp( startAngle );
+		(type wPie_t [esi]).get_endAngle();
+		fstp( endAngle );
+		stdout.put( "Pie, start:", startAngle, ", end:", endAngle, nl );;
+		pop( edi );
+		pop( esi );
+		pop( eax );
+		
+	end onPieClick;
+	
+	onEndScroll:widgetProc;
+	begin onEndScroll;
+	
+		stdout.put( "end scroll" nl );
+		
+	end onEndScroll;
+	
+	
+	
+	tab3ProcessMessage:widgetProc;
+	begin tab3ProcessMessage;
+	
+		// We have to call the parent "processMessage" method.
+		// Alas, this is a widgetProc, not a class method, so
+		// we have to manually make the call:
+		
+		mov( thisPtr, esi );
+		mov( [esi], edi );
+		mov( (type hla.vmtRec [edi]).vmtParent, edi );	// window_t VMT is the parent class
+
+		// window_t.processMessage( (type wTabPage_t [esi]).handle, eax, wParam, lParam):
+		
+		push( (type wTabPage_t [esi]).handle );
+		push( eax );
+		push( wParam );
+		push( lParam );
+		call ([ edi + @offset( window_t.processMessage )] );
+
+	end tab3ProcessMessage;
+	
+	
+	
+	
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+   
+// The following gets called immediately after the main application
+// window is created. It must be provided, even if it does nothing.
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+end onCreate;
+
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+	// Create the main application window:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, bkgColor_g );
+	w.CreateSolidBrush( eax );
+	mov( eax, bkgBrush_g );
+	mainAppWindow.create_mainAppWindow
+	(
+		"HOWL Demo",			// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		w.CW_USEDEFAULT,		// Let Windows position this guy 
+		w.CW_USEDEFAULT,		//  "    "         "      "   "
+		600,					// Width
+		600,					// Height
+		bkgColor_g,				// Background color
+		true					// Make visible on creation 
+	);
+	mov( esi, pmainAppWindow );	// Save pointer to main window object.
+	
+	
+	// Demonstrate how to set up an "uncommon" event handler on
+	// one of the buttons (this sets up a "double-click" event
+	// on button):
+	
+	#if( compileAll )
+	
+		mov( mainAppWindow.button, esi );
+		(type wPushButton_t [esi]).set_onDblClick( &onDblClick );
+		
+		mov( mainAppWindow.trackBar1, esi );
+		(type wTrackBar_t [esi]).set_onChange( &onTBChange );
+		
+		mov( mainAppWindow.roundRect1, esi );
+		(type wRoundRect_t [esi]).set_onClick( &onRRClick );
+		
+		mov( mainAppWindow.comboBox1, esi );
+		(type wComboBox_t [esi]).set_onEditChange( &onCBEditChange );
+		
+		mov( mainAppWindow.pie1, esi );
+		(type wPie_t [esi]).set_onClick( &onPieClick );
+		
+		mov( mainAppWindow.scrollBar1, esi );
+		(type wScrollBar_t [esi]).set_onEndScroll( &onEndScroll );
+								
+	#endif
+	
+	
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+
+	// For demo purposes, list the names and types of all the
+	// controls on the mainAppWindow form:
+	
+	stdout.put( "Widgets on main form:" nl nl );
+	foreach mainAppWindow.widgetOnForm( 0 ) do
+	
+		intmul( 3, edx );
+		add( 1, edx );
+		mov( [eax], edi );
+		stdout.put
+		( 
+			' ':edx, " name: ", (type wBase_t [eax])._name:-22,
+			' ':edx, " type: ", (type hla.vmtRec [edi]).vmtName,
+			nl
+		);
+		
+	endfor;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	w.DeleteObject( bkgBrush_g );	
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException
+( 
+	theException	:dword in eax;
+	raiseAdrs		:dword in ebx;
+	filename		:string in ecx;
+	userCode		:dword in edx;
+	lineNum			:uns32 in edi 
+);
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must simply
+// call the HowlMainApp procedure.
+
+begin howlDemo;
+
+	HowlMainApp();			
+				
+end howlDemo;
+ 

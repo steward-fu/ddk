@@ -1,0 +1,287 @@
+// FillPaths.hla-
+//
+//	Program that demonstrates object filling via the
+// FillPaths and StrokeAndFillPaths API functions.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit FillPaths;
+
+#includeonce( "rand.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "math.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+readonly
+
+	ClassName	:string := "FillPathsWinClass";		// Window Class Name
+	AppCaption	:string := "FillPaths Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context.
+	oldPen		:dword;			// Used to save the original pen.
+	curHatch	:dword;			// Handle to the Hatch we're using.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	
+readonly
+	Hatches : dword[6] :=
+		[
+			w.HS_HORIZONTAL,
+			w.HS_VERTICAL,
+			w.HS_FDIAGONAL,
+			w.HS_BDIAGONAL,
+			w.HS_CROSS,
+			w.HS_DIAGCROSS
+		];
+
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Draw a sequence of triangles to demonstrate 
+		// the w.StrokeAndFill API function:
+
+		for( mov( 0, esi ); esi < @elements( Hatches ); inc( esi )) do
+
+			// Select one of the six hatch styles here:
+
+			mov( Hatches[ esi*4 ], eax );
+			w.CreateHatchBrush( Hatches[ esi*4 ], RGB( $80, $80, $80 ));
+			mov( eax, curHatch );
+			SelectObject( curHatch );
+			
+
+			// Capture all the strokes:
+
+			w.BeginPath( hdc );
+
+				// Draw a triangle using the default pen:
+
+				intmul( 80, esi, edi );
+				add( 40, edi );
+				MoveToEx( edi, 50, NULL );
+				add( 40, edi );
+				LineTo( edi, 50 );
+				LineTo( edi, 10 );
+
+				// Create a closed path 
+				// (so 'end' joins with 'start' properly):
+
+				w.CloseFigure( hdc );
+
+			w.EndPath( hdc );
+
+			// Actually draw the triangle based on the path
+			// we've captured above:
+
+			w.StrokeAndFillPath( hdc );
+
+			// Delete the Hatch we created above:
+
+			w.DeleteObject( curHatch );
+			
+		endfor;
+
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+				
+end FillPaths;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

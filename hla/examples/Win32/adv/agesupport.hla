@@ -1,0 +1,150 @@
+// agesupport.hla
+//
+// Support code for the AGE engine.
+
+unit adventureSupport;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+
+	
+// writeObject-
+//
+// Used to write an object's name (typically a roomPtr) to the
+// output file, handling the case where the object could be a NULL reference.
+
+_procedure( writeObject )( fd:dword; prefix:string; theRoom:objectPtr );
+begin writeObject; debug( "writeObject" ); 
+
+	push( eax );
+	fileio.puts( fd, prefix );
+	mov( theRoom, eax );
+	if( eax <> NULL ) then
+	
+		fileio.puts( fd, (type object [eax]).objName );
+		
+	endif;
+	fileio.newln( fd );
+	pop( eax );
+
+end writeObject;
+
+
+// emitRoomDir-
+// Used by the room.write method to write direction info to the output file.
+
+_procedure( emitRoomDir )
+( 
+	fd		:dword; 
+	dir		:string; 
+	theRoom	:roomPtr;
+	dirStr	:string;
+	lookStr	:string 
+);
+begin emitRoomDir; debug( "emitRoomDir" );
+
+	push( esi );
+	fileio.puts( fd, dir );
+	mov( theRoom, esi );
+	if( esi <> NULL ) then
+	
+		fileio.puts( fd, (type object [esi]).objName );
+		
+	endif;
+	fileio.newln( fd );
+	fileio.put( fd, "#dirstring" nl, dirStr, nl, "#enddirstr" nl );
+	fileio.put( fd, "#lookstring" nl, lookStr, nl, "#endlookstr" nl );
+	pop( esi );
+	
+end emitRoomDir;
+
+
+// dummy_usage - 	A generic "usage" routine to call whenever using
+// 					a noun and we don't require a specific routine.
+
+_procedure( dummy_usage )( p:playerPtr ); 
+begin dummy_usage; debug( "dummy_usage" );
+	
+end dummy_usage;
+
+
+// linkRoom-
+// Sets the direction links for a room object.
+
+_procedure( linkRoom )
+( 
+	destRoom		:roomPtr; 
+	northRoom		:roomPtr;
+	southRoom		:roomPtr; 
+	eastRoom		:roomPtr;
+	westRoom		:roomPtr;
+	northEastRoom	:roomPtr;
+	northWestRoom	:roomPtr;
+	southEastRoom	:roomPtr; 
+	southWestRoom	:roomPtr;
+	upRoom			:roomPtr;
+	downRoom		:roomPtr 
+); 
+begin linkRoom; debug( "linkRoom" );
+
+	push( eax );
+	push( esi );
+
+	mov( destRoom, esi );
+	
+	mov( northRoom, eax );
+	mov( eax, roomESI.north );
+	
+	mov( southRoom, eax );
+	mov( eax, roomESI.south );
+
+	mov( eastRoom, eax );
+	mov( eax, roomESI.east );
+	
+	mov( westRoom, eax );
+	mov( eax, roomESI.west );
+
+	mov( northEastRoom, eax );
+	mov( eax, roomESI.northEast );
+	
+	mov( northWestRoom, eax );
+	mov( eax, roomESI.northWest );
+	
+	mov( southEastRoom, eax );
+	mov( eax, roomESI.southEast );
+	
+	mov( southWestRoom, eax );
+	mov( eax, roomESI.southWest );
+
+	mov( upRoom, eax );
+	mov( eax, roomESI.up );
+
+	mov( downRoom, eax );
+	mov( eax, roomESI.down );
+
+	pop( esi );
+	pop( eax );	
+	
+end linkRoom;
+
+
+
+     
+end adventureSupport;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

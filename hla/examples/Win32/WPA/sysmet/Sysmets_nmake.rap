@@ -1,0 +1,53 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly - System Metrics Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,nmake build,
+2=0,O,nmake buildall,
+3=0,O,nmake compilerc,
+4=0,O,nmake syntax,
+5=0,C,nmake run,
+6=
+11=0,O,make dbg_build,
+12=0,O,make dbg_buildall,
+13=0,O,make dbg_compilerc,
+14=0,O,make dbg_syntax,
+15=0,C,make dbg_run,
+16=
+[MakeFiles]
+0=Sysmets.rap
+1=Sysmets.rc
+2=Sysmets.asm
+3=Sysmets.obj
+4=Sysmets.res
+5=Sysmets.exe
+6=Sysmets.def
+7=Sysmets.dll
+8=Sysmets.txt
+9=Sysmets.lib
+10=Sysmets.mak
+11=Sysmets.hla
+[Files]
+1=sysmet.hla
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Size]
+1=0,0,0,0,0

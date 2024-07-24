@@ -1,0 +1,46 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+
+
+
+
+
+// scrollUpRectv-
+//
+//	Basically the same as scrollUpRect except the rectangle
+//	coordinates are specified via a small_rect record.
+
+procedure win32cons.scrollUpRectv
+( 
+		n:		uns16;
+		fill:	char;
+		attr:	word; 
+	var rect:	win.small_rect 
+);	@nodisplay;
+begin scrollUpRectv;
+
+	push( eax );
+	mov( rect, eax );
+	win32cons.scrollUpRect
+	( 
+		n, 
+		fill, 
+		attr, 
+		#{ push( (type win.small_rect [eax]).top ); }#,
+		#{ push( (type win.small_rect [eax]).left ); }#,
+		#{ push( (type win.small_rect [eax]).bottom ); }#,
+		#{ push( (type win.small_rect [eax]).right ); }#
+	);
+	pop( eax );
+
+end scrollUpRectv;
+
+
+
+
+
+
+
+
+
+end consoleUnit;

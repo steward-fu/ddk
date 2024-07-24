@@ -1,0 +1,2242 @@
+#if( !@defined( disasm_hhf ))
+#includeonce( "stdio.hhf" )
+						  
+const disasm_hhf := true;		  
+								
+// Macro to save registers and pop them, then return
+
+#macro preserve( regs[] );
+
+	#for( _i_ := 0 to @elements( regs ) - 1 )
+
+		push( @text( regs[_i_] ));
+
+	#endfor
+
+  #terminator restore;
+
+	#for( _i_ := @elements( regs ) - 1 downto 0 )
+
+		pop( @text( regs[_i_] ));
+
+	#endfor
+	ret();
+
+#endmacro
+
+// Enumerated Data type used to represent registers
+
+type
+	reg_t: 
+		enum
+		{ 
+			none_c,
+			al_c, ah_c, bl_c, bh_c, cl_c, ch_c, dl_c, dh_c,
+			ax_c, bx_c, cx_c, dx_c, si_c, di_c, bp_c, sp_c,
+			eax_c, ebx_c, ecx_c, edx_c, esi_c, edi_c, ebp_c, esp_c,
+			st0_c, st1_c, st2_c, st3_c, st4_c, st5_c, st6_c, st7_c,
+			mm0_c, mm1_c, mm2_c, mm3_c, mm4_c, mm5_c, mm6_c, mm7_c,
+			cr0_c, cr1_c, cr2_c, cr3_c, cr4_c, cr5_c, cr6_c, cr7_c,
+			dr0_c, dr1_c, dr2_c, dr3_c, dr4_c, dr5_c, dr6_c, dr7_c,
+			tr0_c, tr1_c, tr2_c, tr3_c, tr4_c, tr5_c, tr6_c, tr7_c,
+			xmm0_c, xmm1_c, xmm2_c, xmm3_c, xmm4_c, xmm5_c, xmm6_c, xmm7_c,
+			cseg_c, dseg_c, eseg_c, fseg_c, gseg_c, sseg_c,
+			regCnt_c
+		};
+
+
+// operandClass- 
+//
+//	Used to determine if an operand is a register, a memory
+//	location, or an immediate operand.
+
+type
+	operandClass_t:
+		enum
+		{
+			implied_c,		// If this operand isn't present.
+			register_c,		// If the operand is a register.
+			memory_c,		// If the operand is a memory location.
+			immediate_c,	// If the operand is a constant.
+			displacement_c	// If the operand is a displacement.
+		};
+
+// The following constants specify label types that make appear in
+// a program. These constants are mainly for use by the code that
+// calls the disassembler engine (in the isItLabel and setLabelType
+// functions).
+
+type label_t	:dword;
+
+const
+	notLabel_c	:= 0;
+	codeLabel_c	:= @{0};
+	dataLabel_c := @{1};
+	size8_c		:= @{2};
+	size16_c	:= @{3};
+	size32_c	:= @{4};
+	size64_c	:= @{5};
+	size80_c	:= @{6};
+	size128_c	:= @{7};
+	sizeR32_c	:= @{8};
+	sizeR64_c	:= @{9};
+	sizeR80_c	:= @{10};
+	sizeR128_c	:= @{11};
+	sizeP32_c	:= @{12};
+	sizeP64_c	:= @{13};
+	sizeP128_c	:= @{14};
+
+
+
+// memory_t-
+//
+//	Specifies a memory addressing mode.
+
+type
+	memory_t:
+		record[4:1]
+
+			baseReg		:reg_t;		// Base register for memory location
+			indexReg	:reg_t;		// Index register (if SIB present).
+			scale		:byte;		// 0 (if no SIB), 1, 2, 4, or 8
+			size		:byte;		// Operand size for a specific instr.
+
+			align(4);
+			labelType	:label_t;	// Various ways label is referenced
+			offset		:dword;		// Offset of memory object.
+
+		endrecord;
+
+// operand-
+//
+//	Holds information about a particular operand.
+
+type
+	operand_t:
+		record
+			opClass	:operandClass_t;
+			union
+				register		:reg_t;
+				memory			:memory_t;
+				immediate		:dword;
+				displacement	:dword;
+			endunion;
+		endrecord;
+
+const
+	operandEDX	:text := "(type operand_t [edx])";
+
+
+// Class used to represent an instruction (returned by the disassembler
+// engine).  This record *must* be a multiple of four bytes long! 
+
+type
+	instr_t:
+		record[4:1]	// Align objects on native size.
+
+			mnemonic	:dword; 	//<mnemonic>_c value (from below)
+			size		:dword;		// Length, in bytes, of instruction.
+			lockPre		:boolean;	// True if lock prefix is present.
+			repnePre	:boolean;	// True if repne prefix is present.
+			repePre		:boolean;	// True if rep/repe is present.
+			sizePre		:boolean;	// True if size prefix is present.
+			adrsPre		:boolean;	// True if adrs prefix is present.
+			csPre		:boolean;	// True if CS prefix is present.
+			dsPre		:boolean;	// True if DS prefix is present.
+			esPre		:boolean;	// True if ES prefix is present.
+			fsPre		:boolean;	// True if FS prefix is present.
+			gsPre		:boolean;	// True if GS prefix is present.
+			ssPre		:boolean;	// True if SS prefix is present.
+
+			// Note: "first" and "second" operand refers to the
+			//		 operands appearing on the line in *INTEL* syntax
+			//		 (opposite of HLA syntax).
+
+			firstOp		:operand_t;	// Dest operand (if applicable).
+			secondOp	:operand_t;	// Source operand (if applicable).
+			thirdOp		:operand_t;	// Third operand for instrucions
+									// that need it.
+
+			align(4);	// Ensure it's a multiple of four bytes long!
+
+		endrecord;
+
+const
+	instrEDI	:text := "(type instr_t [edi])";
+
+
+
+readonly
+	mapX86ToReg8:	byte[8]; 	@external;
+	mapX86ToSReg16:	byte[8]; 	@external;
+	mapX86ToReg16:	byte[8]; 	@external;
+	mapX86ToReg32:	byte[8]; 	@external;
+	mapScale: 		byte[4];	@external;
+	group3Ab:		dword[8];	@external;
+	group3A:		dword[8];	@external;
+	group4bMap:		dword[8];	@external;
+
+
+// Generate strings and labels for all the 80x86 machine instructions.
+//
+//	The following macro generates a constant array of strings
+//	called "instrStrs_c" with each entry containing one of the
+//	machine instructions (in alphabetical order for convenience,
+//	but nothing depends on this order). It also generates a
+//	set of labels. This set takes the form:
+//
+//		<mnemonic>_c  (e.g., "add_c")
+//
+//	The label is the run-time
+//	index into a table of string pointers. 
+
+
+#macro instrs( instrList[] ):_i_, _lastIndex_;
+
+	?_lastIndex_ := @elements(instrList) - 1;
+
+	const
+		instrStrs_c	:string[ @elements( instrList )] :=
+		[
+			// Generate the strings for all but the 
+			// last element:
+
+			#for( _i_ := 0 to (_lastIndex_-1) )
+
+				instrList[_i_],
+
+			#endfor
+
+			// Generate the string for the 
+			// last entry in the table:
+
+			instrList[ _lastIndex_ ]
+		];
+
+	const
+		#for( _i_ := 0 to _lastIndex_ )
+
+				@text( instrList[_i_] + "_c" ) := _i_*4;
+
+		#endfor
+
+
+#endmacro
+
+instrs
+(
+	undef_instr,
+	aaa,	aad,	aam,	aas,	adc,	add,
+	addpd,	addps,	addsd,	addss,	addsubpd,	
+	addsubps,
+	and,	andnpd,	andnps,	andpd,	andps,	arpl,
+	bound,	bsf,	bsr,	bswap,	bt,		btc,	btr,	bts,
+	call,	callf,	calln,	cbw,	cdq,	clc,	cld,
+	clflush,		cli,	clts,	cmc,	cmova,
+	cmovbe,	cmovc,	cmove,	cmovg,	cmovge,	cmovl,
+	cmovle,	cmovnc,	cmovne,	cmovno,	cmovns,	cmovo,
+	cmovp,  cmovnp, cmovs,	cmp,	cmppd,	cmpps,	cmpsb,
+	cmpsd,	cmpss,	cmpsw,	cmpvnp,	cmpxchg,
+	cmpeqps, 		cmpltps, 		cmpleps,	cmpunordps, 
+	cmpneqps,		cmpnltps,		cmpnleps,	cmpordps,
+	cmpeqss, 		cmpltss, 		cmpless,	cmpunordss, 
+	cmpneqss,		cmpnltss,		cmpnless,	cmpordss,
+	cmpeqpd, 		cmpltpd, 		cmplepd,	cmpunordpd, 
+	cmpneqpd,		cmpnltpd,		cmpnlepd,	cmpordpd,
+	cmpeqsd, 		cmpltsd, 		cmplesd,	cmpunordsd, 
+	cmpneqsd,		cmpnltsd,		cmpnlesd,	cmpordsd,
+	cmpxchg8b,		comisd,	comiss,	cpuid,		cvtq2ps,
+	cvtdq2pd,		cvtdq2ps,		cvtpd2dq,	cvtpd2pi, 	cvtps2pi,
+	cvtpd2ps,		cvtpi2pd,		cvtpi2ps,	cvtps2pd,	cvtps2dq,
+	cvtsd2si,		cvtsd2ss,		cvtsi2sd,
+	cvtsi2ss,		cvtss2si,		cvtss2sd,	cvttpd2dq,
+	cvttpd2pi,		cvttps2dq,		cvttps2pi,
+	cvttsd2si,		cvttss2si,		cwd,	
+	cwde,	daa,	das,	dec,	div,	divpd,
+	divps,	divsd,	divss,	emms,	enter,	f2xm1,
+	fabs,	fadd,	faddp,	fbld,	fbstp,	fchs,	
+	fcmovb,	fcmovbe,		
+	fcmove,	fcmovnb,		
+	fcmovnbe,		
+	fcmovne,
+	fcmovnu,		fcmovu,	fcom,	fcomi,	fcomip,	fcomp,
+	fcompp,	fcos,	fdecstp,		fdiv,
+	fdivp,	fdivr,	fdivrp,	fdl1,	ffree,	fiadd,
+	ficom,	ficomp,	fidiv,	fidivr,	fild,	fimul,
+	fincstp,		fist,	fistp,	fisttp,	fisub,
+	fisubr,	fld,	fld1,	fldcw,	fldenv,	fldl2e,	fldl2t,
+	fldlg2,	fldln2,	fldpi,	fldz,	fmul,	fmulp,
+	fnclex,	fninit,	fnop,	fnstenv,
+	fpatan,	fprem,	fprem1,	fptan,	frndint,
+	fscale,	fsin,	fsincos,		fsqrt,	fst,	fstcw,
+	fstp,	fstsw,	fsub,	fsubp,	fsubr,	fsubrp,
+	ftst,	fucom,	fucomi,	fucomip,
+	fucomp,	fucompip,
+	fucompp,		
+	fwait,	fxam,	fxch,	fxrstor,
+	fxsave,	fxtract,		
+	fyl2x,	fyl2xp1,
+	haddpd,	haddps,	hlt,	hsubpd,	hsubps,	idiv,
+	imul,	in,		inc,	insb,	insd,	insw,
+	int,	int3,	intmul,	into,	invd,	invlpg,
+	iret,	iretd,	ja,		jbe,	jc,		jcxz,	jecxz,
+	jg,		jge,	jl,		jle,	jmp,	jmpf,	
+	jnc,	jno,	jnp,	jns,	jnz,	jo,		
+	jp,		js,		jz,		lahf,	lar,	lddqu,	
+	ldmxcsr,
+	lds,	lea,	leave,	les,	lfence,	lfs,	lgdt,
+	lgs,	lidt,	lldt,	lmsw,	lodsb,	lodsd,
+	lodsw,	loop,	loopnz,	loopz,	lsl,	lss,
+	ltr,	
+	maskmovdqu,		
+	maskmovq,		
+	maxpd,	maxps,	maxsd,	maxss,	mfence,	minpd,	minps,	
+	minsd,	minss,	monitor,		
+	mov,	movapd,	movaps, movd,
+	movddup,		
+	movdq2q,		
+	movdqa,	movdqu,	movhlps,		
+	movhpd,	movhps,	movlhps,
+	movlpd,	movlps,	movmskpd,		
+	movmskps,
+	movntdq,		
+	movnti,	movntpd,		
+	movntps,
+	movntq,	movq,	movq2dq,		
+	movsb,	movsd,	movsdp, movshdup,		
+	movsldup,		movsx,		
+	movss,	movsw,	movupd,	movups,	movzx,	mul,	
+	mulpd,	mulps,	mulsd,	mulss,	mwait,	neg,	
+	nop,	not,	or,		orpd,	orps,	out,	
+	outsb,	outsd,	outsw,	packssdw,		
+	packsswb,		
+	packuswb,
+	paddq,	paddsb, paddsw, pavgb,	pavgw,	pcmpdqd,
+	paddb, paddw, paddd,		
+	pcmpeqb,
+	pcmpeqd,		
+	pcmpeqw,		
+	pcmpgtb,		
+	pcmpgtd,
+	pcmpgtw,		
+	pextrw,	pinsrw,	pmaddwd, pminsw, por, pxor,
+	pmovmskb, pmaxsw,		
+	pmulhuw,		
+	pmulhw,
+	pmullw,			
+	pmuludq,		
+	pop,	popa,	popad,	popf,	popfd,	prefetch,
+	prefetchnta,
+	prefetcht0,		
+	prefetcht1,		
+	prefetcht2,
+	psadbw,	pshufhw,		
+	pshuflw,		
+	pshufw, pshufd,
+	pslld,	pslldq,	psllq,	psllw,	psrad,	psraw,
+	psrld,	psrldq,	psrlq,	psrlw,	psufd,	punpckhbw,
+	psubusb, psubusw, pminub, pand, paddusb, paddusw,
+	psubsb, psubsw, psubb, psubw, psubd, psubq,
+	pmaxub,  pandn,
+	punpckhdq,		
+	punpckhqdq,		
+	punpckhwd,
+	punpcklbw,		
+	punpckldq,		
+	punpcklqd,
+	punpcklqdq,
+	punpcklwd,		
+	push,	pusha,	pushad,	pushd,	pushf,	pushfd,	
+	pushw,	rcl,	rcpps,	rcpss,	rcr,	rdmsr,	
+	rdpmc,	rdtsc,	ret,	retf,	rol,	ror,	rsm,	
+	rsqrtps,		
+	rsqrtss,	
+	sahf,	sar,	sbb,	scasb,	scasd,	scasw,	
+	seta,	setbe,	setc,	setnc,	setno,	setnz,
+	sets,	setns,	setp,	setnp,	setl,	setg,
+	setle,	setge,
+	seto,	setz,	sfence,	sgdt,	sidt,	shl,	
+	shld,	shr,	shrd,
+	shufpd,	shufps,	sldt,	smsw,	sqrtpd,	sqrtps,
+	sqrtsd,	sqrtss,	stc,	std,	sti,	stmxcsr,
+	stosb,	stosd,	stosw,	str,	sub,	subpd,
+	subps,	subsd,	subss,	sysenter,		sysexit,
+	test,	ucomiss, 		ucomisd,		
+	ud2,	unpckhpd,
+	unpckhps,		
+	unpcklpd,		
+	unpcklps,
+	verr,	verw,	vvtss2sd,		vxam,	wait,
+	wbinvd,	wrmsr,	xadd,	xchg,	xlat,	xor,
+	xorpd,	xorps
+)
+
+
+
+readonly
+	instrStrs	:string[ @elements( instrStrs_c ) ]; @external;
+	regStrs 	:string[ uns32( regCnt_c ) ]; @external;
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Mnemonic table for the immediate mode instructions (Group 1A).
+// Instructions are encoded in the reg field of the mod-reg-r/m byte
+// as follows:
+//
+//	000:	ADD
+//	001:	OR
+//	010:	ADC
+//	011:	SBB
+//	100:	AND
+//	101:	SUB
+//	110:	XOR
+//	111:	CMP
+
+const
+	group1A_c: dword[8] :=
+		[
+			add_c,
+			or_c,
+			adc_c,
+			sbb_c,
+			and_c,
+			sub_c,
+			xor_c,
+			cmp_c
+		];
+
+
+
+// Mnemonic table for the shift instructions (Group 2A).
+// Instructions are encoded in the reg field of the mod-reg-r/m byte
+// as follows:
+//
+//	000:	ROL
+//	001:	ROR
+//	010:	RCL
+//	011:	RCR
+//	100:	SHL/SAL
+//	101:	SHR
+//	110:	---
+//	111:	SAR
+
+const
+	group2A_c: dword[8] :=
+		[
+			rol_c,
+			ror_c,
+			rcl_c,
+			rcr_c,
+			shl_c,
+			shr_c,
+			undef_instr_c,
+			sar_c
+		];
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// op2m_t (opcode to mnemonic)-
+//
+// The following table type maps opcodes to instruction mnemonics.
+//
+//	mnemonic-
+//		An enumerated value that uniquely identifies each mnemonic.
+//		Used to index into a table of strings to display the mnemonic
+//		at disassembly time. This field contains the <mnemonic>_c values
+//		created for the instrStrs_c table.
+//
+//	operandSize-
+//		First approximation of the instruction's operand size. Does not
+//		include the size prefix, so this value is typically 1 or 4 (eight-bits
+//		or 32-bits). This field may contain zero if there are no operands
+//		or if the size is irrelevant.
+//
+//	handleInstr-
+//		Function to call to do any special processing needed by the
+//		instruction. For most instructions, this is just an empty call.
+//
+//	handleOperand-
+//		Function to call to process the instruction's operands. May
+//		be a call to an empty routine if the instruction requires
+//		no special processing.
+
+#macro opFuncParms;
+		instrPtr	:dword in esi;
+	var	instrRec	:instr_t in edi; 
+	var	dest		:operand_t in edx;
+		modregrm	:dword in ebx
+#endmacro
+
+#macro instrFuncParms;
+	mnemonic	:dword in eax; 
+	instrPtr	:dword in esi;
+	var	dest	:instr_t in edi
+#endmacro
+
+
+type
+	op2m_t:
+		record
+			mnemonic_std	:word;
+			mnemonic_66		:word;
+			handleInstr: procedure( instrFuncParms );
+			handleOprnd1: procedure( opFuncParms );
+			handleOprnd2: procedure( opFuncParms );
+
+		endrecord;
+
+const
+	opTblECX	:text := "(type op2m_t [ecx])";
+
+readonly
+	opXlat		:op2m_t[256];		@external;
+	group1A		:dword[8];			@external;
+	group2A		:dword[8];			@external;
+
+
+procedure isItALabel( adrs:dword in eax ); @returns( "@c" ); @external;
+procedure setLabelType( adrs:dword; lType:label_t ); @external;
+procedure initInstr( var instr:instr_t in edi ); @external;
+
+procedure dInstr
+(
+		instrPtr	:dword in esi; 
+	var dest		:instr_t in edi
+); @external;
+
+
+// Mod-Reg-R/M Handler function:
+
+procedure modRm
+(
+		modrmByte	:byte in al;
+		size		:dword in ecx; 
+		instrPtr	:dword in esi; 
+	var dest		:operand_t in edx			 
+); @external;
+
+procedure processSIB   
+(
+	sibByte		:byte in al;
+	modByte		:byte in ah; 
+	var dest	:operand_t in edx
+); @external;
+
+
+#macro segOpExt( segReg[] ):procname;
+
+	?procname:text := @uppercase(segReg[0], 0) + "operand";
+
+	procedure procname( opFuncParms ); @external;
+
+#endmacro
+
+segOpExt( cs );
+segOpExt( ds );
+segOpExt( es );
+segOpExt( fs );
+segOpExt( gs );
+segOpExt( ss );
+
+
+// The following macro generates external declarations for all the
+// opcode and operand handling functions (this is done so that these
+// almost-identical declarations don't consume a lot of space in this
+// source file).
+
+#macro makeExt( procName[] ):curProc;
+
+	#for( curProc in procName )
+
+		procedure @text( curProc )( instrFuncParms ); @external;
+
+	#endfor
+
+#endmacro;
+
+// Emit the actual external declarations:
+
+makeExt
+( 
+	nullInstr, iretInstr, FPInstrs, jecxzInstr,
+	immInstr8, immInstr1632, movImm8, movImm1632, shiftInstr8, shiftInstr1632,
+	unary3a, unary3b, group4a, group4b, group6, group7, group8,
+	group9, group12, group13, group14, group14a, group15, group16, 
+	TwoByteOpcode, segCSprefix, segDSprefix,
+	segESprefix, segFSprefix, segGSprefix, segSSprefix, 
+	sizePrefix, adrsPrefix, lockPrefix, repnePrefix,
+	repePrefix,
+	movlpsOrMovhlps, movhpsOrMovlhps,
+	reg32Only, regOnly, memOnly
+
+);
+
+
+// makeOpExt-
+//	Macro used to generate external declarations for all
+//	the operand handler functions.
+
+#macro makeOpExt( procName[] ):curProc;
+
+	#for( curProc in procName )
+
+		procedure @text( curProc )( opFuncParms ); @external;
+
+	#endfor
+
+#endmacro;
+
+makeOpExt
+(
+	nullOperand, 
+	r_8, r16, r32, r1632, r1632I8, r1632CL, 
+	rm8, rm16, rm16I8, rm32, rm1632, rmI1632, rm1632I8,
+	xrm32, xrm64, xr128, xrm128, xrm128I8,
+	mxr64, mxrm64, mxrm64I8,
+	disp8, disp1632, rm48, 
+	rAL, reAX, r_CL, r_DX, sr16, r_CR, r_DR, r_TR,
+	I1, I8, sxI8, I16, I1632, IB3, 
+	opReg, opReg8, oneByteRelDisp, fourByteRelDisp,
+	cmpps_instrs, cmppd_instrs, cmpsd_instrs, cmpss_instrs 
+);
+
+
+
+#macro fpOpFuncParms;
+		instrPtr	:dword in esi;
+	var	dest		:instr_t in edi;
+		fpIndex		:dword in edx
+#endmacro
+
+
+#macro makeFPExt( procName[] ):curProc;
+
+	#for( curProc in procName )
+
+		procedure @text( curProc )( fpOpFuncParms ); @external;
+
+	#endfor
+
+#endmacro;
+
+makeFPExt
+(
+	st0stn, stnst0, stn, fpAX, 
+	wordMem, fpEnv, fpBCD80, 
+	fpInt16, fpInt32, fpInt64, 
+	singleReal, doubleReal, extendedReal
+);
+
+
+
+
+
+// Table for all the one-byte opcodes.
+// This table is an op2m_t object and each entry has the following fields:
+//
+//
+//			mnemonic_std	Standard mnemonic code
+//			mnemonic_66		Mnemonic code if $66 prefix is present	
+//			handleInstr		Pointer to special instruction handler function
+//			handleOprnd1	Pointer to special operand handler function
+//			handleOprnd2	Pointer to special operand handler function
+
+#macro o( ms, m66, ho1, ho2, hi );
+
+
+	op2m_t:
+	[
+		ms,
+
+		#if( @string( m66 ) = "" )
+			ms,
+		#else
+			m66,
+		#endif
+
+
+		&hi,
+
+		#if( @string( ho1 ) = "" )
+			&nullOperand,
+		#else
+			&ho1,
+		#endif
+
+		#if( @string( ho2 ) = "" )
+			&nullOperand
+		#else
+			&ho2
+		#endif
+	]
+
+
+#endmacro
+
+
+const
+	n :text := "nullInstr";
+	opXlat_c	:op2m_t[] :=
+		[
+			// Opcodes 0..7:
+
+			o( add_c	,, rm8, r_8,n ),
+			o( add_c	,, rm1632, r1632,n),
+			o( add_c	,, r_8, rm8,n ),
+			o( add_c	,, r1632, rm1632,n ),
+			o( add_c	,, rAL, I8,n ),
+			o( add_c	,, reAX, I1632,n ),
+			o( push_c	,, ESoperand,,n ),
+			o( pop_c	,, ESoperand,,n ),
+
+			// Opcodes 8..$f:
+
+			o( or_c		,, rm8, r_8,n ),
+			o( or_c		,, rm1632, r1632,n),
+			o( or_c		,, r_8, rm8,n ),
+			o( or_c		,, r1632, rm1632,n ),
+			o( or_c		,, rAL, I8,n ),
+			o( or_c		,, reAX, I1632,n ),
+
+			o( push_c	,, CSoperand,,n ),
+			o( 0		,, ,,TwoByteOpcode ),
+
+			// Opcodes $10..$17:
+
+			o( adc_c	,, rm8, r_8,n ),
+			o( adc_c	,, rm1632, r1632,n),
+			o( adc_c	,, r_8, rm8,n ),
+			o( adc_c	,, r1632, rm1632,n ),
+			o( adc_c	,, rAL, I8,n ),
+			o( adc_c	,, reAX, I1632,n ),
+
+			o( push_c	,, SSoperand,,n ),
+			o( pop_c	,, SSoperand,,n ),
+
+			// Opcodes $18..$1f:
+
+
+			o( sbb_c	,, rm8, r_8,n ),
+			o( sbb_c	,, rm1632, r1632,n),
+			o( sbb_c	,, r_8, rm8,n ),
+			o( sbb_c	,, r1632, rm1632,n ),
+			o( sbb_c	,, rAL, I8,n ),
+			o( sbb_c	,, reAX, I1632,n ),
+
+			o( push_c	,, DSoperand,,n ),
+			o( pop_c	,, DSoperand,,n ),
+
+			// Opcodes $20..$27:
+
+			o( and_c	,, rm8, r_8,n ),
+			o( and_c	,, rm1632, r1632,n),
+			o( and_c	,, r_8, rm8,n ),
+			o( and_c	,, r1632, rm1632,n ),
+			o( and_c	,, rAL, I8,n ),
+			o( and_c	,, reAX, I1632,n ),
+
+			o( 0		,, ,,segESprefix ),
+			o( daa_c	,, ,,n ),
+
+			// Opcodes $28..$2f:
+
+			o( sub_c	,, rm8, r_8,n ),
+			o( sub_c	,, rm1632, r1632,n),
+			o( sub_c	,, r_8, rm8,n ),
+			o( sub_c	,, r1632, rm1632,n ),
+			o( sub_c	,, rAL, I8,n ),
+			o( sub_c	,, reAX, I1632,n ),
+
+			o( 0		,, ,,segCSprefix ),
+			o( das_c	,, ,,n ),
+
+			// Opcodes $30..$37:
+
+			o( xor_c	,, rm8, r_8,n ),
+			o( xor_c	,, rm1632, r1632,n),
+			o( xor_c	,, r_8, rm8,n ),
+			o( xor_c	,, r1632, rm1632,n ),
+			o( xor_c	,, rAL, I8,n ),
+			o( xor_c	,, reAX, I1632,n ),
+
+			o( 0		,, ,,segSSprefix ),
+			o( aaa_c	,, ,,n ),
+
+			// Opcodes $38..$3f:
+
+			o( cmp_c	,, rm8, r_8,n ),
+			o( cmp_c	,, rm1632, r1632,n),
+			o( cmp_c	,, r_8, rm8,n ),
+			o( cmp_c	,, r1632, rm1632,n ),
+			o( cmp_c	,, rAL, I8,n ),
+			o( cmp_c	,, reAX, I1632,n ),
+
+			o( 0		,, ,,segDSprefix ),
+			o( aas_c	,, ,,n ),
+
+			// Opcodes $40..$47:
+
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+			o( inc_c	,, opReg,,n ),
+
+			// Opcodes $48..$4f:
+
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+			o( dec_c	,, opReg,,n ),
+
+			// Opcodes $50..$57:
+
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+			o( push_c	,, opReg,,n ),
+
+			// Opcodes $58..$5f:
+
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+			o( pop_c	,, opReg,,n ),
+
+			// Opcodes $60..$67:
+
+			o( pushad_c, pusha_c, ,,n ),
+			o( popad_c, popa_c, ,,n ),
+			o( bound_c	,, r1632, rm1632,n ),
+			o( arpl_c	,, rm16, r16,n ),
+			o( 0		,, ,, segFSprefix ),
+			o( 0		,, ,, segGSprefix ),
+			o( 0		,, ,, sizePrefix ),
+			o( 0		,, ,, adrsPrefix ),
+
+			// Opcodes $68..$6f:
+
+			o( pushd_c, pushw_c, I1632,,n ),
+			o( intmul_c	,, r1632, rmI1632, n ),
+			o( pushd_c, pushw_c,sxI8,,n ),
+			o( intmul_c	,, r1632, rm1632I8, n ),
+			o( insb_c	,, ,,n ),
+			o( insd_c, insw_c , ,,n ),
+			o( outsb_c	,, ,,n ),
+			o( outsd_c, outsw_c , ,,n ),
+
+			// Opcodes $70..$77:
+
+			o( jo_c		,, 	oneByteRelDisp,,n ),
+			o( jno_c	,, 	oneByteRelDisp,,n ),
+			o( jc_c		,, 	oneByteRelDisp,,n ),
+			o( jnc_c	,, 	oneByteRelDisp,,n ),
+			o( jz_c		,, 	oneByteRelDisp,,n ),
+			o( jnz_c	,, 	oneByteRelDisp,,n ),
+			o( jbe_c	,, 	oneByteRelDisp,,n ),
+			o( ja_c		,, 	oneByteRelDisp,,n ),
+
+			// Opcodes $78..$7f:
+
+			o( js_c 	,, 	oneByteRelDisp,,n ),
+			o( jns_c	,, 	oneByteRelDisp,,n ),
+			o( jp_c 	,, 	oneByteRelDisp,,n ),
+			o( jnp_c	,, 	oneByteRelDisp,,n ),
+			o( jl_c 	,, 	oneByteRelDisp,,n ),
+			o( jge_c	,, 	oneByteRelDisp,,n ),
+			o( jle_c	,, 	oneByteRelDisp,,n ),
+			o( jg_c 	,, 	oneByteRelDisp,,n ),
+
+			// Opcodes $80..$87:
+
+			o( 0 	,, rm8,		I8, 	immInstr8 ), 
+			o( 0 	,, rm1632,	I1632,	immInstr1632 ), 
+			o( 0 	,, rm8,		I8, 	immInstr8 ), 
+			o( 0 	,, rm1632,	sxI8,	immInstr1632 ), 
+			o( test_c	,, rm8, r_8,n ),
+			o( test_c	,, rm1632, r1632,n ),
+			o( xchg_c	,, rm8, r_8,n ),
+			o( xchg_c	,, rm1632, r1632,n ),
+
+			// Opcodes $88..$8f:
+
+			o( mov_c	,, rm8, r_8,n ),
+			o( mov_c	,, rm1632, r1632,n ),
+			o( mov_c	,, r_8, rm8,n ),
+			o( mov_c	,, r1632, rm1632,n ),
+			o( mov_c	,, rm16, sr16,n ),
+			o( lea_c	,, r1632, rm1632,n ),
+			o( mov_c	,, sr16, rm16,n ),
+			o( pop_c	,, rm1632,,n ),
+
+			// Opcodes $90..$97:
+			
+			o( nop_c	,, ,,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+			o( xchg_c	,, opReg, reAX,n ),
+
+
+			// Opcodes $98..$9F:
+			
+			o( cwde_c, cbw_c,	,,n ),
+			o( cdq_c, cwd_c,	,,n ),
+
+				// Note: We won't allow CALLF in our disassembler
+				// as we're geared towards 32-bit flat mode.
+
+			o( undef_instr_c	,, ,,n ), // CALLF
+			o( fwait_c	        ,, ,,n ),
+			o( pushfd_c, pushf_c,  ,,n ),
+			o( popfd_c,  popf_c,   ,,n ),
+			o( sahf_c	        ,, ,,n ),
+			o( lahf_c	        ,, ,,n ),
+
+			// Opcodes $A0..$A7:
+			
+			o( mov_c	,, rAL, disp8,n ),
+			o( mov_c	,, reAX, disp1632,n ),
+			o( mov_c	,, disp8, rAL,n ),
+			o( mov_c	,, disp1632,reAX,n ),
+			o( movsb_c	,, ,,n ),
+			o( movsd_c, movsw_c, ,,n ),
+			o( cmpsb_c	,, ,,n ),
+			o( cmpsd_c, cmpsw_c, ,,n ),
+
+			// Opcodes $A8..$AF:
+			
+			o( test_c			 ,, rAL, I8,n ),
+			o( test_c			 ,, reAX, I1632,n ),
+			o( stosb_c			 ,, ,,n ),
+			o( stosd_c, stosw_c, ,,n ),
+			o( lodsb_c			 ,, ,,n ),
+			o( lodsd_c, lodsw_c, ,,n ),
+			o( scasb_c			 ,, ,,n ),
+			o( scasd_c, scasw_c, ,,n ),
+
+			// Opcodes $B0..$B7:
+
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+			o( mov_c	,, opReg8, I8,n ),
+
+			// Opcodes $B8..$BF:
+
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+			o( mov_c	,, opReg, I1632,n ),
+
+			// Opcodes $C0..$C7:
+
+			o( 0		,, rm8,    I8, shiftInstr8 ),
+			o( 0		,, rm1632, I8, shiftInstr1632 ),
+			o( ret_c	,, I16,,n ),
+			o( ret_c	,, ,,n ),
+			o( les_c	,, r1632, rm1632,n ),
+			o( lds_c	,, r1632, rm1632,n ),
+			o( mov_c	,, ,, movImm8 ),
+			o( mov_c	,, ,, movImm1632 ),
+
+			// Opcodes $C8..$CF:
+
+			o( enter_c	,, I16, I8,n ),
+			o( leave_c	,, ,,n ),
+			o( retf_c	,, I16,,n ),
+			o( retf_c	,, ,,n ),
+			o( int_c	,, IB3,,n ),
+			o( int_c	,, I8,,n ),
+			o( into_c	,, ,,n ),
+			o( iretd_c, iret_c, ,,n ),
+
+			// Opcodes $D0..$D7:
+
+			o( 0		,, rm8,    I1,shiftInstr8 ),
+			o( 0		,, rm1632, I1,shiftInstr1632 ),
+			o( 0		,, rm8,    r_CL,shiftInstr8 ),
+			o( 0		,, rm1632, r_CL,shiftInstr1632 ),
+			o( aam_c	,, I8,,n ),
+			o( aad_c	,, I8,,n ),
+			o( undef_instr_c	,, ,,n ),
+			o( xlat_c	,, ,,n ),
+
+			// Opcodes $D8..$Df:
+
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+			o( 0	,, ,,FPInstrs ),
+
+			// Opcodes $E0..$E7:
+
+			o( loopnz_c	,, oneByteRelDisp,,n ),
+			o( loopz_c	,, oneByteRelDisp,,n ),
+			o( loop_c	,, oneByteRelDisp,,n ),
+			o( jecxz_c	,, oneByteRelDisp,,jecxzInstr ),
+			o( in_c		,, rAL,I8,n ),
+			o( in_c		,, reAX,I8,n ),
+			o( out_c	,, rAL,I8,n ),
+			o( out_c	,, reAX,I8,n ),
+
+			// Opcodes $E8..$Ef:
+
+			o( call_c	,, fourByteRelDisp,,n ),
+			o( jmp_c	,, fourByteRelDisp,,n ),
+
+				// This is really jmp far, but we won't support it.
+
+			o( undef_instr_c	,, ,,n ),
+
+			o( jmp_c	,, oneByteRelDisp,,n ),
+			o( in_c		,, rAL,r_DX,n ),
+			o( in_c		,, reAX,r_DX,n ),
+			o( out_c	,, r_DX,rAL,n ),
+			o( out_c	,, r_DX,reAX,n ),
+
+
+			// Opcodes $F0..$F7:
+
+			o( 0		,, ,,lockPrefix ),
+			o( undef_instr_c	,, ,,n ),
+			o( 0		,, ,,repnePrefix ),
+			o( 0		,, ,,repePrefix ),
+			o( hlt_c	,, ,,n ),
+			o( cmc_c	,, ,,n ),
+			o( 0		,, ,,unary3a ),
+			o( 0		,, ,,unary3b ),
+
+			// Opcodes $F8..$FF:
+
+			o( clc_c	,, ,,n ),
+			o( stc_c	,, ,,n ),
+			o( cli_c	,, ,,n ),
+			o( sti_c	,, ,,n ),
+			o( cld_c	,, ,,n ),
+			o( std_c	,, ,,n ),
+			o( 0		,, ,,group4a ),
+			o( 0		,, ,,group4b )
+		];
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// fpOp2m_t (FP opcode to mnemonic)-
+//
+// The following table type maps floating point opcodes to 
+// instruction mnemonics.
+//
+//	mnemonic-
+//		An enumerated value that uniquely identifies each mnemonic.
+//		Used to index into a table of strings to display the mnemonic
+//		at disassembly time. This field contains the <mnemonic>_c values
+//		created for the instrStrs_c table.
+//
+//	handleOprnds-
+//		Function to call to process the instruction's operands. May
+//		be a call to an empty routine if the instruction requires
+//		no special processing.
+
+type
+	fpOp2m_t:
+		record
+			mnemonic	:dword;
+			handleOprnds: procedure( fpOpFuncParms );
+		endrecord;
+
+readonly
+	fpOpXlat	:fpOp2m_t[8,256];	@external;
+
+
+#macro undef192FP;
+	[192 dup [ fpOp2m_t:[undef_instr_c,&nullOperand]]]
+#endmacro
+
+#macro fp8( instr, opHndlr[] );
+
+	#if( @elements( opHndlr ) = 0 )
+
+		[8 dup [ fpOp2m_t:[ instr, &st0stn ]]]
+
+	#else
+
+		[8 dup [ fpOp2m_t:[ instr, @text( opHndlr[0] )]]]
+
+	#endif
+
+#endmacro	
+
+#macro fpm( instrOpPairs[] ):
+	_modVals_, _rmVals_, _iopIndex_, _curInstr_, _curOperand_;
+
+	#if( @elements( instrOpPairs ) <> 16 )
+
+		#error( "FPM macro called with incorrect # of operands" )
+
+	#else
+
+		#for( _modVals_ := 0 to 2 )
+
+			#for( _iopIndex_ := 0 to 7 )
+
+				?_curInstr_ := instrOpPairs[ _iopIndex_ * 2 ];
+				#if( _curInstr_ = "" | _curInstr_ = "_" )
+
+					?_curInstr_  := "undef_instr_c";
+					?_curOperand_  := "&nullOperand";
+
+				#else
+
+					?_curOperand_ := instrOpPairs[ _iopIndex_ * 2 + 1 ];
+
+				#endif
+
+				#for( _rmVals_ := 0 to 7 )
+
+					fpOp2m_t:[ @text(_curInstr_), @text(_curOperand_) ]
+					
+					#if
+					( 
+							(_modVals_ <> 2)
+						 |	( _iopIndex_ <> 7)
+						 | 	(_rmVals_ <> 7 )
+					)
+						,
+					#endif
+
+				#endfor
+
+			#endfor
+
+		#endfor
+
+	#endif
+
+#endmacro			
+
+
+#macro fi8( implied[] ):_i_;
+
+	#if( @elements( implied ) <> 8 )
+
+		#error( "Expected eight operands in FPI8 macro" )
+
+	#else
+
+		#for( _i_ := 0 to 7 )
+
+			#if( implied[_i_] = "" | implied[_i_] = "_" )
+
+				?implied[_i_] := "undef_instr_c";
+
+			#endif
+			fpOp2m_t:[ @text(implied[ _i_ ]), &nullOperand ]
+			#if( _i_ <> 7 )
+				,
+			#endif
+
+		#endfor
+
+	#endif
+
+#endmacro
+		
+const
+	fpOpXlat_c	:fpOp2m_t[] :=
+		[
+			// $D8-prefixed FP opcodes:
+
+			undef192FP,
+			fp8( fadd_c ),		// $d8/$c0
+			fp8( fmul_c ),		// $d8/$c8
+			fp8( fcom_c ),		// $d8/$d0
+			fp8( fcomp_c ),		// $d8/$d8
+			fp8( fsub_c ),		// $d8/$e0
+			fp8( fsubr_c ),		// $d8/$e8
+			fp8( fdiv_c ),		// $d8/$f0
+			fp8( fdivr_c ),		// $d8/$f8
+
+			// $D9-prefixed FP opcodes:
+
+			fpm
+			(
+				fld_c, 		&singleReal,
+				,,
+				fst_c, 		&singleReal,
+				fstp_c,		&singleReal,
+				fldenv_c,	&fpEnv,
+				fldcw_c,	&wordMem,
+				fnstenv_c,	&fpEnv,
+				fstcw_c,	&wordMem
+			),
+
+			fp8( fld_c ),	// $d9/$c0
+			fp8( fxch_c ),	// $d9/$c8
+			fi8( fnop_c, _,_,_,_,_,_,_ ),
+			fi8( _,_,_,_,_,_,_,_ ),
+			fi8( fchs_c, fabs_c, _,_, ftst_c, fxam_c, _,_ ),
+			fi8
+			( 
+				fld1_c, fldl2t_c, fldl2e_c, fldpi_c, 
+				fldlg2_c, fldln2_c, fldz_c, _ 
+			),
+			fi8
+			(
+				f2xm1_c, fyl2x_c, fptan_c, fpatan_c,
+				fxtract_c, fprem1_c, fdecstp_c, fincstp_c
+			),
+			fi8
+			(
+				fprem_c, fyl2xp1_c, fsqrt_c, fsincos_c,
+				frndint_c, fscale_c, fsin_c, fcos_c
+			),
+
+			// $DA-prefixed floating-point instructions
+
+			fpm
+			(
+				fiadd_c,	&fpInt32,
+				fimul_c,	&fpInt32,
+				ficom_c,	&fpInt32,
+				ficomp_c,	&fpInt32,
+				fisub_c,	&fpInt32,
+				fisubr_c,	&fpInt32,
+				fidiv_c,	&fpInt32,
+				fidivr_c,	&fpInt32
+			),
+
+			fp8( fcmovb_c ),		// $da/$c0
+			fp8( fcmove_c ),		// $da/$c8
+			fp8( fcmovbe_c ),		// $da/$d0
+			fp8( fcmovu_c ),		// $da/$d8
+			fi8( _,_,_,_,_,_,_,_ ),	// $da/$e0
+			fi8( _, fucompp_c ,_,_,_,_,_,_ ),
+			fi8( _,_,_,_,_,_,_,_ ),	// $da/$f0
+			fi8( _,_,_,_,_,_,_,_ ),	// $da/$f8
+
+			// $DB-prefixed floating-point instructions
+
+			fpm
+			(
+				fild_c,		&fpInt32,
+				fisttp_c,	&fpInt32,
+				fist_c,		&fpInt32,
+				fistp_c,	&fpInt32,
+				,,
+				fld_c,		&extendedReal,
+				,,
+				fstp_c,		&extendedReal
+			),
+
+			fp8( fcmovnb_c ),		// $da/$c0
+			fp8( fcmovne_c ),		// $da/$c8
+			fp8( fcmovnbe_c ),		// $da/$d0
+			fp8( fcmovnu_c ),		// $da/$d8
+			fi8( _,_, fnclex_c, fninit_c, _,_,_,_ ),	// $da/$e0
+			fp8( fucomi_c ),		// $da/$e8
+			fp8( fcomi_c ),			// $da/$f0
+			fi8( _,_,_,_,_,_,_,_ ),	// $da/$f8
+
+			// $DC-prefixed floating-point instructions
+
+			fpm
+			(
+				fadd_c,		&doubleReal,
+				fmul_c,		&doubleReal,
+				fcom_c,		&doubleReal,
+				fcomp_c,	&doubleReal,
+				fsub_c,		&doubleReal,
+				fsubr_c,	&doubleReal,
+				fdiv_c,		&doubleReal,
+				fdivr_c,	&doubleReal
+			),
+
+			fp8( fadd_c, &stnst0 ),		// $dc/$c0
+			fp8( fmul_c, &stnst0 ),		// $dc/$c8
+			fi8( _,_,_,_,_,_,_,_ ),		// $dc/$d0
+			fi8( _,_,_,_,_,_,_,_ ),		// $dc/$d8
+			fp8( fsubr_c, &stnst0 ),	// $dc/$e0
+			fp8( fsub_c, &stnst0 ),		// $dc/$e8
+			fp8( fdivr_c, &stnst0 ),	// $dc/$f0
+			fp8( fdiv_c, &stnst0 ),		// $dc/$f8
+
+			// $DD-prefixed floating-point instructions
+
+			//undef192FP,
+			fpm
+			(
+				,,
+				fisttp_c, &fpInt64,
+				,,
+				,,
+				,,
+				,,
+				,,
+				_,_
+			),
+			fp8( ffree_c, &stn ),		// $dd/$c0
+			fi8( _,_,_,_,_,_,_,_ ),		// $dd/$c8
+			fp8( fst_c, &stn ),			// $dd/$d0
+			fp8( fstp_c, &stn ),		// $dd/$d8
+			fp8( fucom_c, &stnst0 ),	// $dd/$e0
+			fp8( fucomp_c, &stn ),		// $dd/$e8
+			fi8( _,_,_,_,_,_,_,_ ),		// $dd/$f0
+			fi8( _,_,_,_,_,_,_,_ ),		// $dd/$f8
+
+			// $DE-prefixed floating-point instructions
+
+			undef192FP,
+			fp8( faddp_c, &stnst0 ),	// $de/$c0
+			fp8( fmulp_c, &stnst0 ),	// $de/$c8
+			fi8( _,_,_,_,_,_,_,_ ),		// $de/$d0
+			fi8( _, fcompp_c, _,_,_,_,_,_ ),		// $de/$d8
+			fp8( fsubrp_c, &stnst0 ),	// $de/$e0
+			fp8( fsubp_c, &stnst0 ),	// $de/$e8
+			fp8( fdivrp_c, &stnst0 ),	// $de/$f0
+			fp8( fdivp_c, &stnst0 ),	// $de/$f8
+
+			// $DF-prefixed floating-point instructions
+
+			fpm
+			(
+				fild_c,		&fpInt16,
+				fisttp_c,	&fpInt16,
+				fist_c,		&fpInt16,
+				fistp_c,	&fpInt16,
+				fbld_c,		&fpBCD80,
+				fild_c,		&fpInt64,
+				fbstp_c,	&fpBCD80,
+				fistp_c,	&fpInt64
+			),
+
+			fi8( _,_,_,_,_,_,_,_ ),		// $df/$c0
+			fi8( _,_,_,_,_,_,_,_ ),		// $df/$c8
+			fi8( _,_,_,_,_,_,_,_ ),		// $df/$d0
+			fi8( _,_,_,_,_,_,_,_ ),		// $df/$d8
+			fpOp2m_t:[ fstsw_c, &fpAX ],	// $df/$e0
+				[ 7 dup [fpOp2m_t:[ undef_instr_c, &nullOperand ]]],
+
+			fp8( fucompip_c, &st0stn ),	// $df/$e8
+			fp8( fcomip_c, &st0stn ),	// $df/$f0
+			fi8( _,_,_,_,_,_,_,_ )		// $df/$f8
+
+		];
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Operand tables for the two-byte opcode ($0F prefix) instructions.
+// There are four separate tables, one each for instructions that also
+// contain a $66 (size prefix), $F2 (repne prefix), or $F3 (repe prefix)
+// prefix byte, and one table for the default case if none of these
+// prefix bytes are also present.
+
+type
+	xOp2m_t:
+		record
+			mnemonic		:dword;
+			handleInstr		:procedure( instrFuncParms );
+			handleOprnd1	:procedure( opFuncParms );
+			handleOprnd2	:procedure( opFuncParms );
+		endrecord;
+
+
+// Because the $0F tables are rather sparse, the following code
+// initializes all the entries with the undefined instruction and
+// we'll just fill in the instructions we use afterwards.
+
+val
+	opXlat2_c	:xOp2m_t[256] := 
+		[256 dup [xOp2m_t:[0, &nullInstr, &nullOperand, &nullOperand]]];
+
+	opXlat2_66_c	:xOp2m_t[256] := 
+		[256 dup [xOp2m_t:[0, &nullInstr, &nullOperand, &nullOperand]]];
+
+	opXlat2_F2_c	:xOp2m_t[256] := 
+		[256 dup [xOp2m_t:[0, &nullInstr, &nullOperand, &nullOperand]]];
+
+	opXlat2_F3_c	:xOp2m_t[256] := 
+		[256 dup [xOp2m_t:[0, &nullInstr, &nullOperand, &nullOperand]]];
+
+
+readonly
+	opXlat2		:xOp2m_t[256]; @external;  
+	opXlat2_66	:xOp2m_t[256]; @external;  
+	opXlat2_F2	:xOp2m_t[256]; @external;  
+	opXlat2_F3	:xOp2m_t[256]; @external;
+
+
+// Utility macro to fill in the o2, o66, oF2, and oF3 macros below:
+
+#macro oGuts( table );
+	?_op1_ := @string( op1 );
+	#if( _op1_ = "" )
+		?_op1_ := "nullOperand";
+	#endif
+	?_op2_ := @string( op2 );
+	#if( _op2_ = "" )
+		?_op2_ := "nullOperand";
+	#endif
+	?table[ index ] := 
+		xOp2m_t:
+		[ 
+			mnemonic, 
+			&instr, 
+			&@text(_op1_), 
+			&@text(_op2_) 
+		];	
+#endmacro
+
+// o2 - Generate an entry for the opXlat2_c table.
+
+#macro o2( index, mnemonic, op1, op2, instr ):_op1_,_op2_;
+	oGuts( opXlat2_c )	
+#endmacro
+
+// o66 - Generate an entry for the opXlat2_66_c table.
+
+#macro o66( index, mnemonic, op1, op2, instr ):_op1_,_op2_;
+	oGuts( opXlat2_66_c )	
+#endmacro
+
+// oF2 - Generate an entry for the opXlat2_F2_c table.
+
+#macro oF2( index, mnemonic, op1, op2, instr ):_op1_,_op2_;
+	oGuts( opXlat2_F2_c )	
+#endmacro
+
+// oF3 - Generate an entry for the opXlat2_F2_c table.
+
+#macro oF3( index, mnemonic, op1, op2, instr ):_op1_,_op2_;
+	oGuts( opXlat2_F3_c )	
+#endmacro
+	
+
+// Table entries for the opXlat2 table:
+
+	o2( $00, undef_instr_c, ,, group6 );  
+	o2( $01, undef_instr_c, ,, group7 );
+	o2( $02, lar_c, r1632, rm1632, n );  
+	o2( $03, lsl_c, r1632, rm1632, n );
+	o2( $06, clts_c, ,, n );  
+	o2( $08, invd_c, ,, n );  
+	o2( $09, wbinvd_c, ,, n );  
+	o2( $0b, ud2_c, ,, n );  
+	o2( $0d, nop_c, rm1632,, n );  
+
+	o2( $10, movups_c, xr128, xrm128, n );
+	o2( $11, movups_c, xrm128, xr128, n );
+	o2( $12, 0,,, movlpsOrMovhlps );
+	o2( $13, movlps_c, xrm64, xr128, n );
+	o2( $14, unpcklps_c, xrm128, xr128, n );
+	o2( $15, unpckhps_c, xrm128, xr128, n );
+	o2( $16, 0,,, movhpsOrMovlhps );
+	o2( $17, movhps_c, xrm64, xr128, n );
+
+	o2( $18, 0,,, group16 );
+	o2( $1f, nop_c, rm1632, ,n );
+
+	o2( $20, mov_c, rm1632, r_CR, reg32Only );
+	o2( $21, mov_c, rm1632, r_DR, reg32Only );
+	o2( $22, mov_c, r_CR, rm1632, reg32Only );
+	o2( $23, mov_c, r_DR, rm1632, reg32Only );
+	o2( $24, mov_c, rm1632, r_TR, reg32Only );
+	o2( $26, mov_c, r_TR, rm1632, reg32Only );
+
+	o2( $28, movaps_c, xr128, xrm128, n );
+	o2( $29, movaps_c, xrm128, xr128, n );
+	o2( $2a, cvtpi2ps_c, xr128, mxrm64, n );
+	o2( $2b, movntps_c, xrm128, xr128, memOnly );
+	o2( $2c, cvttps2pi_c, mxr64, xrm128, n );
+	o2( $2d, cvtps2pi_c, mxr64, xrm128, n );
+	o2( $2e, ucomiss_c, xr128, xrm128, n );
+	o2( $2f, comiss_c, xr128, xrm128, n );
+
+	o2( $30, wrmsr_c,,, n );
+	o2( $31, rdtsc_c,,, n );
+	o2( $32, rdmsr_c,,, n );
+	o2( $33, rdpmc_c,,, n );
+	o2( $34, sysenter_c,,, n);
+	o2( $35, sysexit_c,,, n );
+
+	o2( $40, cmovo_c, r32, rm32, n );
+	o2( $41, cmovno_c, r32, rm32, n );
+	o2( $42, cmovc_c, r32, rm32, n );
+	o2( $43, cmovnc_c, r32, rm32, n );
+	o2( $44, cmove_c, r32, rm32, n );
+	o2( $45, cmovne_c, r32, rm32, n );
+	o2( $46, cmovbe_c, r32, rm32, n );
+	o2( $47, cmova_c, r32, rm32, n );
+
+	o2( $48, cmovs_c, r32, rm32, n );
+	o2( $49, cmovns_c, r32, rm32, n );
+	o2( $4a, cmovp_c, r32, rm32, n );
+	o2( $4b, cmovnp_c, r32, rm32, n );
+	o2( $4c, cmovl_c, r32, rm32, n );
+	o2( $4d, cmovge_c, r32, rm32, n );
+	o2( $4e, cmovle_c, r32, rm32, n );
+	o2( $4f, cmovg_c, r32, rm32, n );
+
+	o2( $50, movmskps_c, rm32, xr128, reg32Only ); 
+	o2( $51, sqrtps_c, xr128, xrm128, n ); 
+	o2( $52, rsqrtps_c, xr128, xrm128, n ); 
+	o2( $53, rcpps_c, xr128, xrm128, n ); 
+	o2( $54, andps_c, xr128, xrm128, n ); 
+	o2( $55, andnps_c, xr128, xrm128, n ); 
+	o2( $56, orps_c, xr128, xrm128, n ); 
+	o2( $57, xorps_c, xr128, xrm128, n ); 
+	o2( $58, addps_c, xr128, xrm128, n );
+	o2( $59, mulps_c, xr128, xrm128, n );
+	o2( $5a, cvtps2pd_c, xr128, xrm128, n );
+	o2( $5b, cvtdq2ps_c, xr128, xrm128, n );
+	o2( $5c, subps_c, xr128, xrm128, n );
+	o2( $5d, minps_c, xr128, xrm128, n );
+	o2( $5e, divps_c, xr128, xrm128, n );
+	o2( $5f, maxps_c, xr128, xrm128, n );
+
+	o2( $60, punpcklbw_c, mxr64, mxrm64, n );
+	o2( $61, punpcklwd_c, mxr64, mxrm64, n );
+	o2( $62, punpcklqd_c, mxr64, mxrm64, n );
+	o2( $63, packsswb_c, mxr64, mxrm64, n );
+	o2( $64, pcmpgtb_c, mxr64, mxrm64, n );
+	o2( $65, pcmpgtw_c, mxr64, mxrm64, n );
+	o2( $66, pcmpgtd_c, mxr64, mxrm64, n );
+	o2( $67, packuswb_c, mxr64, mxrm64, n );
+	o2( $68, punpckhbw_c, mxr64, mxrm64, n );
+	o2( $69, punpckhwd_c, mxr64, mxrm64, n );
+	o2( $6a, punpckhdq_c, mxr64, mxrm64, n );
+	o2( $6b, packssdw_c, mxr64, mxrm64, n );
+	o2( $6e, movd_c, mxr64, rm32, n );
+	o2( $6f, movq_c, mxr64, mxrm64, n );
+
+	o2( $70, pshufw_c, mxr64, mxrm64I8, n );
+	o2( $71, 0,,, group12 );
+	o2( $72, 0,,, group13 );
+	o2( $73, 0,,, group14 );
+	o2( $74, pcmpeqb_c, mxr64, mxrm64, n );
+	o2( $75, pcmpeqw_c, mxr64, mxrm64, n );
+	o2( $76, pcmpeqd_c, mxr64, mxrm64, n );
+	o2( $77, emms_c,,, n );
+	o2( $7e, movd_c, rm32, mxr64, n );
+	o2( $7f, movq_c, mxrm64, mxr64, n );
+
+	o2( $80, jo_c, fourByteRelDisp,, n );
+	o2( $81, jno_c, fourByteRelDisp,, n );
+	o2( $82, jc_c, fourByteRelDisp,, n );
+	o2( $83, jnc_c, fourByteRelDisp,, n );
+	o2( $84, jz_c, fourByteRelDisp,, n );
+	o2( $85, jnz_c, fourByteRelDisp,, n );
+	o2( $86, jbe_c, fourByteRelDisp,, n );
+	o2( $87, ja_c, fourByteRelDisp,, n );
+	o2( $88, js_c, fourByteRelDisp,, n );
+	o2( $89, jns_c, fourByteRelDisp,, n );
+	o2( $8a, jp_c, fourByteRelDisp,, n );
+	o2( $8b, jnp_c, fourByteRelDisp,, n );
+	o2( $8c, jl_c, fourByteRelDisp,, n );
+	o2( $8d, jge_c, fourByteRelDisp,, n );
+	o2( $8e, jle_c, fourByteRelDisp,, n );
+	o2( $8f, jg_c, fourByteRelDisp,, n );
+		
+	o2( $90, seto_c, rm8,, n );
+	o2( $91, setno_c, rm8,, n );
+	o2( $92, setc_c, rm8,, n );
+	o2( $93, setnc_c, rm8,, n );
+	o2( $94, setz_c, rm8,, n );
+	o2( $95, setnz_c, rm8,, n );
+	o2( $96, setbe_c, rm8,, n );
+	o2( $97, seta_c, rm8,, n );
+	o2( $98, sets_c, rm8,, n );
+	o2( $99, setns_c, rm8,, n );
+	o2( $9a, setp_c, rm8,, n );
+	o2( $9b, setnp_c, rm8,, n );
+	o2( $9c, setl_c, rm8,, n );
+	o2( $9d, setge_c, rm8,, n );
+	o2( $9e, setle_c, rm8,, n );
+	o2( $9f, setg_c, rm8,, n );
+
+	o2( $a0, push_c, FSoperand,, n );
+	o2( $a1, pop_c, FSoperand,, n );
+	o2( $a2, cpuid_c,,, n );
+	o2( $a3, bt_c, rm1632, r1632, n );
+	o2( $a4, shld_c, rm1632, r1632I8, n );
+	o2( $a5, shld_c, rm1632, r1632CL, n );
+	o2( $a8, push_c, GSoperand,, n );
+	o2( $a9, pop_c, GSoperand,, n );
+	o2( $aa, rsm_c,,, n );
+	o2( $ab, bts_c, rm1632, r1632, n );
+	o2( $ac, shrd_c, rm1632, r1632I8, n );
+	o2( $ad, shrd_c, rm1632, r1632CL, n );
+	o2( $ae, 0,,, group15 );
+	o2( $af, intmul_c, r1632, rm1632, n );
+
+	o2( $b0, cmpxchg_c, rm8, r_8, n );
+	o2( $b1, cmpxchg_c, rm1632, r1632, n );
+	o2( $b2, lss_c, r32, rm48, memOnly );
+	o2( $b3, btr_c, rm1632, r1632, n );
+	o2( $b4, lfs_c, r32, rm48, memOnly );
+	o2( $b5, lgs_c, r32, rm48, memOnly );
+	o2( $b6, movzx_c, r1632, rm8, n );
+	o2( $b7, movzx_c, r1632, rm16, n );
+	o2( $ba, 0, rm1632, I8, group8 );
+	o2( $bb, btc_c, rm1632, r1632, n );
+	o2( $bc, bsf_c, r1632, rm1632, n );
+	o2( $bd, bsr_c, r1632, rm1632, n );
+	o2( $be, movsx_c, r1632, rm8, n );
+	o2( $bf, movsx_c, r1632, rm16, n );
+
+	o2( $c0, xadd_c, rm8, r_8, n );
+	o2( $c1, xadd_c, rm1632, r1632, n );
+	o2( $c2, 0, xr128, cmpps_instrs, n );
+	o2( $c3, movnti_c, rm32, r32, memOnly );
+	o2( $c4, pinsrw_c, mxr64, rm16I8, n );
+	o2( $c5, pextrw_c, r1632, mxrm64I8, regOnly );
+	o2( $c6, shufps_c, xr128, xrm128I8, n );
+	o2( $c7, 0,,, group9 );
+
+	o2( $c8, bswap_c, opReg,, n ); 
+	o2( $c9, bswap_c, opReg,, n ); 
+	o2( $ca, bswap_c, opReg,, n ); 
+	o2( $cb, bswap_c, opReg,, n ); 
+	o2( $cc, bswap_c, opReg,, n ); 
+	o2( $cd, bswap_c, opReg,, n ); 
+	o2( $ce, bswap_c, opReg,, n ); 
+	o2( $cf, bswap_c, opReg,, n );
+	
+	o2( $d1, psrlw_c, mxr64, mxrm64, n );
+	o2( $d2, psrld_c, mxr64, mxrm64, n );
+	o2( $d3, psrlq_c, mxr64, mxrm64, n );
+	o2( $d4, paddq_c, mxr64, mxrm64, n );
+	o2( $d5, pmullw_c, mxr64, mxrm64, n );
+	o2( $d7, pmovmskb_c, r32, mxrm64, regOnly );
+	o2( $d8, psubusb_c, mxr64, mxrm64, n );
+	o2( $d9, psubusw_c, mxr64, mxrm64, n );
+	o2( $da, pminub_c, mxr64, mxrm64, n );
+	o2( $db, pand_c, mxr64, mxrm64, n );
+	o2( $dc, paddusb_c, mxr64, mxrm64, n );
+	o2( $dd, paddusw_c, mxr64, mxrm64, n );
+	o2( $de, pmaxub_c, mxr64, mxrm64, n );
+	o2( $df, pandn_c, mxr64, mxrm64, n );
+
+	o2( $e0, pavgb_c, mxr64, mxrm64, n );
+	o2( $e1, psraw_c, mxr64, mxrm64, n );
+	o2( $e2, psrad_c, mxr64, mxrm64, n );
+	o2( $e3, pavgw_c, mxr64, mxrm64, n );
+	o2( $e4, pmulhuw_c, mxr64, mxrm64, n );
+	o2( $e5, pmulhw_c, mxr64, mxrm64, n );
+	o2( $e7, movntq_c, rm32, mxr64, memOnly );
+	o2( $e8, psubsb_c, mxr64, mxrm64, n );
+	o2( $e9, psubsw_c, mxr64, mxrm64, n );
+	o2( $ea, pminsw_c, mxr64, mxrm64, n );
+	o2( $eb, por_c, mxr64, mxrm64, n );
+	o2( $ec, paddsb_c, mxr64, mxrm64, n );
+	o2( $ed, paddsw_c, mxr64, mxrm64, n );
+	o2( $ee, pmaxsw_c, mxr64, mxrm64, n );
+	o2( $ef, pxor_c, mxr64, mxrm64, n );
+
+	o2( $f1, psllw_c, mxr64, mxrm64, n );
+	o2( $f2, pslld_c, mxr64, mxrm64, n );
+	o2( $f3, psllq_c, mxr64, mxrm64, n );
+	o2( $f4, pmuludq_c, mxr64, mxrm64, n );
+	o2( $f5, pmaddwd_c, mxr64, mxrm64, n );
+	o2( $f6, psadbw_c, mxr64, mxrm64, n );
+	o2( $f7, maskmovq_c, mxr64, mxrm64, regOnly );
+	o2( $f8, psubb_c, mxr64, mxrm64, n );
+	o2( $f9, psubw_c, mxr64, mxrm64, n );
+	o2( $fa, psubd_c, mxr64, mxrm64, n );
+	o2( $fb, psubq_c, mxr64, mxrm64, n );
+	o2( $fc, paddb_c, mxr64, mxrm64, n );
+	o2( $fd, paddw_c, mxr64, mxrm64, n );
+	o2( $fe, paddd_c, mxr64, mxrm64, n );
+		
+// Table entries for the opXlat_66 table:
+
+	o66( $02, lar_c, r1632, rm1632, n );  
+	o66( $03, lsl_c, r1632, rm1632, n );
+	o66( $06, clts_c, ,, n );  
+	o66( $08, invd_c, ,, n );  
+	o66( $09, wbinvd_c, ,, n );  
+	o66( $0b, ud2_c, ,, n );  
+	o66( $0d, nop_c, rm1632,, n );  
+
+	o66( $10, movupd_c, xr128, xrm128, n );
+	o66( $11, movupd_c, xrm128, xr128, n );
+	o66( $12, movlpd_c, xr128, xrm64, n );
+	o66( $13, movlpd_c, xrm64, xr128, n );
+	o66( $14, unpcklpd_c, xrm128, xr128, n );
+	o66( $15, unpckhpd_c, xrm128, xr128, n );
+	o66( $16, movhpd_c, xr128, xrm64, n );
+	o66( $17, movhpd_c, xrm64, xr128, n );
+
+	o66( $1f, nop_c, rm1632, ,n );
+
+	o66( $28, movapd_c, xr128, xrm128, n );
+	o66( $29, movapd_c, xrm128, xr128, n );
+	o66( $2a, cvtpi2pd_c, xr128, mxrm64, n );
+	o66( $2b, movntpd_c, xr128, xrm128, memOnly );
+	o66( $2c, cvttpd2pi_c, mxr64, xrm128, n ); 
+	o66( $2d, cvtps2pi_c, mxr64, xrm128, n );
+	o66( $2e, ucomisd_c, xr128, xrm128, n );  
+	o66( $2f, comisd_c, xr128, xrm128, n );
+	
+	o66( $50, movmskpd_c, rm32, xr128, regOnly );
+	o66( $51, sqrtpd_c, xr128, xrm128, n );  
+	o66( $54, andpd_c, xr128, xrm128, n );  
+	o66( $55, andnpd_c, xr128, xrm128, n );  
+	o66( $56, orpd_c, xr128, xrm128, n );  
+	o66( $57, xorpd_c, xr128, xrm128, n );
+	
+	o66( $58, addpd_c, xr128, xrm128, n );  
+	o66( $59, mulpd_c, xr128, xrm128, n );  
+	o66( $5a, cvtpd2ps_c, xr128, xrm128, n );  
+	o66( $5b, cvtps2dq_c, xr128, xrm128, n );  
+	o66( $5c, subpd_c, xr128, xrm128, n );  
+	o66( $5d, minpd_c, xr128, xrm128, n );  
+	o66( $5e, divpd_c, xr128, xrm128, n );  
+	o66( $5f, maxpd_c, xr128, xrm128, n );
+	
+	o66( $60, punpcklbw_c, xr128, xrm128, n );
+	o66( $61, punpcklwd_c, xr128, xrm128, n );
+	o66( $62, punpcklqd_c, xr128, xrm128, n );
+	o66( $63, packsswb_c, xr128, xrm128, n );
+	o66( $64, pcmpgtb_c, xr128, xrm128, n );
+	o66( $65, pcmpgtw_c, xr128, xrm128, n );
+	o66( $66, pcmpgtd_c, xr128, xrm128, n );
+	o66( $67, packuswb_c, xr128, xrm128, n );
+	o66( $68, punpckhbw_c, xr128, xrm128, n );
+	o66( $69, punpckhwd_c, xr128, xrm128, n );
+	o66( $6a, punpckhdq_c, xr128, xrm128, n );
+	o66( $6b, packssdw_c, xr128, xrm128, n );
+	o66( $6c, punpcklqdq_c, xr128, xrm128, n );
+	o66( $6d, punpckhqdq_c, xr128, xrm128, n );
+	o66( $6e, movd_c, xr128, rm32, n );
+	o66( $6f, movdqa_c, xr128, xrm128, n );
+	  
+	o66( $70, pshufd_c, xr128, xrm128I8, n );
+	o66( $71, 0,,, group12 );
+	o66( $72, 0,,, group13 );
+	o66( $73, 0,,, group14a );
+	o66( $74, pcmpeqb_c, xr128, xrm128, n );
+	o66( $75, pcmpeqw_c, xr128, xrm128, n );
+	o66( $76, pcmpeqd_c, xr128, xrm128, n );
+	o66( $7c, haddpd_c, xr128, xrm128, n );
+	o66( $7d, hsubpd_c, xr128, xrm128, n );
+	o66( $7e, movd_c, rm32, xr128, n );
+	o66( $7f, movdqa_c, xrm128, xr128, n );
+
+	o66( $a3, bt_c, rm1632, r1632, n );
+	o66( $a4, shld_c, rm1632, r1632I8, n );
+	o66( $a5, shld_c, rm1632, r1632CL, n );
+	o66( $ab, bts_c, rm1632, r1632, n );
+	o66( $ac, shrd_c, rm1632, r1632I8, n );
+	o66( $ad, shrd_c, rm1632, r1632CL, n );
+	o66( $ae, 0,,, group15 );
+	o66( $af, intmul_c, r1632, rm1632, n );
+
+	o66( $b0, cmpxchg_c, rm8, r_8, n );
+	o66( $b1, cmpxchg_c, rm1632, r1632, n );
+	o66( $b2, lss_c, r16, rm32, memOnly );
+	o66( $b3, btr_c, rm1632, r1632, n );
+	o66( $b4, lfs_c, r16, rm32, memOnly );
+	o66( $b5, lgs_c, r16, rm32, memOnly );
+	o66( $b6, movzx_c, r16, rm8, n );
+	o66( $ba, 0, rm1632, I8, group8 );
+	o66( $bb, btc_c, rm1632, r1632, n );
+	o66( $bc, bsf_c, r1632, rm1632, n );
+	o66( $bd, bsr_c, r1632, rm1632, n );
+	o66( $be, movsx_c, r1632, rm8, n );
+
+	o66( $c0, xadd_c, rm8, r_8, n );
+	o66( $c1, xadd_c, rm1632, r1632, n );
+	o66( $c2, 0, xr128, cmppd_instrs, n );
+	o66( $c3, movnti_c, rm32, r32, memOnly );
+	o66( $c4, pinsrw_c, xr128, rm16I8, n );
+	o66( $c5, pextrw_c, r32, xrm128I8, regOnly );
+	o66( $c6, shufpd_c, xr128, xrm128I8, n );
+
+	o66( $d0, addsubpd_c, xr128, xrm128, n ); 
+	o66( $d1, psrlw_c, xr128, xrm128, n );
+	o66( $d2, psrld_c, xr128, xrm128, n );
+	o66( $d3, psrlq_c, xr128, xrm128, n );
+	o66( $d4, paddq_c, xr128, xrm128, n );
+	o66( $d5, pmullw_c, xr128, xrm128, n );
+	o66( $d6, movq_c, xrm128, xr128, n );
+	o66( $d7, pmovmskb_c, r32, xrm128, regOnly );
+	o66( $d8, psubusb_c, xr128, xrm128, n );
+	o66( $d9, psubusw_c, xr128, xrm128, n );
+	o66( $da, pminub_c, xr128, xrm128, n );
+	o66( $db, pand_c, xr128, xrm128, n );
+	o66( $dc, paddusb_c, xr128, xrm128, n );
+	o66( $dd, paddusw_c, xr128, xrm128, n );
+	o66( $de, pmaxub_c, xr128, xrm128, n );
+	o66( $df, pandn_c, xr128, xrm128, n );
+
+	o66( $e0, pavgb_c, xr128, xrm128, n );
+	o66( $e1, psraw_c, xr128, xrm128, n );
+	o66( $e2, psrad_c, xr128, xrm128, n );
+	o66( $e3, pavgw_c, xr128, xrm128, n );
+	o66( $e4, pmulhuw_c, xr128, xrm128, n );
+	o66( $e5, pmulhw_c, xr128, xrm128, n );
+	o66( $e6, cvttpd2dq_c, xr128, xrm128, n );
+	o66( $e7, movntdq_c, rm32, xr128, memOnly );
+	o66( $e8, psubsb_c, xr128, xrm128, n );
+	o66( $e9, psubsw_c, xr128, xrm128, n );
+	o66( $ea, pminsw_c, xr128, xrm128, n );
+	o66( $eb, por_c, xr128, xrm128, n );
+	o66( $ec, paddsb_c, xr128, xrm128, n );
+	o66( $ed, paddsw_c, xr128, xrm128, n );
+	o66( $ee, pmaxsw_c, xr128, xrm128, n );
+	o66( $ef, pxor_c, xr128, xrm128, n );
+
+	o66( $f1, psllw_c, xr128, xrm128, n );
+	o66( $f2, pslld_c, xr128, xrm128, n );
+	o66( $f3, psllq_c, xr128, xrm128, n );
+	o66( $f4, pmuludq_c, xr128, xrm128, n );
+	o66( $f5, pmaddwd_c, xr128, xrm128, n );
+	o66( $f6, psadbw_c, xr128, xrm128, n );
+	o66( $f7, maskmovdqu_c, xr128, xrm128, regOnly );
+	o66( $f8, psubb_c, xr128, xrm128, n );
+	o66( $f9, psubw_c, xr128, xrm128, n );
+	o66( $fa, psubd_c, xr128, xrm128, n );
+	o66( $fb, psubq_c, xr128, xrm128, n );
+	o66( $fc, paddb_c, xr128, xrm128, n );
+	o66( $fd, paddw_c, xr128, xrm128, n );
+	o66( $fe, paddd_c, xr128, xrm128, n );
+
+// Table entries for the opXlat_F2 table:
+
+	oF2( $10, movsdp_c, xr128, xrm64, n );
+	oF2( $11, movsdp_c, xrm64, xr128, n );
+	oF2( $12, movddup_c, xr128, xrm64, n );
+
+	oF2( $2a, cvtsi2sd_c, xr128, rm32, n );
+	oF2( $2c, cvttsd2si_c, r32, xrm128, n ); 
+	oF2( $2d, cvtsd2si_c, r32, xrm128, n );
+	
+	oF2( $51, sqrtsd_c, xr128, xrm128, n );
+	oF2( $58, addsd_c, xr128, xrm128, n );  
+	oF2( $59, mulsd_c, xr128, xrm128, n );  
+	oF2( $5a, cvtsd2ss_c, xr128, xrm128, n );  
+	oF2( $5c, subsd_c, xr128, xrm128, n );  
+	oF2( $5d, minsd_c, xr128, xrm128, n );  
+	oF2( $5e, divsd_c, xr128, xrm128, n );  
+	oF2( $5f, maxsd_c, xr128, xrm128, n );
+	  
+	oF2( $70, pshuflw_c, xr128, xrm128I8, n );
+	oF2( $7c, haddps_c, xr128, xrm128, n );
+	oF2( $7d, hsubps_c, xr128, xrm128, n );
+	
+	oF2( $c2, 0, xr128, cmpsd_instrs, n );
+	oF2( $d0, addsubps_c, xr128, xrm128, n ); 
+	oF2( $d6, movdq2q_c, mxr64, xrm128, regOnly );
+	oF2( $e6, cvtpd2dq_c, xr128, xrm128, n );
+	oF2( $f0, lddqu_c, xr128, xrm128, memOnly );
+
+// Table entries for the opXlat_F3 table:
+
+	oF3( $10, movss_c, xr128, xrm32, n );
+	oF3( $11, movss_c, xrm32, xr128, n );
+	oF3( $12, movsldup_c, xr128, xrm128, n );
+	oF3( $16, movshdup_c, xr128, xrm64, n );
+
+	oF3( $2a, cvtsi2ss_c, xr128, rm32, n );
+	oF3( $2c, cvttss2si_c, r32, xrm128, n );
+	oF3( $2d, cvtss2si_c, r32, xrm128, n );
+
+	oF3( $51, sqrtss_c, xr128, xrm128, n );
+	oF3( $52, rsqrtss_c, xr128, xrm128, n );
+	oF3( $53, rcpss_c, xr128, xrm128, n );
+	oF3( $58, addss_c, xr128, xrm128, n );  
+	oF3( $59, mulss_c, xr128, xrm128, n );  
+	oF3( $5a, cvtss2sd_c, xr128, xrm128, n );  
+	oF3( $5b, cvttps2dq_c, xr128, xrm128, n );  
+	oF3( $5c, subss_c, xr128, xrm128, n );  
+	oF3( $5d, minss_c, xr128, xrm128, n );  
+	oF3( $5e, divss_c, xr128, xrm128, n );  
+	oF3( $5f, maxss_c, xr128, xrm128, n );
+	  
+	oF3( $6f, movdqu_c, xr128, xrm128, n );
+
+	oF3( $70, pshufhw_c, xr128, xrm128I8, n );
+	oF3( $7e, movq_c, xr128, xrm128, n );
+	oF3( $7f, movdqu_c, xrm128, xr128, n );
+
+	oF3( $c2, 0, xr128, cmpss_instrs, n );
+	oF3( $d6, movq2dq_c, xr128, mxrm64, n );
+	oF3( $e6, cvtdq2pd_c, xr128, xrm128, n );
+
+/////////////
+//
+// Useful macros for processing operands.
+//
+/////////////
+//
+// opProc/Endp-
+//	Declares an operand handler procedure.
+//	Generates pushes and pops to preserve registers passed as
+//	2nd through nth parameters.
+
+#macro opProc( pName, preserves[] ):_i_;
+
+	procedure pName( opFuncParms );
+	begin pName;
+
+		#if( @elements( preserves ) <> 0 )
+
+			#for( _i_ := 0 to (@elements( preserves )-1))
+				
+				push( @text( preserves[_i_] ));
+
+			#endfor
+			
+		#endif
+		
+  #terminator endOpProc;
+
+		#for( _i_ := (@elements(preserves)-1) downto 0 )
+		
+			pop( @text( preserves[_i_] ));
+			
+		#endfor
+		ret();
+
+	end pName;
+	
+#endmacro 
+
+// reg2mod-
+//	Converts the reg field of a mod-reg-r/m byte into a modrm byte
+//	with the corresponding register value.  This macro assumes that
+//	EBX points at the mod-reg-r/m byte. It returns the new modrm
+//	value in AL.
+
+#macro reg2mod;
+
+	mov( [ebx], al );				// Get mod-reg-r/m byte
+	shr( 3, al );					// Convert reg field to mod-r/m format.
+	and( %111, al );
+	or( %11_000_000, al );
+
+#endmacro
+
+// reg2Instr-
+//	The reg field of a mod-reg-r/m byte contains an opcode
+//	extension. Convert this field to the corresponding mnemonic
+
+#macro reg2Instr( table );
+
+	mov( [esi], al );	// Extract the REG field that contains
+	mov( al, cl );		// the opcode for this instruction class.
+	shr( 1, cl );
+	and( %11100, ecx );
+
+	mov( table[ecx], eax );
+	mov( eax, instrEDI.mnemonic );
+
+#endmacro
+
+
+// reg-
+//	Processes a register operand.
+//	size- size (in bytes) of operand
+
+#macro reg(size);
+
+	reg2mod;
+	modRm( al, size, esi, [edx] );	// Won't modify (or use) esi!
+
+#endmacro
+
+// mxreg-
+//	Processes an MMX register operand.
+//	Size is always assumed to be 64 bits (8 bytes)
+
+#macro mxreg;
+
+	reg2mod;
+	mxModRm( al, 8, esi, [edx] );
+
+#endmacro
+
+// xreg-
+//	Processes an SSE register operand.
+//	Size is always assumed to be 128 bits (16 bytes)
+
+#macro xreg;
+
+	reg2mod;
+	xModRm( al, 16, esi, [edx] );
+
+#endmacro
+
+// regmem-
+//	Processes a register or memory operand.
+//	Assumes ESI points at the mod-reg-r/m byte.
+//	Updates ESI to point beyond memory displacement if one
+//	is present, beyond the mod-reg-r/m byte if a displacement
+//	is not present.
+
+
+#macro regmem(size);
+
+	mov( [esi], al );				// Get mod-reg-r/m byte
+	add( 1, esi );					// Point beyond mod-reg-r/m
+	modRm( al, size, esi, [edx] );
+
+#endmacro;
+
+// xregmem-
+//	As above, but for XMM registers/memory locations.
+
+#macro xregmem(size);
+
+	mov( [esi], al );				// Get mod-reg-r/m byte
+	add( 1, esi );					// Point beyond mod-reg-r/m
+	xModRm( al, size, esi, [edx] );
+
+#endmacro;
+
+// mxregmem-
+//	As above, but for MMX registers/memory locations.
+
+#macro mxregmem(size);
+
+	mov( [esi], al );				// Get mod-reg-r/m byte
+	add( 1, esi );					// Point beyond mod-reg-r/m
+	mxModRm( al, size, esi, [edx] );
+
+#endmacro;
+
+// imm-
+//	Processes an immediate operand
+//	Trashes EAX.
+//	Updates ESI to point beyond immediate operand.
+
+#macro imm(op, size);
+
+	#if( size = 1 )
+
+		// 8-bit immediate constant
+
+		movzx( (type byte [esi]), eax );	// Get immediate byte
+		add( 1, esi );
+		mov( immediate_c, op.opClass );
+		mov( eax, op.immediate );
+
+	#elseif( size = 2 )
+
+		// 16-bit immediate constant
+
+		movzx( (type word [esi]), eax );	// Get immediate word
+		add( 2, esi );
+		mov( immediate_c, op.opClass );
+		mov( eax, op.immediate );
+
+	#else // Assume it's a dword
+
+		mov( [esi], eax );
+		add( 4, esi );
+		mov( immediate_c, op.opClass );
+		mov( eax, op.immediate );
+
+	#endif
+
+
+#endmacro
+
+// directAdrs-
+//	Processes a 32-bit direct address
+
+#macro directAdrs( op );
+
+	mov( [esi], eax );
+	add( 4, esi );
+	mov( memory_c, op.opClass );
+	mov( eax, op.memory.offset );
+	isItALabel( eax );
+	mov( eax, op.memory.labelType );
+	mov( none_c, op.memory.baseReg );
+	mov( none_c, op.memory.indexReg );
+	mov( 0, op.memory.scale );
+
+#endmacro
+
+
+////////////////////////////////////////////////////////////////////////////
+// modRmMacro-
+//	Guts of the modRm and fModRm functions.
+
+#macro modRmMacro( table, useOperandSize, opSize ):modRmExit;
+
+	begin modRmExit;
+
+		// Okay, disassemble the mod-reg-r/m field:
+
+		and( %11_000_111, al );
+		mov( al, ah );
+		movzx( al, ebx );
+		shr( 6, ah );		// mod field
+		and( %111, ebx );	// r/m field
+		movzx( ah, ecx );	// mod field
+
+		cmp( ah, %11 );		// mod = 00, 01, or 10?
+		jae regOperand;
+
+		// Well, we've got a memory operand. So initialize the memory
+		// fields of the dest operand:
+
+		mov( opSize, cl );	// From ECX value saved on stack
+		mov( cl, operandEDX.memory.size );
+		mov( memory_c, operandEDX.opClass );
+		mov( none_c, operandEDX.memory.baseReg );
+		mov( none_c, operandEDX.memory.indexReg );
+		mov( 0, operandEDX.memory.scale );
+		mov( 0, operandEDX.memory.offset );
+		mov( notLabel_c, operandEDX.memory.labelType );
+
+		// First, check to see if this is an SIB addressing mode:
+
+		if( ebx = %00_000_100 ) then
+
+			// Okay, it's an SIB addressing mode. Fetch and process the
+			// SIB byte:
+
+			mov( [esi], al );				// Get the SIB byte.
+			add( 1, esi );					// Skip over the SIB byte.
+			processSIB( al, ah, [edx] );	// Fill in dest from SIB byte.
+
+		elseif( al = %00_000_101 ) then // displacement-only addressing mode
+
+			mov( %10, ah );	// Cheat, and fake a 4-byte addressing mode.
+
+		else // Standard addressing mode:
+
+			mov( mapX86ToReg32[ebx], al );
+			mov( al, operandEDX.memory.baseReg );
+
+		endif;
+
+		cmp( ah, %01 );		// mod=00 or 01?
+		jb zeroByteDisp;
+		je oneByteDisp;
+
+		// Grab the four-byte displacement following the mod-reg-r/m 
+		// or SIB byte and save in the destination structure:
+
+		mov( [esi], eax );	// Get the displacement.
+		add( 4, esi );		// Skip the displacement.
+		mov( eax, operandEDX.memory.offset );
+		if( isItALabel( eax ) ) then
+		
+			mov( eax, operandEDX.memory.labelType );
+
+		endif;
+		exit modRmExit;
+
+	  // Handle instructions that have a one-byte displacement.
+
+	  oneByteDisp:
+
+		// Grab the four-byte displacement following the mod-reg-r/m 
+		// or SIB byte and save in the destination structure:
+
+		movsx( (type byte [esi]), eax );	// Get the displacement.
+		add( 1, esi );						// Skip the displacement.
+		mov( eax, operandEDX.memory.offset );
+		exit modRmExit;
+
+	  // If we have a register operand, deal with it down here:
+
+	  regOperand:
+		mov( register_c, operandEDX.opClass );
+		#if( useOperandSize )
+
+			mov( opSize, eax );		// Size value, from ECX.
+			lea( ebx, [ebx+eax*8] );
+
+		#endif			
+		mov( table[ebx], al );
+		mov( al, operandEDX.memory.baseReg );
+
+		// Warning, falls through. Fix this if you add code to
+		// zeroByteDisp.
+
+	  // Zero byte displacements don't need to do anything special with
+	  // the displacement.
+
+	  zeroByteDisp:
+
+
+	end modRmExit;
+
+#endmacro
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// A useful macro for declaration instruction procedures
+// (done just to save some space)
+
+#macro _proc( pName, preserves[] ):_i_;
+
+	procedure pName( instrFuncParms );
+	begin pName;
+		#if( @elements( preserves ) <> 0 )
+
+			#for( _i_ := 0 to (@elements( preserves )-1))
+				
+				push( @text( preserves[_i_] ));
+
+			#endfor
+			
+		#endif
+		
+  #terminator _endProc;
+
+		#for( _i_ := (@elements(preserves)-1) downto 0 )
+		
+			pop( @text( preserves[_i_] ));
+			
+		#endfor
+		ret();
+
+	end pName;
+	
+#endmacro 
+
+
+
+#endif

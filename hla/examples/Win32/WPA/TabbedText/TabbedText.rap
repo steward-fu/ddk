@@ -1,0 +1,44 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly - Tabbed Text Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=TabbedText.rap
+1=TabbedText.rc
+2=TabbedText.asm
+3=TabbedText.obj
+4=TabbedText.res
+5=TabbedText.exe
+6=TabbedText.def
+7=TabbedText.dll
+8=TabbedText.txt
+9=TabbedText.lib
+10=TabbedText.mak
+11=TabbedText.hla
+[Files]
+1=TabbedText.hla
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

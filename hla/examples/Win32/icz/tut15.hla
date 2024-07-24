@@ -1,0 +1,118 @@
+//Icz tutorial #15 *Multithreading Programming*
+program aMultitreading;
+
+#include("w.hhf");
+
+readonly
+	ClassName : string := "Win32ASMThreadClass";
+	AppName : string := "Win32 ASM Multithreading Example";
+	MenuName :  string := "IDR_MENU";
+	SuccessString : string := "The calculation is completed!";
+
+const
+	IDM_CREATE_THREAD := 10002;
+	IDM_EXIT := 10003;
+	WM_FINISH := w.WM_USER + $100;
+		
+static
+	hInstance : dword;
+	CommandLine :string;
+	hwin : dword;
+	ThreadID : dword;
+
+procedure ThreadProc(p : dword); @noframe;
+
+begin ThreadProc;
+	push(ecx);
+	mov(600000000,ecx); //maximal 32-bit unsigned number = 4294967295
+	Loop1:
+		add(eax,eax);
+		dec(ecx);
+		jz Get_out;
+		jmp Loop1;
+	Get_out:
+		w.PostMessage(hwin,WM_FINISH,NULL,NULL);	
+		pop(ecx);
+		ret();
+end ThreadProc;
+		
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin WndProc;
+	
+	if(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(0);
+	elseif(uMsg = w.WM_COMMAND) then
+		mov(wParam,eax);
+		if(lParam = 0) then
+			if(ax = IDM_CREATE_THREAD) then
+				w.CreateThread(NULL,NULL,&ThreadProc,NULL,NULL,&ThreadID);
+				w.CloseHandle(ThreadID);
+			else
+				w.DestroyWindow(hWnd);
+			endif;
+		endif;	
+	elseif(uMsg = WM_FINISH) then
+		w.MessageBox(NULL,SuccessString,AppName,w.MB_OK);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	//hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_WINDOW + 1  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( MenuName, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(	NULL, ClassName,AppName, 
+		w.WS_OVERLAPPEDWINDOW, 
+		w.CW_USEDEFAULT,w.CW_USEDEFAULT,w.CW_USEDEFAULT,w.CW_USEDEFAULT,
+		NULL,NULL,hInstance, NULL); 			
+	
+	mov ( eax, hwin ); 
+	
+	w.ShowWindow ( hwin, CmdShow );
+	w.UpdateWindow ( hwin ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.TranslateMessage ( msg ) ; 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aMultitreading;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.GetCommandLine();
+		mov(eax,CommandLine);
+    WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aMultitreading;

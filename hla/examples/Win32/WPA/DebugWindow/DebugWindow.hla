@@ -1,0 +1,1072 @@
+// DebugWindow.hla-
+//
+//	This program accepts "Debug Print" statements from other processes
+// and displays that data in a "console-like" text window.
+
+program DebugWindow;
+#include( "stdio.hhf" )
+#include( "conv.hhf" )
+#include( "strings.hhf" )
+#include( "memory.hhf" )
+//#include( "hll.hhf" )
+#include( "w.hhf" )
+#include( "wpa.hhf" )
+#include( "excepts.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+const
+	tabCols		:= 8;					// Columns per tabstop position.
+	MaxLines_c	:= 1024;				// Maximum number of lines we will
+										//  save up for review.
+										
+
+
+static
+	hInstance			:dword;			// "Instance Handle" Windows supplies.
+
+	wc					:w.WNDCLASSEX;	// Our "window class" data.
+	msg					:w.MSG;			// Windows messages go here.
+	hwnd				:dword;			// Handle to our window.
+	FixedsysFontHandle	:dword;			// Save this so we can free it later.
+
+	WM_DebugPrint		:dword;			// Message number sent to us.
+	
+	CharWidth			:dword;
+	CharHeight			:dword;
+	
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+
+	LineAtTopOfScrn		:uns32 := 0;	// Tracks where we are in the document
+	MaxLnAtTOS 			:uns32 := 0;	// Max display position (vertical).
+	DisplayLines		:uns32 := 2;	// # of lines we can display.
+
+	ColAtLeftOfScrn		:uns32 := 0;	// Current Horz position.
+	MaxColAtLeft		:uns32 := 0;	// Max Horz position.
+	MaxWidth			:uns32 := 40;	// Maximum columns seen thus far
+	
+	
+	StartLine	:uns32;					// Starting index into "Lines" array.
+	LineCnt		:uns32;					// Number of valid lines in "Lines".
+	Lines		:string[MaxLines_c];	// Holds the text sent to us.
+	
+	
+// The following data type and DATA declaration
+// defines the message handlers for this program.
+
+type
+	MsgProc_t:	procedure( hwnd:dword; wParam:dword; lParam:dword );
+	
+	MsgProcPtr_t:
+		record
+			
+			MessageValue:	dword;
+			MessageHndlr:	MsgProc_t;
+			
+		endrecord;
+	
+	
+readonly
+
+	ClassName	:string := "DebugWindowClass";	// Window Class Name
+	AppCaption	:string := "Debug Window";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+	//
+	// Note: the RcvMsg entry *must* be first as the Create code will
+	// patch the entry for the message number (this is not a constant,
+	// the message number gets assigned by the system).  The current
+	// message number value for this entry is bogus; it must not, however,
+	// be zero.
+ 
+	
+static
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_PAINT,   	&Paint				],
+			MsgProcPtr_t:[ w.WM_COPYDATA,	&RcvMsg				],
+			MsgProcPtr_t:[ w.WM_CREATE,  	&Create				],
+			MsgProcPtr_t:[ w.WM_HSCROLL, 	&HScroll			],
+			MsgProcPtr_t:[ w.WM_VSCROLL, 	&VScroll			],
+			MsgProcPtr_t:[ w.WM_SIZE,	 	&Size				],
+			MsgProcPtr_t:[ w.WM_DESTROY, 	&QuitApplication	],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+			
+	
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+// ComputeWidth-
+//
+//	This procedure scans through all the lines of text we've saved
+// up and finds the longest line in the list.  From this, it computes
+// the maximum width we have and sets up the horizontal scroll bar
+// accordingly.	 This function also sets up the global variables
+// MaxWidth,
+// MaxColAtLeft, and
+// ColAtLeftOfScrn.
+
+procedure ComputeWidth( hwnd:dword );
+begin ComputeWidth;
+
+	push( eax );
+	push( ecx );
+	push( edx );
+
+	// Need to scan through all the lines we've saved up and
+	// find the maximum width of all the lines:
+
+	mov( 0, ecx );
+	for( mov( 0, edx ); edx < LineCnt; inc( edx )) do
+
+		mov( Lines[ edx*4 ], eax );
+		mov( (type str.strRec [eax]).length, eax );
+		if( eax > ecx ) then
+
+			mov( eax, ecx );
+
+		endif;
+
+	endfor;
+	mov( ecx, MaxWidth );
+
+	// MaxColAtLeft = 
+	//	max( 0, MaxWidth+1 - ClientSizeX / CharWidth);
+	
+	mov( ClientSizeX, eax );
+	cdq();
+	idiv( CharWidth );
+	neg( eax );
+	add( MaxWidth, eax );
+	inc( eax );
+	if( @s ) then
+	
+		xor( eax, eax );
+		
+	endif;
+	mov( eax, MaxColAtLeft );
+
+	// ColAtLeftOfScrn = min( MaxColAtLeft, ColAtLeftOfScrn )
+	
+	if( eax > ColAtLeftOfScrn ) then
+	
+		mov( ColAtLeftOfScrn, eax );
+		
+	endif;
+	mov( eax, ColAtLeftOfScrn );
+
+	w.SetScrollRange( hwnd, w.SB_HORZ, 0, MaxColAtLeft, false );
+	w.SetScrollPos( hwnd, w.SB_HORZ, ColAtLeftOfScrn, true );
+
+	pop( edx );
+	pop( ecx );
+	pop( eax );
+
+end ComputeWidth;
+
+
+// ComputeHeight-
+//
+// Computes the values for the following global variables:
+//
+//	DisplayLines,
+//	MaxLnAtTOS, and
+//	LineAtTopOfScrn
+//
+//	This procedure also redraws the vertical scroll bars, as necessary.
+
+procedure ComputeHeight( hwnd:dword );
+begin ComputeHeight;
+
+	push( eax );
+	push( ebx );
+	push( ecx );
+
+	// DisplayLines = ClientSizeY/CharHeight:
+
+	mov( ClientSizeY, eax );
+	cdq();
+	idiv( CharHeight );
+	mov( eax, DisplayLines );
+
+	// MaxLnAtTOS = max( 0, LineCnt - DisplayLines )
+
+	mov( LineCnt, ecx );
+	sub( eax, ecx );
+	if( @s ) then
+	
+		xor( ecx, ecx );
+		
+	endif;
+	mov( ecx, MaxLnAtTOS );
+
+	if( edx <> 0 ) then // EDX is remainder from ClientSizeY/CharHeight
+
+		// If we can display a partial line, bump up the
+		// DisplayLine value by one to display the partial line.
+
+		inc( DisplayLines );
+
+	endif;
+
+	
+	// LineAtTopOfScrn = min( LineAtTopOfScrn, MaxLnAtTOS )
+	
+	if( ecx > LineAtTopOfScrn ) then
+	
+		mov( LineAtTopOfScrn, ecx );
+		
+	endif;
+	mov( ecx, LineAtTopOfScrn );
+
+	w.SetScrollRange( hwnd, w.SB_VERT, 0, MaxLnAtTOS, false );
+	w.SetScrollPos( hwnd, w.SB_VERT, LineAtTopOfScrn, true );
+
+	pop( ecx );
+	pop( ebx );
+	pop( eax );
+
+end ComputeHeight;
+
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Free the font we created in the Create procedure:
+	
+	w.DeleteObject( FixedsysFontHandle );
+	
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Create-
+//
+//	This procedure responds to the w.WM_CREATE message.
+//	Windows sends this message once when it creates the
+//	main window for the application.  We will use this
+//	procedure to do any one-time initialization that
+//	must take place in a message handler.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+readonly
+	s			:string := 
+					"Debug Windows begin execution:" nl nl;
+	
+	FixedsysName:byte; @nostorage;
+				 byte "Fixedsys", 0;
+	
+static
+	hDC			:dword;
+	hOldFont	:dword;
+	Fixedsys	:w.LOGFONT;
+	tm			:w.TEXTMETRIC;
+	cds			:w.COPYDATASTRUCT;
+
+begin Create;
+
+	push( edi );
+
+	
+	// Zero out our line index, count, and the array of pointers:
+	
+	xor( eax, eax );	
+	mov( eax, StartLine );
+	mov( eax, LineCnt );
+	mov( MaxLines_c, ecx );
+	mov( &Lines, edi );
+	rep.stosd();
+	
+	// Zero out the FONT structure:
+	
+	mov( @size( w.LOGFONT ), ecx );
+	mov( &Fixedsys, edi );
+	rep.stosb();
+	
+	// Create the font using the system's "Fixedsys" font and select
+	// it into the device context:
+	
+	lea( eax, Fixedsys.lfFaceName );
+	zstr.cpy( &FixedsysName, eax );
+	w.CreateFontIndirect( Fixedsys );
+	mov( eax, FixedsysFontHandle );		// Save, so we can free this later.
+	GetDC( hwnd, hDC );
+	
+		// Select in the fixed system font:
+		
+		SelectObject( FixedsysFontHandle );
+		mov( eax, hOldFont );
+		
+		// Determine the sizes we need for the fixed system font:
+		
+		GetTextMetrics( tm );
+		
+
+		mov( tm.tmHeight, eax );
+		add( tm.tmExternalLeading, eax );
+		inc( eax );
+		mov( eax, CharHeight );
+		
+		mov( tm.tmAveCharWidth, eax );
+		mov( eax, CharWidth );
+
+		SelectObject( hOldFont );
+		
+	ReleaseDC;
+	
+	// Just for fun, let's send ourselves a message to print the
+	// first line in the debug window:
+	
+	mov( DebugMsg_c, cds.dwData );
+	mov( s, eax );
+	mov( eax, cds.lpData );
+	mov( (type str.strRec [eax]).length, eax );
+	inc( eax ); // Count zero byte, too!
+	mov( eax, cds.cbData );
+	w.SendMessage( hwnd, w.WM_COPYDATA, hwnd, &cds );
+		
+	pop( edi );
+	
+end Create;
+
+
+// RcvMsg-
+//
+//	Receives a message from some other process and prints
+// the zstring passed as the data payload for that message.
+// Note that lParam points at a w.COPYDATASTRUCT object. The
+// dwData field of that structure must contain DebugMsg_c if
+// we are to process this message.
+
+procedure RcvMsg( hwnd: dword; wParam:dword; lParam:dword );
+var
+	tabPosn	:uns32;
+	line	:char[256];
+
+	procedure addLine( lineToAdd:string in eax ); @nodisplay; @noframe;
+	begin addLine;
+
+		if( LineCnt >= MaxLines_c ) then
+		
+			mov( StartLine, ecx );
+			strfree( Lines[ ecx*4 ] ); // Free the oldest line of text.
+			inc( StartLine );
+			if( StartLine >= MaxLines_c ) then
+			
+				mov( 0, StartLine );
+				
+			endif;
+			
+		else
+		
+			mov( LineCnt, ecx );
+			inc( LineCnt );
+			
+		endif;
+		mov( eax, Lines[ ecx*4 ] );
+
+		// If we've got more than "DisplayLines" lines in the
+		// output, bump "LineAtTopOfScrn" to scroll the window up:
+
+		mov( LineCnt, ecx );
+		if( ecx >= DisplayLines ) then
+
+			inc( LineAtTopOfScrn );
+		
+		endif;
+		ret();
+
+	end addLine;
+
+begin RcvMsg;
+
+	push( esi );
+	push( edi );
+
+	// Process the incoming zero-terminated string.
+	// Break it into separate lines (based on newline
+	// sequences found in the string) and expand tabs.
+
+	mov( lParam, esi );
+	if( (type w.COPYDATASTRUCT [esi]).dwData = DebugMsg_c ) then
+	
+		// Okay, we've got the w.COPYDATASTRUCT type with a valid debug
+		// message. Extract the data and print it.
+		
+		mov( (type w.COPYDATASTRUCT [esi]).lpData, esi );	
+		mov( 0, tabPosn );
+		lea( edi, line );
+		while( (type char [esi]) <> #0 ) do
+
+			mov( [esi], al );
+
+			// Ignore carriage returns:
+
+			if( al <> stdio.cr ) then
+
+				if( al = stdio.tab ) then
+
+					// Compute the number of spaces until the
+					// next tab stop position:
+
+					mov( tabPosn, eax );
+					cdq();
+					div( tabCols, edx:eax );
+					neg( edx );
+					add( tabCols, edx );
+
+					// Emit spaces up to the next tab stop:
+
+					repeat
+
+						mov( ' ', (type char [edi]) );
+						inc( edi );
+						inc( tabPosn );
+						if( tabPosn >= 255 ) then
+
+							dec( edi );
+
+						endif;
+						dec( edx );
+
+					until( @z );
+
+				elseif( al = stdio.lf ) then
+
+					// We've just hit a new line character.
+					// Emit the line up to this point:
+
+					mov( #0, (type char [edi]) ); // Zero terminate.
+					lea( edi, line );		// Resets edi for next loop iteration.
+					str.a_cpyz( [edi] );	// Build HLA string from zstring.
+					addLine( eax );	   		// Add to our list of lines.
+
+					// Reset the column counter back to zero since
+					// we're starting a new line:
+
+					mov( 0, tabPosn );
+
+				else
+
+					// If it's not a special control character we process,
+					// then add the character to the string:
+
+					mov( al, [edi] );
+					inc( edi );
+					inc( tabPosn );
+
+					// Don't allow more than 255 characters:
+
+					if( tabPosn >= 255 ) then
+
+						dec( edi );
+
+					endif;
+
+				endif;
+
+			endif;
+
+			// Move on to next character in source string:
+
+			inc( esi );
+
+		endwhile;
+		
+		// If edi is not pointing at the beginning of "line", then we've
+		// got some characters in the "line" string that need to be added
+		// to our list of lines.
+
+		lea( esi, line );
+		if( edi <> esi ) then
+
+			mov( #0, (type char [edi]) );	// Zero terminate the string.
+			str.a_cpyz( [esi] );			// Make a copy of this zstring.
+			addLine( eax );
+
+		endif;
+		
+		// Because adding and removing lines can affect the
+		// maximum line length, recompute the width and horizontal
+		// scroll bar stuff here:
+
+		ComputeWidth( hwnd );
+
+		// Ditto for the vertical scroll bars:
+
+		ComputeHeight( hwnd );
+		
+		// Tell Windows to tell us to repaint the screen:
+		
+		w.InvalidateRect( hwnd, NULL, true );
+		w.UpdateWindow( hwnd );
+		
+	endif;
+
+	pop( edi );
+	pop( esi );
+
+end RcvMsg;
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+//	For this program, the Paint procedure draws all the
+// lines from the scroll position to the end of the window.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	hOldFont	:dword;			// Saves old font handle.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+begin Paint;
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+		
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., w.DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		SelectObject( FixedsysFontHandle );
+		mov( eax, hOldFont );
+
+
+		// Figure out how many lines to display;
+		// It's either DisplayLines (the number of lines we can
+		// physically put in the Window) or LineCnt (total number
+		// of lines in the Lines array), whichever is less:
+		
+		mov( DisplayLines, esi );
+		if( esi > LineCnt ) then
+	
+			mov( LineCnt, esi );
+			
+		endif;
+		
+		// Display each of the lines in the Window:
+		
+		for( mov( 0, ebx ); ebx < esi; inc( ebx )) do
+		
+			// Get the string to display (address to edi):
+
+			mov( LineAtTopOfScrn, eax );
+			add( ebx, eax );
+			if( eax < LineCnt ) then
+
+				// If we've got more than a buffer full of lines,
+				// base our output at "StartLine" rather than at
+				// index zero:
+
+				add( StartLine, eax );
+				if( eax >= LineCnt ) then
+
+					sub( LineCnt, eax );
+
+				endif;
+
+				// Get the current line to output:
+
+				mov( Lines[ eax*4 ], edi );
+			
+				// Compute the y-coordinate in the window:
+				
+				mov( ebx, eax );
+				intmul( CharHeight, eax );
+
+				// Compute the starting column position into the
+				// line and the length of the line (to handle
+				// horizontal scrolling):
+
+				mov( (type str.strRec [edi]).length, ecx );
+				add( ColAtLeftOfScrn, edi );
+				sub( ColAtLeftOfScrn, ecx );
+				
+				// Output the line of text:
+				
+				TextOut
+				(
+					CharWidth,
+					eax,
+					edi,
+					ecx
+				);
+
+			endif;
+			
+		endfor;
+		SelectObject( hOldFont );
+			
+	EndPaint;
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;
+
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+
+	// Compute the new screen height info here:
+
+	ComputeHeight( hwnd );
+	
+	
+	// Compute screen width and MaxWidth values, and set up the
+	// horizontal scroll bars:
+
+	ComputeWidth( hwnd );
+
+	xor( eax, eax ); // return success.
+
+end Size;
+
+
+
+// HScroll-
+//
+//	Handles w.WM_HSCROLL messages.
+//	On entry, L.O. word of wParam contains the scroll bar activity.
+
+procedure HScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin HScroll;
+
+	movzx( (type word wParam), eax );
+	mov( ColAtLeftOfScrn, ecx );
+	if( eax = w.SB_LINELEFT ) then
+		
+		// Scrolling left means decrement ColAtLeftOfScrn by one:
+
+		dec( ecx );
+			
+	elseif( eax = w.SB_LINERIGHT ) then
+		
+		// Scrolling right means increment ColAtLeftOfScrn by one:
+
+		inc( ecx );
+			
+	elseif( eax = w.SB_PAGELEFT ) then
+		
+		// Page Left means decrement ColAtLeftOfScrn by 25% of screen width:
+
+		mov( ClientSizeX, eax );
+		cdq();
+		div( CharWidth, edx:eax );	// Computes screen width in chars.
+		shr( 2, eax );				// 25% of screen width.
+		adc( 0, eax );
+		sub( eax, ecx );
+			
+	elseif( eax = w.SB_PAGERIGHT ) then
+			
+		// Page Right means increment ColAtLeftOfScrn by 25% of screen width:
+
+		mov( ClientSizeX, eax );
+		cdq();
+		div( CharWidth, edx:eax );	// Computes screen width in chars.
+		shr( 2, eax );				// 25% of screen width.
+		adc( 0, eax );
+		add( eax, ecx );
+			
+			
+	elseif( eax = w.SB_THUMBTRACK ) then
+			
+		// H.O. word of wParam contains new scroll thumb position:
+
+		movzx( (type word wParam[2]), ecx );
+			
+	// else leave ColAtLeftOfScrn alone
+					
+	endif;
+
+	// Make sure that the new ColAtLeftOfScrn value (in ecx) is within
+	// a reasonable range (0..MaxColAtLeft):
+
+	if( (type int32 ecx) < 0 ) then
+
+		xor( ecx, ecx );
+
+	elseif( ecx > MaxColAtLeft ) then
+
+		mov( MaxColAtLeft, ecx );
+
+	endif;
+	mov( ColAtLeftOfScrn, eax );
+	mov( ecx, ColAtLeftOfScrn );
+	sub( ecx, eax );
+	
+	if( eax <> 0 ) then
+	
+		intmul( CharWidth, eax );
+		w.ScrollWindow( hwnd, eax, 0, NULL, NULL );
+		w.SetScrollPos( hwnd, w.SB_HORZ, ColAtLeftOfScrn, true );
+		w.InvalidateRect( hwnd, NULL, true );
+		
+	endif;
+	xor( eax, eax ); // return success
+	
+end HScroll;
+
+
+
+// VScroll-
+//
+//	Handles the w.WM_VSCROLL messages from Windows.
+//	The L.O. word of wParam contains the action/command to be taken.
+//	The H.O. word of wParam contains a distance for the w.SB_THUMBTRACK
+//	message.
+
+procedure VScroll( hwnd: dword; wParam:dword; lParam:dword );
+begin VScroll;
+
+	movzx( (type word wParam), eax );
+	mov( LineAtTopOfScrn, ecx );
+	if( eax = w.SB_TOP ) then
+		
+		// Top of file means LATOS becomes zero:
+
+		xor( ecx, ecx );
+			
+	elseif( eax = w.SB_BOTTOM )	then
+		
+		// Bottom of file means LATOS becomes MaxLnAtTOS:
+
+		mov( MaxLnAtTOS, ecx );
+			
+	elseif( eax = w.SB_LINEUP )	then
+		
+		// LineUp - Decrement LATOS:
+
+		dec( ecx );
+			
+	elseif( eax = w.SB_LINEDOWN ) then
+		
+		// LineDn - Increment LATOS:
+
+		inc( ecx );
+			
+	elseif( eax = w.SB_PAGEUP )	then
+		
+		// PgUp - Subtract DisplayLines from LATOS:
+
+		sub( DisplayLines, ecx );
+			
+	elseif( eax = w.SB_PAGEDOWN ) then
+		
+		// PgDn - Add DisplayLines to LATOS:
+
+		add( DisplayLines, ecx );
+			
+	elseif( eax = w.SB_THUMBTRACK )	then
+		
+		// ThumbTrack - Set LATOS to L.O. word of wParam:
+
+		movzx( (type word wParam[2]), ecx );
+
+	// else - leave LATOS alone
+			
+	endif;
+	
+
+	// Make sure LATOS is in the range 0..MaxLnAtTOS-
+
+	if( (type int32 ecx) < 0 ) then
+
+		xor( ecx, ecx );
+
+	elseif( ecx >= MaxLnAtTOS ) then
+
+		mov( MaxLnAtTOS, ecx );
+
+	endif;
+	mov( LineAtTopOfScrn, eax );
+	mov( ecx, LineAtTopOfScrn );
+	sub( ecx, eax );
+	
+	if( eax <> 0 ) then
+	
+		intmul( CharHeight, eax );
+		w.ScrollWindow( hwnd, 0, eax, NULL, NULL );
+		w.SetScrollPos( hwnd, w.SB_VERT, LineAtTopOfScrn, true );
+		w.InvalidateRect( hwnd, NULL, true );
+		w.UpdateWindow( hwnd );
+		
+	endif;
+	xor( eax, eax ); // return success.
+			
+			
+end VScroll;
+
+
+
+/**************************************************************************/
+/*                   End of Application Specific Code                     */
+/**************************************************************************/
+
+
+
+
+// The window procedure.  
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword );
+	@stdcall;
+
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+
+// Here's the main program for the application.
+	
+begin DebugWindow;		
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	mov( hInstance, wc.hInstance );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW | w.WS_VSCROLL | 	w.WS_HSCROLL,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+				
+end DebugWindow;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

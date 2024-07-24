@@ -1,0 +1,603 @@
+// pgm_listbox6-
+//
+//	This program demonstrates the use of list box controls on a form.
+
+program pgm_listbox6;
+#linker( "comdlg32.lib" ) 
+#linker( "comctl32.lib" )
+
+?@NoDisplay 	:= true;
+?@NoStackAlign	:= true;
+
+#includeOnce( "stdlib.hhf" )
+#includeOnce( "howl.hhf" )
+
+const
+	applicationName := "List Box #6";
+	formX			:= w.CW_USEDEFAULT;	// Let Windows position this guy
+	formY			:= w.CW_USEDEFAULT;
+	formW			:= 600;
+	formH			:= 600;
+
+	
+	
+// Forward declarations for the onClick widgetProcs that we're going to
+// call when an event occurs.
+
+proc deleteText			:widgetProc; @forward;
+proc insertText			:widgetProc; @forward;
+proc changeColor		:widgetProc; @forward;
+proc resetListBox		:widgetProc; @forward;
+proc getCount			:widgetProc; @forward;
+proc search4Text		:widgetProc; @forward;
+proc search4Prefix		:widgetProc; @forward;
+proc onQuit			   	:widgetProc; @forward;
+
+
+
+// Here's the main form definition for the app:
+
+wForm( mainAppWindow );
+
+	
+	wListBox
+	( 								
+		listBox1,					// List box name
+		10,							// x
+		10,							// y
+		200,						// width
+		500,						// height
+		true,						// sorted
+		NULL						// onClick handler
+	)
+	
+	wLabel
+	(
+		label1,						// label name
+		"Enter Text:",				// Text string
+		250,						// x
+		10,							// y
+		200,						// width
+		25,							// height
+		0,							// style
+		RGB( 0, 0, 0 ),				// text color
+		howl.bkgColor_g				// Bkg Color
+	)		
+	
+	
+	wEditBox
+	(
+		editBox1,					// editBox name
+		"",							// Initial text string
+		250,						// x
+		35,							// y
+		200,						// width
+		35,							// height
+		0,							// style
+		NULL						// No onChange handler 
+	)
+	
+	wPushButton
+	(
+		button2,					// Field name in mainWindow object
+		"Insert Text",				// Caption for push button
+		250,						// x position 
+		80,							// y position 
+		200,						// width 
+		25,							// height 
+		insertText					// "on click" event handler 
+	)
+	
+	wPushButton
+	(
+		button3,					// Field name in mainWindow object
+		"Delete Selection",			// Caption for push button
+		250,						// x position 
+		115,						// y position 
+		200,						// width 
+		25,							// height 
+		deleteText					// "on click" event handler 
+	)
+	
+	wPushButton
+	(
+		button4,					// Field name in mainWindow object
+		"Change Color",				// Caption for push button
+		250,						// x position 
+		150,						// y position 
+		200,						// width 
+		25,							// height 
+		changeColor					// "on click" event handler 
+	)
+	
+	wPushButton
+	(
+		button5,					// Field name in mainWindow object
+		"Reset",					// Caption for push button
+		250,						// x position 
+		185,						// y position 
+		200,						// width 
+		25,							// height 
+		resetListBox				// "on click" event handler 
+	)
+	
+	
+	wLabel
+	(
+		label2,						// label name
+		"Item Count: ",				// Text string
+		250,						// x
+		220,						// y
+		200,						// width
+		25,							// height
+		0,							// style
+		RGB( 0, 0, 0 ),				// text color
+		howl.bkgColor_g				// Bkg Color
+	)		
+	
+	wPushButton
+	(
+		button6,					// Field name in mainWindow object
+		"Refresh Count",			// Caption for push button
+		250,						// x position 
+		245,						// y position 
+		200,						// width 
+		25,							// height 
+		getCount					// "on click" event handler 
+	)
+	
+	
+		
+	
+	
+	
+	wLabel
+	(
+		label3,						// label name
+		"Search For Text:",			// Text string
+		250,						// x
+		280,						// y
+		200,						// width
+		25,							// height
+		0,							// style
+		RGB( 0, 0, 0 ),				// text color
+		howl.bkgColor_g				// Bkg Color
+	)		
+	
+	
+	wEditBox
+	(
+		editBox2,					// editBox name
+		"",							// Initial text string
+		250,						// x
+		315,						// y
+		200,						// width
+		35,							// height
+		0,							// style
+		NULL						// No onChange handler 
+	)
+	
+	
+	wPushButton
+	(
+		button7,					// Field name in mainWindow object
+		"Search for Text",			// Caption for push button
+		250,						// x position 
+		360,						// y position 
+		200,						// width 
+		25,							// height 
+		search4Text					// "on click" event handler 
+	)
+	
+	
+		
+	
+	
+	
+	wLabel
+	(
+		label4,						// label name
+		"Search For Prefix:",		// Text string
+		250,						// x
+		395,						// y
+		200,						// width
+		25,							// height
+		0,							// style
+		RGB( 0, 0, 0 ),				// text color
+		howl.bkgColor_g				// Bkg Color
+	)		
+	
+	
+	wEditBox
+	(
+		editBox3,					// editBox name
+		"",							// Initial text string
+		250,						// x
+		430,						// y
+		200,						// width
+		35,							// height
+		0,							// style
+		NULL						// No onChange handler 
+	)
+	
+	
+	wPushButton
+	(
+		button8,					// Field name in mainWindow object
+		"Search for Prefix",		// Caption for push button
+		250,						// x position 
+		475,						// y position 
+		200,						// width 
+		25,							// height 
+		search4Prefix				// "on click" event handler 
+	)
+	
+	
+	
+	
+	// Place a quit button in the lower-right-hand corner of the form:
+	
+	wPushButton
+	(
+		quitButton,				// Field name in mainWindow object
+		"Quit",					// Caption for push button
+		450,					// x position 
+		525,					// y position 
+		125,					// width 
+		25,						// height 
+		onQuit					// "on click" event handler 
+	)
+	
+endwForm
+
+
+// Must invoke the following macro to emit the code generated by
+// the wForm macro:
+
+mainAppWindow_implementation();
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the search4Prefix button:
+
+proc search4Prefix:widgetProc;
+var
+	srchText	:string;
+	
+begin search4Prefix;
+
+	mov( mainAppWindow.editBox3, esi );
+	(type wEditBox_t [esi]).a_get_text();
+	mov( eax, srchText );
+	
+	stdout.put( "Searching for prefix '", srchText, "'" nl );
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).find_prefix( srchText, 0 );
+	if( eax <> w.LB_ERR ) then
+	
+		stdout.put( "Found at index: ", (type uns32 eax), nl );
+		(type wListBox_t [esi]).set_curSel( eax );
+		
+	else
+	
+		stdout.put( "String not found" nl );
+		
+	endif;
+	str.free( srchText );
+	
+end search4Prefix;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the search4Text button:
+
+proc search4Text:widgetProc;
+var
+	srchText	:string;
+	
+begin search4Text;
+
+	mov( mainAppWindow.editBox2, esi );
+	(type wEditBox_t [esi]).a_get_text();
+	mov( eax, srchText );
+	
+	stdout.put( "Searching for '", srchText, "'" nl );
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).find_string( srchText, 0 );
+	if( eax <> w.LB_ERR ) then
+	
+		stdout.put( "Found at index: ", (type uns32 eax), nl );
+		(type wListBox_t [esi]).set_curSel( eax );
+		
+	else
+	
+		stdout.put( "String not found" nl );
+		
+	endif;
+	str.free( srchText );
+	
+end search4Text;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the getCount button:
+
+proc getCount:widgetProc;
+var
+	count		:string;
+	countBuf	:char[128];
+	
+begin getCount;
+
+	str.init( countBuf, @size( countBuf ));
+	mov( eax, count );
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).get_count();
+	str.put( count, "Item Count: ", (type uns32 eax) );
+	
+	mov( mainAppWindow.label2, esi );
+	(type wLabel_t [esi]).set_caption( count );
+	
+end getCount;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the reset button:
+
+proc resetListBox:widgetProc;
+begin resetListBox;
+
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).reset();
+	
+end resetListBox;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the change color button:
+
+proc changeColor:widgetProc;
+begin changeColor;
+
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).get_textColor();
+	if( eax = RGB( 0, 0, 0 ) ) then
+	
+		(type wListBox_t [esi]).set_textColor( RGB( 255, 255, 0 ) );
+		(type wListBox_t [esi]).set_bkgColor( RGB( 0, 0, 255 ) );
+		
+	else
+	
+		(type wListBox_t [esi]).set_textColor( RGB( 0, 0, 0 ) );
+		(type wListBox_t [esi]).set_bkgColor( RGB( 255, 255, 255 ) );
+		
+	endif;
+	w.InvalidateRect( (type wListBox_t [esi]).handle, NULL, true );
+	
+end changeColor;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the insert text button:
+
+proc insertText:widgetProc;
+var
+	insertStr	:string;
+	
+begin insertText;
+
+	mov( mainAppWindow.editBox1, esi );
+	(type wEditBox_t [esi]).a_get_text();
+	mov( eax, insertStr );
+	
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).add_string( insertStr );
+	str.free( insertStr );
+	
+end insertText;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for the delete text button:
+
+proc deleteText:widgetProc;
+var
+	curSel		:dword;
+	insertStr	:string;
+	
+begin deleteText;
+
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).get_curSel();
+	mov( eax, curSel );
+	
+	mov( mainAppWindow.listBox1, esi );
+	(type wListBox_t [esi]).delete_string( curSel );
+	
+end deleteText;
+	
+
+	
+
+
+	
+// Here's the onClick event handler for our quit button on the form.
+// This handler will simply quit the application:
+
+proc onQuit:widgetProc;
+begin onQuit;
+
+	// Quit the app:
+	
+	w.PostQuitMessage( 0 );
+
+end onQuit;
+
+
+
+
+
+// We'll use the main application form's onCreate method to initialize
+// the various buttons on the form.
+//
+// This could be done in appStart, but better to leave appStart mainly
+// as boilerplate code. Also, putting this code here allows us to use
+// "this" to access the mainAppWindow fields (a minor convenience).
+		
+method mainAppWindow_t.onCreate;
+begin onCreate;
+end onCreate;
+
+	
+	
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// The following is mostly boilerplate code for all apps (about the only thing
+// you would change is the size of the main app's form)
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//	
+// When the main application window closes, we need to terminate the 
+// application. This overridden method handles that situation.  Notice the
+// override declaration for onClose in the wForm declaration given earlier.
+// Without that, mainAppWindow_t would default to using the wVisual_t.onClose
+// method (which does nothing). 
+		
+method mainAppWindow_t.onClose;
+begin onClose;
+	
+	// Tell the winmain main program that it's time to terminate.
+	// Note that this message will (ultimately) cause the appTerminate
+	// procedure to be called.
+	
+	w.PostQuitMessage( 0 );
+	
+	
+end onClose;
+
+			   
+  
+			   
+   
+// When the application begins execution, the following procedure
+// is called.  This procedure must create the main
+// application window in order to kick off the execution of the
+// GUI application:
+  
+procedure appStart;
+begin appStart;
+
+	push( esi );
+	
+	// Create the main application window:
+	
+	mainAppWindow.create_mainAppWindow
+	(
+		applicationName,		// Window title
+		w.WS_EX_CONTROLPARENT,	// Need this to support TAB control selection
+		w.WS_OVERLAPPEDWINDOW,	// Style 
+		NULL,					// No parent window 									
+		formX,					// x-coordinate for window. 
+		formY,					// y-coordinate for window.
+		formW,					// Width
+		formH,					// Height
+		howl.bkgColor_g,		// Background color
+		true					// Make visible on creation 
+	);
+	mov( esi, pmainAppWindow );	// Save pointer to main window object.
+	pop( esi );
+
+end appStart;
+
+
+
+// appTerminate-
+//
+//	Called when the application is quitting, giving the app a chance
+// to clean up after itself.
+//
+// Note that this is called *after* the mainAppWindow_t.onClose method
+// executes (indeed, mainAppWindow_t.onClose, by posting the quit message,
+// is what actually causes the program to begin terminating, which leads
+// to the execution of this procedure).
+
+procedure appTerminate;
+begin appTerminate;
+	
+	// Clean up the main application's form.
+	// Note that this will recursively clean up all the widgets on the form.
+	
+	mainAppWindow.destroy();
+	
+end appTerminate;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException
+( 
+	theException	:dword in eax;
+	raiseAdrs		:dword in ebx;
+	filename		:string in ecx;
+	userCode		:dword in edx;
+	lineNum			:uns32 in edi 
+);
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// The main program for a HOWL application must 
+// call the HowlMainApp procedure.
+
+begin pgm_listbox6;
+
+	// Set up the background and transparent colors that the
+	// form will use when registering the window_t class:
+	
+	w.GetSysColor( w.COLOR_MENU );
+	mov( eax, howl.bkgColor_g );
+	or( $FF00_0000, eax );
+	mov( eax, howl.transparent_g );
+	w.CreateSolidBrush( howl.bkgColor_g );
+	mov( eax, howl.bkgBrush_g );
+
+	// Start the HOWL Framework Main Program:
+	
+	HowlMainApp();
+	
+	// Delete the brush we created earlier:
+	
+	w.DeleteObject( howl.bkgBrush_g );			
+				
+end pgm_listbox6;
+ 

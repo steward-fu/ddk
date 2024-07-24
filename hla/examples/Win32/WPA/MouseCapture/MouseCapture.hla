@@ -1,0 +1,285 @@
+// MouseCapture.hla-
+//
+//	A program that demonstrates "capturing the mouse to track mouse positions
+// outside the client area.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit MouseCapture;
+
+// Set the following to true to display interesting information
+// about the bitmap file this program opens. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+	
+static
+	ptBegin:	w.POINT;
+	ptEnd:		w.POINT;
+	ptBoxBegin:	w.POINT;
+	ptBoxEnd:	w.POINT;
+	fBlocking:	boolean;
+	fValidBox:	boolean;
+	
+	
+readonly
+
+	ClassName	:string := "MouseCaptureWinClass";		// Window Class Name
+	AppCaption	:string := "MouseCapture Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, 		&QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   		&Paint				],
+			MsgProcPtr_t:[ w.WM_MOUSEMOVE, 		&MouseMove			],			
+			MsgProcPtr_t:[ w.WM_LBUTTONDOWN, 	&LButtonDown		],
+			MsgProcPtr_t:[ w.WM_LBUTTONUP, 		&LButtonUp			],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Tell the application to quit:
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+procedure drawBoxOutline( hwnd:dword; ptBegin:w.POINT; ptEnd:w.POINT ); @nodisplay;
+var
+	hdc:	dword;
+begin drawBoxOutline;
+	
+	GetDC( hwnd, hdc );
+	
+		SetROP2( w.R2_NOT );
+		SelectObject( w.GetStockObject( w.NULL_BRUSH ));
+		Rectangle( ptBegin.x, ptBegin.y, ptEnd.x, ptEnd.y );
+		
+	ReleaseDC;
+
+end drawBoxOutline;
+
+
+// MouseMove:
+//
+//	This procedure handles the w.WM_MOUSEMOVE message (mouse movement within the client window).
+
+procedure MouseMove( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc: dword;
+begin MouseMove;
+	
+	if( fBlocking ) then
+	
+		w.SetCursor( w.LoadCursor( NULL, @string(w.IDC_CROSS) ));
+		drawBoxOutline( hwnd, ptBegin, ptEnd );
+		movsx( (type word lParam), eax );
+		mov( eax, ptEnd.x );
+		movsx( (type word lParam[2]), eax );
+		mov( eax, ptEnd.y );
+		drawBoxOutline( hwnd, ptBegin, ptEnd );
+
+	endif;
+	xor( eax, eax );
+	
+end MouseMove;
+
+
+
+
+// LButtonDown:
+//
+//	This procedure handles the w.WM_LBUTTONDOWN message, which this
+// program uses to capture the mouse.
+
+procedure LButtonDown( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonDown;
+	
+	movsx( (type word lParam), eax );
+	mov( eax, ptBegin.x );
+	mov( eax, ptEnd.x );
+	movsx( (type word lParam[2]), eax );
+	mov( eax, ptBegin.y );
+	mov( eax, ptEnd.y );
+	drawBoxOutline( hwnd, ptBegin, ptEnd );
+	w.SetCapture( hwnd );
+	w.SetCursor( w.LoadCursor( NULL, @string( w.IDC_CROSS)));
+	mov( true, fBlocking );	
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonDown;
+
+
+// LButtonUp:
+//
+//	This procedure handles the w.WM_LBUTTONUP message which
+// this program uses to release the mouse.
+
+procedure LButtonUp( hwnd: dword; wParam:dword; lParam:dword );
+begin LButtonUp;
+	
+	if( fBlocking ) then
+	
+		drawBoxOutline( hwnd, ptBegin, ptEnd );
+		mov( ptBegin.x, eax );
+		mov( eax, ptBoxBegin.x );
+		mov( ptBegin.y, eax );
+		mov( eax, ptBoxBegin.y );
+		movsx( (type word lParam), eax );
+		mov( eax, ptBoxEnd.x );
+		movsx( (type word lParam[2]), eax );
+		mov( eax, ptBoxEnd.y );
+		w.ReleaseCapture();
+		w.SetCursor( w.LoadCursor( NULL, @string(w.IDC_ARROW)));
+		mov( false, fBlocking );
+		mov( true, fValidBox );
+		w.InvalidateRect( hwnd, NULL, true );
+
+	endif;
+	xor( eax, eax ); // Return zero to indicate success.
+
+end LButtonUp;
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+
+var
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		if( fValidBox ) then
+		
+			SelectObject( w.GetStockObject( w.BLACK_BRUSH ));
+			Rectangle( ptBoxBegin.x, ptBoxBegin.y, ptBoxEnd.x, ptBoxEnd.y );
+			if( fBlocking ) then
+			
+				SetROP2( w.R2_NOT );
+				SelectObject( w.GetStockObject( w.NULL_BRUSH ));
+				Rectangle( ptBoxBegin.x, ptBoxBegin.y, ptBoxEnd.x, ptBoxEnd.y );
+
+			endif; 
+
+		endif;
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;				
+end MouseCapture;
+ 

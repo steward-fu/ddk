@@ -1,0 +1,736 @@
+// typewriter.hla-
+//
+//	This program simulates a "typewriter" by copying keystrokes to the display.
+
+unit typewriter;
+
+// Set the following to true to display interesting information
+// during program operation. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "excepts.hhf" )
+#includeonce( "conv.hhf" )
+#includeonce( "memory.hhf" )
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+const
+	ESC := #$1b;	// Escape character code.
+	
+
+static
+
+	TheFont				:dword;			// Font we'll use.
+
+	AverageCapsWidth	:dword;			// Font metric values.
+	AverageCharWidth	:dword;
+	AverageCharHeight	:dword;
+
+	maxCharWidth		:dword;
+	maxCharHeight		:dword;
+	
+	ClientSizeX			:int32 := 0;	// Size of the client area
+	ClientSizeY			:int32 := 0;	//  where we can paint.
+	x					:int32 := 0;	// Caret x-coordinate.
+	y					:int32 := 0;	// Caret y-coordinate.
+	scrnBuf				:pointer to char := NULL;
+
+readonly
+
+	ClassName	:string := "typewriterWinClass";		// Window Class Name
+	AppCaption	:string := "typewriter Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_PAINT,   	&Paint				],
+			MsgProcPtr_t:[ w.WM_KEYDOWN, 	&KeyDown			],
+			MsgProcPtr_t:[ w.WM_CHAR,   	&CharMsg			],
+			MsgProcPtr_t:[ w.WM_SETFOCUS,  	&SetFocus			],
+			MsgProcPtr_t:[ w.WM_KILLFOCUS, 	&KillFocus			],
+			MsgProcPtr_t:[ w.WM_SIZE,	 	&Size				],
+			MsgProcPtr_t:[ w.WM_CREATE,  	&Create				],
+			MsgProcPtr_t:[ w.WM_DESTROY, 	&QuitApplication	],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+			
+	
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// gotoxy-
+//
+// Positions the cursor at the specified (x,y) *character* coordinate.
+
+procedure gotoxy( x:dword in eax; y:dword in edx );
+begin gotoxy;
+
+	intmul( AverageCharWidth, eax );
+	intmul( AverageCharHeight, edx );
+	w.SetCaretPos( eax, edx );
+
+end gotoxy;
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Create-
+//
+//	This procedure responds to the w.WM_CREATE message.
+//	Windows sends this message once when it creates the
+//	main window for the application.  We will use this
+//	procedure to do any one-time initialization that
+//	must take place in a message handler.
+
+procedure Create( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc:	dword;				// Handle to video display device context
+	tm:		w.TEXTMETRIC;
+begin Create;
+
+	// First, create a useful font (fixed pitch):
+
+	w.GetStockObject( w.SYSTEM_FIXED_FONT );
+	mov( eax, TheFont );
+		
+	GetDC( hwnd, hdc );
+	
+		// Initialization:
+		//
+		//	Get the text metric information so we can compute
+		//	the average character heights and widths.
+
+		SelectObject( TheFont );
+		
+		GetTextMetrics( tm );
+
+		mov( tm.tmHeight, eax );
+		add( tm.tmExternalLeading, eax );
+		mov( eax, AverageCharHeight );
+
+		mov( tm.tmAveCharWidth, eax );
+		mov( eax, AverageCharWidth );
+		
+		// If bit #0 of tm.tmPitchAndFamily is set, then
+		// we've got a proportional font.  In that case
+		// set the average capital width value to 1.5 times
+		// the average character width.  If bit #0 is clear,
+		// then we've got a fixed-pitch font and the average
+		// capital letter width is equal to the average
+		// character width.
+		
+		mov( eax, ebx );
+		shl( 1, tm.tmPitchAndFamily );
+		if( @c ) then
+		
+			shl( 1, ebx );				// 2*AverageCharWidth
+			
+		endif;
+		add( ebx, eax );				// Computes 2 or 3 times eax.
+		shr( 1, eax );					// Computes 1 or 1.5 times eax.
+		mov( eax, AverageCapsWidth );
+		
+	ReleaseDC;
+	
+end Create;
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+//	For this keytest program, the Paint procedure
+//	displays the list of key events we've saved in memory.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+var
+	value		:string;
+	valData		:char[256];
+	vallen		:uns32;			// Length of value string.
+	
+	hdc			:dword;			// Handle to video display device context
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+
+
+begin Paint;
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+	
+	// Initialize the value->valData string object:
+	
+	mov( str.init( (type char valData), 256 ), value );
+	
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., w.DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+
+		// Select the fixed-pitch font into our context:
+
+		SelectObject( TheFont );
+		mov( y, edi );
+		intmul( maxCharHeight, edi );
+		mov( scrnBuf, ebx );
+		for( mov( 0, esi ); esi <= edi; add( AverageCharHeight, esi )) do
+		
+			TextOut( 0, esi, ebx, maxCharWidth );
+			add( maxCharWidth, ebx );
+			
+		endfor;
+			
+	EndPaint;
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+	xor( eax, eax ); // Return success
+
+end Paint;
+
+
+
+// Size-
+//
+//	This procedure handles the w.WM_SIZE message
+//
+//	L.O. word of lParam contains the new X Size
+//	H.O. word of lParam contains the new Y Size
+
+procedure Size( hwnd: dword; wParam:dword; lParam:dword );
+begin Size;
+
+	// Convert new X size to 32 bits and save:
+
+	movzx( (type word lParam), eax );
+	mov( eax, ClientSizeX );
+	cdq();
+	idiv( AverageCharWidth );
+	mov( eax, maxCharWidth );
+
+	// Convert new Y size to 32 bits and save:
+
+	movzx( (type word lParam[2]), eax );
+	mov( eax, ClientSizeY );
+	cdq();
+	idiv( AverageCharHeight );
+	mov( eax, maxCharHeight );
+
+	// Allocate storage for a screen buffer here:
+
+	if( scrnBuf <> NULL ) then
+
+		free( scrnBuf );
+
+	endif;
+	mov( maxCharWidth, eax );
+	intmul( maxCharHeight, eax );
+	mov( eax, ecx );
+	malloc( eax );
+	mov( eax, scrnBuf );
+
+	// Fill the buffer with spaces:
+
+	push( edi );
+	mov( eax, edi );
+	mov( ' ', al );
+	rep.stosb();
+	pop( edi );
+
+	xor( eax, eax );
+	mov( eax, x );   // Home caret to (0,0)
+	mov( eax, y );
+
+	w.GetFocus();
+	if( eax = hwnd ) then
+
+		gotoxy( 0, 0 );
+
+	endif;
+	xor( eax, eax ); // Return success.
+	
+
+end Size;
+
+
+
+
+// SetFocus-
+//
+//	This procedure gets called whenever this application gains the
+// input focus.
+
+procedure SetFocus( hwnd: dword; wParam:dword; lParam:dword );
+begin SetFocus;
+
+	w.CreateCaret( hwnd, NULL, AverageCharWidth, AverageCharHeight );
+	gotoxy( x, y );
+	w.ShowCaret( hwnd );
+	sub( eax, eax );  // Return success
+
+end SetFocus;
+
+
+// KillFocus-
+//
+//	Processes the WM_KILLFOCUS message that gets sent whenever this
+// application is losing the input focus.
+
+procedure KillFocus( hwnd: dword; wParam:dword; lParam:dword );
+begin KillFocus;
+
+	w.HideCaret( hwnd );
+	w.DestroyCaret();
+	sub( eax, eax );  // Return success
+
+end KillFocus;
+
+
+
+
+// KeyDown-
+//
+//	This procedure handles WM_KEYDOWN messages. Mainly, we process
+// cursor control keystrokes here.
+
+procedure KeyDown( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+begin KeyDown;
+
+	mov( wParam, eax );
+	switch( eax )
+
+		case( w.VK_LEFT )
+
+			// Move the cursor one position to the left.
+			// However, if we are already in column zero,
+			// then ignore the request.
+
+			dec( x );
+			if( @s ) then
+				
+				mov( 0, x );
+
+			endif;
+
+		case( w.VK_RIGHT )
+
+			// Bump the cursor position one spot to the right.
+			// If we are already on the left hand side of the
+			// screen, then ignore this request.
+
+			inc( x );
+			mov( x, eax );
+			if( eax > maxCharWidth ) then
+
+				mov( maxCharWidth, eax );
+				mov( eax, x );
+
+			endif;
+
+		case( w.VK_UP )
+
+			// Move the cursor up one line unless we're
+			// already at line zero:
+
+			dec( y );
+			if( @s ) then
+
+				mov( 0, y );
+
+			endif;
+
+		case( w.VK_DOWN )
+
+			// Move the cursor down one line unless
+			// we're already on the bottom line of the display.
+
+			inc( y );
+			mov( y, eax );
+			if( eax > maxCharHeight ) then
+
+				mov( maxCharHeight, eax );
+				mov( eax, y );
+
+			endif;
+		
+		case( w.VK_END )
+
+			// Move the cursor to the first spot beyond the last non-space
+			// character on the line.
+			//
+			// Calculate the end of the line as the last non-blank
+			// character in the buffer on the current line:
+
+			mov( y, edx );					// Calculate start of buffer adrs
+			mov( maxCharWidth, ecx );
+			intmul( ecx, edx );
+			add( scrnBuf, edx );
+			add( edx, ecx );				// Point ecx at end of buffer.
+			repeat
+
+				dec( ecx );
+
+			until( ecx = edx || (type char [ecx]) <> ' ');
+			sub( edx, ecx );
+			inc( ecx );		// Move just beyond character
+			if( ecx > maxCharWidth ) then
+
+				// If last position contains a character, don't
+				// increment beyond that point.
+
+				mov( maxCharWidth, ecx );
+
+			endif;
+			mov( ecx, x );
+
+		case( w.VK_HOME )
+
+			// Pressing the HOME key moves the cursor to the 
+			// beginning of the current line.
+
+			mov( 0, x );
+		
+		case( w.VK_PRIOR )
+
+			// PgUp positions the caret on the top line 
+			// of the display:
+
+			mov( 0, y );
+
+		case( w.VK_NEXT )
+
+			// PgDn positions the caret on the bottom line of
+			// the display:
+
+			mov( maxCharHeight, eax );
+			dec( eax );
+			mov( eax, y );
+
+		case( w.VK_DELETE )
+
+			// Delete the key under the cursor.
+
+			push( esi );
+			push( edi );
+
+			// First, we've got to determine the address
+			// of this character:
+
+			mov( maxCharWidth, esi );
+			mov( y, edi );
+			intmul( esi, edi );
+			add( scrnBuf, edi );		// Adrs of start of line
+			push( edi );				// Save for later
+			add( x, edi );				// Address of character position
+			lea( esi, [edi+1] );		// Start copying with next char
+
+			// Now, copy the remaining characters on the line
+			// over the current character:
+
+			mov( maxCharWidth, ecx );	// Compute chars remaining on line
+			sub( x, ecx );
+			rep.movsb();				// Copy chars over char to delete.
+			mov( ' ', (type char [edi])); // Put a space in last position.
+
+			// Redraw the line of text so we can see the effect
+			// of the deletion on the display:
+
+			pop( edi );					// Retrieve address of line.
+			w.HideCaret( hwnd );
+			GetDC( hwnd, hdc );
+
+				SelectObject( TheFont );
+
+				mov( y, eax );
+				intmul( AverageCharHeight, eax );
+				TextOut( 0, eax, edi, maxCharWidth );
+
+			ReleaseDC;
+			w.ShowCaret( hwnd );
+
+			pop( edi );
+			pop( esi );
+
+	endswitch;
+	gotoxy( x, y );
+	sub( eax, eax );  // Return success
+
+end KeyDown;
+
+
+// CharMsg-
+//
+//	This procedure handles the WM_CHAR messages that come along:
+
+procedure CharMsg( hwnd: dword; wParam:dword; lParam:dword );
+var
+	hdc			:dword;			// Handle to video display device context
+	charAdrs	:dword;
+begin CharMsg;
+
+	mov( wParam, eax );		// Get ASCII code
+
+	if( al = stdio.bs ) then
+
+		// Handle the backspace key.
+		// Just like the DEL key, except we delete the
+		// character to the left of the cursor rather than
+		// the character under the cursor. If in column zero,
+		// do nothing. (See the comments for the DEL key for
+		// more details.)
+
+		if( x <> 0 ) then
+
+			push( esi );
+			push( edi );
+
+			mov( maxCharWidth, ecx );
+			mov( y, esi );				// esi = y*maxCharWidth+scrnBuf
+			intmul( ecx, esi );			//  which is the address of the
+			add( scrnBuf, esi );		//  start of the line.
+			push( esi );				// Save start address for later.
+			add( x, esi );				// Address of character position
+			lea( edi, [esi-1] );		// Start copying with this char
+			sub( x, ecx );				// Compute remaining chars
+			rep.movsb();				// Copy chars over char to delete.
+			mov( ' ', (type char [edi])); // Put a space in last position.
+
+			// Reprint the line we've just modified:
+
+			pop( edi );
+			w.HideCaret( hwnd );
+			GetDC( hwnd, hdc );
+
+				SelectObject( TheFont );
+
+				mov( y, eax );
+				intmul( AverageCharHeight, eax );
+				TextOut( 0, eax, edi, maxCharWidth );
+
+			ReleaseDC;
+			w.ShowCaret( hwnd );
+
+			// We need to move the cursor to the left one
+			// spot to move it over the character we
+			// just deleted:
+
+			dec( x );
+			if( @s ) then
+				
+				mov( 0, x );
+
+			endif;
+
+
+			pop( edi );
+			pop( esi );
+
+		endif;
+
+	elseif( al = stdio.tab ) then 
+
+		// If the user presses the TAB key, then write spaces
+		// from the current caret position up to the next
+		// x-coordinate that is an even multiple of eight
+		// characters (assume 8-character tab stop positions).
+
+		push( ebx );
+		mov( x, ebx );
+		repeat
+
+			w.SendMessage( hwnd, w.WM_CHAR, ' ', 1 );
+			inc( bl );
+			test( %111, bl );
+
+		until( @z );
+
+	elseif( al = stdio.lf ) then
+
+		// Treat LF just like the "down" key:
+
+		w.SendMessage( hwnd, w.WM_KEYDOWN, w.VK_DOWN, 1 );
+		w.SendMessage( hwnd, w.WM_KEYUP, w.VK_DOWN, 1 );
+
+
+	elseif( al = stdio.cr )	then
+	
+		// When the user presses enter, go to the beginning
+		// of the next line:
+		
+		mov( 0, x );
+		w.SendMessage( hwnd, w.WM_CHAR, stdio.lf, 1 ); 
+
+	elseif( al = ESC ) then 
+
+		// If the user presses the ESC key, then clear the
+		// screen:
+
+		mov( maxCharWidth, eax );
+		intmul( maxCharHeight, eax );
+		mov( eax, ecx );
+
+		push( edi );
+		mov( scrnBuf, edi );
+		mov( ' ', al );
+		rep.stosb();
+		pop( edi );
+
+		xor( eax, eax );
+		mov( eax, x );   // Home caret to (0,0)
+		mov( eax, y );
+
+		// Force Windows to redraw this window.
+
+		w.InvalidateRect( hwnd, NULL, true ); 
+
+
+	else // we've got a normal character - print it
+
+		// Compute index into buffer:
+
+		mov( y, ecx );
+		intmul( maxCharWidth, ecx );
+		add( x, ecx );
+		add( scrnBuf, ecx );
+
+		mov( al, [ecx] );
+		mov( ecx, charAdrs );
+
+		// Display the character on the screen:
+
+		w.HideCaret( hwnd );
+		GetDC( hwnd, hdc );
+
+			SelectObject( TheFont );
+
+			mov( y, eax );
+			intmul( AverageCharHeight, eax );
+			mov( x, ecx );
+			intmul( AverageCharWidth, ecx );
+			TextOut( ecx, eax, charAdrs, 1 );
+			
+		ReleaseDC;
+		w.ShowCaret( hwnd );
+
+		// Update the caret position:
+
+		inc( x );
+		mov( x, eax );
+		if( eax > maxCharWidth ) then
+
+			mov( 0, x );
+			inc( y );
+			mov( y, eax );
+			if( eax > maxCharHeight ) then
+
+				mov( 0, y );
+
+			endif;
+
+		endif;
+
+	endif;
+	gotoxy( x, y );
+	xor( eax, eax );  // Return success
+
+end CharMsg;
+
+end typewriter;

@@ -1,0 +1,877 @@
+unit disasmEngine;
+#includeonce( "stdlib.hhf" )
+#includeonce( "disasm.hhf" )
+										  
+?@nostackalign := true;
+?@nodisplay := true;
+?@noframe := true;
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Routines that handle various instruction prefix bytes
+//
+/////////////////////////////////////////////////////////////////////////////
+//
+// makePrefix-
+//	Collection of routines that handle the segment and size prefix bytes.
+
+#macro makePrefix( procName, fieldName );
+
+	procedure procName( instrFuncParms );
+	begin procName;
+
+		mov( true, instrEDI.fieldName );
+
+		// Process the rest of the opcode, having just set the
+		// appropriate prefix field of the instruction's data structure:
+
+		jmp dInstr;
+
+	end procName;
+
+#endmacro
+
+makePrefix( segCSprefix, csPre );
+makePrefix( segDSprefix, dsPre );
+makePrefix( segESprefix, esPre );
+makePrefix( segFSprefix, fsPre );
+makePrefix( segGSprefix, gsPre );
+makePrefix( segSSprefix, ssPre );
+makePrefix( sizePrefix, sizePre );
+makePrefix( adrsPrefix, adrsPre );
+makePrefix( lockPrefix, lockPre );
+makePrefix( repnePrefix, repnePre );
+makePrefix( repePrefix, repePre );
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Procedures that handle various instructions as special cases.
+//
+// nullInstr-
+//	Called when no special action is necessary.
+
+
+_proc( nullInstr );
+_endProc;
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// The jcxz/jecxz instruction is differentiated by an address size prefix
+// byte ($67). As this is the only flat-mode 32-bit instruction that does
+// this, the following code handles this as a special case.
+
+_proc( jecxzInstr );
+
+	// If the $67 prefix is present, 
+	// we've really got the alternate (jcxz_c) instruction:
+
+	if( instrEDI.adrsPre ) then
+
+		mov( jcxz_c, instrEDI.mnemonic );
+
+	endif;
+
+_endProc;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Handle various "alternate opcode" instructions here.
+//
+// Macros to handle instructions that encode their opcode in the
+// reg field of the mod-reg-r/m byte:
+
+#macro regOpcode8( table );
+
+	movzx( (type byte [esi]), eax );	// Get the mod-reg-r/m byte
+	shr( 1, eax );						// Convert to byte index into table
+	and( %00_011_100, eax );			// Mask out all but reg bits
+	mov( table[eax], eax );
+	mov( eax, instrEDI.mnemonic );
+
+#endmacro
+
+#macro regOpcode1632( table );
+	movzx( (type byte [esi]), eax );	// Get the mod-reg-r/m byte
+	shr( 1, eax );						// Convert to byte index into group1A
+	and( %00_011_100, eax );			// Mask out all but reg bits
+	mov( table[eax], eax );
+	mov( eax, instrEDI.mnemonic );
+#endmacro
+
+// immInstr8 and immInstr1632-
+//
+// Group1A immediate mode instructions encode the opcode in the
+// rrr field of the mod-reg-r/m byte as follows:
+//
+//	000:	ADD
+//	001:	OR
+//	010:	ADC
+//	011:	SBB
+//	100:	AND
+//	101:	SUB
+//	110:	XOR
+//	111:	CMP
+
+// group1A-
+//	A mapping of the immediate instruction sub-opcodes (from the reg
+//	field of the mod-reg-r/m byte) to the mnemonic values.
+
+readonly
+	group1A:dword [8] := group1A_c;
+
+// immInstr8-
+//	Handles 8-bit instructions in the immGrp1a group (immediate constant
+//	instructions).
+
+_proc( immInstr8, eax ); 
+
+	regOpcode8( group1A );
+
+_endProc;
+
+
+
+// immInstr16/32-
+//	Handles 16/32-bit instructions in the immGrp1a group (immediate constant
+//	instructions).
+
+_proc( immInstr1632, eax ); 
+
+	regOpcode1632( group1A );
+
+_endProc;
+
+
+// shiftInstr8 and shiftInstr1632-
+//
+// Group2A shift/rotate instructions encode the opcode in the
+// rrr field of the mod-reg-r/m byte as follows:
+//
+//	000:	ROL
+//	001:	ROR
+//	010:	RCL
+//	011:	RCR
+//	100:	SHL/SAL
+//	101:	SHR
+//	110:	---
+//	111:	SAR
+
+// shiftInstr8-
+//	Handles 8-bit shift instructions in the shift group #2.
+
+// group2A-
+//	A mapping of the shift/rotate instruction sub-opcodes (from the reg
+//	field of the mod-reg-r/m byte) to the mnemonic values.
+
+readonly
+	group2A:dword [8] := group2A_c;
+_proc( shiftInstr8, eax ); 
+
+	regOpcode8( group2A );
+
+_endProc;
+
+
+
+// shiftInstr1632-
+//	Handles 16/32-bit instructions in the immGrp1a group (immediate constant
+//	instructions).
+
+_proc( shiftInstr1632, eax ); 
+
+	regOpcode1632( group2A );
+
+_endProc;
+
+
+
+// unary3a-
+//
+//	Handles instructions whose primary opcode is $f6 (8-bit versions of
+//	test, not, neg, mul, imul, div, and idiv).
+
+readonly
+	group3A	:dword[8] :=
+		[
+			test_c, undef_instr_c,	not_c, neg_c,
+			mul_c,	imul_c,			div_c, idiv_c
+		];
+
+_proc( unary3a, eax, edx, edi ); 
+
+	mov( esi, ebx );
+	regOpcode8( group3A );
+
+	// TEST has immediate operands, so we can use the same operand function
+	// for all of these instructions
+
+	lea( edx, instrEDI.firstOp );
+	if( eax = test_c ) then
+
+		// The test instruction has an immediate value associated
+		// with it:
+
+		rm8( esi, [edi], [edx], ebx );
+		I8( esi, [edi], instrEDI.secondOp, ebx );
+
+	else	// For all the others, it's a single mod-xxx-r/m value:
+
+		rm8( esi, [edi], [edx], ebx );
+
+	endif;
+
+_endProc;
+
+
+// unary3b-
+//
+//	Handles instructions whose primary opcode is $f7 (16/32-bit versions of
+//	test, not, neg, mul, imul, div, and idiv).
+
+readonly
+	group3Ab	:dword[8] :=
+		[
+			test_c, undef_instr_c,	not_c, neg_c,
+			mul_c,	imul_c,			div_c, idiv_c
+		];
+
+_proc( unary3b, eax, edx, edi ); 
+
+	mov( esi, ebx );
+	regOpcode1632( group3Ab );
+
+	// TEST has immediate operands, so we can use the same operand function
+	// for all of these instructions
+
+	lea( edx, instrEDI.firstOp );
+	if( instrEDI.mnemonic = test_c ) then
+
+		// The test instruction has an immediate value associated
+		// with it:
+
+		rm1632( esi, [edi], [edx], ebx );
+		I1632( esi, [edi], instrEDI.secondOp, ebx );
+
+	else	// For all the others, it's a single mod-xxx-r/m value:
+
+		rm1632( esi, [edi], [edx], ebx );
+
+	endif;
+
+_endProc;
+
+// group4a-
+//
+//	Handles instructions whose primary opcode is $fe (8-bit versions of
+//	inc and dec).
+
+_proc( group4a, eax, ecx, edx, edi ); 
+
+	mov( esi, ebx );
+	mov( [esi], al );	// Extract the REG field that contains
+	mov( al, cl );		// the opcode for this instruction class.
+	shr( 3, cl );
+	and( %111, cl );
+
+	cmp( cl, 1 );
+	if( @na ) then
+
+		if( @b ) then
+		
+			// increment instruction
+			
+			mov( inc_c, ecx );
+			
+		else
+		
+			// decrement instruction
+
+			mov( dec_c, ecx );
+			
+		endif;
+		mov( ecx, instrEDI.mnemonic );
+		rm8( esi, [edi], instrEDI.firstOp, ebx );
+
+	else	// It's undefined
+	
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+	endif;
+
+_endProc;
+	 
+	 
+// group4b-
+//
+//	Handles instructions whose primary opcode is $ff (16/32-bit versions of
+//	inc, dec, and push, plus indirect call and jmp).
+
+readonly
+	group4bMap	:dword[8] :=
+		[
+			inc_c, dec_c, call_c, undef_instr_c, 
+			jmp_c, undef_instr_c, push_c, undef_instr_c
+		];
+
+_proc( group4b, eax, ecx, edx, edi ); 
+
+	mov( esi, ebx );
+	movzx( (type byte [esi]), eax );	// Extract the reg field
+	mov( eax, ecx );					//  that contains the opcode
+	shr( 1, ecx );						//  for this instruction class
+	and( %11100, ecx );
+
+	mov( group4bMap[ecx], ecx );
+	mov( ecx, instrEDI.mnemonic );
+	lea( edx, instrEDI.firstOp );
+	if( ecx <> undef_instr_c ) then
+
+		if( instrEDI.sizePre ) then
+
+			regmem(	2 );
+
+		else
+
+			regmem(	4 );
+
+		endif;
+
+	endif;
+			
+_endProc;
+
+
+
+// movImm8 and movImm1632-
+//
+// Group 11 move immediate instructions encode the opcode in the
+// rrr field of the mod-reg-r/m byte as follows:
+//
+//	000:	mov
+//	001:	undefined
+//	010:	undefined
+//	011:	undefined
+//	100:	undefined
+//	101:	undefined
+//	110:	undefined
+//	111:	undefined
+
+
+readonly
+	group11Map	:dword[8] :=
+		[
+			mov_c, undef_instr_c, undef_instr_c, undef_instr_c, 
+			undef_instr_c, undef_instr_c, undef_instr_c, undef_instr_c
+		];
+
+_proc( movImm8, eax, ecx, edx, edi ); 
+
+	mov( esi, ebx );					// EBX must point at mod-reg-r/m
+	movzx( (type byte [esi]), eax );	// Extract the reg field
+	mov( eax, ecx );					//  that contains the opcode
+	shr( 1, ecx );						//  for this instruction class
+	and( %11100, ecx );
+
+	mov( group11Map[ecx], ecx );
+	mov( ecx, instrEDI.mnemonic );
+	lea( edx, instrEDI.firstOp );
+	if( ecx <> undef_instr_c ) then
+	
+		regmem(	1 );
+		I8( esi, [edi], instrEDI.secondOp, ebx );
+		
+	else
+	
+		add( 1, esi );	// Skip faulty mod-reg-r/m byte
+		
+	endif;
+
+_endProc;
+
+
+_proc( movImm1632, eax, ecx, edx, edi ); 
+
+	mov( esi, ebx );
+	movzx( (type byte [esi]), eax );	// Extract the reg field
+	mov( eax, ecx );					//  that contains the opcode
+	shr( 1, ecx );						//  for this instruction class
+	and( %11100, ecx );
+
+	mov( group11Map[ecx], ecx );
+	mov( ecx, instrEDI.mnemonic );
+	lea( edx, instrEDI.firstOp );
+	if( ecx <> undef_instr_c ) then
+
+		if( instrEDI.sizePre ) then
+
+			regmem(	2 );
+
+		else
+
+			regmem(	4 );
+
+		endif;
+		I1632( esi, [edi], instrEDI.secondOp, ebx );
+
+	else
+	
+		add( 1, esi );	// Skip faulty mod-reg-r/m byte
+		
+	endif;
+			
+_endProc;
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Two Byte Opcodes beginning with $0F are handled here
+//
+/////////////////////////////////////////////////////////////////////////////
+
+
+// TwoByteOpcode-
+//	Handles instructions with the $0f prefix byte
+
+procedure TwoByteOpcode( instrFuncParms );
+begin TwoByteOpcode;
+
+	preserve( eax, ebx, ecx, edx, ebp );
+
+		// Load ebp with the address of the opcode translation
+		// table, as appropriate based on the presence (or absence)
+		// of various prefix bytes:
+		//
+		//	$66 - opXlat2_66 table
+		//	$F2 - opXlat2_F2 table
+		//	$F3 - opXlat2_F3 table
+		//	default - opXlat2 table
+
+		lea( ebp, opXlat2 );	// Default is no prefix byte.
+		if( instrEDI.repnePre ) then
+
+			lea( ebp, opXlat2_F2 ); // If $F2 prefix byte is present
+
+		elseif( instrEDI.repePre ) then
+
+			lea( ebp, opXlat2_F3 );	// If $F3 prefix byte is present
+
+		elseif( instrEDI.sizePre ) then
+
+			lea( ebp, opXlat2_66 );	// If $66 prefix byte is present
+
+		endif;
+		movzx( (type byte [esi]), ecx );	// Get opcode
+		#if( @size( xOp2m_t ) = 16 )
+
+			shl( 4, ecx );
+
+		#else
+
+			intmul( @size( xOp2m_t ), ecx );
+
+		#endif
+		mov( (type xOp2m_t [ebp]).mnemonic[ecx], eax );
+		mov( eax, instrEDI.mnemonic );
+
+		add( 1, esi );		// Skip over opcode byte.
+
+		// Call the instruction-specific handler.
+
+		call( (type xOp2m_t [ebp]).handleInstr[ecx] );
+
+		// Call the instruction-specific operand handlers.
+
+		mov( esi, ebx );
+
+		lea( edx, instrEDI.firstOp );
+		call( (type xOp2m_t [ebp]).handleOprnd1[ecx] );
+
+		lea( edx, instrEDI.secondOp );
+		call( (type xOp2m_t [ebp]).handleOprnd2[ecx] );
+		 
+	restore;
+
+end TwoByteOpcode;
+
+
+// reg32Only-
+//	Instruction's mod-reg-r/m field only supports a 32-bit register
+//	field. Otherwise, it's an undefined instruction.
+
+_proc( reg32Only, eax );
+
+	mov( esi, ebx );
+	mov( [esi], al );	// Get mod-reg-r/m byte
+	if( al < %11_000_000 || instrEDI.sizePre ) then
+
+		// If a memory addressing mode, or if the size
+		// prefix is present, then turn this into an
+		// undefined instruction:
+
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+	endif;
+
+_endProc;
+
+
+// regOnly-
+//	Instruction's mod-reg-r/m field only supports a register
+//	field. Otherwise, it's an undefined instruction.
+
+_proc( regOnly, eax );
+
+	mov( esi, ebx );
+	mov( [esi], al );	// Get mod-reg-r/m byte
+	if( al < %11_000_000 ) then
+
+		// If a memory addressing mode, or if the size
+		// prefix is present, then turn this into an
+		// undefined instruction:
+
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+	endif;
+
+_endProc;
+
+
+// memOnly-
+//	Instruction's mod-reg-r/m field only supports a memory operand.
+//	Otherwise, it's an undefined instruction.
+
+_proc( memOnly, eax );
+
+	mov( esi, ebx );
+	mov( [esi], al );	// Get mod-reg-r/m byte
+	if( al >= %11_000_000 ) then
+
+		// If a register addressing mode, then turn this into an
+		// undefined instruction:
+
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+	endif;
+
+_endProc;
+
+
+// group6-
+//	Handles the group6 instructions:
+//		SLDT, STR, LLDT, LTR, VERR, and VERW.
+
+
+readonly
+	group6Map	:dword[8] :=
+		[
+			sldt_c, str_c, lldt_c, ltr_c, verr_c, verw_c,
+			undef_instr_c, undef_instr_c
+		];
+
+_proc( group6, eax, ecx, edx );
+
+	mov( esi, ebx );
+	reg2Instr( group6Map );	
+	if( eax <> undef_instr_c ) then
+
+		lea( edx, instrEDI.firstOp );
+		rm16( esi, [edi], [edx], ebx );
+
+	endif;
+
+_endProc;
+
+
+// group7-
+//	Handles the group7 instructions:
+//		SGDT, SIDT, LGDT, LIDT, SMSW, LMSW, and INVLPG
+
+readonly
+	group7Map	:dword[8] :=
+		[
+			sgdt_c, sidt_c, lgdt_c, lidt_c, smsw_c,
+			undef_instr_c, lmsw_c, invlpg_c
+		];
+
+	group7operands	:dword[8] :=
+		[ &rm48, &rm48, &rm48, &rm48, 
+			&rm1632, &nullOperand, &rm1632, &rm8 ];
+
+_proc( group7, eax, ecx, edx );
+
+	mov( esi, ebx );
+	reg2Instr( group7Map );
+	lea( edx, instrEDI.firstOp );
+	call( group7operands[ ecx ] );
+
+_endProc;
+
+
+// group8-
+//	Handles the group8 instructions:
+//		SGDT, SIDT, LGDT, LIDT, SMSW, LMSW, and INVLPG
+
+readonly
+	group8Map	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, undef_instr_c, undef_instr_c,
+			bt_c, bts_c, btr_c, btc_c
+		];
+
+_proc( group8, eax, ecx, edx );
+
+	mov( esi, ebx );
+	reg2Instr( group8Map );
+
+_endProc;
+
+
+// group9-
+//	Handles the group9 instructions:
+//		cmpxchg8b
+
+_proc( group9, eax, ecx );
+
+	mov( esi, ebx );
+	mov( [esi], al );
+	mov( al, ah );
+	and( %00_111_000, al );
+	mov( undef_instr_c, instrEDI.mnemonic );
+	if
+	( 
+			al = %00_001_000	// reg/opcode=001 for cmpxchg8b 
+		&&	ah < %11_000_000	// Must be a memory location 
+	) then
+
+		mov( cmpxchg8b_c, instrEDI.mnemonic );
+		lea( edx, instrEDI.firstOp );
+		regmem(	8 );
+
+	endif;
+
+_endProc;
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// grp12_13_14-
+//	Macro for group12, group13, group14, and group14a procedures:
+
+#macro grp12_13_14( table );
+
+	mov( esi, ebx );
+	reg2Instr( table );
+	mov( [ebx], al );			// Get mod-reg-r/m byte
+	if( al < %11_000_000 ) then
+
+		// If it's not a register, it's an illegal addressing mode
+
+		mov( undef_instr_c, instrEDI.mnemonic );
+
+	endif;
+
+	lea( edx, instrEDI.firstOp );
+	if( instrEDI.sizePre ) then
+
+		// If $66 prefix, then use SSE registers
+
+		xrm128( esi, [edi], [edx], ebx );
+
+	else
+
+		// If no $66 prefix, then use MMX registers
+
+		mxrm64( esi, [edi], [edx], ebx );
+
+	endif;
+
+	lea( edx, instrEDI.secondOp );
+	I8( esi, [edi], [edx], ebx );
+
+#endmacro
+
+// group12-
+//	Handles the MMX shift instructions:
+//	PSRLW, PSRAW, and PSLLW
+
+readonly
+	group12Map	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, psrlw_c, undef_instr_c, 
+			psraw_c, undef_instr_c, psllw_c, undef_instr_c
+		];
+
+_proc( group12, eax, ebx, ecx, edx );
+
+	grp12_13_14( group12Map );
+
+_endProc;
+
+
+// group13-
+//	Handles the MMX shift instructions:
+//	PSRLD, PSRAD, and PSLLD
+
+readonly
+	group13Map	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, psrld_c, undef_instr_c, 
+			psrad_c, undef_instr_c, pslld_c, undef_instr_c
+		];
+
+_proc( group13, eax, ebx, ecx, edx );
+
+	grp12_13_14( group13Map );
+
+_endProc;
+
+
+// group14-
+//	Handles the MMX shift instructions:
+//	PSRLQ, PSLLQ
+
+readonly
+	group14Map	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, psrlq_c, undef_instr_c, 
+			undef_instr_c, undef_instr_c, psllq_c, undef_instr_c
+		];
+
+_proc( group14, eax, ebx, ecx, edx );
+
+	grp12_13_14( group14Map );
+
+_endProc;
+
+
+// group14a-
+//	Handles the MMX shift instructions:
+//	PSRLQ, PSRLQD, PSLLQ, and PSLLDQ
+
+readonly
+	group14aMap	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, psrlq_c, psrldq_c, 
+			undef_instr_c, undef_instr_c, psllq_c, pslldq_c
+		];
+
+_proc( group14a, eax, ebx, ecx, edx );
+
+	grp12_13_14( group14aMap );
+
+_endProc;
+
+
+// group15-
+//	Handles the FXSAVE, FXRSTRO, LDMXCSR, STMXCSR,
+//	CLFLUSH, LFENCE, MFENCE, and SFENCE instructions
+
+readonly
+	group15MapMem	:dword[8] :=
+		[
+			fxsave_c, fxrstor_c, ldmxcsr_c, stmxcsr_c, 
+			undef_instr_c, undef_instr_c, undef_instr_c, clflush_c
+		];
+
+	group15Map000	:dword[8] :=
+		[
+			undef_instr_c, undef_instr_c, undef_instr_c, undef_instr_c,
+			undef_instr_c, lfence_c, mfence_c, sfence_c
+		];
+
+_proc( group15, eax, ecx, edx );
+
+	mov( esi, ebx );
+	mov( [esi], al );
+	if( al >= %11_000_000 ) then
+
+		and( %111, al );
+		if( @nz ) then
+
+			mov( undef_instr_c, instrEDI.mnemonic );
+				 
+		else
+
+			reg2Instr( group15Map000 );
+			add( 1, esi );	// Skip mod-reg-r/m byte
+
+		endif;
+
+	else	// use group15MapMem
+
+		reg2Instr( group15MapMem );
+		lea( edx, instrEDI.firstOp );
+		rm8( esi, [edi], [edx], ebx );
+		
+	endif;	
+
+_endProc;
+
+
+// group16-
+//	Handles the PREFETCH instructions:
+//	PREFETCHNTA, PREFETCH0, PREFETCH1, PREFETCH2
+
+readonly
+	group16Map	:dword[8] :=
+		[
+			prefetchnta_c, prefetcht0_c, prefetcht1_c, prefetcht2_c, 
+			undef_instr_c, undef_instr_c, undef_instr_c, undef_instr_c
+		];
+
+_proc( group16, eax, ecx, edx );
+
+	mov( esi, ebx );
+	reg2Instr( group16Map );
+	lea( edx, instrEDI.firstOp );
+	rm8( esi, [edi], [edx], ebx );	
+
+_endProc;
+
+
+
+
+#macro modSelectInstr64( procName, instrReg, instrMem );
+
+_proc( procName, eax, ecx, edx );
+
+	mov( [esi], al );	// Get mod-reg-r/m byte
+	mov( esi, ebx );
+	if( al >= %11_000_000 ) then // it's movhlps
+
+		mov( instrReg, instrEDI.mnemonic );
+		lea( edx, instrEDI.firstOp );
+		xr128( esi, [edi], [edx], ebx );
+		lea( edx, instrEDI.secondOp );
+		xrm64( esi, [edi], [edx], ebx );
+		 
+	else	// it's movlps
+
+		mov( instrMem, instrEDI.mnemonic );
+		lea( edx, instrEDI.firstOp );
+		xr128( esi, [edi], [edx], ebx );
+		lea( edx, instrEDI.secondOp );
+		xrm128( esi, [edi], [edx], ebx );
+		 
+	endif;
+
+_endProc;
+
+#endmacro
+
+// movlpsOrMovhlps-
+//	Instruction is movlps if mod is not %11, it's movhlps if mod is %11
+// movlpsOrMovhlps-
+//	Instruction is movlps if mod is not %11, it's movhlps if mod is %11
+
+modSelectInstr64( movlpsOrMovhlps, movhlps_c, movlps_c ); 
+modSelectInstr64( movhpsOrMovlhps, movlhps_c, movhps_c ); 
+
+
+end disasmEngine;

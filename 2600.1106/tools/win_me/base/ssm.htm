@@ -1,0 +1,28 @@
+<html><head><title>System State Monitor Usage</title></head>
+<body>
+<u><b>Usage:</b></u><UL>
+<LI><b>SSM</b><b> /t</b>:&lt;Time in minutes> /a generates log files<br>
+<LI><b>SSM</b> no switches starts the UI (Logging can be initiated from the UI)<br>
+<br>
+<I>NOTE:</I> To exit logging, right click on the SSM icon on the task bar and choose exit.<br>
+<br>
+<U>Other task bar options:</U><UL>
+<LI>Show UI - Stops logging and opens the UI
+<LI>Status: Displays the status dialog
+<LI>Exit _ exits the applciation
+<LI>Options - Logging options that are configurable
+</UL></UL>
+<b><u>Known bugs:</u></b><UL>
+<LI>No module 16 analysis
+<LI>No way to snap thread and module list
+<LI>Occasional General Protection Fault in TOOLHELP when taking heap 16 snapshots.
+<LI>Page fault in heap query under extreme stress
+<LI>Display always appends analysis to the previous analysis (should clear the screen)
+<LI>Heap 16 analysis always shows 0 for size of Block Size even though the other elements in the list are correct.
+<LI>Under Windows 9x, if you click on the Options pulldown menu to change the options, the
+program gives an 'invalid parameter' pop-up error before continuing (see below). This error can be ignored.
+<img border="0" src="ssm.ht1.jpg" width="155" height="100" caption="Sample error dialog" align=LEFT></p>
+<BR clear=left><BR>
+</UL>
+<P>For help with the <b>System State Monitor</b>, refer to the documentation provided with this development kit.
+</body></html>

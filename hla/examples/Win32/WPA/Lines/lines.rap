@@ -1,0 +1,46 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly - Lines Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=lines.rap
+1=lines.rc
+2=lines.asm
+3=lines.obj
+4=lines.res
+5=lines.exe
+6=lines.def
+7=lines.dll
+8=lines.txt
+9=lines.lib
+10=lines.mak
+11=lines.hla
+[Files]
+1=lines.hla
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Size]
+1=0,0,0,0,0

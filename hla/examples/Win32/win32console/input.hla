@@ -1,0 +1,92 @@
+unit consoleUnit;
+#include( "stdin.hhf" );
+#include( "win32cons.hhf" );
+
+
+
+
+
+// peekInput-
+//
+//	Checks for an input event (mouse event, keyboard event, resize event).
+//	Returns zero in EAX if no events or error, returns one if it successfully
+//	peeked at an event.
+
+procedure win32cons.peekInput( var input:win.INPUT_RECORD ); @nodisplay;
+var
+	numEvents:	dword;
+	
+begin peekInput;
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	
+	win.PeekConsoleInput( numEvents, 1, input, stdin.handle() );
+	if( eax ) then
+		
+		mov( numEvents, eax );
+		
+	endif;
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+		
+end peekInput;
+
+
+
+
+// readInput-
+//
+//	Waits for an input event (mouse event, keyboard event, resize event).
+
+procedure win32cons.readInput( var input:win.INPUT_RECORD ); @nodisplay;
+var
+	numEvents:	dword;
+	
+begin readInput;
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	
+	win.ReadConsoleInput( numEvents, 1, input, stdin.handle() );
+	if( eax ) then
+		
+		mov( numEvents, eax );
+		
+	endif;
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+		
+end readInput;
+
+
+// flushInput-
+//
+//	Flushes all the console input events from the internal buffer.
+
+procedure win32cons.flushInput; @nodisplay; @noframe;
+begin flushInput;
+
+	pushad();
+	win.FlushConsoleInputBuffer( stdin.handle() );
+	popad();
+	ret();
+	
+end flushInput;
+
+
+
+
+end consoleUnit;

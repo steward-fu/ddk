@@ -1,0 +1,507 @@
+program makelinks;
+#include( "stdlib.hhf" )
+static
+
+	room	:str.strvar(256);
+
+               // N  S  E  W  U  D
+map:int32[6 * 224]:=
+			[
+				  0, 0, 0, 0, 0, 0,      // room 0 (invalid?)
+                  0, 5, 0, 0, 2, 0,      // room 1
+                  0, 0, 4, 0, 0, 1,      // 2
+                  0, 0, 0, 5, 0, 0,      // 3
+                  0, 0, 0, 2, 0, 0,      // 4
+                  1, 6, 3, 0, 0, 0,    // 5
+                  5, 11, 7, 10, 0, 0,      // 6
+                  8, 0, 0, 6, 0, 0,      // 7
+                  0, 7, 9, 0, 0, 0,      // 8
+                  0, 0, 0, 8, 0, 0,      // 9
+                  0, 0, 6, 0, 0, 0,      // 10
+                  6, 12, 0, 0, 0, 0,      // 11
+                  11, 13, 0, 0, 0, 0,      // 12
+                  12, 14, 198, 0, 0, 0,      // 13
+                  13, 28, 22, 29, 0, 199,      // 14
+                  0, 19, 0, 0, 0, 0,      // 15
+                  0, 20, 0, 0, 0, 0,      // 16
+                  0, 0, 18, 0, 0, 0,      // 17
+                  0, 0, 0, 17, 0, 0,      // 18
+                  15, 22, 20, 0, 0, 0,      // 19
+                  16, 23, 21, 19, 0, 0,      // 20
+                  0, 0, 97, 20, 0, 0,      // 21
+                  19, 27, 23, 14, 0, 0,      // 22
+                  20, 26, 24, 22, 0, 0,      // 23
+                  0, 0, 0, 23, 0, 0,      // 24
+                  0, 0, 0, 26, 0, 0,      // 25
+                  23, 0, 25, 0, 0, 0,      // 26
+                  22, 43, 0, 0, 0, 0,      // 27
+                  14, 42, 0, 0, 0, 0,      // 28
+                  0, 0, 14, 30, 0, 0,      // 29
+                  0, 0, 29, 31, 0, 0,      // 30
+                  32, 0, 30, 34, 0, 0,      // 31
+                  33, 31, 0, 0, 0, 0,      // 32
+                  0, 32, 0, 0, 0, 0,      // 33
+                  35, 0, 31, 38, 0, 0,      // 34
+                  36, 34, 0, 0, 0, 0,      // 35
+                  0, 35, 0, 0, 0, 0,      // 36
+                  38, 0, 0, 41, 0, 0,      // 37
+                  39, 37, 34, 40, 0, 0,      // 38
+                  73, 38, 0, 0, 0, 0,      // 39
+                  189, 0, 38, 0, 0, 0,      // 40
+                  0, 0, 37, 0, 0, 0,    // 41
+                  28,48,0,45,0,0,       // 42
+                  27,49,44,0,0,0,       // 43
+                  0,50,0,43,0,0,        // 44
+                  0,47,42,0,0,0,        // 45
+                  0,52,47,0,0,0,        // 46
+                  45,53,0,46,0,0,       // 47
+                  42,54,0,0,0,0,        // 48
+                  43,55,0,0,0,0,        // 49
+                  44,0,51,0,0,0,        // 50
+                  0,57,0,50,0,0,        // 51
+                  46,59,53,0,0,0,       // 52
+                  47,60,54,52,0,0,      // 53
+                  48,61,0,53,0,0,       // 54
+                  49,0,0,0,0,0,         // 55
+                  0,63,0,0,0,0,         // 56
+                  51,0,0,0,0,0,         // 57
+                  0,0,59,0,0,0,         // 58
+                  52,65,60,58,0,0,      // 59
+                  53,66,0,59,0,0,       // 60
+                  54,67,0,0,0,0,        // 61
+                  0,0,63,0,0,0,         // 62
+                  56,68,64,62,0,0,      // 63
+                  0,0,0,63,0,0,         // 64
+                  59,0,0,0,0,0,         // 65
+                  60,0,0,0,0,0,         // 66
+                  61,70,0,0,0,0,        // 67
+                  63,0,0,0,71,0,         // 68
+                  0,0,70,0,0,0,         // 69
+                  67,72,71,69,0,0,      // 70
+                  0,0,0,70,0,68,         // 71
+                  70,0,0,0,0,0,         // 72
+                  80,39,74,0,0,0,       // 73
+                  0,0,0,73,0,0,         // 74
+                  78,0,76,0,0,0,        // 75
+                  0,0,77,75,0,0,        // 76
+                  0,0,0,76,0,0,         // 77
+                  87,75,79,0,0,0,       // 78
+                  0,0,0,78,0,0,         // 79
+                  85,73,0,81,0,0,       // 80
+                  0,0,80,0,0,0,         // 81
+                  83,0,0,0,0,0,         // 82
+                  91,82,84,0,0,0,       // 83
+                  90,0,85,83,0,0,       // 84
+                  89,80,86,84,0,0,      // 85
+                  88,0,87,85,0,0,       // 86
+                  0,78,0,86,0,0,        // 87
+                  0,86,0,0,0,0,         // 88
+                  93,85,0,0,0,0,        // 89
+                  0,84,0,0,0,0,         // 90
+                  92,83,0,0,0,0,        // 91
+                  95,91,0,0,0,0,        // 92
+                  94,89,0,0,0,0,        // 93
+                  0,93,0,0,0,0,         // 94
+                  0,92,0,0,0,0,         // 95
+                  0,0,0,0,0,0,          // 96
+                  98,99,102,21,0,0,     // 97
+                  0,97,0,0,0,0,         // 98
+                  97,0,0,0,0,0,         // 99
+                  0,101,138,0,0,0,      // 100
+                  100,102,0,0,0,0,      // 101
+                  101,103,0,97,0,0,     // 102
+                  102,104,0,0,0,0,      // 103
+                  103,106,0,0,0,0,      // 104
+                  0,0,0,0,0,0,          // 105
+                  104,0,107,0,0,0,      // 106
+                  0,0,112,106,0,0,      // 107
+                  0,110,109,0,0,0,      // 108
+                  0,111,113,108,0,0,    // 109
+                  108,0,111,0,0,0,      // 110
+                  109,0,0,110,0,0,      // 111
+                  0,113,0,107,0,0,      // 112
+                  112,0,115,109,0,0,    // 113
+                  0,115,117,0,0,0,      // 114
+                  114,0,118,113,0,0,    // 115
+                  0,117,119,0,0,0,      // 116
+                  116,118,120,114,0,0,  // 117
+                  117,0,121,115,0,0,    // 118
+                  0,0,0,116,0,0,        // 119
+                  0,121,122,117,0,0,    // 120
+                  120,0,0,118,0,0,      // 121
+                  0,0,123,120,0,0,      // 122
+                  137,0,0,122,0,0,      // 123
+                  126,0,0,0,0,0,        // 124
+                  0,0,126,0,0,0,        // 125
+                  128,124,127,125,0,0,  // 126
+                  0,0,0,126,0,0,         // 127
+                  139,126,0,0,0,0,       // 128
+                  141,130,0,0,0,0,       // 129
+                  129,0,132,0,0,0,       // 130
+                  0,132,0,0,0,0,         // 131
+                  131,133,134,130,0,0,   // 132
+                  132,0,0,0,0,0,         // 133
+                  0,0,0,132,0,0,         // 134
+                  0,0,0,0,0,136,         // 135
+                  0,0,0,0,135,137,       // 136
+                  0,123,0,0,136,0,       // 137
+                  142,0,139,100,0,0,     // 138
+                  0,128,140,138,0,0,     // 139
+                  143,0,141,139,0,0,     // 140
+                  144,129,0,140,0,0,     // 141
+                  147,138,0,146,0,0,     // 142
+                  149,140,0,0,0,0,       // 143
+                  0,141,145,0,0,0,       // 144
+                  151,0,0,144,0,0,       // 145
+                  0,0,147,0,0,0,         // 146
+                  0,142,0,146,0,0,       // 147
+                  0,0,149,0,0,0,         // 148
+                  0,143,150,148,0,0,     // 149
+                  0,0,0,149,0,0,         // 150
+                  157,145,0,0,0,0,        // 151
+                  156,0,0,0,0,0,          // 152
+                  157,151,0,0,0,0,        // 153
+                  0,0,155,0,0,0,          // 154
+                  159,0,156,154,0,0,      // 155
+                  160,152,157,155,0,0,    // 156
+                  161,153,158,156,0,0,    // 157
+                  162,0,0,157,0,0,        // 158
+                  0,155,0,0,0,0,          // 159
+                  0,156,0,0,0,0,          // 160
+                  165,157,0,0,0,0,        // 161
+                  0,158,0,0,0,0,          // 162
+                  0,0,164,0,0,0,          // 163
+                  168,0,0,163,0,0,        // 164
+                  169,161,0,0,0,0,        // 165
+                  170,0,0,0,0,0,          // 166
+                  0,0,168,0,0,0,          // 167
+                  171,164,169,167,0,0,    // 168
+                  0,165,170,168,0,0,      // 169
+                  0,166,0,169,0,0,        // 170
+                  0,168,0,0,0,0,         // 171
+                  193,175,185,173,0,0,    // 172
+                  0,188,172,174,0,0,      // 173
+                  182,0,173,0,0,0,        // 174
+                  172,179,180,188,0,0,    // 175
+                  190,0,177,0,0,0,        // 176
+                  0,0,178,176,0,0,        // 177
+                  182,0,0,177,0,0,        // 178
+                  175,181,0,0,0,0,        // 179
+                  0,0,183,175,0,0,        // 180
+                  179,189,0,0,0,0,        // 181
+                  0,178,0,0,0,0,          // 182
+                  185,0,184,180,0,0,      // 183
+                  0,0,0,183,0,0,          // 184
+                  0,183,186,172,0,0,      // 185
+                  187,0,0,185,0,0,        // 186
+                  197,186,0,0,0,0,        // 187
+                  173,0,175,0,0,0,        // 188
+                  181,40,0,0,0,0,         // 189
+                  191,176,0,0,0,0,        // 190
+                  192,190,0,0,0,0,        // 191
+                  0,191,193,0,0,0,        // 192
+                  193,172,194,192,0,0,    // 193
+                  0,196,195,193,0,0,      // 194
+                  0,0,0,194,0,0,          // 195
+                  194,197,0,0,0,0,        // 196
+                  196,187,0,0,0,0,        // 197
+                  0,0,0,13,223,0,         // 198
+                  0,200,0,0,14,0,         // 199
+                  199,209,201,206,0,0,    // 200
+                  0,0,202,200,0,0,        // 201
+                  0,0,203,201,0,0,        // 202
+                  204,0,0,202,0,0,        // 203
+                  0,203,0,0,0,0,          // 204
+                  0,0,0,0,0,0,            // 205
+                  0,207,200,0,0,0,        // 206
+                  206,0,208,0,0,0,        // 207
+                  0,0,0,207,0,0,          // 208
+                  200,0,210,211,0,0,      // 209
+                  0,0,0,209,0,0,          // 210
+                  0,212,209,0,0,0,        // 211
+                  211,0,0,0,213,0,        // 212
+                  0,214,0,0,0,212,        // 213
+                  213,215,0,0,0,0,        // 214
+                  214,216,0,0,0,0,        // 215
+                  215,217,0,0,0,0,        // 216
+                  216,218,0,0,0,0,        // 217
+                  217,0,219,0,0,0,        // 218
+                  0,0,220,218,0,0,        // 219
+                  0,0,221,219,0,0,        // 220
+                  0,0,222,220,0,0,        // 221
+                  0,0,0,221,0,0,          // 222
+                  0,0,0,0,0,198];         // 223
+
+			// room nouns go here:
+			
+roomnames	:string[] :=
+			[
+			"room0",
+			"tavern1",
+			"upstairsHallway2",
+			"villageStore3",
+			"smallRoom4",
+			"villagePath5",
+			"villageWell6",
+			"smallCathedral7",
+			"stoneAltar8",
+			"storageRoom9",
+			"guild10",
+			"townEntrance11",
+			"wellLitPath12",
+			"forestPath13",
+			"intersection14",
+			"redwoodForest15",
+			"oldOakTree16",
+			"atopForest17",
+			"grassRoomHut18",
+			"redwoodForest19",
+			"redwoodForest20",
+			"redwoodForest21",
+			"brokenPath22",
+			"brokenPath23",
+			"abandonedCottage24",
+			"byTheLake25",
+			"smallClearing26",
+			"grassyHillside27",
+			"onThePath28",
+			"windingRoad29",
+			"windingRoad30",
+			"junction31",
+			"woodenBridge32",
+			"bronzeStatue33",
+			"windingRoad34",
+			"purpleMountains35",
+			"purpleMountains36",
+			"purpleMountains37",
+			"purpleMountains38",
+			"darkCave39",
+			"purpleMountains40",
+			"purpleMountains41",
+			"onThePathSouth42",
+			"smallHillside43",
+			"grassySlopeDown44",
+			"decayingForest45",
+			"dyingForest46",
+			"withinDyingForest47",
+			"southernRoad48",
+			"grassyHillside49",
+			"southHillside50", 
+			"easternPath51",
+			"dyingForest52",
+			"middleForest53",
+			"smallBridge54",
+			"southernSlope55",
+			"northernCell56",
+			"smallRavine57",
+			"endOfForest58",
+			"dyingForest59",
+			"dyingForest60",
+			"widePath61",
+			"smallCell62",
+			"darkenedDungeon63",
+			"smallCell64",
+			"endOfForest65",
+			"endOfForest66",
+			"castleMoat67",
+			"darkenedDungeon68",
+			"guestChambers69",
+			"mainHallway70",
+			"smallLibrary71",
+			"smallThrone72", 
+			"twistedPassageway73",
+			"narrowTunnel74",
+			"twistedPassageway75",
+			"eastWestPassageway76",
+			"narrowOpening77", 
+			"smallIntersection78", 
+			"smallCrevice79",
+			"smallIntersection80",
+			"tinyFissure81",
+			"endOfTunnel82", 
+			"tunnelJunction83",
+			"smallTunnel84",	
+			"subterraneanPassageway85",
+			"easternJunction86",
+			"smallTunnel87",
+			"deadEnd88",
+			"twistingPassageway89",
+			"nearDeadEnd90",
+			"narrowPassageway91",
+			"narrowTunnel92",
+			"wideTunnel93",
+			"largeWaterfall94",
+			"smallKeep95",
+			"smallKeep96",
+			"redwoodForest97",
+			"redwoodForest98",
+			"redwoodForest99",
+			"narrowPath100", 
+			"smallClearing101",
+			"redwoodForest102",
+			"dirtPath103", 
+			"dirtPath104", 
+			"smallKeep105",
+			"wellWornPath106",
+			"wellWornPath107",
+			"sandyBeach108",
+			"sandyBeach109",
+			"sandyBeach110",
+			"sandyBeach111",
+			"dirtPath112",
+			"sandyBeach113",
+			"sandyBeach114",
+			"sandyBeach115",
+			"sandyBeach116",
+			"sandyBeach117",
+			"sandyBeach118",
+			"sandyBeach119",
+			"sandyBeach120",
+			"easternCoastline121",
+			"eastOfSmallLagoon122",
+			"lighthouseAtFlora123",
+			"forestWoodlands124",
+			"forestWoodlands125",
+			"forestWoodlands126",
+			"middleWoodlands127",
+			"forestWoodlands128",
+			"forestWoodlands129",
+			"forestWoodlands130",
+			"forestWoodlands131",
+			"forestWoodlands132",
+			"forestWoodlands133",
+			"forestWoodlands134",
+			"topOfLighthouse135",
+			"insideLighthouse136",
+			"insideLighthouse137",
+			"onThePath138",
+			"onThePath139",
+			"forestJunction140",
+			"intersection141",
+			"spruceWoodland142",
+			"spruceWoodland143",
+			"widePath144", 
+			"endPath145",
+			"forestWoodland146",
+			"forestWoodland147",
+			"forestWoodland148",
+			"forestWoodland149",
+			"smallClearing150", 
+			"frontOfMansion151",
+			"smallBedroom152",
+			"mainHallway153",
+			"masterBedroom154", 
+			"alongACorridor155",
+			"stoneArchway156",
+			"middleCorridor157",
+			"inTheKitchen158",
+			"guestBathroom159",
+			"smallBedroom160",
+			"livingRoom161", 
+			"pantry162",
+			"smallToolshed163",
+			"smallGarden164",
+			"outdoorPatio165",
+			"lawn166",
+			"stoneFountain167",
+			"smallGarden168",
+			"lawn169",
+			"lawn170",
+			"oliveTree171",
+			"shindenVilla172",
+			"narrowBridge173",
+			"narrowBridge174",
+			"shallowPond175",
+			"westernPortico176",
+			"shallowPond177",
+			"shallowPond178",
+			"narrowBridge179",
+			"shallowPond180",
+			"shallowPond181",
+			"shallowPond182",
+			"grassySection183",
+			"eastOfVilla184",
+			"easternPortico185",
+			"easternPortico186",
+			"easternPortico187",
+			"pond188",
+			"islandOverlook189",
+			"southernHall190",
+			"southernHall191",
+			"hallwayTurn192",
+			"insideShinden193",
+			"insideShinden194",
+			"smallRoom195",
+			"southernHall196",
+			"southernHall197",
+			"appleOrchard198",
+			"vastCavern199",
+			"twistingPassageway200",
+			"twistingPassageway201",
+			"narrowPassage202",
+			"smallTunnel203",
+			"smallKeep204",
+			"room205isNotPresent",
+			"darkTunnel206",
+			"darkTunnel207",
+			"largeRock208",
+			"magicalPool209",
+			"smallWaterfall210",
+			"secretTunnel211",
+			"secretTunnel212",
+			"darkTunnel213",
+			"darkTunnel214",
+			"darkTunnel215",
+			"darkTunnel216",
+			"darkTunnel217",
+			"darkTunnel218",
+			"darkTunnel219",	
+			"darkTunnel220",			
+			"darkTunnel221",
+			"sacredKeep222",
+			"topAppleTree223"
+		];
+
+begin makelinks;
+
+	for( mov( 0, ecx ); ecx <= 223; inc( ecx )) do
+
+		stdout.put	  
+		( 
+			stdio.tab, 
+			"links" nl,
+			stdio.tab, 
+			"(" nl,
+			stdio.tab, 
+			stdio.tab, 
+			"rooms[r_",
+			roomnames[ecx*4],
+			"], "
+			nl
+		);
+		for( mov(0, edx); edx < 6; inc( edx )) do
+
+			intmul( 6, ecx, ebx );
+			add( edx, ebx );
+			mov( map[ ebx*4 ], ebx );
+			stdout.put( stdio.tab, stdio.tab );
+			if( ebx = 0 ) then
+
+				stdout.put( room, "NULL" );
+
+			else
+
+				stdout.put( room, "rooms[r_", roomnames[ ebx*4 ],"]" );
+
+			endif;
+			if( edx < 5 ) then 
+				stdout.put( "," );
+			endif;
+			stdout.newln();
+		
+		endfor;
+		stdout.put( stdio.tab, ");" nl nl );
+
+	endfor;
+
+end makelinks;

@@ -1,0 +1,254 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <TITLE>Getting Started</TITLE></HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" BGCOLOR="#FFFFFF">
+
+<!----------------------  TITLE  -------------------------->
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>
+<B><FONT FACE="Verdana" SIZE=+3>Getting Started</FONT></B>
+
+
+<!----------------------  Description  -------------------->
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>The Microsoft<SUP>&reg;</SUP> Windows<SUP>&reg;</SUP> Driver Development Kit (DDK) for Windows XP Service Pack 1 provides a development environment for the creation of Windows XP Service Pack 1 drivers. The DDK provides additional 
+driver-specific headers, libraries, sources, tools, and documentation that are used to develop drivers for 
+Windows XP Service Pack 1.</FONT>
+<P>
+
+<!-------------------- Legal Bits ---------------->
+<B><FONT FACE="Verdana" SIZE=+2>Legal Information</FONT></B>
+<P>
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=-1>This document is for informational purposes only. MICROSOFT
+MAKES NO WARRANTIES, EXPRESS OR IMPLIED, IN THIS DOCUMENT.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=-1>Microsoft may have patents, patent applications, trademarks,
+copyrights, or other intellectual property rights covering subject matter
+in this document. Except as expressly provided in any written license agreement
+from Microsoft, the furnishing of this document does not give you any license
+to these patents, trademarks, copyrights, or other intellectual property.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=-1>Information in this document is subject to change without
+notice and is provided for informational purposes only. The entire risk
+of the use or results of the use of this document remains with the user,
+and Microsoft Corporation makes no warranties, either express or implied.
+The names of companies, products, people, characters, and/or data mentioned
+herein are fictitious and are in no way intended to represent any real
+individual, company, product, or event, unless otherwise noted. Complying
+with all applicable copyright laws is the responsibility of the user. No
+part of this document may be reproduced or transmitted in any form or by
+any means, electronic or mechanical, for any purpose, without the express
+written permission of Microsoft Corporation.</FONT>
+	
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=-1>ActiveSync, ActiveX, BackOffice, Direct3D, DirectAnimation,
+DirectDraw, DirectInput, DirectMusic, DirectPlay, DirectShow, DirectSound,
+DirectX, MSDN, Microsoft, MS-DOS, Outlook, Visual C++, Win32, Windows, Windows NT, Windows XP 
+are either registered trademarks or trademarks of Microsoft
+Corporation in the United States and/or other countries. Other product
+and company names mentioned herein may be the trademarks of their respective
+owners.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=-1>&copy;2002 Microsoft Corporation.
+All rights reserved.</FONT>
+
+<BR>&nbsp;<BR>
+
+<!--------  Purpose ---------------->
+<B><FONT FACE="Verdana" SIZE=+2>Introduction</FONT></B>
+
+<P>
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>This document presents an overview of the DDK and provides essential 
+installation information for this driver development kit. Before installing the DDK, read through this document to determine whether or not to install optional DDK components and how to set up your systems for a trouble-free installation. This document contains the following topics:</FONT>
+<P>
+
+<!------------- ToC -------------->
+<UL>
+<LI><A HREF="install.htm#INSTALL"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Installing the DDK</FONT></A>
+<LI><A HREF="install.htm#DBG"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Installing the Debuggers</FONT></A>
+<LI><A HREF="install.htm#VERIFY"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Verifying DDK Installation</FONT></A>
+<LI><A HREF="install.htm#COMPILE64"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Compiling Your Driver for Win64</FONT></A>
+<LI><A HREF="install.htm#INFO"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Information on the Microsoft Web Site</FONT></A>
+<LI><A HREF="install.htm#NEWS"><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Late-Breaking News</FONT></A>
+</UL>
+
+<B><FONT FACE="Verdana" SIZE=+2>Please Read The Release Notes</FONT></B>
+
+<P>
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>There have been a number of changes to the DDK. Some of these changes may affect driver compatibility among versions of Windows.  As a result, after installing the DDK, it is more important than usual to read the release notes.  For your convenience, the release notes may be accessed from the Start menu (Start… Development Kits… Windows DDK… Help… Release Notes).</FONT>
+<P>
+
+<!------ Installing --->
+<P>
+<A NAME="INSTALL"></A><B><FONT FACE="Verdana" SIZE=+2>Installing the DDK</FONT></B>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>
+To install the Microsoft<SUP>&reg;</SUP> Windows<SUP>&reg;</SUP> Driver Development Kit for Windows XP Service Pack 1, you must be able to access a CD-ROM drive from Windows, either locally or through a network.</FONT>
+
+<P>
+
+<B><FONT FACE="Verdana" SIZE=+1>System Requirements</FONT></B><P>
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>To use this DDK on your <B>driver-development</B> machine, you will need:
+<P>
+<UL>
+<LI>Microsoft<SUP>&reg;</SUP> Windows&nbsp;XP Service Pack 1, Windows&nbsp;2000, Windows<SUP>&reg;</SUP> 98, Windows<SUP>&reg;</SUP> 98 SE, or
+Windows<SUP>&reg;</SUP> ME. If installing on Windows 98 Gold, IE 5.x must be installed before the setup program can be run.
+Installation on Windows&nbsp;NT<SUP>&reg;</SUP> 4.0 is not supported.
+
+<LI>CD-ROM drive or Internet access.
+<LI>At least 64MB RAM.  128MB of RAM or more is recommended.
+<LI>Up to 400MB hard-disk space for a full installation.  Significantly more space may be required to compile all samples; up to 850MB may be required.
+</UL></FONT>
+<BR><FONT FACE="Verdana, Arial,Times New Roman" SIZE=2>To use this DDK on your <B>driver-testing</B> machine, you will need:
+<P>
+<UL>
+<LI>Microsoft Windows XP Service Pack 1.
+<LI>At least 128MB RAM if you are running a <I>free</I> or retail build of Windows XP Service Pack 1, 256MB RAM if running a <I>checked</I> build.  In some cases, checked builds may require 128MB of RAM, depending on the particular drivers loaded on the machine.
+<LI>A second machine that is capable of running Windows&nbsp;2000 or Windows XP Service Pack 1 for kernel debugging of your under-development drivers.  This machine can be your driver-development system if desired.
+</UL>
+</FONT>
+
+
+
+<!-------------- DDK Install ------------->
+<P><B><FONT FACE="Verdana" SIZE=+1>DDK Installation</FONT></B>
+<P>
+<P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="90%">
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>You must have Administrator privileges to correctly install the DDK.<P></FONT></TD></TR>
+
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>When installing the Windows DDK, you must choose a path with no embedded spaces.  Particular DDK buld components may fail to function correctly when installed in paths with embedded spaces.<P></FONT></TD></TR>
+
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Do <B>not</B> install this DDK over previous versions of this or any other DDK.
+Improper installation of the DDK can cause the use of old and incorrect files, which will lead to unreliable
+results in any drivers you develop.<P></FONT></TD></TR>
+
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>The installation path and icon placement have been changed. The default
+installation path is now x:\WinDDK\Kit &ltBldNum&gt. The icons are now placed at <I>Programs\Development Kits\DDK Kit &ltBldNum&gt</I>.
+<P></FONT></TD></TR></TABLE>
+
+Perform the following steps:
+<p>
+<OL>
+<LI>Execute the <A HREF="setup.exe">setup.exe</A> file from the CD-ROM.
+<LI>If installing on a Windows 9x, Windows NT, or Windows 2000 computer, answer 'Run the program from it's current location' to the question,which asks "What would you like to do with this file?" <b>OR</b>  If installing on a Windows XP computer, answer 'Open' to the question, which asks "Would you like to open the file or save it to your computer?"
+<LI>If a security warning pop-up appears, which indicates that an 'Authenticode signature not found' error, then click the 'Yes' button
+<LI>Click the <b>Next</b> button to install the Windows DDK.
+<LI>Read and accept the Software License Agreement. 
+<LI>Click the <B>Next</B> button to proceed.
+<LI>Select the installation path (it is suggested to use the path that is displayed).
+<LI>Click the <B>Next</B> button to proceed.
+<LI>Choose the components that you would like to install.
+<LI>Click the <B>Next</B> button to proceed.
+<LI>Confirm that you want to install the DDK by verifying that the installation path is correct. 
+<LI>Click the <B>Next</B> button to install the kit.</OL>
+<P>The <I>setenv.bat</I> batch file sets the necessary environment variables to build free or checked driver versions. To run <I>setenv.bat</I>, start either a free or checked console
+window from the Programs/Development Kits/DDK Kit &ltBldNum&gt/Build Environments menu. Drivers can then be built by running
+the BUILD utility. Invoking <B>build</B> <B>-cZ</B> at the command-line
+prompt compiles and links all drivers in the source tree of the current
+subdirectory.
+<P>
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="90%">
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT>
+<FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>The build environment is set from the icons
+for a free or checked build. If the build environment is not created correctly,
+you can manually set the build environment by going to the %NTDDK%\bin
+directory and typing <I>setenv.bat DDK_DIRECTORY free/checked</I>, where
+<I>DDK_DIRECTORY</I> is the full path of the location of the Windows&nbsp;DDK.</FONT></TD></TR></TABLE>
+<P>
+
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="90%">
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>On machines with large hard disk sectors such as "FAT 16" file systems, the setup program may miscalculate the amount of space needed to attempt an installation even though the space is not available.<P></FONT></TD></TR></TABLE>
+
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="90%">
+<TR VALIGN=TOP><TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2><B>Note:&nbsp;&nbsp;&nbsp;</B></FONT></TD>
+<TD ALIGN=LEFT><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>There are a number of functions exported in ntoskrnl.lib in Windows XP Service Pack 1 that were not in Windows 2000.  When building binaries compatible for both Windows XP Service Pack 1 and Windows 2000 operating systems, one option is if the functionality is expected in another .lib (i.e. libcntpr.lib), list it in the lib path prior to ntoskrnl.lib.<P></FONT></TD></TR></TABLE>
+
+<!-------------- Debugger Install ----------------------->
+<P><A NAME="DBG"></A><B><FONT FACE="Verdana" SIZE=+2>Installing the Debuggers</FONT></B></P>
+				
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>The Debugging Tools for Windows package features WinDbg, a powerful debugger with a graphical interface that can debug both user-mode and kernel-mode code. This package also includes the debuggers KD, NTSD, and CDB,
+and many additional tools. The documentation in this package describes the use of these debuggers and includes tips for user-mode and kernel-mode debugging.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>Debugging Tools for Windows is available in 32-bit and 64-bit
+versions. The 32-bit version is appropriate for most users. However, if you are
+planning on debugging an application on an IA-64 based processor, you should
+select the 64-bit version. The 64-bit version can be installed only on 64-bit
+versions of Windows.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>These debugging tools require approximately 21 MB of hard disk space.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>To obtain the most current version of Debugging Tools for Windows,
+see&nbsp; <a href="http://www.microsoft.com/ddk/debugging">Microsoft Debugging Tools</A>.</FONT>
+
+<P><FONT FACE="Verdana, Arial, Times New Roman" SIZE=2>If you cannot install Debugging Tools for Windows from this internet
+site, then use one of the following links:</FONT>
+
+<p>
+<OL>
+<LI><a href="./Debuggers/setup_x86.exe">Install 32-bit Debugging Tools for Windows</a> (Required for most customers)
+<LI><a href="./Debuggers/setup_ia64.exe">Install 64-bit Debugging Tools for Windows</a>
+</OL>
+
+<P><A NAME="DBG"></A><B><FONT FACE="Verdana"><H4>Symbols</H4></FONT></B></P>
+<P>The new linker strips all debug information from the SYS file and moves the data into a PDB file.  The PDB file should be copied to the symbols directory for debugging.  Copying the SYS file will not provide debugging information.</p>
+
+<BR><BR>
+
+<!-------------- Verifying Your Installation ------------>
+<P><A NAME="VERIFY"></A>
+<B><FONT FACE="Verdana" SIZE=+2>Verifying DDK Installation</FONT></B>
+
+<P>Start either the <I>free</I> or <I>checked</I> build environment by choosing the appropriate icon from the
+ Windows&reg; DDK menu. 
+
+<P>Verify your installation of the Windows DDK by running <B>build</B> <B>-cZ</B> 
+from the %NTDDK%\src
+directory to build the complete set of installed driver sources. This can
+take more than 30 minutes to complete, depending on which DDK components
+are installed.
+
+<!------------ 64-Bit ----------------------->
+<P>
+<A NAME="COMPILE64"></A>
+<B><FONT FACE="Verdana" SIZE=+2>Compiling Your Driver for Win64</FONT></B>
+<P>Also included in this release of the DDK is a <b>complete</b> 64-bit build environment for the upcoming Microsoft<SUP>&reg;</SUP> Win64&#153; systems.
+<P>To compile your driver with the 64-bit compiler, choose the <B>Checked 64 Bit Build Environment</B> or <B>Free 64 Bit Build Environment</B> icon in <I>Programs\Development Kits\Kit &ltBldNum&gt\Build Environment</I>.  This will open the correct environment for the 64-bit compiler. 
+
+<P>
+
+
+<!--- Information @ MicroSoft.com ------>
+<A NAME="INFO"><B><FONT FACE="Verdana" SIZE=+2>Microsoft&reg; Web Sites containing additional DDK Information</FONT></B></A>
+<P>
+The <B>Driver Development Kit Web Site:</B> <A HREF="http://www.microsoft.com/ddk/">http://www.microsoft.com/ddk</A>.
+<P>
+
+<P>The <B>Hardware Development Web Site:</B> <A HREF="http://www.microsoft.com/hwdev">http://www.microsoft.com/hwdev</A>
+
+<P>The <B>Hardware Testing Web Site - WHQL:</B> <A HREF="http://www.microsoft.com/hwdq/hwtest/default.asp">http://www.microsoft.com/hwdq/hwtest</A>
+
+<P><B>MSDN&trade;</B>, the <B>Microsoft Developers Network:</B> <A HREF="http://msdn.microsoft.com/">http://msdn.microsoft.com</A>
+
+
+<P>
+<!-------------------- Late Breaking News  -------------->
+
+<A NAME="NEWS"></A><P>
+
+
+<B><FONT FACE="Verdana"><FONT SIZE=+2>Late-Breaking News</FONT></FONT></B>
+<P>
+
+<FONT FACE="Verdana, Arial,Times New Roman" SIZE=2><P>For  release notes and late-breaking news, please see the Release Notes file in the root directory. Setup.exe will copy the Release Notes file from the CD to the root directory of the DDK installation.</A></FONT>
+<BR>&nbsp;<BR>
+</FONT>
+</BODY>
+</HTML>

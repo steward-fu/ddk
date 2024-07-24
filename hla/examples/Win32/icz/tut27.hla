@@ -1,0 +1,152 @@
+//Iczelion's tutorial #27:Tooltip Controll
+program aTooltip;
+
+#include("w.hhf")
+
+readonly
+	ToolTipsClassName : string := "Tooltips_class32";
+	MainDialogText1 : string := "This is the upper left area of the dialog";
+	MainDialogText2 : string := "This is the upper right area of the dialog";
+	MainDialogText3 : string := "This is the lower left area of the dialog";
+	MainDialogText4 : string := "This is the lower right area of the dialog";
+	
+static
+	hInstance : dword;
+	hwndTool : dword;
+    
+const 
+  	IDD_MAINDLG     :=  101;
+
+procedure EnumChild( hwndChild:dword;lParam:dword);@stdcall; 
+static
+	buffer : byte[256];
+
+begin EnumChild;
+    push(edi);
+	mov(lParam, edi);
+	mov( hwndChild,(type w.TOOLINFO [edi]).uId);
+	or(w.TTF_IDISHWND, (type w.TOOLINFO [edi]).uFlags);
+	w.GetWindowText(hwndChild, &buffer,255);
+	mov(&buffer, (type w.TOOLINFO [edi]).lpszText);
+	w.SendMessage(hwndTool,w.TTM_ADDTOOL,NULL,edi);
+	pop(edi);
+end EnumChild;
+
+procedure SetDlgToolArea(hDlg:DWORD;lpti:DWORD;lpText:DWORD;id:DWORD;lprect:DWORD);
+begin SetDlgToolArea;
+	mov(lpti, edi);
+	mov( lprect, esi);
+	if(id = 0) then
+		mov( 0, (type w.TOOLINFO [edi])._rect.left );
+		mov(0, (type w.TOOLINFO [edi])._rect.top);
+		mov( (type w.RECT [esi]).right, eax);
+		sub( (type w.RECT [esi]).left, eax);
+		shr( 1,eax);
+		mov(eax, (type w.TOOLINFO [edi])._rect.right);
+		mov( (type w.RECT [esi]).bottom, eax);
+		sub( (type w.RECT [esi]).top, eax);
+		shr( 1, eax);
+		mov( eax, (type w.TOOLINFO [edi])._rect.bottom);
+	elseif(id = 1) then
+		mov( (type w.RECT [esi]).right,eax);
+		sub( (type w.RECT [esi]).left,eax);
+		shr( 1,eax);
+		inc( eax);
+		mov( eax, (type w.TOOLINFO [edi])._rect.left);
+		mov( 0, (type w.TOOLINFO [edi])._rect.top);
+		mov( (type w.RECT [esi]).right,eax);
+		sub( (type w.RECT [esi]).left,eax);
+		mov( eax,(type w.TOOLINFO [edi])._rect.right);
+		mov( (type w.RECT [esi]).bottom,eax);
+		sub( (type w.RECT [esi]).top,eax);
+		mov( eax,(type w.TOOLINFO [edi])._rect.bottom);
+	elseif(id = 2) then
+		mov( 0,(type w.TOOLINFO [edi])._rect.left);
+		mov( (type w.RECT [esi]).bottom,eax);
+		sub( (type w.RECT [esi]).top,eax);
+		shr( 1,eax);
+		inc( eax);
+		mov( eax,(type w.TOOLINFO [edi])._rect.top);
+		mov( (type w.RECT [esi]).right,eax);
+		sub( (type w.RECT [esi]).left,eax);
+		shr( 1,eax);
+		mov( eax, (type w.TOOLINFO [edi])._rect.right);
+		mov( (type w.RECT [esi]).bottom,eax);
+		sub( (type w.RECT [esi]).top,eax);
+		mov( eax,(type w.TOOLINFO [edi])._rect.bottom);
+	else
+		mov( (type w.RECT [esi]).right,eax);
+		sub( (type w.RECT [esi]).left,eax);
+		shr( 1,eax);
+		inc( eax);
+		mov( eax,(type w.TOOLINFO [edi])._rect.left);
+		mov( (type w.RECT [esi]).bottom,eax);
+		sub((type w.RECT [esi]).top,eax);
+		shr( 1,eax);
+		inc( eax);
+		mov( eax, (type w.TOOLINFO [edi])._rect.top);
+		mov( (type w.RECT [esi]).right,eax);
+		sub( (type w.RECT [esi]).left,eax);
+		mov( eax, (type w.TOOLINFO [edi])._rect.right);
+		mov( (type w.RECT [esi]).bottom,eax);
+		sub( (type w.RECT [esi]).top,eax);
+		mov(eax,(type w.TOOLINFO [edi])._rect.bottom);
+	endif;
+	mov( lpText,(type w.TOOLINFO [edi]).lpszText);
+	w.SendMessage(hwndTool,w.TTM_ADDTOOL,NULL,lpti);
+end SetDlgToolArea;
+
+procedure DlgProc(hDlg:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	ti : w.TOOLINFO;
+	id : dword;
+	rect : w.RECT;
+
+begin DlgProc;
+    if(uMsg = w.WM_INITDIALOG) then
+		w.InitCommonControls();
+		w.CreateWindowEx(NULL, ToolTipsClassName,NULL,
+	           w.TTS_ALWAYSTIP,w.CW_USEDEFAULT,
+	           w.CW_USEDEFAULT,w.CW_USEDEFAULT,w.CW_USEDEFAULT,NULL,NULL,
+	           hInstance,NULL);
+			mov(eax, hwndTool);
+			mov( 0, id );
+			mov(@size( w.TOOLINFO),ti.cbSize);
+			mov(w.TTF_SUBCLASS, ti.uFlags);
+			mov(hDlg,ti.hWnd);
+		w.GetWindowRect(hDlg, &rect);
+		SetDlgToolArea(hDlg, &ti, MainDialogText1,id, &rect);
+			inc(id);
+		SetDlgToolArea(hDlg,&ti,  MainDialogText2,id, &rect);
+			inc( id);
+		SetDlgToolArea(hDlg, &ti,  MainDialogText3,id, & rect);
+			inc(id);
+		SetDlgToolArea(hDlg, &ti, MainDialogText4,id, &rect);
+		w.EnumChildWindows(hDlg, &EnumChild, &ti);
+    
+    elseif(uMsg = w.WM_CLOSE) then 
+    	w.EndDialog(hDlg,NULL);
+    else
+        mov(false,eax);
+        exit DlgProc;
+    endif;
+
+	mov(true,eax);
+end DlgProc;
+	
+	
+begin aTooltip;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+    w.DialogBoxParam( hInstance, val IDD_MAINDLG , NULL, &DlgProc, NULL );
+	w.ExitProcess(eax);
+end aTooltip;
+
+
+	
+
+
+
+	
+

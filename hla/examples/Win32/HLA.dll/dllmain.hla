@@ -1,0 +1,27 @@
+// Sample program that calls routines in dll.dll.
+//
+//	Compile this with the command line option:
+//
+//		hla dllmain dll.lib
+//
+//  Of course, you must build the DLL first.
+
+program callDLL;
+#include( "stdlib.hhf" );
+
+
+procedure dllFunc1( dw:dword ); @stdcall; @external( "_dllFunc1@4" );
+procedure dllFunc2( dw:dword ); @stdcall; @external( "_dllFunc2@4" );
+	 
+
+begin callDLL;
+
+	xor( eax, eax );
+	dllFunc1( 12345 );
+	stdout.put( "After dllFunc1, eax = ", (type uns32 eax ), nl );
+
+	dllFunc2( 100 );
+	stdout.put( "After dllFunc2, eax = ", (type uns32 eax ), nl );
+
+
+end callDLL;

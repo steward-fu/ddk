@@ -1,0 +1,73 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "excepts.hhf" );
+
+
+	
+
+
+// getc-
+//
+//	Returns, in al, the character at the specified cursor position.
+
+procedure win32cons.getc( y:dword; x:dword ); @nodisplay;
+var
+	charsRead:	dword;
+	xyposn:		win.COORD;
+	csbi: 		win.CONSOLE_SCREEN_BUFFER_INFO;
+	theChar:	char;
+	
+begin getc;
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+
+	// Verify that the coordinates are within range:
+	
+	win32cons.info( csbi );
+	if
+	(#{
+		mov( y, eax );
+		cmp( ax, csbi.dwSize.Y );
+		jae true;
+		mov( x, eax );
+		cmp( ax, csbi.dwSize.X );
+		jb false;
+	}#) then
+		raise( ex.ValueOutOfRange );
+		
+	endif;
+
+
+	mov( y, eax );
+	mov( ax, xyposn.Y );
+	mov( x, eax );
+	mov( ax, xyposn.X );
+	win.ReadConsoleOutputCharacter
+	( 
+		charsRead, 
+		xyposn, 
+		1, 
+		theChar, 
+		stdout.handle() 
+	);
+	
+	pop( edi );
+	pop( esi );
+	pop( edx );
+	pop( ecx );
+	pop( ebx );
+	movzx( theChar, eax );	
+		
+end getc; 
+
+
+
+
+
+
+end consoleUnit;

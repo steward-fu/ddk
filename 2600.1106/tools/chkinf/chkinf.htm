@@ -1,0 +1,370 @@
+<html>
+
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0">
+<title>ChkINF</title>
+</head>
+
+<body LINK="#0000ff">
+<font FACE="Verdana" SIZE="5">
+
+<h2>INF File Syntax Checker</h2>
+</font><font FACE="Verdana" SIZE="2">
+
+<p><span style="color:#FF0000;font-size:10pt;font-family:Arial">[This is preliminary
+documentation and subject to change.]</span></p>
+
+<h3>SUMMARY</h3>
+
+ChkINF is a Perl script
+that checks the structure and syntax of Microsoft® Windows® 2000 and Windows® XP driver
+.inf files. Results are presented in HTML format, and include a list of the
+errors and warnings detected in each .inf file, with each error and warning
+shown next to the errant .inf file entry. Please note the Limitations section
+below. Note that ChkINF does not support Windows 98 or Windows Millennium .inf files.<p>
+
+The tool includes support
+for all .inf sections and directives that apply to all classes of devices.
+ChkINF includes specific device class support for the following device classes:
+
+<blockquote>
+  <p>1394 Host Bus Controllers (class = 1394)</p>
+  <p>1394 Devices that support the 61883 protocol (class = 61883)</p>
+  <p>1394 Devices that support the AVC protocol (class = AVC)</p>
+  <p>Battery Devices (class = Battery)</p>
+  <p>Bluetooth Devices (class = Bluetooth)</p>
+  <p>CD-ROM Drivers (class = CDROM)</p>
+  <p>Disk Drives (class = DiskDrive)</p>
+  <p>Display Adapters (class = Display)</p>
+  <p>Dot4 Devices (class = Dot4)</p>
+  <p>Dot4 Printers (class = Dot4Print)</p>
+  <p>Floppy Disk Controllers (class = FDC)</p>
+  <p>Floppy Disk Drives (class = FloppyDisk)</p>
+  <p>Hard Disk Controllers (class = HDC)</p>
+  <p>Human Input Devices (class = HIDClass)</p>
+  <p>Imaging Devices (class = Image)</p>
+  <p>IrDA Devices (class = Infrared) </p>
+  <p>Keyboards (class = Keyboard)</p>
+  <p>Medium Changers (class = MediumChanger)</p>
+  <p>Memory Technology Drivers (class = MTD)</p>
+  <p>Mice (class = Mouse) </p>
+  <p>Modems (class = Modem) </p>
+  <p>Monitors (class = Monitor) </p>
+  <p>Multifunction Devices (class = Multifunction) </p>
+  <p>Multimedia (class = Media)</p>
+  <p>Multi-port Serial Adapters (class = MultiportSerial) </p>
+  <p>Network Adapters (class = Net) </p>
+  <p>Network Clients (class = NetClient)</p>
+  <p>Network Service (class = NetService) </p>
+  <p>Network Transport (class = NetTrans) </p>
+  <p>PCMCIA Adapters (class = PCMCIA) </p>
+  <p>PnP Printers (class = PnPPrinters) </p>
+  <p>Ports - COM &amp; LPT ports (class = Ports) </p>
+  <p>Printers (class = Printer) </p>
+  <p>Processors (class = Processor) </p>
+  <p>1394 Devices that support the SBP2 protocol (class = SBP2)</p>
+  <p>SCSI and RAID Controllers (class = SCSIAdapter) </p>
+  <p>Security Accelerator Devices (class = SecurityAccelerator) </p>
+  <p>Smart Card Readers (class = SmartCardReader) </p>
+  <p>Storage Volumes (class = Volume) </p>
+  <p>System Devices (class = System) </p>
+  <p>Tape Drives (class = TapeDrive) </p>
+  <p>USB (class = USB) </p>
+  <p>Windows CE USB Active Sync Devices (class = WCEUSBS)</p>
+</blockquote>
+
+<p>ChkINF now includes checking for .inf files used for installing file system filter drivers. ChkINF includes specific class support for the following classes of file system filter drivers:
+
+<blockquote>
+<p>Activity Monitor File System Filters </p>
+<p>Anti-Virus File System Filters </p>
+<p>CFS Meta Data Server File System Filters </p>
+<p>Compression File System Filters </p>
+<p>Content Screener File System Filters </p>
+<p>Continuous Backup File System Filters </p>
+<p>Copy Protection File System Filters </p>
+<p>Encryption File System Filters </p>
+<p>File System Filters </p>
+<p>HSM File System Filters </p>
+<p>Open File Backup File System Filters </p>
+<p>Physical Quota Management File System Filters </p>
+<p>Quota Management File System Filters </p>
+<p>Replication File System Filters </p>
+<p>Security Enhancer File System Filters </p>
+<p>Undelete File System Filters </p>
+</blockquote>
+
+<p>For more information on file system filter drivers, see the Installable File System (IFS) Kit. </p>
+
+
+<p>ChkINF has not been extensively tested. Review your results carefully. </p>
+
+<h3>RUNNING THE TOOL</h3>
+
+<p><b>Note:</b>  Because ChkINF is a Perl script,
+in order to use the tool you will need to obtain a Perl interpreter. ChkINF
+requires a Perl interpreter that is Version 5.003_07 or greater. ChkINF should
+work with any version of Perl 5.0 or greater, but has not been tested with any
+versions previous to 5.003_07.</p>
+
+<p>ChkINF has been tested
+with the following Perl interpreters: 
+ </p>
+
+<blockquote>
+  <p>GNU Perl 5.005_02 compiled for Win32</p>
+</blockquote>
+
+<blockquote>
+  <p>GNU Perl 5.6.0 compiled for Win32</p>
+</blockquote>
+
+<blockquote>
+  <p>Perl for Win32 5.003_07 from ActiveWare Internet Corp. </p>
+</blockquote>
+
+<blockquote>
+  <p>ActivePerl 5.6.1.631 from ActiveState (<a href="http://www.activestate.com">http://www.activestate.com</a>) </p>
+</blockquote>
+
+<p>Microsoft neither endorses nor recommends any specific Perl interpreters.</p>
+
+<h4>Usage</h4>
+
+<p>ChkINF is located in the &lt;DDKRoot&gt;\Tools\Chkinf subdirectory, and should be
+executed from the Command Prompt.</p>
+
+<p>A batch file, <I>ChkINF.bat</I>, is provided for smooth execution. ChkINF takes the following
+arguments: </p>
+<font FACE="Courier" SIZE="2">
+
+<p><b>chkinf</b> <i>FileList</i> [<b>/L</b> <i>LogFile</i>] [<b>/B</b>] [<b>LO</b>] [<b>/DC</b> <i>Options</i>]</p>
+
+<p><b>Parameters</b></p>
+<blockquote>
+<p><i>FileList</i></p>
+<blockquote>
+<p>Specifies the files to be used. This can be the name of a single <i>.inf</i> file or a directory name. If a directory is specified, ChkINF will look for all <i>.inf</i> files in this directory. Wildcards may be used (for example, <b>net*.inf</b>). ChkINF will first expand all wildcards, and then process all applicable <i>.inf</i> files.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p><b>/L</b> <i>LogFile</i></p>
+<blockquote>
+<p>Specifies the name of the log file to be created.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p><b>/B</b></p>
+<blockquote>
+<p>Causes the default browser to be launched. ChkINF results will be displayed in this browser.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p><b>/LO</b></p>
+<blockquote>
+<p>Causes ChkINF to compare all copied files (CopyFiles) with <i>Layout.inf</i>.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p><b>/DC</b> <i>Options</i></p>	
+<blockquote>
+<p>Specifies the device class-specific options that ChkINF should use when checking <i>.inf</i> files. At present the only supported option is <b>NOFAX</b>, which instructs ChkINF not to check any Fax keys present in modem <i>.inf</i> files.</p>
+</blockquote>
+</blockquote>
+</font>
+
+<h4>Output</h4>
+
+<p>ChkINF produces three types of files at the end of the checking process:</p>
+
+<blockquote>
+  <p>Summary.htm: A single HTML file that lists all of the one or more .inf files that were
+  checked, along with the number of errors and warnings detected in each one. The name of
+  each .inf file is linked to the respective .htm file described below.</p>
+</blockquote>
+
+<blockquote>
+  <p><i>NameofINFfile</i>.htm: Results file produced for each checked .inf file.</p>
+</blockquote>
+
+<blockquote>
+  <p>An optional NT Log file may be created (see Running the Tool). </p>
+</blockquote>
+
+<p>NameofINFfile.htm includes the following:</p>
+
+<blockquote>
+  <p>Errors: A list of the errors found in the .inf file, along with the error message and
+  the line in the .inf file where it was detected. Each error includes a link to its
+  location in the Annotated INF (see below).</p>
+</blockquote>
+
+<blockquote>
+  <p>Warnings: A list of the warnings detected in the .inf file, along with the warning
+  message and the line in the .inf file where it was detected. Each warning includes a link
+  to its location in the Annotated INF (see below).</p>
+</blockquote>
+
+<blockquote>
+  <p>Sections included from other infs: A list of the sections included from other .inf
+  files. Each section listed includes a link to its location in the Sections included from
+  other infs section (see below). This item is omitted if the .inf being checked did not
+  include any sections from other .inf files.</p>
+</blockquote>
+
+<blockquote>
+  <p>Annotated INF: The complete source for the .inf file, with the warning and error
+  messages displayed adjacent to the line where the warning or error was detected.</p>
+</blockquote>
+
+<blockquote>
+  <p>Sections included from other infs: The complete source for the included sections, with
+  warning and error messages displayed adjacent to the line where the warning or error was
+  detected. This section is omitted if the .inf file being checked did not include any sections
+  from other .inf files. </p>
+</blockquote>
+
+<p>These files are saved into the subdirectory Htm, located off the directory from which
+ChkINF is invoked. </p>
+
+<h3>LIMITATIONS</h3>
+
+<p>ChkINF does not support Windows 98 or Windows Millennium 
+.inf files. ChkINF will not accurately check .inf structure and syntax that is
+specific to Windows 98 or Windows Millennium .inf files. </p>
+
+<p>ChkINF has been tested with the following Perl interpreters: </p>
+
+<blockquote>
+  <p>GNU Perl 5.005_02 compiled for Win32</p>
+</blockquote>
+
+<blockquote>
+  <p>GNU Perl 5.6.0 compiled for Win32</p>
+</blockquote>
+
+<blockquote>
+  <p>Perl for Win32 5.003_07 from ActiveWare Internet Corp. </p>
+</blockquote>
+
+<blockquote>
+  <p>ActivePerl 5.6.1.631 from ActiveState (<a href="http://www.activestate.com">http://www.activestate.com</a>) </p>
+</blockquote>
+
+<p>ChkINF now includes support for .inf files saved in Unicode format, including Unicode Big Endian.</p>
+
+<p> ChkINF must be executed on the target platform in order to accurately check sections 
+included from other .inf files via Include and Needs directives. </p>
+
+<p> ChkINF warns for any sections that are not referenced by a directive
+elsewhere in the .inf file. This is a change from previous versions of the tool,
+which reported errors for un-referenced sections. </p>
+
+<p> ChkINF does not check for all relevant Registry keys set by an .inf file. An .inf file that passes
+with no errors may not function correctly. </p>
+
+<p> ChkINF incorrectly reports an error if a single named service uses different binary names on the x86 and IA64 platforms.
+
+<h3>CODE TOUR</h3>
+
+<h4>File Manifest</h4>
+</font><font FACE="Courier" SIZE="3">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=0>
+<TR><TD><u>File</u></TD><TD><u>Description<u></TD></TR>
+<TR><TD><I>ChkInf.bat</I></TD><TD>     Batch file for smooth execution. (See Running the Tool.)</TD></TR>
+<TR><TD><I>ChkInf.htm</I></TD><TD>     ChkINF readme (this file). </TD></TR>
+<TR><TD><I>ChkInf.pm</I></TD><TD>      Main module. </TD></TR>
+<TR><TD><I>InfFile.pm</I></TD><TD>      ChkINF internal support module. </TD></TR>
+<TR><TD><I>InfSection.pm</I></TD><TD>      ChkINF internal support module. </TD></TR>
+<TR><TD><I>SmartGlob.pm</I></TD><TD>       ChkINF internal support module. </TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+
+<TR><TD><i>1394.pm</i></TD><TD>        1394 Host Bus Controllers device class specific module.</TD></TR>
+<TR><TD><i>61883.pm</i></TD><TD>        1394 devices that support the 61883 protocol device class specific module.</TD></TR>
+<TR><TD><i>AVC.pm</i></TD><TD>        1394 devices that support the AVC protocol device class specific module.</TD></TR>
+<TR><TD><i>Battery.pm</i></TD><TD>     Battery device class specific module.</TD></TR>
+<TR><TD><i>Bluetooth.pm</i></TD><TD>     Bluetooth class specific module.</TD></TR>
+<TR><TD><i>CDROM.pm</i></TD><TD>       CD-ROM device class specific module.</TD></TR>
+<TR><TD><i>DiskDrive.pm</i></TD><TD>   Disk Drive device class specific module.</TD></TR>
+<TR><TD><I>Display.pm</I></TD><TD>     Display device class specific module.</TD></TR>
+<TR><TD><I>Dot4.pm</I></TD><TD>		Dot4 device class specific module.</TD><TR>
+<TR><TD><i>Dot4Print.pm</i></TD><TD>        Dot4 printer device class specific module.</TD></TR>
+<TR><TD><I>FaxReg.pm</I></TD><TD>      Modem device class specific sub-module.</TD></TR>
+<TR><TD><i>FDC.pm</i></TD><TD>         Floppy Disk Controller device class specific module.</TD></TR>
+<TR><TD><i>FloppyDisk.pm</i></TD><TD>  Floppy Disk Drives device class specific module.</TD></TR>
+<TR><TD><I>Generic.pm</I></TD><TD>     &quot;Generic&quot; module for devices for which a device class specific module does not yet exist. </TD></TR>
+<TR><TD><i>HDC.pm</i></TD><TD>         Hard Disk Controllers device class specific module.</TD></TR>
+<TR><TD><i>HIDClass.pm</i></TD><TD>    Human Input Device device class specific module.</TD></TR>
+<TR><TD><I>Image.pm</I></TD><TD>       Image device class specific module. </TD></TR>
+<TR><TD><I>Infrared.pm</I></TD><TD>    Infrared (IrDA) device class specific module.</TD></TR>
+<TR><TD><i>Keyboard.pm</i></TD><TD>  Keyboard device class specific module.</TD></TR>
+<TR><TD><i>Media.pm</i></TD><TD>  	Multimedia device class specific module.</TD></TR>
+<TR><TD><i>MediumChanger.pm</i></TD><TD>  Medium Changers device class specific module.</TD></TR>
+<TR><TD><I>Modem.pm</I></TD><TD>       Modem device class specific module. </TD></TR>
+<TR><TD><I>Monitor.pm</I></TD><TD>     Monitor device class specific module. </TD></TR>
+<TR><TD><i>Mouse.pm</i></TD><TD>  Mouse device class specific module.</TD></TR>
+<TR><TD><i>MTD.pm</i></TD><TD>         Memory Technology Driver device class specific module.</TD></TR>
+<TR><TD><i>Multifunction.pm</i></TD><TD>          Multifunction Devices device class specific module.</TD></TR>
+<TR><TD><i>MultiportSerial.pm</i>&nbsp;&nbsp;</TD><TD>Multi-port Serial Adapter device class specific module.</TD></TR>
+<TR><TD><I>Net.pm</I></TD><TD>         Net (network adapter) device class specific module.</TD></TR>
+<TR><TD><i>NetClient.pm</i></TD><TD>  Network Client device class specific module.</TD></TR>
+<TR><TD><i>NetService.pm</i></TD><TD>  Network Service device class specific module.</TD></TR>
+<TR><TD><i>NetTrans.pm</i></TD><TD>  Network Transport device class specific module.</TD></TR>
+<TR><TD><i>PCMCIA.pm</i></TD><TD>      PCMCIA Adapter device class specific module.</TD></TR>
+<TR><TD><i>PnPPrinters.pm</i></TD><TD>      PnP Printers device class specific module.</TD></TR>
+<TR><TD><i>Ports.pm</i></TD><TD>       Ports device class specific module.</TD></TR>
+<TR><TD><I>Printer.pm</I></TD><TD>       Printer device class specific module. </TD></TR>
+<TR><TD><I>Processor.pm</I></TD><TD>       Processor device class specific module. </TD></TR>
+<TR><TD><i>SBP2.pm</i></TD><TD>        1394 devices that support the SBP2 protocol device class specific module.</TD></TR>
+<TR><TD><i>SCSIAdapter.pm</i></TD><TD>        SCSI and RAID Controllers device class specific module.</TD></TR>
+<TR><TD><i>SecurityAccelerator.pm </i></TD><TD>       Security Accelerator device class specific module.</TD></TR>
+<TR><TD><i>SmartCardReader.pm</i></TD><TD>       Smart Card Readers device class specific module.</TD></TR>
+<TR><TD><i>System.pm</i></TD><TD>      System device class specific module.</TD></TR>
+<TR><TD><i>TapeDrive.pm</i></TD><TD>	Tape Drives device class specific module.</TD></TR>
+<TR><TD><i>USB.pm</i></TD><TD>         USB device class specific module.</TD></TR>
+<TR><TD><i>Volume.pm</i></TD><TD>      Storage Volumes device class specific module.</TD></TR>
+<TR><TD><i>WCEUSBS.pm</i></TD><TD>        Windows CE USB Active Sync device class specific module.</TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+<TR><TD><I></I></TD><TD></TD></TR>
+<TR><TD><I>ActivityMonitor.pm</I></TD><TD>      Activity Monitor file system filter module. </TD></TR>
+<TR><TD><I>AntiVirus.pm</I></TD><TD>      Anti-Virus file system filter module. </TD></TR>
+<TR><TD><I>CFSMetaDataSErver.pm</I></TD><TD>      CFS Meta Data Server file system filter module. </TD></TR>
+<TR><TD><I>Compression.pm</I></TD><TD>      Compression file system filter module. </TD></TR>
+<TR><TD><I>ContentScreener.pm</I></TD><TD>      Content Screener file system filter module. </TD></TR>
+<TR><TD><I>ContinuousBackup.pm</I></TD><TD>      Continuous Backup file system filter module. </TD></TR>
+<TR><TD><I>CopyProtection.pm</I></TD><TD>      Copy Protection file system filter module. </TD></TR>
+<TR><TD><I>Encryption.pm</I></TD><TD>      Encryption file system filter module. </TD></TR>
+<TR><TD><I>FSFilterSystem.pm</I></TD><TD>      File System Filters module. </TD></TR>
+<TR><TD><I>HSM.pm</I></TD><TD>      HSM file system filter module. </TD></TR>
+<TR><TD><I>Infrastructure.pm</I></TD><TD>      Infrastructure file system filter module. </TD></TR>
+<TR><TD><I>OpenFileBackup.pm</I></TD><TD>      Open File Backup file system filter module. </TD></TR>
+<TR><TD><I>PhysicalQuotaManagement.pm </I></TD><TD>   Physical Quota Management file system filter module. </TD></TR>
+<TR><TD><I>QuotaManagement.pm</I></TD><TD>       Quota Management file system filter module. </TD></TR>
+<TR><TD><I>Replication.pm</I></TD><TD>       Replication file system filter module. </TD></TR>
+<TR><TD><I>SecurityEnhancer.pm</I></TD><TD>       Security Enhancer file system filter module. </TD></TR>
+<TR><TD><I>Undelete.pm</I></TD><TD>       Undelete file system filter module. </TD></TR>
+</TABLE>
+<font FACE="Verdana" SIZE="2">
+
+<h3>FEEDBACK</h3>
+
+<p>We welcome your comments, problem reports and wish-list requests. Please submit them by pointing your Internet browser to <a href="http://www.microsoft.com/ddk">http://www.microsoft.com/ddk</a>.  </font></p>
+
+<p ALIGN="CENTER"><font FACE="Verdana" SIZE="2"><a HREF="#top">Top of page</a> </p>
+</font>
+
+<table CELLSPACING="0" BORDER="0" WIDTH="624">
+  <tr>
+    <td VALIGN="MIDDLE" BGCOLOR="#00ffff" HEIGHT="2"></td>
+  </tr>
+</table>
+<font FACE="MS Sans Serif" SIZE="1">
+
+<p>&copy; Microsoft Corporation 2001</font><font FACE="Verdana" SIZE="2"> </p>
+</font>
+</body>
+</html>

@@ -1,0 +1,105 @@
+// Iczelion's tutorial #26: Splash Screen
+program aSplashScreen;
+#include("w.hhf");
+	
+readonly
+	ClassName : string := "SplashDemoWinClass";
+	AppName : string := "Splash Screen Example";
+	Libname : string := "splash.dll";
+	
+storage
+	hInstance : dword;
+	CommandLine :string;
+	
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+begin WndProc;
+	
+	if(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_WINDOW + 1  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx (wc); 
+	
+	w.CreateWindowEx
+	(
+		NULL, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW, 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance, 
+		NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	w.ShowWindow ( hwnd, CmdShow );
+	w.UpdateWindow ( hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.TranslateMessage ( msg ) ; 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aSplashScreen;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.LoadLibrary(Libname);
+	if(eax <> NULL) then
+		w.FreeLibrary(eax);
+	endif;
+	w.GetCommandLine();
+		mov(eax,CommandLine);
+    WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aSplashScreen;
+
+	
+
+
+	
+
+
+
+	
+

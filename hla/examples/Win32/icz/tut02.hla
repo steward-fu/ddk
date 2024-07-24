@@ -1,0 +1,17 @@
+// Iczelion's tutorial #2: MessageBox
+
+program msgBoxDemo;
+#include( "w.hhf" )
+
+
+begin msgBoxDemo;
+
+	w.MessageBox
+	(
+		0,								// NULL hWnd if no owner.
+		"Iczelion's tutorial no.2",		// Window title.
+		"Win32/HLA Assembly is Great!",	// Text to display in window.
+		w.MB_OK						// Display an "OK" button.
+	);
+	        
+end msgBoxDemo;

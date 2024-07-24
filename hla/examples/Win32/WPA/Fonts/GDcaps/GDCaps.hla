@@ -1,0 +1,414 @@
+// GDCaps.hla:
+//
+// Displays the device capabilities for the video display device.
+// Inspired by "DEVCAPS1.C" by Charles Petzold
+
+program GDCaps;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "wpa.hhf" )		// "Windows Programming in Assembly" specific stuff.
+#include( "memory.hhf" )	// tstralloc is in here
+#include( "strings.hhf" )	// str.put is in here
+
+?@nodisplay := true;	  // Disable extra code generation in each procedure.
+?@nostackalign := true;   // Stacks are always aligned, no need for extra code.
+
+// dct_t and dcTemplate_c are used to maintain the device context data
+// structures throughout this program.  Each entry in the dcTemplate_c
+// array specifies one of the values we'll obtain from Windows via
+// a GetDeviceCap call.  The fieldName entry should contain the name
+// of the device capability field to get from Windows. This name must
+// exactly match the corresponding w.GetDeviceCap index value with the
+// exception of alphabetic case (it doesn't need to be all upper case)
+// and you don't need the leading "w."  The desc entry should contain
+// a short description of the field.
+//
+// This is the only place you'll need to modify this code to retrieve
+// and display any of the GetDeviceCap values.
+
+type
+	dct_t	:record
+		fieldName	:string;
+		desc		:string;
+	endrecord;
+
+const
+	dcTemplate_c :dct_t[] :=
+	[
+		dct_t:[ "HorzSize",		"Width in millimeters" ],
+		dct_t:[ "VertSize",		"Height in millimeters" ],
+		dct_t:[ "HorzRes",		"Width in pixels" ],
+		dct_t:[ "VertRes",		"Height in pixels" ],
+		dct_t:[ "BitsPixel",	"Color Bits/pixel" ],
+		dct_t:[ "Planes",		"Color planes" ],
+		dct_t:[ "NumBrushes",	"Device brushes" ],
+		dct_t:[ "NumPens",		"Device pens" ],
+		dct_t:[ "NumFonts",		"Device fonts" ],
+		dct_t:[ "NumColors",	"Device colors" ],
+		dct_t:[ "AspectX",		"X Aspect value" ],
+		dct_t:[ "AspectY",		"Y Aspect value" ],
+		dct_t:[ "AspectXY",		"Diag Aspect value" ],
+		dct_t:[ "LogPixelsX",	"Display pixels (horz)" ],
+		dct_t:[ "LogPixelsY",	"Display pixels (vert)" ],
+		dct_t:[ "SizePalette",	"Size of palette" ],
+		dct_t:[ "NumReserved",	"Reserved palette entries" ],
+		dct_t:[ "ColorRes",		"Color resolution" ]
+	];
+
+	DCfields_c := @elements( dcTemplate_c );	
+
+
+
+// The deviceCapRecord_t and deviceCapabilities_t types are record objects
+// that hold the values we're interested in obtaining from the 
+// w.GetDevCaps API function. The #for loop automatically constructs all 
+// the fields of the deviceCapRecord_t record from the dcTemplate_c constant 
+// above.
+
+type
+	deviceCapRecord_t :record
+
+		#for( i in dcTemplate_c )
+
+			@text( i.fieldName ) :int32;
+
+		#endfor
+		  
+	endrecord;
+
+	deviceCapabilities_t :union
+
+		fields		:deviceCapRecord_t;
+		elements	:int32[ DCfields_c ];
+
+	endunion;
+	
+
+
+
+static
+	hInstance:	dword;			// "Instance Handle" supplied by Windows.
+
+	wc:		w.WNDCLASSEX;		// Our "window class" data.
+	msg:	w.MSG;				// Windows messages go here.
+	hwnd:	dword;				// Handle to our window.
+
+	// Record that holds the device capabilities that this
+	// program uses:
+		
+	appDevCaps: deviceCapabilities_t;
+	
+readonly
+
+	ClassName:	string := "GDCapsWinClass";			// Window Class Name
+	AppCaption:	string := "Get Device Capabilities";// Caption for Window
+	
+
+
+
+// The following data type and DATA declaration
+// defines the message handlers for this program.
+
+type
+	MsgProc_t:	procedure( hwnd:dword; wParam:dword; lParam:dword );
+	
+	MsgProcPtr_t:
+		record
+			
+			MessageValue:	dword;
+			MessageHndlr:	MsgProc_t;
+			
+		endrecord;
+	
+	
+	
+// The dispatch table:
+//
+//	This table is where you add new messages and message handlers
+//	to the program.  Each entry in the table must be a tMsgProcPtr
+//	record containing two entries: the message value (a constant,
+//	typically one of the wm.***** constants found in windows.hhf)
+//	and a pointer to a "tMsgProc" procedure that will handle the
+//	message.
+ 
+readonly
+	
+	Dispatch:	MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, &QuitApplication	],
+			MsgProcPtr_t:[ w.WM_CREATE,  &Create			],
+			MsgProcPtr_t:[ w.WM_PAINT,   &Paint				],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+	
+	
+
+// Create-
+//
+//	This function reads an application-specific set of device capabilities
+// from Windows using the w.GetDevCaps API function.  This function stores
+// the device capabilities into the global appDevCaps record.
+
+procedure Create;
+var
+	hdc	:dword;
+
+begin Create;
+
+	GetDC( hwnd, hdc );
+
+		// Generate a sequence of calls to GetDeviceCaps that
+		// take the form:
+		//
+		//	GetDeviceCaps( w.FIELDNAMEINUPPERCASE );
+		//  mov( eax, appDevCaps.FieldName );
+		//
+		// Where the field names come from the deviceCapabilities_t type.
+
+		#for( field in dcTemplate_c )
+
+			GetDeviceCaps( @text( "w." + @uppercase( field.fieldName, 0 )) );
+			mov( eax, @text( "appDevCaps.fields." + field.fieldName ));
+
+		#endfor
+
+	ReleaseDC;
+
+end Create;
+
+
+
+
+// QuitApplication:
+//
+//	This procedure handles the "wm.Destroy" message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+// Paint:
+//
+//	This procedure handles the "wm.Paint" message.
+//	This procedure displays several lines of text with
+//  different colors.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword ); @nodisplay;
+var
+	hdc:	dword;				// Handle to video display device context
+	ps:		w.PAINTSTRUCT;		// Used while painting text.
+	rect:	w.RECT;				// Used to invalidate client rectangle.
+	outStr:	string;
+
+type
+	dclbl_t:	record
+
+		theName		:string;
+		desc		:string;
+
+	endrecord;
+
+
+static
+	DClabels	:dct_t[ DCfields_c ] := dcTemplate_c;
+	
+begin Paint;
+
+	push( ebx );
+	push( edi );
+
+	// Allocate temporary storage for a string object
+	// (automatically goes away when we return):
+
+	tstralloc( 256 );
+	mov( eax, outStr );
+
+	// When Windows requests that we draw the window,
+	// fill in the string in the center of the screen.
+	// Note that all GDI calls (e.g., DrawText) must
+	// appear within a BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+	
+		for( mov( 0, ebx ); ebx < DCfields_c; inc( ebx )) do
+
+			// Sneaky trick: Although the global appDevCaps is really
+			// a structure, this code treats it as an array of
+			// dwords (because that's what it turns out to be).
+
+			str.put
+			( 
+				outStr, 
+				DClabels.desc[ ebx*8 ], 
+				" (", 
+				DClabels.fieldName[ ebx*8 ], 
+				"): ",
+				appDevCaps.elements[ ebx*4 ]
+			);
+			intmul( 20, ebx, edx ); // Compute y-coordinate for output.
+			TextOut( 10, edx, outStr, str.length( outStr ) );
+
+		endfor;
+
+	EndPaint;
+
+	pop( edi );
+	pop( ebx );
+
+end Paint;
+
+
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( hwnd:dword; uMsg:uns32; wParam:dword; lParam:dword  );
+	@stdcall;	
+begin WndProc;
+
+	// uMsg contains the current message Windows is passing along to
+	// us.  Scan through the "Dispatch" table searching for a handler
+	// for this message.  If we find one, then call the associated
+	// handler procedure.  If we don't have a specific handler for this
+	// message, then call the default window procedure handler function.
+		
+	mov( uMsg, eax );
+	mov( &Dispatch, edx );
+	forever
+	
+		mov( (type MsgProcPtr_t [edx]).MessageHndlr, ecx );
+		if( ecx = 0 ) then
+		
+			// If an unhandled message comes along,
+			// let the default window handler process the
+			// message.  Whatever (non-zero) value this function
+			// returns is the return result passed on to the
+			// event loop.
+			
+			w.DefWindowProc( hwnd, uMsg, wParam, lParam );
+			exit WndProc;
+			
+		
+		elseif( eax = (type MsgProcPtr_t [edx]).MessageValue ) then
+		
+			// If the current message matches one of the values
+			// in the message dispatch table, then call the
+			// appropriate routine.  Note that the routine address
+			// is still in ECX from the test above.
+			
+			push( hwnd );	// (type tMsgProc ecx)(hwnd, wParam, lParam)
+			push( wParam );	//  This calls the associated routine after
+			push( lParam );	//  pushing the necessary parameters.
+			call( ecx );
+			
+			sub( eax, eax ); // Return value for function is zero.
+			break;
+		
+		endif;
+		add( @size( MsgProcPtr_t ), edx );
+		
+	endfor;
+	
+end WndProc;
+
+
+
+// Here's the main program for the application.
+	
+begin GDCaps;
+
+
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( NULL, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	mov( eax, wc.hInstance );
+
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+
+	w.CreateWindowEx
+	( 
+		NULL, 
+		ClassName, 
+		AppCaption, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and then quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+
+	// The message handling inside Windows has stored
+	// the program's return code in the wParam field
+	// of the message.  Extract this and return it
+	// as the program's return code.
+	
+	mov( msg.wParam, eax );
+	w.ExitProcess( eax );	
+
+end GDCaps;

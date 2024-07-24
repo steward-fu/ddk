@@ -1,0 +1,368 @@
+// Iczelion's tutorial #12: Memory Management and File I/O
+//
+//	To compile this program use the command line:
+//
+//	hla -w tut12.hla tut12.rc comdlg32.lib
+
+
+program memMgmtFileIO;
+#include( "w.hhf" )			// Standard windows stuff.
+#include( "strings.hhf" )	// Defines HLA string routines.
+#include( "memory.hhf" )	// Defines "NULL" among other things.
+#include( "args.hhf" )		// Command line parameter stuff.
+#include( "conv.hhf" )
+
+
+const
+	IDM_EXIT	:= 3;
+	IDM_SAVE	:= 2;
+	IDM_OPEN	:= 1;
+	MAXSIZE		:= 260;
+	MEMSIZE		:= 65535;
+	
+	EditID		:= 1;
+
+	AppNameStr	:= "Win32 ASM Edit";
+	MenuNameStr	:= "FirstMenu";
+
+
+static
+	hInstance		:dword;
+	hwndEdit		:dword;
+	hFile			:dword;
+	hMemory			:dword;
+	pMemory			:dword;
+	SizeReadWrite	:dword;
+	CommandLine		:string;
+	ofn				:w.OPENFILENAME;
+	buffer			:char[ MAXSIZE ] := MAXSIZE dup [ #0 ];
+	
+	FilterString	:byte; @nostorage;
+					byte "All Files", 0, "*.*", 0;
+					byte "Text Files", 0, "*.txt", 0, 0;						
+	
+	
+	
+	
+	
+readonly
+
+	ClassName		:string := "Win32ASMEditClass";
+	EditClass		:string := "edit";
+	AppName			:string := AppNameStr;
+	MenuName		:string := MenuNameStr;
+
+	OurTitle		:string	:=	"-=Our First Open File Dialog Box=-";
+						
+
+
+
+
+
+// The window procedure.  Since this gets called directly from
+// windows we need to explicitly reverse the parameters (compared
+// to the standard STDCALL declaration) in order to make HLA's
+// Pascal calling convention compatible with Windows.
+//
+// This is actually a function that returns a return result in
+// EAX.  If this function returns zero in EAX, then the event
+// loop terminates program execution.
+
+procedure WndProc( lParam:dword; wParam:dword; uMsg:uns32; hWnd:dword );
+	@nodisplay;
+	
+begin WndProc;
+
+	if( uMsg = w.WM_CREATE ) then
+	
+		w.CreateWindowEx
+		(
+			NULL,
+			EditClass,
+			NULL,
+			w.WS_VISIBLE | w.WS_CHILD | w.ES_LEFT | w.ES_MULTILINE | 
+				w.ES_AUTOHSCROLL | w.ES_AUTOVSCROLL,
+			0,
+			0,
+			0,
+			0,
+			hWnd,
+			EditID,
+			hInstance,
+			NULL
+		);
+		mov( eax, hwndEdit );
+		w.SetFocus( eax );
+		mov( @size( ofn ), ofn.lStructSize );
+		mov( hWnd, ofn.hWndOwner );
+		mov( hInstance, ofn.hInstance );
+		mov( &FilterString, ofn.lpstrFilter );
+		mov( &buffer, ofn.lpstrFile );
+		mov( MAXSIZE, ofn.nMaxFile );
+		
+	elseif( uMsg = w.WM_SIZE ) then
+	
+		mov( lParam, eax );
+		mov ( eax, edx );
+		shr( 16, edx );
+		and( $FFFF, eax );
+		w.MoveWindow( hwndEdit, 0, 0, eax, edx, true );
+		
+	
+		
+
+	// If the WM_DESTROY message comes along, then we've
+	// got to post a message telling the event loop that
+	// it's time to quit the program.  The return value in
+	// EAX must be false (zero).  The GetMessage function
+	// will return this value to the event loop which is
+	// the indication that it's time to quit.
+	
+	elseif( uMsg = w.WM_DESTROY ) then
+	
+		w.PostQuitMessage( 0 );
+		
+	elseif( uMsg = w.WM_COMMAND ) then
+		
+		mov( wParam, eax );
+		if( lParam = 0 ) then
+		
+			if( ax = IDM_OPEN ) then
+			
+				mov
+				(
+						w.OFN_FILEMUSTEXIST
+					|	w.OFN_PATHMUSTEXIST
+					|	w.OFN_LONGNAMES
+					|	w.OFN_EXPLORER
+					|	w.OFN_HIDEREADONLY,
+					ofn.Flags
+				);
+				w.GetOpenFileName( ofn );
+				if( eax ) then
+				
+					w.CreateFile
+					(
+						&buffer,
+						w.GENERIC_READ | w.GENERIC_WRITE,
+						w.FILE_SHARE_READ | w.FILE_SHARE_WRITE,
+						NULL,
+						w.OPEN_EXISTING,
+						w.FILE_ATTRIBUTE_ARCHIVE,
+						NULL
+					);
+					mov( eax, hFile );
+					w.GlobalAlloc
+					( 
+						w.GMEM_MOVEABLE | w.GMEM_ZEROINIT, 
+						MEMSIZE 
+					);
+					mov( eax, hMemory );
+					w.GlobalLock( eax );
+					mov( eax, pMemory );
+					w.ReadFile
+					( 
+						hFile, 
+						val pMemory, 
+						MEMSIZE-1, 
+						SizeReadWrite, 
+						NULL 
+					); 
+					w.SendMessage( hwndEdit, w.WM_SETTEXT, NULL, pMemory );
+					w.CloseHandle( hFile );
+					w.GlobalUnlock( pMemory );
+					w.GlobalFree( hMemory );
+						
+				endif;
+				w.SetFocus( hwndEdit );
+				
+			elseif( ax = IDM_SAVE ) then
+			
+				mov
+				( 
+					w.OFN_LONGNAMES | w.OFN_EXPLORER | w.OFN_HIDEREADONLY,
+					ofn.Flags
+				); 
+				w.GetSaveFileName( ofn );
+				if( eax ) then
+				
+					w.CreateFile
+					( 
+						&buffer,
+						w.GENERIC_READ | w.GENERIC_WRITE,
+						w.FILE_SHARE_READ | w.FILE_SHARE_WRITE,
+						NULL,
+						w.CREATE_NEW,
+						w.FILE_ATTRIBUTE_ARCHIVE,
+						NULL
+					);
+					mov( eax, hFile );
+					w.GlobalAlloc
+					(
+						w.GMEM_MOVEABLE | w.GMEM_ZEROINIT,
+						MEMSIZE
+					);
+					mov( eax, hMemory );
+					w.GlobalLock( hMemory );
+					mov( eax, pMemory );
+					w.SendMessage
+					( 
+						hwndEdit, 
+						w.WM_GETTEXT, 
+						MEMSIZE-1, 
+						pMemory 
+					);
+					w.WriteFile
+					( 
+						hFile, 
+						val pMemory, 
+						eax, 
+						SizeReadWrite, 
+						NULL 
+					);
+					w.CloseHandle( hFile );
+					w.GlobalUnlock( pMemory );
+					w.GlobalFree( hMemory );
+					
+				endif;
+				w.SetFocus( hwndEdit );
+				
+			else
+				w.DestroyWindow( hWnd );
+
+			endif;
+			
+		endif;		
+			
+	else
+	
+		// If a WM_DESTROY message doesn't come along,
+		// let the default window handler process the
+		// message.  Whatever (non-zero) value this function
+		// returns is the return result passed on to the
+		// event loop.
+		
+		w.DefWindowProc( hWnd, uMsg, wParam, lParam );
+		exit WndProc;
+		
+	endif;
+	sub( eax, eax );
+	
+end WndProc;
+
+
+	
+// WinMain-
+//
+// This is the "main" windows program.  It sets up the
+// window and then enters an "event loop" processing
+// whatever messages are passed along to that window.
+// Since our code is the only code that calls this function,
+// we'll use the Pascal calling conventions for the parameters.
+
+procedure WinMain
+(
+	hInst:dword;
+	hPrevInst:	dword;
+	CmdLine:	string;
+	CmdShow:	dword
+);	@nodisplay;
+
+var
+	wc:		w.WNDCLASSEX;
+	msg:	w.MSG;
+	hwnd:	dword;
+	
+begin WinMain;
+
+	
+	// Set up the window class (wc) object:
+	
+	mov( @size( w.WNDCLASSEX ), wc.cbSize );
+	mov( w.CS_HREDRAW | w.CS_VREDRAW, wc.style );
+	mov( &WndProc, wc.lpfnWndProc );
+	mov( NULL, wc.cbClsExtra );
+	mov( NULL, wc.cbWndExtra );
+	
+	mov( hInstance, wc.hInstance );
+	mov( w.COLOR_WINDOW+1, wc.hbrBackground );
+	mov( MenuName, wc.lpszMenuName );
+	mov( ClassName, wc.lpszClassName );
+	
+	// Get the icons and cursor for this application:
+	
+	w.LoadIcon( NULL, val w.IDI_APPLICATION );
+	mov( eax, wc.hIcon );
+	mov( eax, wc.hIconSm );
+	
+	w.LoadCursor( NULL, val w.IDC_ARROW );
+	mov( eax, wc.hCursor );
+	
+	
+	// Okay, register this window with Windows so it
+	// will start passing messages our way.  Once this
+	// is accomplished, create the window and display it.
+	
+	w.RegisterClassEx( wc );
+	
+	w.CreateWindowEx
+	( 
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPEDWINDOW,
+		w.CW_USEDEFAULT,
+		w.CW_USEDEFAULT,
+		300,
+		200,
+		NULL,
+		NULL,
+		hInst,
+		NULL
+	);
+	mov( eax, hwnd );
+	
+
+	w.ShowWindow( hwnd, w.SW_SHOWNORMAL );
+	w.UpdateWindow( hwnd );
+	
+	// Here's the event loop that processes messages
+	// sent to our window.  On return from GetMessage,
+	// break if EAX contains false and quit the
+	// program.
+	
+	forever
+	
+		w.GetMessage( msg, NULL, 0, 0 );
+		breakif( !eax );
+		w.TranslateMessage( msg );
+		w.DispatchMessage( msg );
+		
+	endfor;
+	mov( msg.wParam, eax );
+	
+
+end WinMain;
+
+	
+begin memMgmtFileIO;
+
+	// Get this process' handle:
+	
+	w.GetModuleHandle( NULL );
+	mov( eax, hInstance );
+	
+	// Get a copy of the command line string passed to this code:
+	
+	mov( arg.cmdLn(), CommandLine );
+	
+
+	
+	WinMain( hInstance, NULL, CommandLine, w.SW_SHOWDEFAULT );
+	
+	// WinMain returns a return code in EAX, exit the program
+	// and pass along that return code.
+	
+	w.ExitProcess( eax );	
+
+end memMgmtFileIO;

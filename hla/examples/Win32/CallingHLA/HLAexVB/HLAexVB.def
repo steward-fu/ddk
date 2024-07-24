@@ -1,0 +1,5 @@
+LIBRARY   	HLAexVB
+DESCRIPTION 'HLA function for VB'
+VERSION		1.0
+EXPORTS		DLLEntry
+			hlaFunc

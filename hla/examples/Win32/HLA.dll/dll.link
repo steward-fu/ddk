@@ -1,0 +1,13 @@
+-DLL 
+-entry:dll@12 
+-base:0x40000000 
+-out:dll.dll 
+-export:_dll@12 
+-export:_dllFunc1@4
+-export:_dllFunc2@4
+hlalib.lib
+kernel32.lib
+user32.lib
+
+
+

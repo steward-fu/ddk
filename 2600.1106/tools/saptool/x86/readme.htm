@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft FrontPage 4.0">
+<TITLE>Readme Template</TITLE>
+</HEAD>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080"  leftMargin=8>
+
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE">   SAP</A> Scenario 
+Generator</H2>
+
+<P><span style="FONT-SIZE: 10pt; COLOR: #ff0000; FONT-FAMILY: Arial">[This is preliminary documentation and subject to change.]</span></P>
+<H3>Prerequisite</H3>
+<FONT FACE="Verdana" SIZE=2><P>Install Windows Media Player version 7 or greater.</P>
+</FONT>
+
+<H3>SUMMARY</H3>
+
+<FONT FACE="Verdana" SIZE=2><P>This application generates five SAP scenarios for testing 
+purposes. The five scenarios are based on the three SAP parameters : 1) SAP 
+certs 2) Digital output 3) Minimum security level .</P>
+<P>Input is a clear content file. Can be a wma or asf format.</P></FONT>
+</FONT>
+<H3>  INSTALLING THE SAMPLE</H3>
+
+<FONT FACE="Verdana">
+<FONT FACE="Verdana" >
+<P><FONT size=2>Launch the SAPGen.exe. The input file can be 
+a .wma or .asf file. Select the input file and click on the Generate button to 
+generate the five output files corresponding to the five scenarios along with 
+the licenses needed to play the content. A html file is launched pointing to 
+these five files along with the description of their expected behavior. This 
+result file SAPScenarioResult.html and the five wma files are created in the 
+same directory as the input file. </FONT>                          
+              
+             
+            
+            
+   </P>
+<P><FONT size=2>In case where the tool fails with handle = 80048009 please get 
+the updated version from <SPAN 
+style="FONT-WEIGHT: bold">http://go.microsoft.com/fwlink/?LinkId=3458</SPAN></FONT></P></FONT>
+<H3>PROGRAMMING TOUR</H3>
+<P><FONT size=2>The application uses 
+different KID and Key pair to package the content and generate license in each scenario.</FONT></P>
+<P><FONT size=2><STRONG>Scenario 1 </STRONG>: Certs not required. Digital out 
+and security level do not play a part. This should play even if the driver is 
+not certified. Filename is CertfalseDigfalseSec1100.wma. </FONT></P>
+<P><FONT size=2><STRONG>Scenario 2 </STRONG>: Certs required, disabled digital 
+out, Mindrmlevel 1100. This should play only if the driver is certified and 
+digital out MUST be disabled by the driver. Filename is 
+CerttrueDigfalseSec1100.wma.</FONT></P>
+<P><FONT size=2><STRONG>Scenario 3 </STRONG>: Certs required, enabled digital 
+out, Mindrmlevel 1100. This should play only if the driver is certified and 
+digital out can be enabled by the driver. Filename is 
+CerttrueDigtrueSec1100.wma.</FONT></P>
+<P><FONT size=2><STRONG>Scenario 4 </STRONG>: Certs required, disabled digital 
+out, Mindrmlevel 15000. This should NOT play and player MUST return an error 
+'Certified drivers are....'. Filename is 
+CerttrueDigfalseSec15000.wma.</FONT></P>
+<P><FONT size=2><STRONG>Scenario 5 </STRONG>: Certs required, enabled digital 
+out, Mindrmlevel 15000. This should NOT play and player MUST return an error 
+'Certified drivers are....'. Filename is CerttrueDigtrueSec15000.wma.</FONT></P>
+</FONT>
+<H3>File Manifest</H3><PRE>&nbsp;
+<U>Files         Description
+</U>readme.htm 	Readme file describing the functionality of the app</PRE><PRE>SAPGen.exe    	The executable that generates five SAP scenarios for testing purposes</PRE><PRE>licserv.dll   	The licenseserver dll that is loaded in the app</PRE><PRE>myrmobjs.dll  	The wmrmobjs dll that is registered in the app.</PRE><H3>KNOWN BUGS </H3><PRE><FONT face=Verdana size=2>This tool has been developed and tested for WinMe and Windows XP.</FONT> </PRE><PRE><A href="#top"><FONT FACE="Verdana" SIZE=2>Top of page</FONT></A><FONT FACE="Verdana" SIZE=2> </PRE></FONT>
+<TABLE CELLSPACING=0 BORDER=0 WIDTH=624>
+<TR><TD VALIGN="center" BGCOLOR="#00ffff" HEIGHT=2>
+<P></P></TD>
+</TR>
+</TABLE>
+
+<FONT FACE="MS Sans Serif" SIZE=1><P>© 2001 Microsoft Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT></BODY>
+</HTML>

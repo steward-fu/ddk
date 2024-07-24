@@ -1,0 +1,120 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "excepts.hhf" );
+
+
+
+
+
+
+
+
+// fillRectAttr-
+//
+//	Sets a rectangular area on the screen to the specified
+//	attribute without affecting the underlying characters.
+
+procedure win32cons.fillRectAttr
+( 
+	top:			word; 
+	left:			word; 
+	bottom:			word;
+	right:			word; 
+	Attribute:		word
+);	@nodisplay;
+
+var
+	csbi:			win.CONSOLE_SCREEN_BUFFER_INFO;
+	LinePosn:		win.COORD;
+	size:			dword;
+	handle:			dword;
+	charsWritten:	dword;
+	
+begin fillRectAttr;
+
+	pushad();
+	win32cons.info( csbi );	// Get current screen size.
+	
+	// Verify that the block is reasonable:
+	
+	if
+	(#{
+		mov( top, ax );				// Be sure top <= bottom.
+		mov( bottom, bx );
+		cmp( ax, bx );
+		ja true;
+
+		cmp( ax, csbi.dwSize.Y );	// Be sure top < Max Y size.
+		jae true;
+		
+		cmp( bx, csbi.dwSize.Y );	// Be sure bottom < Max Y size.
+		jae true;
+		
+		mov( left, ax );			// Be sure left <= right.
+		mov( right, bx );
+		cmp( ax, bx );
+		ja true; 
+		
+		cmp( ax, csbi.dwSize.X );	// Be sure left < Max X size.
+		jae true;
+		
+		cmp( bx, csbi.dwSize.X );	// Be sure right < Max X size.
+		jb false;
+	}#) then
+	
+		raise( ex.ValueOutOfRange );
+		
+	endif;		
+
+	
+	// Set the LinePosn variable to the first line of the rectangle.
+	
+	mov( top, ax );
+	mov( ax, LinePosn.Y );
+	mov( left, bx );
+	mov( bx, LinePosn.X );
+	
+	// Calculate the size of a line:
+	
+	xor( ecx, ecx );
+	mov( right, cx );
+	sub( bx, cx );
+	inc( cx );
+	mov( ecx, size );
+	
+	// Get the standard output handle:
+	
+	stdout.handle();
+	mov( eax, handle );
+	
+	// Draw the rectangle on the screen.
+	
+	forever
+	
+		mov( LinePosn.Y, ax );
+		breakif( ax > (type word bottom));
+		
+		win.FillConsoleOutputAttribute
+		(
+			charsWritten,
+			LinePosn,
+			size,
+			#{ movzx( Attribute, eax ); push( eax ); }#,
+			handle
+		);
+		inc( LinePosn.Y );
+		
+	endfor;
+	popad();
+		
+	
+end fillRectAttr;
+
+
+
+
+
+
+
+end consoleUnit;

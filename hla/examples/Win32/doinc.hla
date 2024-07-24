@@ -1,0 +1,349 @@
+/*
+** doInc-
+**
+**	This program processes HLA, MASM, TASM, and Gas source files.
+** It copies the data from the specified source file to the standard
+** output except for certain include statements as described below.
+** Typical calling sequence:
+**
+**		doInc somefile >newfile
+**
+** doInc searches for a line whose first non-whitespace data is
+** one of the following patterns:
+**
+**		include filename			-- MASM/TASM syntax
+**		.include "filename"			-- Gas Syntax
+**		#include( "filename" )		-- HLA Syntax
+**		#includeonce( "filename" )	-- HLA Syntax
+**
+**	This program will replace the include with the specified
+** source file in the standard output stream.  Note that doInc
+** does *not* check to see if the include statement is inside
+** a block of comments;  it will happily copy any include
+** file to the standard output if the include directive appears
+** as the first whitespace on a line.  Conversely, if the include
+** does not appear as the first whitespace on a line, doInc
+** will ignore the directive.
+**
+**	This program is useful for "flattening" nested include
+** files to speed up large compilations.  The HLA compiler also
+** uses this program to flatten the assembly portion of the
+** compiler for portability reasons.
+**
+** Note that this program is Windows-specific, but it's easy
+** enough to port to Linux by writing the equivalent of the
+** ExpandEnvironmentStrings function.
+*/
+
+program doInc;
+#include( "stdlib.hhf" )
+
+static
+
+	// Windows function that returns the value for the "hlainc"
+	// environment string:
+	
+	ExpandEnvironmentStrings: procedure
+	(
+		lpSrc: string;
+		lpDst: string;
+		nSize: dword
+	);
+		@stdcall;
+		@returns( "eax" );
+		external( "__imp__ExpandEnvironmentStringsA@12" );
+
+
+static
+	filename	:string;			// Original file to process
+	
+	// Note that there may be circular references in the include
+	// file lists.  The following table keeps track of include
+	// files we've already seen so we don't expand an include file
+	// more than once.
+	
+	incTable	:pointer to table;
+	
+	// The "hlainc" environment variable gets copied into the
+	// following string object.
+	
+	hlaincPath	:str.strvar(256);
+	
+	
+	// openFile- Opens the original file or an include file
+	// and deals with any errors.
+	
+	procedure openFile( fname:string ); @nodisplay;
+	var
+		handle	:dword;
+		fullpath:string;
+		
+	begin openFile;
+	
+		try
+		
+			// Attempt to open the file using the exact name
+			// the caller specifies.
+		
+			fileio.open( fname, fileio.r );
+			mov( eax, handle );
+			
+		  anyexception
+		  
+		  	// If we failed to open the fail using the supplied name,
+			// try prepending the include path to the name and
+			// do the open again:
+			
+		  	str.a_cat( hlaincPath, fname );
+			mov( eax, fullpath );
+			try
+			
+				fileio.open( fullpath, fileio.r );
+				mov( eax, handle );
+				
+			  anyexception
+			
+				// If we still can't open the file, abort the operation.
+				  
+			  	stdout.put( "Could not open '", fullpath, "'" nl );
+				mov( 0, handle );
+				
+			endtry;
+			strfree( fullpath );
+			
+		endtry;
+		mov( handle, eax );	  	
+			
+	end openFile;
+	
+	
+	// Here's the procedure that copies the data from a file to
+	// the standard output (while looking for include directives):
+	
+	procedure doFile( fname:string ); @nodisplay;
+	var
+	fileHandle	:dword;			// File we're processing
+		tinput		:string;	// Line on which we look for "include"
+		lcinput		:string;	// Line converted to lower case.
+		input		:string;	// Input line.
+		
+	begin doFile;
+	
+		// Allocate storage for a couple of the above strings:
+		
+		stralloc( 256 );
+		mov( eax, input );
+		stralloc( 256 );
+		mov( eax, lcinput );
+		
+		// Open the file the user specifies:
+		
+		openFile( fname );
+		mov( eax, fileHandle );
+		exitif( eax = 0 ) doFile;	// Barf if could not open file.
+		
+		
+		// Copy the file to the standard output device while
+		// searching for include directives:
+		
+		while( !fileio.eof( fileHandle )) do
+		
+			fileio.gets( fileHandle, input );
+			
+			// Remove leading and trailing spaces, and convert
+			// all characters to lower case to make the test easier:
+			// (Probably would be better to use HLA's pattern matching
+			// library routines here;  oh well).
+			
+			str.a_trim( input );
+			mov( eax, tinput );
+			str.cpy( tinput, lcinput );
+			str.lower( lcinput );
+			
+			// See if it's a MASM/TASM include statement:
+			
+			if( str.prefix( lcinput, "include" )) then
+			
+				str.length( tinput );
+				sub( 7, eax );
+				str.a_substr( tinput, 7, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				str.trim( tinput );
+				
+				if( incTable.lookup( tinput ) = 0 ) then
+				
+					incTable.getNode( tinput );
+					doFile( tinput );
+					
+				endif;
+			
+			// See if it's a Gas include statement:
+			
+			elseif( str.prefix( lcinput, ".include" )) then
+			
+				// Extract the filename and recursively call this
+				// procedure to process the include file.
+				
+				str.length( tinput );
+				sub( 8, eax );
+				str.a_substr( tinput, 8, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				
+				// Find the '"' that marks the end of the string:
+				
+				str.trim( tinput );
+				str.length( tinput );
+				str.rchpos( tinput, '"' );
+				sub( 2, eax );
+				str.a_substr( tinput, 1, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				
+				// If we haven't already processed this file,
+				// recursively call this procedure to process it:
+				
+				if( incTable.lookup( tinput ) = 0 ) then
+				
+					incTable.getNode( tinput );
+					doFile( tinput );
+					
+				endif;
+			
+			
+			// See if it's an HLA include statement:
+			
+			elseif( str.prefix( lcinput, "#include(" )) then
+			
+				// Extract the filename and recursively call this
+				// procedure to process the include file.
+				
+				str.length( tinput );			// Remove '#include(' from
+				sub( 9, eax );					//  the string.
+				str.a_substr( tinput, 9, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				
+				// Find the '"' that marks the end of the string:
+				
+				str.trim( tinput );
+				str.length( tinput );
+				str.rchpos( tinput, '"' );
+				dec( eax );
+				
+				// Extract the filename from the string:
+				
+				str.a_substr( tinput, 1, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				
+				// If we haven't already processed this file,
+				// recursively call this procedure to process it:
+				
+				if( incTable.lookup( tinput ) = 0 ) then
+				
+					incTable.getNode( tinput );	// Marks file as processed.
+					doFile( tinput );
+					
+				endif;
+
+			elseif( str.prefix( lcinput, "#includeonce(" )) then
+			
+				// See the comments above.
+				
+				str.length( tinput );
+				sub( 13, eax );
+				str.a_substr( tinput, 13, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				str.trim( tinput );
+				str.length( tinput );
+				str.rchpos( tinput, '"' );
+				dec( eax );
+				str.a_substr( tinput, 1, eax );
+				push( eax );
+				strfree( tinput );
+				pop( tinput );
+				
+				if( incTable.lookup( tinput ) = 0 ) then
+				
+					incTable.getNode( tinput );
+					doFile( tinput );
+					
+				endif;
+			
+			// If it's not an include statement, then simply
+			// output the (original) line of text to the standard
+			// output device:
+			
+			else
+			
+				stdout.put( input, nl );
+				
+			endif;
+			strfree( tinput );
+					
+		endwhile;
+		
+		strfree( input );
+		strfree( lcinput );
+	
+	end doFile;
+	
+	procedure JustReturn;
+	begin JustReturn;
+	end JustReturn;
+	
+	
+begin doInc;
+
+	// Begin by getting the path to the HLA include directory:
+	
+	ExpandEnvironmentStrings( "%hlainc%", hlaincPath, 255 );
+	
+	// ExpandEnvironmentStrings returns a C-String, convert it
+	// to an HLA string:
+	
+	mov( hlaincPath, ebx );
+	dec( eax );
+	mov( eax, (type str.strRec [ebx]).length );
+	mov( 255, (type str.strRec [ebx]).MaxStrLen );
+	if( eax = 0 ) then
+	
+		stdout.put( "Could not find path to HLA include library" nl );
+		exit doInc;
+		
+	endif;
+	str.trim( hlaincPath );
+	str.cat( "\", hlaincPath );
+	
+	
+	// Initialize the table that will hold the include filenames:
+	
+	mov( table.create( 256 ), incTable );
+
+	// Get the filename from the command line:
+	
+	if( arg.c() != 2 ) then
+	
+		stdout.put( "Usage: doInc filename" nl );
+		exit doInc;
+		
+	endif;
+	mov( arg.v(1), filename );
+	
+	doFile( filename );
+	
+	incTable.destroy( &JustReturn );
+	
+	
+	
+		
+end doInc;

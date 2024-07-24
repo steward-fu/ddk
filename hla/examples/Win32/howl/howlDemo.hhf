@@ -1,0 +1,637 @@
+#if( !@defined( howlDemo_hhf ))
+val
+	howlDemo_hhf :boolean := true;
+
+#includeOnce( "howl.hhf" )
+
+
+
+// Forward definitions for the button event handlers:
+	
+proc
+	onClick				:widgetProc;	external;
+	onClick2			:widgetProc;	external;
+	onCheck				:widgetProc;	external;
+	onCheck3			:widgetProc;	external;
+	onPush				:widgetProc;	external;
+	onChange			:widgetProc;	external;
+	delTab3				:widgetProc;	external;
+	
+	onUpDown			:widgetProc;	external;
+	onUpDown2			:widgetProc;	external;
+	
+	onListBoxClick		:widgetProc;	external;
+	onCBSelChange		:widgetProc;	external;
+	onTBChange			:widgetProc;	external;
+	onSBChange			:widgetProc;	external;
+	tab3ProcessMessage	:widgetProc;	external;
+	
+	handler_3			:widgetProc;	external( "menuHandler" );
+	handler_1_1			:widgetProc;	external( "menuHandler" );
+	handler_1_2			:widgetProc;	external( "menuHandler" );
+	handler_1_3			:widgetProc;	external( "menuHandler" );
+	handler_2_1			:widgetProc;	external( "menuHandler" );
+	handler_2_2_1		:widgetProc;	external( "menuHandler" );
+	handler_2_2_2		:widgetProc;	external( "menuHandler" );
+	menuHandler			:widgetProc;	external( "menuHandler" );
+	
+	exitHandler			:widgetProc;	external( "exitHandler" );
+	undoHandler			:widgetProc;	external( "menuHandler" );
+	cutHandler			:widgetProc;	external( "menuHandler" );
+	copyHandler			:widgetProc;	external( "menuHandler" );
+	pasteHandler		:widgetProc;	external( "menuHandler" );
+
+
+	
+
+// Here's the form definition for the main application's window:
+
+wForm( mainAppWindow );
+
+	var
+		saveTab3	:wTabPage_p;
+		
+	wMainMenu;
+	
+		wSubMenu( menu_1, "menu1" );
+	
+			wMenuItem( menu_1_1, false, "Item_1_1", handler_1_1 );
+			wMenuItem( menu_1_2, true, "Item_1_2", handler_1_2 ); 
+			wMenuItem( menu_1_3, true, "Item_1_3", handler_1_3 ); 
+			wMenuSeparator; 
+			wMenuItem( menu_exit, false, "Exit", exitHandler );
+			
+		endwSubMenu; 
+		 
+		wSubMenu( menu_2, "menu2" );
+			
+			wMenuItem( menu_2_1, false, "Item_2_1", handler_2_1 ); 
+			wSubMenu( menu_2_2, "Menu_2_2" );
+	
+				wMenuItem( menu_2_2_1, false, "Item_2_2_1", handler_2_2_1 ); 
+				wMenuItem( menu_2_2_2, false, "Item_2_2_2", handler_2_2_2 );
+				
+			endwSubMenu;
+			
+		endwSubMenu;
+		 
+		wMenuItem( menu_3, false, "menu3", handler_3 );
+	
+	endwMainMenu;
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	//																		 //
+	//                           T A B   # 1                                 //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	
+	wTab( tab1, "tab1", NULL, bkgColor_g );
+	
+		wRadioSet
+		( 
+			radioSet,			// Field name in mainWindow object      
+			"Radio Set",		// Caption for push button
+			300,				// x position 
+			10,					// y position 
+			250,				// width 
+			150,				// height
+			bkgColor_g 
+		)  
+
+			wRadioSetButton
+			( 
+				radioSetButton1,		// Field name in mainWindow object  
+				"Radio Set Button1",	// Caption for push button
+				10, 					// x position 
+				30, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL	 				// "on click" event handler 
+			)  
+
+			wRadioSetButton
+			( 
+				radioSetButton2,		// Field name in mainWindow object  
+				"Radio Set Button2",	// Caption for push button
+				10, 					// x position 
+				60, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL 					// "on click" event handler 
+			)  
+
+			wRadioSetButtonLT
+			( 
+				radioSetButton3,		// Field name in mainWindow object  
+				"Radio Set Button3",	// Caption for push button
+				10, 					// x position 
+				90, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL 					// "on click" event handler 
+			)  
+		
+
+
+		endwRadioSet;
+		
+		// Create some buttons on the form to demonstrate
+		// each of the widgets that wForm supports:
+		
+		wPushButton 
+		( 
+			button,				// Field name in mainWindow object
+			"Push Button",		// Caption for push button
+			10,					// x position 
+			10,					// y position 
+			125,				// width 
+			25,					// height 
+			onClick				// "on click" event handler 
+		);  
+		
+		wPushButton 
+		( 
+			button2,			// Field name in mainWindow object       
+			"Hide",				// Caption for push button
+			150, 				// x position 
+			10, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onClick2 			// "on click" event handler 
+		); 
+		 
+		wCheckBox   
+		( 
+			checkBox,			// Field name in mainWindow object     
+			"Check Box",    	// Caption for check box
+			10, 				// x position 
+			50, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onCheck 			// "on click" event handler 
+		);
+		  
+		wCheckBox3   
+		( 
+			checkBox3,			// Field name in mainWindow object     
+			"Check Box3",   	// Caption for check box 
+			10, 				// x position 
+			90, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onCheck3 			// "on click" event handler 
+		); 
+		 
+		wRadioButton
+		( 
+			radioButton,		// Field name in mainWindow object  
+			"Radio Button",		// Caption for radio button
+			0,					// Style
+			10, 				// x position 
+			130, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onPush 				// "on click" event handler 
+		);  
+		
+		wCheckBoxLT   
+		( 
+			checkBoxLT,			// Field name in mainWindow object     
+			"Check Box LT", 	// Caption for check box   
+			150, 				// x position 
+			50, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onCheck 			// "on click" event handler 
+		);  
+		
+		wCheckBox3LT   
+		( 
+			checkBox3LT,	 	// Field name in mainWindow object     
+			"Check Box3 LT", 	// Caption for check box    
+			150, 			 	// x position 
+			90, 			 	// y position 
+			125, 			 	// width 
+			25, 			 	// height 
+			onCheck3 		 	// "on click" event handler 
+		); 
+		 
+		wRadioButtonLT
+		( 
+			radioButtonLT,		// Field name in mainWindow object  
+			"Radio Button LT",	// Caption for radio button
+			0,					// Style
+			150, 				// x position 
+			130, 				// y position 
+			125, 				// width 
+			25, 				// height 
+			onPush 				// "on click" event handler 
+		);  
+		
+		// Demonstrate a text label on this tab:
+		
+		wLabel
+		(
+			label1,					// Label name
+			"Sample Label Text",	// Label text
+			10,						// x
+			200,					// y
+			200,					// width
+			30,						// height
+			
+			// Center the text vertically and horizontally in
+			// the rectangle above.  Must specify DT_SINGLELINE when
+			// specifying DT_VCENTER.
+			
+			w.DT_CENTER | w.DT_VCENTER | w.DT_SINGLELINE,
+			
+			RGB( 255, 255, 0 ),		// Yellow foreground color
+			RGB( 255, 0, 0 )		// Red background color
+		);
+		
+		wUpDown
+		(
+			upDown1,			// Up/down control object name
+			0,					// No special format/style/alignment
+			10,					// x
+			240,				// y
+			30,					// width
+			30,					// height
+			0,					// Minimum position
+			100,				// Maximum position
+			50,					// Initial position
+			onUpDown			// Click event handler
+		);
+		
+		wProgressBar
+		(
+			progressBar1,		// ProgressBar control name
+			50,					// x
+			240,				// y
+			200,				// width
+			30					// height
+		);
+		
+		
+		wUpDownEditBox
+		(
+			upDown2,			// Name of the up/down control object
+			"50",				// Initial text
+			0,					// Edit box style
+			w.UDS_ALIGNRIGHT,	// Align up/down on right
+			10,					// x position 
+			280,				// y position 
+			250,				// width 
+			30,					// height
+			0,					// Minimum range value
+			100,				// Maximum range value
+			50,					// Initial value
+			onChange,			// onChange handler
+			onUpDown2			// onClick handler
+		);
+		
+		
+		wListBox
+		(
+			listBox,				// ListBox name
+			300,					// x
+			200,					// y
+			200,					// width
+			150,					// height
+			false,					// sort
+			onListBoxClick,			// onClick handler
+			"listBox1",
+			"listBox2",
+			"listBox3"
+		);
+		
+		
+		wDragListBox
+		(
+			dragListBox,			// DragListBox name
+			300,					// x
+			375,					// y
+			200,					// width
+			150,					// height
+			onListBoxClick,			// onClick handler
+			"DragListBox1",
+			"DragListBox2",
+			"DragListBox3"
+		);
+		
+		wLabel
+		(
+			trackLabel,			// Label control name
+			"000",				// Initial string
+			10,					// x
+			320,				// y
+			38,					// width
+			30,					// height
+			w.DT_CENTER | w.DT_VCENTER | w.DT_SINGLELINE,
+			RGB( 255, 255, 0 ),		// Yellow foreground color
+			RGB( 0, 0, 255 )		// Blue background color
+		);
+		
+		
+		wTrackBar
+		(
+			trackBar1,			// TrackBar control name
+			50,					// x
+			320,				// y
+			200,				// width
+			30,					// height
+			w.TBS_HORZ | w.TBS_AUTOTICKS,
+			onTBChange
+		)
+	
+		
+		wLabel
+		(
+			scrollLabel,		// Label control name
+			"000",				// Initial string
+			10,					// x
+			360,				// y
+			38,					// width
+			30,					// height
+			w.DT_CENTER | w.DT_VCENTER | w.DT_SINGLELINE,
+			RGB( 255, 255, 0 ),		// Yellow foreground color
+			RGB( 0, 0, 255 )		// Blue background color
+		);
+		
+		
+		wScrollBar
+		(
+			scrollBar1,			// TrackBar control name
+			50,					// x
+			360,				// y
+			200,				// width
+			30,					// height
+			w.SBS_HORZ,
+			onSBChange
+		)
+		
+		wRectangle
+		(
+			rectangle1,			// Rectangle name
+			10,					// x
+			400,				// y
+			250,				// width
+			30,					// height
+			RGB( 255, 255, 0 ),	// linecolor = yellow
+			RGB( 0, 0, 0 )		// fill color = black
+		)
+		
+		wIcon
+		(
+			icon1,								// icon name
+			mov( w.IDI_APPLICATION, eax),		// icon resource value
+			10,									// x
+			440,								// y
+			32,									// width
+			32,									// height
+			bkgColor_g							// background color 
+		)
+		
+		wBitmap
+		(
+			image1,								// image name
+			"myImage",							// image name value
+			50,									// x
+			440,								// y
+			48,									// width
+			48,									// height
+			bkgColor_g							// background color 
+		)
+		
+		
+		wRoundRect
+		(
+			roundRect1,			// RoundRect name
+			110,				// x
+			440,				// y
+			150,				// width
+			30,					// height
+			10,					// corner width
+			10,					// corner height
+			RGB( 0, 0, 0 ),		// linecolor = black
+			RGB( 0, 255, 0 ),	// fill color = green
+			bkgColor_g							// background color 
+		)
+		
+		wPie
+		(
+			pie1,				// Pie name
+			10,					// x
+			490,				// y
+			30,					// width
+			30,					// height
+			405.0,				// start angle
+			135.0,				// end angle
+			RGB( 0, 255, 0 ),	// linecolor = green
+			RGB( 255, 0, 0 ),	// fillcolor = red
+			RGB( 0, 0, 255 )	// bkgColor = blue
+		)
+		
+		wPolygon
+		(
+			polygon1,			// polygon name
+			50,					// x
+			490,				// y
+			60,					// width
+			30,					// height
+			RGB( 0, 0, 0 ),		// linecolor = black
+			RGB( 255, 0, 255 ),	// fillcolor = magenta
+			RGB( 255, 255, 0 ),	// bkgColor = yellow
+			0,0,
+			0,30,
+			30,20,
+			30,0
+		)
+		
+		wEllipse
+		(
+			ellipse1,				// polygon name
+			120,					// x
+			490,					// y
+			30,						// width
+			30,						// height
+			RGB( 0, 0, 0 ),			// linecolor = black
+			RGB( 0, 255, 255 ),		// fillcolor = cyan
+			RGB( 255, 255, 255 )	// bkgColor = white
+		)
+			
+	
+	///////////////////////////////////////////////////////////////////////////
+	//																		 //
+	//                           T A B   # 2                                 //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	
+	wTab( tab2, "tab2", NULL, bkgColor_g );
+		 
+		wGroupBox
+		(
+			groupBox, 			// Field name in mainWindow object
+			"Enter Password",	// Caption for group box
+			10,					// x position 
+			10,					// y position 
+			250,				// width 
+			50					// height 
+		);
+		
+			wPasswdBox
+			(
+				passwdBox,	 		// Field name in mainWindow object
+				"",					// Initial text for password box
+				5,					// x position 
+				20,					// y position 
+				240,				// width 
+				25,					// height
+				0,					// style
+				onChange			// onChange handler 
+			); 
+		
+		endwGroupBox 
+		
+		
+		wEditBox
+		(
+			editBox, 			// Field name in mainWindow object
+			"Edit Box",			// Initial text for edit box
+			275,				// x position 
+			30,					// y position 
+			250,				// width 
+			25,					// height
+			0,					// style
+			onChange			// onChange handler 
+		); 
+		
+		wGroupBox
+		(
+			groupBox2, 			// Field name in mainWindow object
+			"Text Editor",		// Caption for group box
+			10,					// x position 
+			100,				// y position 
+			250,				// width 
+			200					// height 
+		);
+		
+			wTextEdit
+			(
+				textEdit, 			// Field name in mainWindow object
+				"",					// Initial Text
+				5,					// x position 
+				25,					// y position 
+				240,				// width 
+				160,				// height
+				0,					// style 
+				onChange
+			); 
+		
+		endwGroupBox 
+		
+		
+		wComboBox
+		(
+			comboBox1,				// ComboBox name
+			"combo box",			// Initial string
+			275,					// x
+			70,						// y
+			250,					// width
+			30,						// height
+			false,					// sort
+			onCBSelChange,			// onSelChange handler
+			"comboBox1",
+			"comboBox2",
+			"comboBox3"
+		);
+		
+		wPushButton 
+		( 
+			buttonDT3,					// Field name in mainWindow object
+			"Push to delete tab 3",		// Caption for push button
+			275,						// x position 
+			125,						// y position 
+			200,						// width 
+			25,							// height 
+			delTab3						// "on click" event handler 
+		);  
+		
+		
+		
+	wTab( tab3, "tab3", tab3ProcessMessage, bkgColor_g );
+		
+		wLabel
+		(
+			label3,						// Label name
+			"This tab will be deleted",	// Label text
+			10,							// x
+			10,							// y
+			200,						// width
+			30,							// height
+			
+			// Center the text vertically and horizontally in
+			// the rectangle above.  Must specify DT_SINGLELINE when
+			// specifying DT_VCENTER.
+			
+			w.DT_CENTER | w.DT_VCENTER | w.DT_SINGLELINE,
+			
+			RGB( 255, 255, 0 ),		// Yellow foreground color
+			RGB( 255, 0, 0 )		// Red background color
+		);
+		
+		wRadioButton
+			( 
+				radioSetButton1a,		// Field name in mainWindow object  
+				"Radio Set Button1a",	// Caption for push button
+				w.BS_AUTORADIOBUTTON | w.WS_GROUP | w.WS_TABSTOP, 
+				220, 					// x position 
+				10, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL	 				// "on click" event handler 
+			);  
+		
+		wRadioButton
+			( 
+				radioSetButton2a,		// Field name in mainWindow object  
+				"Radio Set Button2a",	// Caption for push button
+				w.BS_AUTORADIOBUTTON,
+				220, 					// x position 
+				40, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL	 				// "on click" event handler 
+			);  
+		
+		wRadioButton
+			( 
+				radioSetButton3a,		// Field name in mainWindow object  
+				"Radio Set Button3a",	// Caption for push button
+				w.BS_AUTORADIOBUTTON,
+				220, 					// x position 
+				70, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL	 				// "on click" event handler 
+			);  
+		
+		wRadioButton
+			( 
+				radioSetButton4a,		// Field name in mainWindow object  
+				"Radio Set Button4a",	// Caption for push button
+				w.BS_AUTORADIOBUTTON,
+				220, 					// x position 
+				100, 					// y position 
+				200, 					// width 
+				25, 					// height 
+				NULL	 				// "on click" event handler 
+			);  
+		
+		
+
+endwForm
+
+
+#endif

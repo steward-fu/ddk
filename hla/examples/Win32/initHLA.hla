@@ -1,0 +1,434 @@
+/*
+** This is a short little program that sets up
+** the registry entries for HLA.
+*/
+
+program initHLA;
+#include( "stdlib.hhf" )
+#include( "w.hhf" )
+
+static
+	uHndl		:dword;
+	KeyName		:str.strvar(256);
+	data		:byte[1024];
+	dataSize	:dword;
+	dataType	:dword;
+
+	driveLetter	:char := 'c';
+	hlalib		:str.strvar( 1024 );
+	hlainc		:str.strvar( 1024 );
+	path		:str.strvar( 1024 );
+	lib			:str.strvar( 1024 );
+	tempStr		:str.strvar( 1024 );
+	indexStr	:str.strvar( 1024 );
+
+
+
+static
+
+	RegOpenKeyEx:
+		procedure
+		(
+				hKey		:dword;
+				lpSubKey	:string;
+				ulOptions	:dword;
+				samDesired	:dword;
+			var	key			:dword
+		);
+			@stdcall;
+			@external( "__imp__RegOpenKeyExA@20" );
+
+	RegQueryValueEx:
+		procedure
+		(
+				hKey		:dword;
+				lpName		:string;
+				lpReserved	:dword;
+			var	lpType		:dword;
+			var	lpData		:var;
+			var	lpSize		:dword
+		);
+			@stdcall;
+			@external( "__imp__RegQueryValueExA@24" );
+
+	RegSetValueEx:
+		procedure
+		(
+				hKey		:dword;
+				lpName		:string;
+				lpReserved	:dword;
+				lpType		:dword;
+				lpData		:string;
+				lpSize		:dword
+		);
+			@stdcall;
+			@external( "__imp__RegSetValueExA@24" );
+
+	RegCloseKey :procedure( key:dword );
+		@stdcall;
+		@external( "__imp__RegCloseKey@4" );
+
+
+
+	procedure getYorN;
+	begin getYorN;
+
+		forever
+
+			stdin.flushInput();
+			stdin.getc();
+			chars.toUpper( al );
+			breakif( al in {'Y','N'} );
+			stdout.put( nl "Must specify 'y' or 'n', continue? (y/n): " );
+
+		endfor;
+		cmp( al, 'Y' );
+		sete( al );
+		movzx( al, eax );
+
+	end getYorN;
+
+
+begin initHLA;
+
+	RegOpenKeyEx
+	(
+		w.HKEY_CURRENT_USER,
+		"Environment",
+		0,
+		w.KEY_READ | w.KEY_WRITE,
+		uHndl
+	);
+	if( eax <> 0 ) then
+
+		stdout.put( "Error, could not open registry for modification" nl );
+		exit initHLA;
+
+	endif;
+
+	console.cls();
+	stdout.put
+	( 
+		nl
+		"        ---- Win32 Initialization for HLA ----" nl
+		nl
+		"This program modifies your registry to allow proper operation" nl
+		"of the HLA system. It creates the ""hlalib"" and ""hlainc""" nl
+		"environment variables and it creates or extends the ""lib"" and" nl
+		"""path"" environment variables." nl
+		nl
+		"This program is intended to be run by those who've 'installed'" nl
+		"HLA by simply copying the HLA files to their hard drive. You do" nl
+		"not need to run this program if you've run the HLA install program" nl
+		"or you've manually set up the environment variables (however, it" nl
+		"doesn't *hurt* anything if you run this program)." nl
+		nl
+		"Do you wish to continue? (y/n):"
+	);
+	getYorN();
+	if( !eax ) then
+
+		stdout.put( nl "Goodbye!" nl );
+		exit initHLA;
+
+	endif;
+
+	console.cls();
+	stdout.put
+	( 
+		nl
+		"        ---- Win32 Initialization for HLA ----" nl
+		nl
+		"By default, this program assumes that you've installed the HLA" nl
+		"software on your C: drive." nl
+		nl
+		"Is this a correct assumption? (y/n):"
+	);
+	getYorN();
+	if( !eax ) then
+	
+		forever
+
+			stdout.put
+			( 
+				"Enter the drive letter were you've installed HLA "
+				"(a/b/c/.../z):"
+			);
+			stdin.flushInput();
+			stdin.getc();
+			chars.toLower(al );
+			breakif( al in {'a'..'z'} );
+			stdout.put( nl "Illegal drive letter!" nl );
+
+		endfor;
+		mov( al, driveLetter );
+
+	endif;
+
+	console.cls();
+	stdout.put
+	(
+		nl
+		"        ---- Win32 Initialization for HLA ----" nl
+		nl
+		"This software assumes that you've installed the HLA software in the" nl
+		"'", 
+		driveLetter, 
+		":\hla' subdirectory. If this is not the case," nl
+		"then this software will not set up the system properly. Is it the" nl
+		"case that you've copied the HLA software to the '",
+		driveLetter,
+		"' subdirectory? (y/n):"
+	);
+	getYorN();
+	if( !eax ) then
+	
+		stdout.put
+		( 
+			"Cannot initialize system. Either move the HLA software to the" nl
+			"'",
+			driveLetter,
+			"' directory, run the HLA installer program, or" nl
+			"manually set the environment variables (as described in the" nl
+			"HLA reference manual)." nl
+		);
+		exit initHLA;
+
+	endif;
+
+
+
+	console.cls();
+	stdout.put
+	(
+		nl
+		"        ---- Win32 Initialization for HLA ----" nl
+		nl
+	);
+
+
+
+	// Set up the "hlalib" registry entry:
+
+
+	mov( 1020, dataSize );
+	RegQueryValueEx( uHndl, "hlalib", NULL, dataType, data, dataSize );
+	if( eax = 0 ) then
+
+		lea( eax, data );
+		str.a_cpyz( eax );
+		stdout.put
+		( 
+			"User registry entry 'hlalib' already existed and had the value: " nl, 
+			"'", (type string eax), "'" nl nl 
+		);
+		strfree( eax );
+
+	endif;
+
+	mov( hlalib, ebx );
+	str.cpy( "c:\hla\hlalib\hlalib.lib", ebx );
+	mov( driveLetter, al );
+	mov( al, [ebx] );
+	stdout.put( "Setting user 'hlalib' registry entry to '", hlalib, "'" nl nl );
+	mov( (type str.strRec [ebx]).length, ecx );
+	inc( ecx );
+	RegSetValueEx
+	( 
+		uHndl, 
+		"hlalib", 
+		NULL, 
+		w.REG_SZ, 
+		hlalib, 
+		ecx 
+	);
+
+
+
+	// Set up the "hlainc" system registry entry:
+
+	mov( 1020, dataSize );
+	mov( 0, data );
+	RegQueryValueEx( uHndl, "hlainc", NULL, dataType, data, dataSize );
+	if( eax = 0 ) then
+
+		lea( eax, data );
+		str.a_cpyz( eax );
+		stdout.put
+		( 
+			"User registry entry 'hlainc' already existed and "
+			"had the value: " nl, 
+			"'", (type string eax), "'" nl nl 
+		);
+		strfree( eax );
+
+	endif;
+
+	mov( hlainc, ebx );
+	str.cpy( "c:\hla\include", ebx );
+	mov( driveLetter, al );
+	mov( al, [ebx] );
+	stdout.put( "Setting user 'hlainc' registry entry to '", hlainc, "'" nl nl );
+	mov( (type str.strRec [ebx]).length, ecx );
+	inc( ecx );
+	RegSetValueEx
+	( 
+		uHndl, 
+		"hlainc", 
+		NULL, 
+		w.REG_SZ, 
+		hlainc, 
+		ecx 
+	);
+
+
+	// Set up the "lib" registry entry.
+
+	mov( 1020, dataSize );
+	mov( 0, data );
+	RegQueryValueEx( uHndl, "lib", NULL, dataType, data, dataSize );
+	if( eax = 0 ) then
+
+		lea( eax, data );
+		str.a_cpyz( eax );
+		stdout.put
+		( 
+			"User registry entry 'lib' already existed and had the value: " nl, 
+			"'", (type string eax), "'" nl nl 
+		);
+		mov( lib, ebx );
+		str.cpy( eax, ebx );
+		strfree( eax );
+		str.a_cpy( ebx );
+
+		// Add 'x:\hla\hlalib' to the current string if it's not already
+		// there:
+
+		mov( eax, ecx );
+		str.upper( ecx );
+		str.put( indexStr, driveLetter, ":\HLA\HLALIB" );
+		str.upper( indexStr );
+		str.index( ecx, indexStr );
+		strfree( ecx );
+		if( eax = -1 ) then // It's not there
+
+			// "x:\hla\hlalib" is not already a part of the
+			// lib string, so append it:
+
+			str.put
+			( 
+				tempStr, 
+				(type string ebx), 
+				';', 
+				driveLetter, 
+				":\hla\hlalib" 
+			);
+			str.cpy( tempStr, (type string ebx) );
+
+		endif;
+
+	else
+
+		// 'path' didn't exist before, create a new lib string:
+
+		mov( lib, ebx );
+		str.cpy( "c:\hla\hlalib", ebx );
+		mov( driveLetter, al );
+		mov( al, [ebx] );
+
+	endif;
+
+	stdout.put( "Setting user 'lib' registry entry to '", lib, "'" nl nl );
+	mov( (type str.strRec [ebx]).length, ecx );
+	inc( ecx );
+	RegSetValueEx
+	( 
+		uHndl, 
+		"lib", 
+		NULL, 
+		w.REG_SZ, 
+		lib, 
+		ecx 
+	);
+
+
+
+	// Set up the "path" registry entry:
+
+	mov( 1020, dataSize );
+	mov( 0, data );
+	RegQueryValueEx( uHndl, "path", NULL, dataType, data, dataSize );
+	if( eax = 0 ) then
+
+		lea( eax, data );
+		str.a_cpyz( eax );
+		stdout.put
+		( 
+			"User registry entry 'path' already existed "
+			"and had the value: " nl, 
+			"'", (type string eax), "'" nl nl 
+		);
+		mov( path, ebx );
+		str.cpy( eax, ebx );
+		strfree( eax );
+		str.a_cpy( ebx );
+		mov( eax, ecx );
+		str.upper( ecx );
+		str.put( indexStr, driveLetter, ":\HLA" );
+		str.upper( indexStr );
+		str.index( ecx, indexStr );
+		strfree( ecx );
+		if( eax = -1 ) then
+
+			// "x:\hla" is not already a part of the
+			// path string, so append it:
+
+			str.put( tempStr, path, ';', driveLetter, ":\hla" );
+			str.cpy( tempStr, path );
+
+		endif;
+
+	else
+
+		// 'path' didn't exist before, create a new lib string:
+
+		mov( path, ebx );
+		str.cpy( "c:\hla", ebx );
+		mov( driveLetter, al );
+		mov( al, [ebx] );
+
+	endif;
+
+	mov( path, ebx );
+	stdout.put( "Setting user 'path' registry entry to '", path, "'" nl );
+	mov( (type str.strRec [ebx]).length, ecx );
+	inc( ecx );
+	RegSetValueEx
+	( 
+		uHndl, 
+		"path", 
+		NULL, 
+		w.REG_SZ, 
+		path, 
+		ecx 
+	);
+
+
+	RegCloseKey( uHndl );
+
+
+	stdout.put
+	( 
+		nl 
+		nl 
+		"Note: you may need to restart a new command line window (or even" nl
+		"restart your system) for these changes to take effect." nl
+		nl
+		"Press Enter to Continue:"
+	);
+	stdin.readLn();
+
+
+end initHLA;
+           
+

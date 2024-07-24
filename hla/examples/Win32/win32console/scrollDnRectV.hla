@@ -1,0 +1,50 @@
+unit consoleUnit;
+#include( "win32cons.hhf" );
+
+
+
+
+
+// scrollDnRectv-
+//
+//	Basically the same as scrollDnRect except the rectangle
+//	coordinates are specified via a small_rect record.
+
+procedure win32cons.scrollDnRectv
+( 
+		n:		uns16;
+		fill:	char;
+		attr:	word; 
+	var rect:	win.small_rect 
+);	@nodisplay;
+begin scrollDnRectv;
+
+	push( eax );
+	mov( rect, eax );
+	win32cons.scrollDnRect
+	( 
+		n, 
+		fill, 
+		attr, 
+		#{ push( (type win.small_rect [eax]).top ); }#,
+		#{ push( (type win.small_rect [eax]).left ); }#,
+		#{ push( (type win.small_rect [eax]).bottom ); }#,
+		#{ push( (type win.small_rect [eax]).right ); }#
+	);
+	pop( eax );
+
+end scrollDnRectv;
+
+
+
+
+
+
+
+
+
+	
+
+
+
+end consoleUnit;

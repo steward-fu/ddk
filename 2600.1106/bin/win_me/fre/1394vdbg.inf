@@ -1,0 +1,68 @@
+; 1394VDEV.INF -- 1394VDEV/1394DIAG device .inf for Windows 98 and Windows NT 
+
+[Version]
+signature="$CHICAGO$"
+Class=1394Devices
+ClassGuid={66f250d6-7801-4a64-b139-eea80a450b24}
+Provider=%Msft%
+LayoutFile=LAYOUT.INF
+
+[DestinationDirs]
+1394Core.CopyDriver=10,system32\drivers
+1394Core.CopyInf=17
+
+; =================== Class Sections ===========================
+
+[ClassInstall]
+Addreg=1394DevicesClassReg
+
+[1394DevicesClassReg]
+HKR,,,0,%1394DevicesClassName%
+HKR,,Icon,,-21
+HKR,,"DevLoader",,"*NTKERN"
+HKR,,"NTMPDriver",,"1394vdbg.sys"
+HKR,,"PreLoadDrivers",,"1394vdbg.sys"
+HKR,,"EnumPropPages",,""
+
+[Manufacturer]
+%MicrosoftMfg%=Microsoft
+
+; =================== Microsoft ========================
+
+[Microsoft]
+%V1394\VIRTUAL_HOST_DEBUGGER.DeviceDesc%=1394VDBG,V1394\VIRTUAL_HOST_DEBUGGER
+
+;
+; 1394vdbg
+;
+[1394VDBG]
+CopyFiles=1394CORE.CopyDriver,1394CORE.CopyInf
+AddReg=1394DevicesClassReg
+
+[1394VDBG.Services]
+AddService=1394VDBG,2,1394VDBG_ServiceInstall
+
+[1394VDBG_ServiceInstall]
+DisplayName=%V1394\VIRTUAL_HOST_DEBUGGER.DeviceDesc%
+ServiceType=1
+StartType=0
+ErrorControl=1
+ServiceBinary=%12%\1394vdbg.sys
+
+[1394CORE.CopyDriver]
+1394vdbg.sys
+
+[1394CORE.CopyInf]
+1394vdbg.inf
+
+;
+; Strings
+;
+[Strings]
+Msft="Microsoft"
+MicrosoftMfg="Microsoft"
+
+1394DevicesClassName="1394 Virtual Debugger Device"
+
+V1394\VIRTUAL_HOST_DEBUGGER.DeviceDesc="1394 Virtual Host Debugger I/O Driver"
+

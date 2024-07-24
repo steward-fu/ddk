@@ -1,0 +1,345 @@
+#if( !@defined( shell32_hhf ))
+?shell32_hhf := @global:true;
+
+static
+
+CheckEscapes : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__CheckEscapesA@8" );
+
+CheckEscapesW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__CheckEscapesW@8" );
+
+CommandLineToArgvW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__CommandLineToArgvW@8" );
+
+DoEnvironmentSubst : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DoEnvironmentSubstA@8" );
+
+DoEnvironmentSubstW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DoEnvironmentSubstW@8" );
+
+DragAcceptFiles : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DragAcceptFiles@8" );
+
+DragFinish : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DragFinish@4" );
+
+DragQueryFile : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DragQueryFileA@16" );
+
+DragQueryFileAorW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__@24" );
+
+DragQueryFileW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DragQueryFileW@16" );
+
+DragQueryPoint : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DragQueryPoint@8" );
+
+DuplicateIcon : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__DuplicateIcon@8" );
+
+ExtractAssociatedIcon : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractAssociatedIconA@12" );
+
+ExtractAssociatedIconEx : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractAssociatedIconExA@16" );
+
+ExtractAssociatedIconExW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractAssociatedIconExW@16" );
+
+ExtractAssociatedIconW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractAssociatedIconW@12" );
+
+ExtractIcon : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconA@12" );
+
+ExtractIconEx : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconExA@20" );
+
+ExtractIconExW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconExW@20" );
+
+ExtractIconResInfo : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconResInfoA@20" );
+
+ExtractIconResInfoW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconResInfoW@20" );
+
+ExtractIconW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractIconW@12" );
+
+ExtractVersionResource16W : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ExtractVersionResource16W@8" );
+
+FindExeDlgProc : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__FindExeDlgProc@16" );
+
+FindExecutable : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__FindExecutableA@12" );
+
+FindExecutableW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__FindExecutableW@12" );
+
+FreeIconList : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__@FreeIconList8" );
+
+InternalExtractIconList : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__InternalExtractIconListA@12" );
+
+InternalExtractIconListW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__InternalExtractIconListW12@" );
+
+RealShellExecute : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword;p7:dword;p8:dword;p9:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__RealShellExecuteA@40" );
+
+RealShellExecuteEx : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword;p7:dword;p8:dword;p9:dword;p10:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__RealShellExecuteExA@44" );
+
+RealShellExecuteExW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword;p7:dword;p8:dword;p9:dword;p10:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__RealShellExecuteExW@44" );
+
+RealShellExecuteW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword;p7:dword;p8:dword;p9:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__RealShellExecuteW@40" );
+
+RegenerateUserEnvironment : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__RegenerateUserEnvironment@8" );
+
+SHAppBarMessage : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHAppBarMessage@8" );
+
+SHBindToParent : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHBindToParent@16" );
+
+SHBrowseForFolder : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHBrowseForFolderA@4" );
+
+SHBrowseForFolderW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHBrowseForFolderW@4" );
+
+SHChangeNotify : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHChangeNotify@16" );
+
+SHChangeNotifySuspendResume : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHChangeNotifySuspendResume@16" );
+
+SHCreateDirectoryEx : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHCreateDirectoryExA@12" );
+
+SHCreateDirectoryExW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHCreateDirectoryExW@12" );
+
+SHCreateProcessAsUserW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHCreateProcessAsUserW@4" );
+
+SHEmptyRecycleBin : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHEmptyRecycleBinA@12" );
+
+SHEmptyRecycleBinW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHEmptyRecycleBinW@12" );
+
+SHExtractIconsW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword;p7:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHExtractIconsW@32" );
+
+SHFileOperation : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHFileOperationA@4" );
+
+SHFileOperationW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHFileOperationW@4" );
+
+SHFormatDrive : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHFormatDrive@16" );
+
+SHFreeNameMappings : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHFreeNameMappings@4" );
+
+SHGetDataFromIDList : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDataFromIDListA@20" );
+
+SHGetDataFromIDListW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDataFromIDListW@20" );
+
+SHGetDesktopFolder : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDesktopFolder@4" );
+
+SHGetDiskFreeSpaceA : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDiskFreeSpace@16" );
+
+SHGetDiskFreeSpaceEx : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDiskFreeSpaceExA@16" );
+
+SHGetDiskFreeSpaceExW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetDiskFreeSpaceExW@16" );
+
+SHGetFileInfoA : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetFileInfo@20" );
+
+SHGetFileInfoW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetFileInfoW@20" );
+
+SHGetFolderLocation : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetFolderLocation@20" );
+
+SHGetFolderPath : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetFolderPathA@20" );
+
+SHGetFolderPathW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetFolderPathW@20" );
+
+SHGetIconOverlayIndex : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetIconOverlayIndexA@8" );
+
+SHGetIconOverlayIndexW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetIconOverlayIndexW@8" );
+
+SHGetInstanceExplorer : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetInstanceExplorer@8" );
+
+SHGetMalloc : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetMalloc@4" );
+
+SHGetNewLinkInfo : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetNewLinkInfoA@20" );
+
+SHGetNewLinkInfoW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetNewLinkInfoW@20" );
+
+SHGetPathFromIDList : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetPathFromIDListA@8" );
+
+SHGetPathFromIDListW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetPathFromIDListW@8" );
+
+SHGetSettings : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetSettings@8" );
+
+SHGetSpecialFolderLocation : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetSpecialFolderLocation@12" );
+
+SHGetSpecialFolderPath : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetSpecialFolderPathA@16" );
+
+SHGetSpecialFolderPathW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHGetSpecialFolderPathW@16" );
+
+SHInvokePrinterCommand : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHInvokePrinterCommandA@20" );
+
+SHInvokePrinterCommandW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHInvokePrinterCommandW@20" );
+
+SHIsFileAvailableOffline : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHIsFileAvailableOffline@8" );
+
+SHLoadInProc : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHLoadInProc@4" );
+
+SHLoadNonloadedIconOverlayIdentifiers : procedure;
+	@stdcall; @returns( "eax" );	external( "__imp__SHLoadNonloadedIconOverlayIdentifiers@0" );
+
+SHPathPrepareForWrite : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHPathPrepareForWriteA@16" );
+
+SHPathPrepareForWriteW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHPathPrepareForWriteW@16" );
+
+SHQueryRecycleBin : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHQueryRecycleBinA@8" );
+
+SHQueryRecycleBinW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SHQueryRecycleBinW@8" );
+
+SHUpdateRecycleBinIcon : procedure;
+	@stdcall; @returns( "eax" );	external( "__imp__SHUpdateRecycleBinIcon@0" );
+
+SheChangeDir : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheChangeDirA@4" );
+
+SheChangeDirEx : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheChangeDirExA@4" );
+
+SheChangeDirExW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheChangeDirExW@4" );
+
+SheChangeDirW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheChangeDirW@4" );
+
+SheConvertPathW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheConvertPathW@12" );
+
+SheFullPath : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheFullPathA@12" );
+
+SheFullPathW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheFullPathW@12" );
+
+SheGetCurDrive : procedure;
+	@stdcall; @returns( "eax" );	external( "__imp__SheGetCurDrive@0" );
+
+SheGetDir : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheGetDirA@8" );
+
+SheGetDirExW : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheGetDirExW@12" );
+
+SheGetDirW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheGetDirW@8" );
+
+SheGetPathOffsetW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheGetPathOffsetW@4" );
+
+SheRemoveQuotes : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheRemoveQuotesA@4" );
+
+SheRemoveQuotesW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheRemoveQuotesW@4" );
+
+SheSetCurDrive : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheSetCurDrive@4" );
+
+SheShortenPath : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheShortenPathA@8" );
+
+SheShortenPathW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__SheShortenPathW@8" );
+
+ShellAbout : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellAboutA@16" );
+
+ShellAboutW : procedure (p0:dword;p1:dword;p2:dword;p3:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellAboutW@16" );
+
+ShellExecute : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__@ShellExecuteA@24" );
+
+ShellExecuteEx : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellExecuteExA@4" );
+
+ShellExecuteExW : procedure (p0:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellExecuteExW@4" );
+
+ShellExecuteW : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellExecuteW@24" );
+
+ShellHookProc : procedure (p0:dword;p1:dword;p2:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__ShellHookProc@12" );
+
+Shell_NotifyIcon : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__Shell_NotifyIconA@8" );
+
+Shell_NotifyIconW : procedure (p0:dword;p1:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__Shell_NotifyIconW@8" );
+
+WOWShellExecute : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword);
+	@stdcall; @returns( "eax" );	external( "__imp__WOWShellExecute@28" );
+
+_WOWShellExecute : procedure (p0:dword;p1:dword;p2:dword;p3:dword;p4:dword;p5:dword;p6:dword);
+	@stdcall; @returns( "eax" );	external( "__imp___WOWShellExecute@28" );
+
+
+#endif
+
+
+
+
+

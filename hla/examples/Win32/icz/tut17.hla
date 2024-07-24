@@ -1,0 +1,10 @@
+//Iczelion's tutorial #17: Dynamic Link Library (1)
+program callDLL;
+
+static
+	TestFunction: procedure; external( "__imp_TestFunction" );
+
+begin callDLL;
+	TestFunction();
+end callDLL;
+

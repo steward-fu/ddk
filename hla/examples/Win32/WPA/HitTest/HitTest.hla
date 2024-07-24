@@ -1,0 +1,317 @@
+// HitTest.hla-
+//
+//	A program that demonstrates testing a mouse press to see if it occurs within some region.
+//
+// Note: this is a unit because it uses the WinMail library module that
+//		 provides a win32 main program for us.
+
+unit HitTest;
+
+// Set the following to true to display interesting information
+// about the bitmap file this program opens. You must be running
+// the "DebugWindow" application for this output to appear.
+
+?debug := false;
+
+#includeonce( "w.hhf" )
+#includeonce( "wpa.hhf" )
+#includeonce( "winmain.hhf" )
+
+?@NoDisplay := true;
+?@NoStackAlign := true;
+
+const
+	numColorBoxes := 4;
+	numFillRects := 16;
+	
+type
+	cSrc_t	:record
+	
+				r:	w.RECT;
+				c:	w.COLORREF; 
+
+	endrecord;
+	
+static
+	curColor	:w.COLORREF := RGB( $ff, $ff, $ff );
+	ColorSrcs	:cSrc_t [numColorBoxes] :=
+				[
+					cSrc_t:[ w.RECT:[10, 10,40, 40], RGB(255,0,0)],
+					cSrc_t:[ w.RECT:[10, 60,40, 90], RGB(0,255,0)],
+					cSrc_t:[ w.RECT:[10,110,40,140], RGB(0,0,255)],
+					cSrc_t:[ w.RECT:[10,160,40,190], RGB(255,255,255)]
+				];	
+				
+	RectsToFill	:cSrc_t [numFillRects] :=
+				[
+					cSrc_t:[ w.RECT:[75,  25, 125, 100], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[150, 25, 200, 100], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[225, 25, 275, 100], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[300, 25, 355, 100], RGB(0,0,0)],
+					
+					cSrc_t:[ w.RECT:[75,  125, 125, 200], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[150, 125, 200, 200], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[225, 125, 275, 200], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[300, 125, 355, 200], RGB(0,0,0)],
+					
+					cSrc_t:[ w.RECT:[75,  225, 125, 300], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[150, 225, 200, 300], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[225, 225, 275, 300], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[300, 225, 355, 300], RGB(0,0,0)],
+					
+					cSrc_t:[ w.RECT:[75,  325, 125, 400], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[150, 325, 200, 400], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[225, 325, 275, 400], RGB(0,0,0)],
+					cSrc_t:[ w.RECT:[300, 325, 355, 400], RGB(0,0,0)]
+				];
+	
+readonly
+
+	ClassName	:string := "HitTestWinClass";		// Window Class Name
+	AppCaption	:string := "HitTest Program";		// Caption for Window
+
+	
+	// The dispatch table:
+	//
+	//	This table is where you add new messages and message handlers
+	//	to the program.  Each entry in the table must be a MsgProcPtr_t
+	//	record containing two entries: the message value (a constant,
+	//	typically one of the w.WM_***** constants found in windows.hhf)
+	//	and a pointer to a "MsgProcPtr_t" procedure that will handle the
+	//	message.
+ 
+	
+	Dispatch	:MsgProcPtr_t; @nostorage;
+
+		MsgProcPtr_t	
+			MsgProcPtr_t:[ w.WM_DESTROY, 		&QuitApplication	],
+			MsgProcPtr_t:[ w.WM_PAINT,   		&Paint				],
+			MsgProcPtr_t:[ w.WM_LBUTTONDOWN, 	&LButtonDown		],
+			
+			// Insert new message handler records here.
+			
+			MsgProcPtr_t:[ 0, NULL ];	// This marks the end of the list.
+			
+
+	
+/**************************************************************************/
+/*          W I N M A I N   S U P P O R T   C O D E				          */
+/**************************************************************************/
+
+// initWC - We don't have any initialization to do, so just return:
+
+procedure initWC; @noframe;
+begin initWC;
+
+	ret();
+
+end initWC;
+
+// appCreateWindow-	the default window creation code is fine, so just
+//					call defaultCreateWindow.
+
+procedure appCreateWindow; @noframe;
+begin appCreateWindow;
+
+	jmp defaultCreateWindow;
+
+end appCreateWindow;
+
+
+// appException-
+//
+// Gives the application the opportunity to clean up before
+// aborting when an unhandled exception comes along:
+
+procedure appException( theException:dword in eax );
+begin appException;
+
+	raise( eax );
+
+end appException;
+
+
+
+
+// This is the custom message translation procedure.
+// We're not doing any custom translation, so just return EAX=0
+// to tell the caller to go ahead and call the default translation
+// code.
+
+procedure LocalProcessMsg( var lpmsg:w.MSG ); 
+begin LocalProcessMsg;
+
+	xor( eax, eax );
+
+end LocalProcessMsg;
+			
+	
+/**************************************************************************/
+/*          A P P L I C A T I O N   S P E C I F I C   C O D E	          */
+/**************************************************************************/
+
+
+// QuitApplication:
+//
+//	This procedure handles the w.WM_DESTROY message.
+//	It tells the application to terminate.  This code sends
+//	the appropriate message to the main program's message loop
+//	that will cause the application to terminate.
+	
+procedure QuitApplication( hwnd: dword; wParam:dword; lParam:dword );
+begin QuitApplication;
+
+	// Tell the application to quit:
+
+	w.PostQuitMessage( 0 );
+
+end QuitApplication;
+
+
+
+
+
+// LButtonDown:
+//
+//	This procedure handles the w.WM_LBUTTONDOWN message, which this
+// program uses to capture the mouse.
+
+procedure LButtonDown( hwnd: dword; wParam:dword; lParam:dword );
+var
+	p	:w.POINT;
+	
+begin LButtonDown;
+	
+	push( ebx );
+	push( esi );
+	movsx( (type word lParam), eax );
+	mov( eax, p.x );
+	movsx( (type word lParam[2]), eax );
+	mov( eax, p.y );
+	for( mov( 0, ebx ); ebx < numColorBoxes; inc( ebx )) do
+	
+		intmul( @size(cSrc_t), ebx, esi );
+		w.PtInRect( ColorSrcs.r[ esi ], p );
+		if( eax ) then
+		
+			mov( ColorSrcs.c[esi], eax );
+			mov( eax, curColor ); 
+
+		endif; 
+
+	endfor;
+	for( mov( 0, ebx ); ebx < numFillRects; inc( ebx )) do
+		
+		intmul( @size(cSrc_t), ebx, esi );
+		w.PtInRect( RectsToFill.r[ esi ], p );
+		if( eax ) then
+		
+			mov( curColor, eax );
+			mov( eax, RectsToFill.c[esi] );
+
+		endif; 
+
+	endfor;
+
+	
+	w.InvalidateRect( hwnd, NULL, true );
+	xor( eax, eax );
+	pop( esi );
+	pop( ebx );
+	
+end LButtonDown;
+
+
+
+
+// Paint:
+//
+//	This procedure handles the w.WM_PAINT message.
+
+procedure Paint( hwnd: dword; wParam:dword; lParam:dword );
+
+var
+	hbrush		:dword;
+	hdc			:dword;			// Handle to video display device context.
+	ps			:w.PAINTSTRUCT;	// Used while painting text.
+	r			:w.RECT;
+	
+begin Paint;
+
+
+	// Message handlers must preserve EBX, ESI, and EDI.
+	// (They've also got to preserve EBP, but HLA's procedure
+	// entry code already does that.)
+	
+	push( ebx );
+	push( esi );
+	push( edi );
+
+	// Note that all GDI calls must appear within a 
+	// BeginPaint..EndPaint pair.
+	
+	BeginPaint( hwnd, ps, hdc );
+	
+		for( mov( 0, ebx ); ebx < numFillRects; inc( ebx )) do
+		
+			intmul( @size( cSrc_t ), ebx, esi );
+			w.CreateSolidBrush( RectsToFill.c[ esi ] );
+			mov( eax, hbrush );
+			SelectObject( hbrush );
+			FillRect( RectsToFill.r[esi], hbrush );
+			SelectObject( w.GetStockObject( w.NULL_BRUSH ));  
+			w.DeleteObject( hbrush );
+			Rectangle
+			( 
+				RectsToFill.r.left[ esi ],  
+				RectsToFill.r.top[ esi ],  
+				RectsToFill.r.right[ esi ],  
+				RectsToFill.r.bottom[ esi ]
+			);
+
+		endfor;
+
+		for( mov( 0, ebx ); ebx < numColorBoxes; inc( ebx )) do
+		
+			intmul( @size( cSrc_t ), ebx, esi );
+			w.CreateSolidBrush( ColorSrcs.c[ esi ] );
+			mov( eax, hbrush );
+			SelectObject( hbrush );
+			FillRect( ColorSrcs.r[esi], hbrush );
+			SelectObject( w.GetStockObject( w.NULL_BRUSH ));  
+			w.DeleteObject( hbrush );
+			Rectangle
+			( 
+				ColorSrcs.r.left[ esi ],  
+				ColorSrcs.r.top[ esi ],  
+				ColorSrcs.r.right[ esi ],  
+				ColorSrcs.r.bottom[ esi ]
+			);
+
+		endfor;
+		MoveTo( 50, 0 );
+		LineTo( 50, 200 );
+		LineTo( 0, 200 );
+		
+		// Display the currently selected color:
+		
+		w.SetRect( r, 0, 210, 50, 240 );
+		w.CreateSolidBrush( curColor );
+		mov( eax, hbrush );
+		SelectObject( hbrush );
+		FillRect( r, hbrush );
+		SelectObject( w.GetStockObject( w.NULL_BRUSH ));  
+		w.DeleteObject( hbrush );
+		Rectangle( 0, 210, 50, 240 );
+		
+
+	EndPaint;
+
+	
+	pop( edi );
+	pop( esi );
+	pop( ebx );
+
+end Paint;				
+end HitTest;
+ 

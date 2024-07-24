@@ -1,0 +1,168 @@
+//Iczelion's tutorial #19: Tree View Control
+program aTreeView;
+
+#include("w.hhf")
+
+const
+	IDB_TREE := 4006;
+		
+readonly
+	ClassName : string := "TreeViewWinClass";
+	AppName : string := "Tree View Demo";
+	TreeViewClass :string :=	"SysTreeView32";
+	Parent : string := "Parent Item";
+	Child1 : string := "child1";
+	Child2 : string := "child2";
+			
+static
+	hInstance : dword;
+	hwndTreeView : dword;
+	hParent : dword;
+	hImageList : dword;
+	hDragImageList : dword;
+	DragMode : boolean := false;
+	
+procedure WndProc(hWnd:dword; uMsg:uns32; wParam:dword; lParam:dword);@nodisplay;@stdcall; 
+
+static
+	tvinsert : w.TV_INSERTSTRUCT;
+	hBitmap : dword;
+	tvhit : w.TV_HITTESTINFO;
+	
+begin WndProc;
+    push(edi);
+	if(uMsg = w.WM_CREATE) then
+		w.CreateWindowEx(NULL,TreeViewClass,NULL,
+		                 w.WS_CHILD | w.WS_VISIBLE
+		                 | w.TVS_HASLINES | w.TVS_HASBUTTONS | w.TVS_LINESATROOT,
+		                  0,0,200,400,hWnd,NULL,hInstance,NULL);
+		    mov(eax,hwndTreeView);
+	    w.ImageList_Create(16,16,w.ILC_COLOR16,2,10);
+		    mov(eax,hImageList);
+		w.LoadBitmap(hInstance, val IDB_TREE);
+		  	mov(eax,hBitmap);
+	    w.ImageList_Add(hImageList,hBitmap,NULL);
+	    w.DeleteObject(hBitmap);
+	    w.SendMessage(hwndTreeView,w.TVM_SETIMAGELIST,0,hImageList);
+	    
+	    	mov(NULL,tvinsert.hParent);
+	    	mov(w.TVI_ROOT,tvinsert.hInsertAfter);
+	    	mov(w.TVIF_TEXT | w.TVIF_IMAGE | w.TVIF_SELECTEDIMAGE,tvinsert.u.item.imask);
+	    	mov(Parent,tvinsert.u.item.pszText);
+	    	mov(0,tvinsert.u.item.iImage);
+	    	mov(1,tvinsert.u.item.iSelectedImage);
+	    w.SendMessage(hwndTreeView,w.TVM_INSERTITEM,0,&tvinsert);
+	    	mov(eax,hParent);	
+	    	mov(eax,tvinsert.hParent);
+	    	mov(w.TVI_LAST,tvinsert.hInsertAfter);
+	    	mov(Child1,tvinsert.u.item.pszText);
+	    w.SendMessage(hwndTreeView,w.TVM_INSERTITEM,0,&tvinsert);
+	    	mov(Child2,tvinsert.u.item.pszText);
+	    w.SendMessage(hwndTreeView,w.TVM_INSERTITEM,0,&tvinsert);	
+	elseif(uMsg = w.WM_MOUSEMOVE) then
+		if(DragMode = true) then
+			mov(lParam,eax);
+			and($ffff,eax);
+			mov(lParam,ecx);
+			shr(16,ecx);
+			mov(eax,tvhit.pt.x);
+			mov(ecx,tvhit.pt.y);
+		 w.ImageList_DragMove(eax,ecx);
+		 w.ImageList_DragShowNolock(false); 
+		 w.SendMessage(hwndTreeView,w.TVM_HITTEST,0,&tvhit);
+		 	if(eax <> NULL) then
+		 		w.SendMessage(hwndTreeView,w.TVM_SELECTITEM,w.TVGN_DROPHILITE,eax);
+		 	endif;
+		 w.ImageList_DragShowNolock(true); 
+		endif;
+	elseif(uMsg = w.WM_LBUTTONUP) then
+		if(DragMode = true) then
+			w.ImageList_DragLeave(hwndTreeView);
+			w.ImageList_EndDrag();
+			w.ImageList_Destroy(hDragImageList);
+			w.SendMessage(hwndTreeView,w.TVM_GETNEXTITEM,w.TVGN_DROPHILITE,0);
+			w.SendMessage(hwndTreeView,w.TVM_SELECTITEM,w.TVGN_CARET,eax);
+			w.SendMessage(hwndTreeView,w.TVM_SELECTITEM,w.TVGN_DROPHILITE,0);
+			w.ReleaseCapture();
+			mov(false,DragMode);
+		endif;
+	elseif(uMsg = w.WM_NOTIFY) then	
+		push(edi);
+		mov(lParam,edi);
+		if((type w.NM_TREEVIEW [edi]).hdr.code = w.TVN_BEGINDRAG)  then
+			w.SendMessage(hwndTreeView,w.TVM_CREATEDRAGIMAGE,0,(type w.NM_TREEVIEW [edi]).itemNew.hItem);
+				mov(eax,hDragImageList);
+			w.ImageList_BeginDrag(hDragImageList,0,0,0);
+			w.ImageList_DragEnter(hwndTreeView,
+								(type w.NM_TREEVIEW [edi]).ptDrag.x,
+								(type w.NM_TREEVIEW [edi]).ptDrag.y);
+			w.SetCapture(hWnd);			 
+				mov(true,DragMode);
+		endif;
+		pop(edi);
+	elseif(uMsg = w.WM_DESTROY) then
+		w.PostQuitMessage(NULL);
+	else
+		w.DefWindowProc(hWnd,uMsg,wParam,lParam);
+		exit WndProc;
+	endif;
+
+	xor(eax,eax);
+end WndProc;
+	
+
+procedure WinMain ( hInst : dword; hPrevInst : dword; CmdLine : dword; CmdShow : dword ); @nodisplay;
+
+var
+	wc : w.WNDCLASSEX;
+	msg : w.MSG;
+	hwnd : dword;
+
+begin WinMain; 	
+ 	
+	mov ( @size( w.WNDCLASSEX ), wc.cbSize ); 
+	mov ( w.CS_HREDRAW | w.CS_VREDRAW , wc.style ); 
+	mov ( &WndProc, wc.lpfnWndProc ); 
+	mov ( NULL, wc.cbClsExtra ); 
+	mov ( NULL, wc.cbWndExtra ); 
+	mov ( hInst, wc.hInstance ); 
+	w.LoadIcon ( NULL, val w.IDI_APPLICATION ); 
+	mov ( eax, wc.hIconSm ); 
+	mov ( eax, wc.hIcon ); 
+	w.LoadCursor ( NULL, val w.IDC_ARROW ); 
+	mov ( eax, wc.hCursor ); 
+	mov ( w.COLOR_APPWORKSPACE  , wc.hbrBackground ); 
+	mov ( ClassName, wc.lpszClassName ); 
+	mov ( NULL, wc.lpszMenuName ); 
+	
+	w.RegisterClassEx ( wc); 
+	
+	w.CreateWindowEx
+	(
+		w.WS_EX_CLIENTEDGE, 
+		ClassName, 
+		AppName, 
+		w.WS_OVERLAPPED | w.WS_CAPTION | w.WS_SYSMENU | w.WS_MINIMIZEBOX | w.WS_MAXIMIZEBOX | w.WS_VISIBLE , 
+		w.CW_USEDEFAULT, 
+		w.CW_USEDEFAULT,
+		200,400,
+		NULL,NULL,hInst, NULL
+	); 			
+	
+	mov ( eax, hwnd ); 
+	
+	while ( w.GetMessage ( msg , NULL, 0, 0 ) <> 0 ) do 
+		w.DispatchMessage ( msg ); 
+	endwhile; 			
+	
+	mov ( msg.wParam, eax ); 
+end WinMain;
+
+	
+begin aTreeView;
+	w.GetModuleHandle(NULL);
+		mov(eax,hInstance);
+	w.InitCommonControls();	
+	WinMain( hInstance, NULL, NULL, w.SW_SHOWDEFAULT );
+	w.ExitProcess(eax);
+end aTreeView;

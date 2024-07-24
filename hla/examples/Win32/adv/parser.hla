@@ -1,0 +1,336 @@
+unit parserUnit;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+#include( "gamespecific.hhf" )
+
+readonly
+	synonyms	:synonyms_t[] := synonyms_c;
+
+
+// parse-
+// Parses an input string into the verb, main noun, and secondary noun.
+// Returns true/false in EAX if it successfully parsed an input.
+
+_procedure( parse )
+( 
+		input	:string;
+	var	verb	:dword;
+	var	noun1	:nounPtr;
+	var	noun2	:nounPtr
+);
+const
+	tableEAX	:text := "(type tableNode [eax])";
+		
+var
+	numWords	:uns32;
+	lcInput		:string;
+	newInput	:string;
+	words		:string[512];
+	
+readonly
+	phrases		:phrases_t[ @elements( phrases_c ) ] := phrases_c;
+	noiseWords	:string[ @elements( noiseWords_c ) ] := noiseWords_c;
+	
+	
+	procedure parseError; @noframe;
+	begin parseError; debug( "parseError" );
+	
+		mov( ebp::input, eax );
+		stdout.put( SyntaxError, '''', (type string eax), "'" nl );
+		mov( false, eax );
+		ret();
+		
+	end parseError;
+	
+begin parse; debug( "parse" );
+
+	push( ebx );
+	push( ecx );
+	push( edx );
+	
+	// Initialize the verb, noun1, and noun2 return values
+	// in case there is an error.
+	
+	mov( 0, eax );
+	mov( verb, ebx );
+	mov( eax, [ebx] );
+	mov( noun1, ebx );
+	mov( eax, [ebx] );
+	mov( noun2, ebx );
+	mov( eax, [ebx] );
+	
+	// Convert the string to all lowercase to avoid
+	// case difference problems:
+
+	str.a_lower( input );
+	mov( eax, lcInput );
+
+	// Break the line up into individual words:
+
+	str.tokenize( lcInput, words, 512 );
+	mov( eax, numWords );
+
+	// First, go in an replace any synonyms by their
+	// corresponding words in the line just entered.
+	// Okay, this is an ugly n**2 algorithm, but it's
+	// rare to have a whole lot of synonyms in a game,
+	// so this will still go fast.
+	//
+	// Assumption: new line will fit into 1024 characters.
+	// So don't create synonyms that expand to 100s of chars!
+
+	str.alloc( 1024 );
+	mov( eax, newInput );
+	for( mov( 0, ecx ); ecx < numWords; inc( ecx )) do
+
+		begin processEachWord;
+
+			str.cat( " ", newInput ); 
+			for( mov( 0, edx ); edx < @elements( synonyms ); inc( edx )) do
+
+				if( str.eq( words[ ecx*4 ], synonyms.inputWord[ edx*8 ] )) then
+
+					// If we found a word in the synonym list, we need to
+					// free the current string and replace it by an allocated
+					// copy of the synonym.
+
+					str.cat( synonyms.substitute[edx*8], newInput );
+					exit processEachWord; // No need to continue if match.
+
+				endif;
+
+			endfor;
+			str.cat( words[ ecx*4 ], newInput );
+
+		end processEachWord;
+	
+	endfor;
+	
+	
+	// We have a new line, throw away the old stuff and
+	// tokenize the new line:
+
+	// Free up the strings allocated by str.tokenize:
+
+	for( mov( 0, edx ); edx < numWords; inc( edx )) do
+
+		str.free( words[ edx*4 ] );
+
+	endfor;
+	str.free( lcInput );
+
+	// Create the new tokens:
+
+	mov( newInput, eax );
+	mov( eax, lcInput );
+	str.lower( lcInput );
+	str.tokenize( lcInput, words, 512 );
+	mov( eax, numWords );
+	
+	
+	// Now, translate any phrases appearing in the input to
+	// their corresponding one-word names:
+	
+	str.alloc( 1024 );
+	mov( eax, newInput );
+	
+	// Add an extra entry to the "words" array
+	// so we can go one spot beyond the end of the actual array:
+	
+	mov( numWords, ecx );
+	lea( eax, "" );
+	mov( eax, words[ ecx*4 ] );
+	
+	// Okay, look for phrases in the words array and build up a new
+	// input string:
+	
+	for( mov( 0, ecx ); ecx < numWords; inc( ecx )) do
+	
+		begin processEachPhrase;
+		
+			str.cat( " ", newInput ); 
+			for( mov( 0, edx ); edx < @elements( phrases ); inc( edx )) do
+			
+				intmul( @size( phrases_t ), edx, ebx );
+				if
+				(
+						str.eq
+						( 
+							phrases.firstWord[ ebx ], 
+							words[ ecx*4 ] 
+						)
+					&& 	str.eq
+						(
+							phrases.secondWord[ ebx ],
+							words[ ecx*4 + 4 ]
+						)
+				) then
+					
+					// We matched a two-word phrase. Copy the translation
+					// to the output string and skip the two words on input:
+				
+					str.cat( phrases.translation[ ebx ], newInput );
+					inc( ecx );				// So we skip two words.
+					exit processEachPhrase;	// No need for further checking.
+				
+				endif;
+				
+			endfor;
+			
+			// Okay, the current two words don't match any of the two-word
+			// phrases we're looking for, so append the first word to the
+			// end of our string and try again:
+			
+			str.cat( words[ ecx*4 ], newInput );
+		
+		end processEachPhrase;
+	
+	endfor;
+	
+	// We have a new line, throw away the old stuff and
+	// tokenize the new line:
+
+	// Free up the strings allocated by str.tokenize:
+
+	for( mov( 0, edx ); edx < numWords; inc( edx )) do
+
+		str.free( words[ edx*4 ] );
+
+	endfor;
+	str.free( lcInput );
+
+	// Create the new tokens:
+
+	mov( newInput, eax );
+	mov( eax, lcInput );
+	str.lower( lcInput );
+	str.tokenize( lcInput, words, 512 );
+	mov( eax, numWords );
+	
+	
+	// Okay, one more preprocessing task -- go through and
+	// remove all the noise words from the "words" array:
+	
+	mov( 0, ecx );
+	mov( 0, edx );
+	while( ecx < numWords ) do
+	
+		// Could use a lookup table for this, but there are probably
+		// so few noise words that this is just as efficient. Note that
+		// if the noise words list ever expands to a large number of
+		// words, then this code *should* create an HLA stdlib table
+		// of the words and use that.
+		
+		begin foundNoiseWord;
+		
+			for( mov( 0, ebx ); ebx < @elements( noiseWords ); inc( ebx )) do
+			
+				if( str.eq( words[ ecx*4 ], noiseWords[ ebx*4 ] )) then
+				
+					str.free( words[ ecx*4 ] );
+					exit foundNoiseWord;
+					
+				endif;
+				
+			endfor;
+			mov( words[ ecx*4 ], eax );
+			mov( eax, words[ edx*4 ] );
+			inc( edx );
+		
+		end foundNoiseWord;
+		inc( ecx );
+		
+	endwhile;
+	mov( edx, numWords );
+		
+	
+	// Okay, do the actual parsing (determine the meaning of
+	// the statement):
+
+	begin parsed;
+	
+		mov( numWords, eax );
+		if( eax >= 1 && eax <= 3 ) then
+		
+			verbTable.lookup( words[0*4] );
+			if( eax = NULL ) then
+			
+				parseError();
+				exit parsed;
+				
+			endif;
+			mov( tableEAX.Value, ebx );
+			mov( verb, eax );
+			mov( ebx, [eax] );			
+			if( numWords >= 2 ) then
+			
+				nounTable.lookup( words[1*4] );
+				if( eax = NULL ) then
+				
+					stdout.put
+					(
+						IDontKnowHowToStr,
+						'"',
+						input,
+						"""" nl
+					);
+					mov( false, eax );
+					exit parsed;
+					
+				endif;
+				mov( tableEAX.Value, ebx );
+				mov( noun1, eax );
+				mov( ebx, [eax] );
+
+				if( numWords >= 3 ) then
+				
+					nounTable.lookup( words[2*4] );
+					if( eax = NULL ) then
+					
+						stdout.put
+						(
+							IDontKnowHowToStr,
+							'"',
+							input,
+							"""" nl
+						);
+						mov( false, eax );
+						exit parsed;
+						
+					endif;
+					mov( tableEAX.Value, ebx );
+					mov( noun2, eax );
+					mov( ebx, [eax] );
+				
+				endif;					
+				
+			
+			endif;					
+		
+		else
+		
+			parseError();
+			exit parsed;
+						
+		endif;
+		mov( true, eax );
+		
+	end parsed;
+
+	// Free up the strings allocated by str.tokenize:
+
+	for( mov( 0, edx ); edx < numWords; inc( edx )) do
+
+		str.free( words[ edx*4 ] );
+
+	endfor;
+	str.free( lcInput );
+	pop( edx );
+	pop( ebx );
+	pop( ecx ); 
+	
+end parse;
+
+end parserUnit;

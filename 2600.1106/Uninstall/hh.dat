@@ -1,0 +1,37 @@
+Collection=winddk.col
+
+ddkint;Windows DDK
+GStart;Windows DDK
+kmarch;Windows DDK
+install;Windows DDK
+ddtools;Windows DDK
+acpi;Windows DDK
+battery;Windows DDK
+graphics;Windows DDK
+1284dot4;Windows DDK
+intinput;Windows DDK
+modem;Windows DDK
+multifnc;Windows DDK
+network;Windows DDK
+parallel;Windows DDK
+serial;Windows DDK
+smart;Windows DDK
+still;Windows DDK
+storage;Windows DDK
+stream;Windows DDK
+other;Windows DDK
+buses;Windows DDK
+
+w98gs;Windows DDK\Windows 98/Me
+win98ddk;Windows DDK\Windows 98/Me
+usb;Windows DDK\Windows 98/Me
+iosguide;Windows DDK\Windows 98/Me
+infguide;Windows DDK\Windows 98/Me
+dxddk;Windows DDK\Windows 98/Me
+dbgtools;Windows DDK\Windows 98/Me
+wmeother;Windows DDK\Windows 98/Me
+
+gloss;Windows DDK
+appendix;Windows DDK
+
+ifsk;Windows DDK\IFS Documents

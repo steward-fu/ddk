@@ -1,0 +1,210 @@
+// objlist.hla
+//
+// File containing procedure and method declarations
+// for the object list and node classes.
+
+unit objlistUnit;
+?@nodisplay := true;
+?@nostackalign := true;
+#include( "stdlib.hhf" )
+#include( "age.hhf" )
+
+static
+	
+	objNodeVMT	:VMT( objNode );
+	listVMT		:VMT( objList );
+	
+/**************************************************************************/
+/*                                                                        */
+/* 	                                                                      */
+/* ---------- objNode and objList class methods and procedures ---------- */
+/*                                                                        */
+/*                                                                        */
+/**************************************************************************/
+
+
+	
+	/////////////////////////////////////////////////////////////////////////
+	//
+	// objNode class procedures and methods
+	//
+	//
+	// Overridden destructor and constructor for
+	// the objNode class:
+	
+	_method( objNode.destroy ); @noframe;
+	begin destroy; debug( "objNode.destroy" );
+
+		push( eax );
+		if( isInHeap( esi )) then
+		
+			free( esi );
+			
+		endif;
+		pop( eax );
+		ret();
+		
+	end destroy;
+
+
+	_procedure( objNode.create ); @noframe;
+	begin create; debug( "objNode.create" );
+
+		push( eax );
+		if( esi = NULL ) then
+		
+			mov( malloc( @size( objNode )), esi );
+			
+		endif;
+		mov( &objNode._VMT_, this._pVMT_ );
+		mov( NULL, this.theObject );
+		
+		// Call the ancestor create code to initialize the
+		// inherited fields:
+		
+		(type node [esi]).create();
+		
+		pop( eax );
+		ret();
+		
+	end create;
+	
+	
+	/////////////////////////////////////////////////////////////////////////
+	//
+	// objList class procedures and methods
+	//
+	// objList.create - Constructor for the object list class
+	
+	_procedure( objList.create ); @noframe;
+	begin create;  debug( "objList.create" );
+	
+		push( eax );
+		if( esi = NULL ) then
+		
+			mov( malloc( @size( objList )), esi );
+			
+		endif;
+		
+		// Call the ancestor create code to initialize the
+		// inherited fields:
+		
+		(type list [esi]).create();
+		
+		// Set up our VMT:
+		
+		mov( &objList._VMT_, this._pVMT_ );
+		
+		
+		pop( eax );
+		ret();
+		
+		
+	end create;
+	
+	// objList.destroy - destructor for the object list class:
+	
+	_method( objList.destroy ); @noframe;
+	begin destroy;	debug( "objList.destroy" );
+
+		push( eax );
+		
+		// For each item on the list, call the destructor
+		// for that item:
+		
+		foreach this.nodeInList() do
+		
+			// In this loop, ESI points at
+			// each of the objNode items in the list.
+			
+			(type objNode [esi]).destroy();
+			
+		endfor;
+		
+		// Deallocate storage for this object list, if it
+		// was allocated on the heap.
+		
+		if( isInHeap( esi )) then
+		
+			free( esi );
+			
+		endif;
+		pop( eax );
+		ret();
+		
+	end destroy;
+	
+	
+	// objList.searchNames
+	// Searches for a particular name in the list.
+	// Returns a pointer to the object if found (NULL if not found)
+	// in the EAX register.
+	
+	_method( objList.searchNames )( objName:string );
+	var
+		ESPsave	:dword;
+		
+	begin searchNames; debug( "objList.searchNames" );
+	
+		push( ebx );
+		push( esi );
+		mov( esp, ESPsave );	// To restore ESP if we break out of foreach
+		begin foundItem;
+		
+			foreach this.nodeInList() do
+			
+				mov( (type objNode [esi]).theObject, ebx );
+				exitif( str.eq( objName, (type object [ebx]).objName ))
+					foundItem;
+			
+			endfor;
+			
+			// If we make it down here, then we didn't find "objName"
+			// in the list, so return NULL in EBX:
+			
+			mov( NULL, ebx );
+			
+		end foundItem;
+		mov( ESPsave, esp );	// Restore ESP.
+		mov( ebx, eax );		// Our return value.
+		pop( esi );
+		pop( ebx );		
+		
+	end searchNames;
+	
+	
+	// objList.printDescriptions-
+	// prints the full descriptions of all the items on the list.
+	
+	_method( objList.printDescriptions );
+	begin printDescriptions;  debug( "objList.printDescriptions" );
+	
+		foreach this.nodeInList() do
+		
+			mov( (type objNode [esi]).theObject, esi );
+			(type object [esi]).brieflyDescribe();
+			
+		endfor;
+		
+	end printDescriptions;
+	
+	
+	
+      
+end objlistUnit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    

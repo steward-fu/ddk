@@ -1,0 +1,53 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Clover Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,nmake build,
+2=0,O,nmake buildall,
+3=0,O,nmake compilerc,
+4=0,O,nmake syntax,
+5=0,C,nmake run,
+6=
+[MakeFiles]
+0=Clover.rap
+1=Clover.rc
+2=Clover.asm
+3=Clover.obj
+4=Clover.res
+5=Clover.exe
+6=Clover.def
+7=Clover.dll
+8=Clover.txt
+9=Clover.lib
+10=Clover.mak
+11=Clover.hla
+[Files]
+1=Clover.hla
+2=wpa.hhf
+3=makefile
+4=
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+4=
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

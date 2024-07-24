@@ -1,0 +1,52 @@
+
+// I need a routine to move a char across the screen in a diagonal
+// PLEASE.......
+
+ 
+
+program MoveCharDiagonal;
+#include( "stdlib.hhf" )
+#include( "win32cons.hhf" )
+
+const
+
+	CharToWrite:	string	:= "*";
+	DelayCnt:		uns32	:= 25_000_000;
+
+begin MoveCharDiagonal;
+
+
+	// Clear the screen and position the cursor
+	// at (0,0).
+
+	win32cons.cls();
+	mov( 0, bx );	// X and Y coordinate.
+	
+	win32cons.puts( bx, bx, CharToWrite );
+
+	while( bx < 25 ) do
+
+		// Really ugly software delay loop because I haven't
+		// written a library module for timing yet.  You will
+		// have to adjust the timing constant for different
+		// speed processors:
+
+		for( mov( DelayCnt, eax );  eax > 0; dec( eax )) do
+
+			nop();
+
+		endfor;
+
+		win32cons.puts( bx, bx, " " ); // Overwrite previous character.
+
+		// Move on to next character position
+		// and redraw the character.
+
+		inc( bx );
+		win32cons.puts( bx, bx, CharToWrite );
+
+	endwhile;
+
+end MoveCharDiagonal;
+
+

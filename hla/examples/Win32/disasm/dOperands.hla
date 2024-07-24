@@ -1,0 +1,922 @@
+unit disasmEngine;
+#includeonce( "stdlib.hhf" )
+#includeonce( "disasm.hhf" )
+										  
+?@nostackalign := true;
+?@nodisplay := true;
+?@noframe := true;
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// processSIB-
+//
+//	Addressing mode uses an SIB byte. Grab the byte (pointed at
+//	by ESI) and fill in the dest operand as appropriate.
+
+procedure processSIB   
+(
+	sibByte		:byte in al;
+	modByte		:byte in ah; 
+	var dest	:operand_t in edx
+);
+begin processSIB;
+
+	preserve( ebx );
+
+		// Process the base register value:
+
+		movzx( al, ebx );
+		and( %111, ebx );
+		if( bl = %101 && ah = %00 ) then
+
+			// Special case. MOD=%00 and base = %101.
+			// This means that we don't have a base register
+			// and we *do* have a 32-bit displacement following
+			// the SIB byte.
+
+			mov( %10, ah );
+			mov( none_c, operandEDX.memory.baseReg );
+
+		else
+								 
+			mov( mapX86ToReg32[ebx], bl );
+			mov( bl, operandEDX.memory.baseReg );
+
+		endif;
+
+		// Process the index register value:
+
+		movzx( al, ebx );
+		shr( 3, ebx );
+		and( %111, ebx );
+		mov( mapX86ToReg32[ebx], bl );
+		mov( bl, operandEDX.memory.indexReg );
+
+		// Process the scale value:
+
+		movzx( al, ebx );
+		shr( 6, ebx );		// Move scale bits into bit posns 0..1.
+		and( %11, ebx );
+		mov( mapScale[ebx], bl );
+		mov( bl, operandEDX.memory.scale );
+
+	restore;
+
+end processSIB;
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// modRmMacro-
+//
+// Macro that expands to the "guts" of the modRm and fpModRm procedures.
+//
+// Assumptions:
+//
+//		modrmByte is in al
+//		size (dword) is at [ESP]. 
+//		instrPtr is in esi and points at the byte beyond mod-reg-r/m. 
+//		dest pointer is in edi
+//
+// see modRm and fpModRm for details.
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// modRm-
+//
+//	Converts the mod-r/m field of a mod-reg-r/m byte to its corresponding
+//	operand_t value. Handles optional SIB byte if it is
+//	present and processes any displacements following the instruction.
+//
+// On Input:
+//
+//	modrmByte (AL)-
+//		mod-r/m value for the instruction. (Ignores bits 3-5.)
+//
+//	instrPtr (ESI)-
+//		Points to the byte beyond the mod-reg-r/m byte and any other
+//		operands already processed (will point at SIB byte if this is a mod-r/m
+//		value with an SIB, or at the displacement if no SIB and a displacement
+//		is present; it points beyond any interesting data if this is just a
+//		register operand).
+//
+//	dest (EDX)-
+//		Points at an operand_t where the operand field of the mod-reg-r/m
+//		will be stored. Note that this code ignores the reg field. The caller
+//		always converts a reg item to a mod-R/M value prior to calling this
+//		code.
+//
+// On Return:
+//
+//	ESI-
+//		points at the first byte beyond the bytes
+//		processed by this function.
+//
+//	dest (EDX)-
+//		The fields pertaining to the mod-reg-r/m and possibly SIB bytes are
+//		updated as appropriate.
+
+procedure modRm
+(
+		modrmByte	:byte in al;
+		size		:dword in ecx; 
+		instrPtr	:dword in esi; 
+	var dest		:operand_t in edx
+);
+
+// A table that maps x86 opcode rrr register values plus
+// the current instruction's size to their
+// corresponding disassembler engine constants.
+
+readonly
+	mapRRR2Reg: byte[5,8] :=
+		[
+			[
+				none_c, none_c, none_c, none_c, 
+				none_c, none_c, none_c, none_c
+			],
+
+			[
+				al_c, cl_c, dl_c, bl_c,
+				ah_c, ch_c, dh_c, bh_c
+			],
+
+			[
+				ax_c, cx_c, dx_c, bx_c,
+				sp_c, bp_c, si_c, di_c
+			],
+
+			[
+				none_c, none_c, none_c, none_c, 
+				none_c, none_c, none_c, none_c
+			],
+
+			[
+				eax_c, ecx_c, edx_c, ebx_c,
+				esp_c, ebp_c, esi_c, edi_c
+			]
+		];
+ 
+begin modRm; 
+
+	preserve( ebx, ecx ); // Saves size (ecx) on stack ([esp])
+
+		modRmMacro( mapRRR2Reg, true, [esp] );
+
+	restore;
+
+end modRm;
+
+
+
+// mxModRm-
+// Same as modRm, but for MMX register operands:
+
+procedure mxModRm
+(
+		modrmByte	:byte in al;
+		size		:dword in ecx; 
+		instrPtr	:dword in esi; 
+	var dest		:operand_t in edx
+);
+readonly
+	mapRRR2MReg	:byte[8] := 
+		[
+			mm0_c, mm1_c, mm2_c, mm3_c, mm4_c, mm5_c, mm6_c, mm7_c
+		];
+		 
+begin mxModRm;
+
+	preserve( ebx, ecx );	// Save size (ecx) on stack ([esp])
+
+		modRmMacro( mapRRR2MReg, false, [esp] );
+	
+	restore;
+
+end mxModRm;
+
+
+
+// xModRm-
+// Same as modRm, but for XMM register operands:
+
+procedure xModRm
+(
+		modrmByte	:byte in al;
+		size		:dword in ecx; 
+		instrPtr	:dword in esi; 
+	var dest		:operand_t in edx
+);
+readonly
+	mapRRR2XReg	:byte[8] := 
+		[
+			xmm0_c, xmm1_c, xmm2_c, xmm3_c, xmm4_c, xmm5_c, xmm6_c, xmm7_c
+		];
+		 
+begin xModRm;
+
+	preserve( ebx, ecx );	// Save size (ecx) on stack ([esp])
+
+		modRmMacro( mapRRR2XReg, false, [esp] );
+	
+	restore;
+
+end xModRm;
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Procedures that handle the operands for an instruction.
+//
+// Note: typical names take the form "rXrmY" where "r" indicates a register
+// operand, "rm" indicates a register or memory operand, and "X" and "Y"
+// specify the respective sizes. Note that these names are arranged in
+// "dest,src" order. That is, rX is the destination operand and rmY is the
+// source operand in this example.
+//
+// Note: operand functions and macros must preserve
+//			EBX, ECX, EDX, EBP, and EDI.
+//		They may update ESI as appropriate (to move past operand bytes).
+//		They may trash EAX.
+//
+//
+// segOperand-
+//	Handles segment prefix bytes.
+
+#macro segOperand( segReg[] ):procname;
+
+	?procname:text := @uppercase(segReg[0], 0) + "operand";
+
+	procedure procname( opFuncParms );
+	begin procname; 
+
+		mov( implied_c, instrEDI.secondOp.opClass );
+		mov( implied_c, instrEDI.thirdOp.opClass );
+		mov( register_c, instrEDI.firstOp.opClass );
+		mov( @text( segReg[0] + "eg_c"), instrEDI.firstOp.register );
+		ret();
+
+	end procname;
+
+#endmacro
+
+segOperand( cs )
+segOperand( ds )
+segOperand( es )
+segOperand( fs )
+segOperand( gs )
+segOperand( ss )
+
+///////////////////////////////////////////////////////////////////////////
+//
+// nullOperand-
+//	Called when no special action is necessary.
+
+opProc( nullOperand );
+endOpProc;
+
+
+// r_8-
+//	Operand is an 8-bit memory operand
+
+opProc( r_8, eax, ecx );
+
+	reg( 1 );
+
+endOpProc;
+
+// rm8-
+//	Handles 8-bit register/memory operands 
+
+opProc( rm8, eax, ecx );
+
+	regmem(	1 );
+
+endOpProc;
+
+
+// r16-
+//	Operand is a 16-bit memory operand
+
+opProc( r16, eax, ecx );
+
+	reg( 2 );
+
+endOpProc;
+
+// r32-
+//	Operand is a 32-bit memory operand
+
+opProc( r32, eax, ecx );
+
+	reg( 4 );
+
+endOpProc;
+
+// rm16-
+//	Handles 16-bit register/memory operands 
+
+opProc( rm16, eax, ecx );
+
+	regmem(	2 );
+
+endOpProc;
+
+// rm32-
+//	Handles 32-bit register/memory operands 
+
+opProc( rm32, eax, ecx );
+
+	regmem(	4 );
+
+endOpProc;
+
+
+// r1632-
+//	Handles a register operand that is 16 or 32 bits (depends
+//	on the presence/absence of a size prefix).
+
+opProc( r1632, eax, ecx );
+
+	mov( 2, ecx );			// Assume 16 bits
+	mov( 4, eax );			// If 32 bits.
+	cmp( instrEDI.sizePre, 0 );
+	cmove( eax, ecx );		// Set ecx to 4 if no size prefix present
+	reg( ecx );
+
+endOpProc;
+
+
+// r1632I8-
+//	Handles a register operand that is 16 or 32 bits (depends
+//	on the presence/absence of a size prefix) followed by
+//	an eight-bit immediate constant
+
+opProc( r1632I8, eax, ecx, edx );
+
+	mov( 2, ecx );			// Assume 16 bits
+	mov( 4, eax );			// If 32 bits.
+	cmp( instrEDI.sizePre, 0 );
+	cmove( eax, ecx );		// Set ecx to 4 if no size prefix present
+	reg( ecx );
+	lea( edx, instrEDI.thirdOp );
+	I8( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+
+// r1632CL-
+//	Handles a register operand that is 16 or 32 bits (depends
+//	on the presence/absence of a size prefix) followed by
+//	the CL register
+
+opProc( r1632CL, eax, ecx );
+
+	mov( 2, ecx );			// Assume 16 bits
+	mov( 4, eax );			// If 32 bits.
+	cmp( instrEDI.sizePre, 0 );
+	cmove( eax, ecx );		// Set ecx to 4 if no size prefix present
+	reg( ecx );
+	mov( register_c, instrEDI.thirdOp.opClass );
+	mov( cl_c, instrEDI.thirdOp.register );
+
+endOpProc;
+
+
+
+
+
+// rm1632-
+//	Handles a register/memory operand that is 16 or 32 bits (depends
+//	on the presence/absence of a size prefix).
+
+opProc( rm1632, eax, ecx );
+
+	mov( 2, ecx );			// Assume 16 bits
+	mov( 4, eax );			// If 32 bits.
+	cmp( instrEDI.sizePre, 0 );
+	cmove( eax, ecx );		// Set ecx to 4 if no size prefix present
+	regmem(	ecx );
+
+endOpProc;
+
+
+// I1-
+//	Operand is the immediate constant 1.
+
+opProc( I1, eax, ecx, edi ); 
+
+	// Fake the immediate count of one:
+
+	mov( immediate_c, operandEDX.opClass );
+	mov( 1, operandEDX.immediate );
+
+endOpProc;
+
+
+// IB3- Special case for the INT(3) instruction. It doesn't have a
+// physical operand, but we fake a single immediate byte operand for it.
+
+opProc( IB3, eax, edi );
+
+	mov( immediate_c, operandEDX.opClass );
+	mov( 3, operandEDX.immediate );
+
+endOpProc;
+
+
+// I8-
+//	Operand is an 8-bit immediate constant
+
+opProc( I8, eax );
+
+	imm( operandEDX, 1 );
+	 
+endOpProc;
+
+// I16-
+//	Operand is a 16-bit immediate constant
+
+opProc( I16, eax );
+
+	imm( operandEDX, 2 );
+	 
+endOpProc;
+
+// sxI8-
+//	Handles a single 8-bit immediate operand
+//	that needs to be sign-extended.
+
+opProc( sxI8, eax, edi ); 
+
+	movsx( (type byte [esi]), eax );
+	add( 1, esi );
+	mov( eax, operandEDX.immediate );
+	mov( immediate_c, operandEDX.opClass );
+
+endOpProc; 
+
+// I1632-
+//	Operand is a 16 or 32-bit immediate constant
+
+opProc( I1632, ecx );
+ 
+	if( !instrEDI.sizePre ) then
+		imm( operandEDX, 4 );
+	else
+		imm( operandEDX, 2 );
+	endif;
+
+endOpProc;
+
+
+// rmI1632-
+//	Handles two operands for the intmul instruction.
+//	Operand 2 is an rm1632 operand,
+//	operand 3 is an I1632 operand.
+
+opProc( rmI1632, edx );
+ 
+	rm1632( esi, [edi], [edx], ebx );
+	lea( edx, instrEDI.thirdOp );
+	I1632( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+
+// rm16I8-
+//	Handles two operands for the intmul instruction.
+//	Operand 2 is an rm16 operand,
+//	operand 3 is an I8 operand.
+
+opProc( rm16I8, edx );
+ 
+	rm16( esi, [edi], [edx], ebx );
+	lea( edx, instrEDI.thirdOp );
+	I8( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+
+// rm1632I8-
+//	Handles two operands for the intmul instruction.
+//	Operand 2 is an rm1632 operand,
+//	operand 3 is an I8 operand.
+
+opProc( rm1632I8, edx );
+ 
+	rm1632( esi, [edi], [edx], ebx );
+	lea( edx, instrEDI.thirdOp );
+	I8( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+
+// opReg-
+//	The L.O. three bits of the opcode specify a 16-bit or 32- bit register.
+
+opProc( opReg, eax ); 
+
+	mov( register_c, operandEDX.opClass );
+
+	movzx( (type byte [ebx-1]), eax );	// Refetch the opcode
+	and( %111, eax );					// Extract the register bits.
+
+	// Determine the operand size based on the presence (or absence)
+	// of the size prefix byte.
+
+	if( !instrEDI.sizePre ) then
+
+		// Process the 32-bit register operand:
+
+		mov( mapX86ToReg32[eax], al );
+		mov( al, operandEDX.register );
+
+	else
+
+		// Process the 16-bit register:
+
+		mov( mapX86ToReg16[eax], al );
+		mov( al, operandEDX.register );
+
+	endif;
+
+endOpProc;
+
+
+// opReg8-
+//	The L.O. three bits of the opcode specify an 8-bit register.
+
+opProc( opReg8, eax ); 
+
+	mov( register_c, operandEDX.opClass );
+
+	movzx( (type byte [ebx-1]), eax );	// Refetch the opcode
+	and( %111, eax );					// Extract the register bits.
+	mov( mapX86ToReg8[eax], al );
+	mov( al, operandEDX.register );
+
+endOpProc;
+
+
+// rAL-
+//	Operand is the AL register.
+
+opProc( rAL, eax );
+
+	mov( register_c, operandEDX.opClass );
+	mov( al_c, operandEDX.register );
+
+endOpProc;
+
+// reAX-
+//	Operand is the ax or eax register (determined by the
+//	presence/absence of the size prefix).
+
+opProc( reAX, eax );
+ 
+	mov( register_c, operandEDX.opClass );
+	mov( ax_c, al );
+	if( !instrEDI.sizePre ) then
+		mov( eax_c, al );
+	endif;
+	mov( al, operandEDX.register );
+
+endOpProc;
+
+
+// r_CL-
+//	Operand is the CL register
+
+opProc( r_CL, eax, ecx, edi ); 
+
+	// Fake CL as the operand:
+
+	mov( register_c, operandEDX.opClass );
+	mov( cl_c, operandEDX.register );
+
+endOpProc;
+
+// r_DX-
+//	Operand is the DX register
+
+opProc( r_DX, eax, ecx, edi ); 
+
+	mov( register_c, operandEDX.opClass );
+	mov( dx_c, operandEDX.register );
+
+endOpProc;
+
+// r_CR-
+//	Operand is one of the control registers
+
+opProc( r_CR, eax, ecx, edi ); 
+
+	mov( register_c, operandEDX.opClass );
+	mov( [ebx], al );	// Retrieve mod-reg-r/m byte
+	shr( 3, al );		// Get the reg field
+	and( %111, al );
+	add( cr0_c, al );	// Convert to CR0..CR7
+	mov( al, operandEDX.register );
+
+endOpProc;
+
+
+// r_DR-
+//	Operand is one of the debug registers
+
+opProc( r_DR, eax, ecx, edi ); 
+
+	mov( register_c, operandEDX.opClass );
+	mov( [ebx], al );	// Retrieve mod-reg-r/m byte
+	shr( 3, al );		// Get the reg field
+	and( %111, al );
+	add( dr0_c, al );	// Convert to DR0..DR7
+	mov( al, operandEDX.register );
+
+endOpProc;
+
+
+// r_TR-
+//	Operand is one of the test registers
+
+opProc( r_TR, eax, ecx, edi ); 
+
+	mov( register_c, operandEDX.opClass );
+	mov( [ebx], al );	// Retrieve mod-reg-r/m byte
+	shr( 3, al );		// Get the reg field
+	and( %111, al );
+	add( tr0_c, al );	// Convert to TR0..TR7
+	mov( al, operandEDX.register );
+
+endOpProc;
+
+
+
+
+// oneByteRelDisp-
+//	The operand is a one-byte signed displacement (e.g., for a two-byte
+//	Jcc instruction).
+
+opProc( oneByteRelDisp, eax ); 
+
+	movsx( (type int8 [esi]), eax );
+	add( 1, esi );		// Skip displacement byte
+	add( esi, eax );	// Compute target address
+	mov( eax, operandEDX.displacement );
+	mov( displacement_c, operandEDX.opClass );
+	setLabelType( eax, codeLabel_c );
+
+endOpProc;
+
+// fourByteRelDisp-
+//	The operand is a four-byte signed displacement (e.g., for a call,
+//	jmp, or 5-byte Jcc instruction).
+
+opProc( fourByteRelDisp, eax ); 
+
+	mov( [esi], eax );
+	add( 4, esi );		// Skip displacement value
+	add( esi, eax );	// Compute target address
+	mov( eax, operandEDX.displacement );
+	mov( displacement_c, operandEDX.opClass );
+	setLabelType( eax, codeLabel_c );
+
+endOpProc;
+
+
+// sr16-
+//	Operand is a segment register
+
+opProc( sr16, eax, ecx, edi );
+
+	mov( [ebx], al );	// Get mod-reg-r/m byte
+	and( %00_111_000, eax );
+	shr( 3, eax );
+	mov( mapX86ToSReg16[ eax ], al );
+	mov( al, operandEDX.register );
+	mov( register_c, operandEDX.opClass );
+
+endOpProc;
+
+// disp8-
+//	Operand is an 8-bit memory location
+
+opProc( disp8, eax );
+
+	directAdrs( operandEDX );
+	mov( 1, operandEDX.memory.size ); 
+
+endOpProc;
+
+
+// disp1632-
+//	Operand is a memory location specified by a 32-bit displacement.
+
+opProc( disp1632, eax ); 
+
+	directAdrs( operandEDX );
+
+	// Determine the operand size based on the presence (or absence)
+	// of the size prefix byte.
+
+	mov( 2, al );
+	if( !instrEDI.sizePre ) then
+
+		mov( 4, al );
+
+	endif;
+	mov( al, operandEDX.memory.size );
+
+endOpProc;
+
+// rm48-
+//	Operand is a 48-bit memory location
+
+opProc( rm48, eax, ecx );
+
+	regmem(	6 );
+
+endOpProc;
+
+
+
+// mxr64-
+//	Handles a register operand that is a 64-bit MMX register.
+
+opProc( mxr64, eax, ecx );
+
+	mxreg;
+
+endOpProc;
+
+
+
+
+// xr128-
+//	Reg field of a mod-reg-r/m byte specifies a 128-bit XMM register.
+
+opProc( xr128, eax, ecx );
+
+	xreg;
+	 
+endOpProc;
+
+
+
+// xrm32-
+//	Operand is a 32-bit memory location or 128-bit XMM register 
+
+opProc( xrm32, eax, ecx );
+
+	xregmem( 4 );
+
+endOpProc;
+
+
+
+// xrm64-
+//	Operand is a 64-bit memory location or 128-bit XMM register 
+
+opProc( xrm64, eax, ecx );
+
+	xregmem( 8 );
+
+endOpProc;
+
+
+// xrm128-
+//	Operand is a 128-bit memory location or XMM register 
+
+opProc( xrm128, eax, ecx );
+
+	xregmem( 16 );
+
+endOpProc;
+
+
+// mxrm64-
+//	Operand is a 64-bit memory location or MMX register 
+
+opProc( mxrm64, eax, ecx );
+
+	mxregmem( 8 );
+
+endOpProc;
+
+
+// mxrm64I8-
+//	Operand is a 64-bit memory location or MMX register
+//	followed by an 8-bit immediate operand. 
+
+opProc( mxrm64I8, eax, ecx );
+
+	mxregmem( 8 );
+	lea( edx, instrEDI.thirdOp );
+	I8( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+
+// xrm128I8-
+//	Operand is a 128-bit memory location or XMM register
+//	followed by an 8-bit immediate operand. 
+
+opProc( xrm128I8, eax, ecx );
+
+	xregmem( 16 );
+	lea( edx, instrEDI.thirdOp );
+	I8( esi, [edi], [edx], ebx );
+
+endOpProc;
+
+/////////////////////////////////////////////////////////////////////////
+//
+// The following handle the cmpps, cmpss, cmppd, and cmpsd instructions.
+// Normally, these routines would appear in the dInstrs.hla file, but
+// we have to extract an immediate operand to differentiate these
+// instructions, hence they appear in this file (as we have to grab
+// all the operands to obtain the immediate operand).
+
+
+const
+	cmpInstrs :string[8] :=
+	[
+			"cmpeq", "cmplt", "cmple", "cmpunord", 
+			"cmpneq", "cmpnlt", "cmpnle", "cmpord"
+	];
+			
+#macro cmpXX( _suffix ):suffix, curInstr;
+	?suffix :string := @string( _suffix );
+
+	readonly
+		@text( "cmp" + suffix + "Xlat" ) :dword[8] :=
+		[
+			#for( curInstr := 0 to 6 )
+				@text( cmpInstrs[curInstr] + suffix + "_c"),
+			#endfor
+			@text( "cmpord" + suffix + "_c" )
+		];
+
+	opProc( @text( "cmp" + suffix + "_instrs" ), eax, ecx );
+
+		xregmem( 16 );	// Grab the xmm/m128 operand
+
+		// ESI now points at an I8 value which determines which instruction
+		// we're processing here.
+		
+		movzx( (type byte [esi]), eax );
+		add( 1, esi );
+		mov( undef_instr_c, instrEDI.mnemonic );
+		if( eax <= 7 ) then
+
+			mov( @text( "cmp" + suffix + "Xlat")[eax*4], eax );
+			mov( eax, instrEDI.mnemonic );
+			
+		endif;
+
+	endOpProc;
+
+#endmacro
+
+// cmpps_instrs handles the following instructions:
+//
+//	cmpeqps, 		cmpltps, 		cmpleps,	cmpunordps, 
+//	cmpneqps,		cmpnltps,		cmpnleps,	cmpordps,
+
+cmpXX( ps );
+
+// cmppd_instrs handles the following instructions:
+//
+//	cmpeqpd, 		cmpltpd, 		cmplepd,	cmpunordpd, 
+//	cmpneqpd,		cmpnltpd,		cmpnlepd,	cmpordpd,
+
+cmpXX( pd );
+
+// cmpss_instrs handles the following instructions:
+//
+//	cmpeqss, 		cmpltss, 		cmpless,	cmpunordss, 
+//	cmpneqss,		cmpnltss,		cmpnless,	cmpordss,
+
+cmpXX( ss );
+
+// cmpsd_instrs handles the following instructions:
+//
+//	cmpeqsd, 		cmpltsd, 		cmplesd,	cmpunordsd, 
+//	cmpneqsd,		cmpnltsd,		cmpnlesd,	cmpordsd,
+
+cmpXX( sd );
+			
+
+end disasmEngine;

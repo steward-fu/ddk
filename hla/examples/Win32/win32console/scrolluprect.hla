@@ -1,0 +1,120 @@
+unit consoleUnit;
+#include( "stdout.hhf" );
+#include( "win32cons.hhf" );
+#include( "excepts.hhf" );
+
+
+
+
+
+
+// scrollUpRect-
+//
+//	Scrolls a rectangular region on the screen up
+//	n lines.
+
+
+procedure win32cons.scrollUpRect
+( 
+	n:uns16;
+	fill:char;
+	attr:word; 
+	top:word; 
+	left:word; 
+	bottom:word; 
+	right:word 
+);	@nodisplay;
+
+var
+	csbi: 	win.CONSOLE_SCREEN_BUFFER_INFO;
+	ci:		win.CHAR_INFO;
+	src:	win.small_rect;
+	dest:	win.COORD;
+
+
+begin scrollUpRect;
+
+	pushad();
+	win32cons.info( csbi );
+
+	// Verify that the rectangle is within the
+	// bounds of the screen:
+
+	if
+	(#{
+		mov( top, ax );
+		cmp( ax, bottom );
+		ja true;
+		cmp( ax, csbi.dwSize.Y );
+		jae true;
+
+		mov( left, ax );
+		cmp( ax, right );
+		ja true;
+		cmp( ax, csbi.dwSize.X );
+		jb false;
+	}#) then
+
+		raise( ex.ValueOutOfRange );
+
+	endif;
+
+	mov( n, ax );
+	mov( bottom, bx );
+	sub( top, bx );
+	if(  ax > bx ) then
+
+		// If the number of lines to scroll is greater
+		// than or equal to the size of the screen, 
+		// then just clear the screen.
+
+		win32cons.fillRect( top, left, bottom, right, fill, attr );
+
+	else
+		// Set up the source and destination info:
+
+		mov( top, ax );
+		mov( ax, dest.Y );
+		add( n, ax );
+		mov( ax, src.top );
+
+		mov( left, ax );
+		mov( ax, dest.X );
+		mov( ax, src.left );
+
+		mov( bottom, ax );
+		mov( ax, src.bottom );
+		mov( right, ax );
+		mov( ax, src.right );
+
+		// Set up the fill char and attribute:
+
+		mov( fill, al );
+		mov( al, ci.AsciiChar );
+		mov( attr, ax );
+		mov( ax, ci.Attributes );
+
+		// Okay, scroll the screen up one line:
+
+		win.ScrollConsoleScreenBuffer
+		(
+			ci,
+			#{
+				pushd( (type dword dest));
+			}#,
+			0,	// NULL clipping region.
+			src,
+			stdout.handle()
+		);
+
+	endif;
+	popad();	
+
+end scrollUpRect;
+
+
+
+
+
+
+end consoleUnit;

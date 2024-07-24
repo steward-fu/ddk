@@ -1,0 +1,2058 @@
+program disasm;
+#includeonce( "stdlib.hhf" )
+#includeonce( "disasm.hhf" )
+
+?@nostackalign := true;
+?@nodisplay := true;
+
+
+label StartDisasm;	@external;
+label EndDisasm; @external;
+
+
+// Note: the following constant specifies the object alignment for all
+// the static variables that the test code uses. This number should
+// be set to the number of bytes that your debugger displays per line
+// so that each variable appears as a separate line when looking at the
+// code in the debugger (not that this really matters, but...).
+
+const
+	debugDumpSize := 8;
+
+const
+	operandEDI	:text := "(type operand_t [edi])";
+
+
+// Static variables we use for testing purposes:
+
+static(debugDumpSize)
+
+	// The following declaration is used to create a base address
+	// for printing offsets to variables in the static section.
+	// This is done so that the test file used for regression testing
+	// doesn't produce radically different results whenever the static
+	// segment moves around in memory.
+	//
+	// Note: 
+
+	align(debugDumpSize);
+	StaticBase	:dword;
+
+	sb1			:byte;
+
+	align(debugDumpSize);
+	sw1			:word;
+
+	align(debugDumpSize);
+	sd1			:dword;
+
+	align(debugDumpSize);
+	sq1			:qword;
+
+	align(debugDumpSize);
+	sl1			:lword;
+
+	align(debugDumpSize);
+	sr32		:real32;
+
+	align(debugDumpSize);
+	sr64		:real64;
+
+	sr80		:real80;
+
+	align(debugDumpSize);
+	stb1		:tbyte;
+
+	// Mark the end of the static variables we use.
+
+	align(debugDumpSize);
+	StaticEnd	:dword;
+
+
+
+	myTimer		:timer;
+	totalTime	:uns64;
+	instrCnt	:uns32;
+	speed		:real64;
+	thousand	:int32 := 1000;
+
+
+// isItALabel-
+//	Determines if a 32-bit address is a label in the program.
+//	Returns carry=1 if it is a label and returns the label type in EAX.
+
+procedure isItALabel( adrs:dword in eax );
+begin isItALabel;
+
+	// Dummy version for now:
+
+	mov( notLabel_c, eax );
+	clc();
+	
+end isItALabel;
+
+
+// setLabelType-
+//	Passed an offset into the data/code and a label type.
+//	Whomever calls the disassembler engine needs to associate this
+//	offset with the specified label type in the future.
+
+procedure setLabelType( adrs:dword; lType:label_t );
+begin setLabelType;
+
+	// For this demo, just ignore the new label type.
+
+end setLabelType;
+
+
+procedure dumpInstr( base:dword; adrs:dword; var instr:instr_t );
+
+	procedure putName( nameAdrs:dword );
+	begin putName;
+
+		push( eax );
+		mov( nameAdrs, eax );
+		if( eax = &sb1 ) then
+
+			stdout.put( "sb1" );
+
+		elseif( eax = &sw1 ) then
+
+			stdout.put( "sw1" );
+
+		elseif( eax = &sd1 ) then
+
+			stdout.put( "sd1" );
+
+		elseif( eax = &sq1 ) then
+
+			stdout.put( "sq1" );
+
+		elseif( eax = &sl1 ) then
+
+			stdout.put( "sl1" );
+
+		elseif( eax = &sr32 ) then
+
+			stdout.put( "sr32" );
+
+		elseif( eax = &sr64 ) then
+
+			stdout.put( "sr64" );
+
+		elseif( eax = &sr80 ) then
+
+			stdout.put( "sr80" );
+
+		elseif( eax = &stb1 ) then
+
+			stdout.put( "stb1" );
+
+		else
+
+			stdout.put( "???" );
+
+		endif;		
+		pop( eax );
+
+	end putName;
+
+	procedure dumpOp( opClass:operandClass_t in al; var operand:operand_t );
+	begin dumpOp;
+
+		push( edi );
+		mov( operand, edi );
+		if( al = register_c ) then
+
+			movzx( operandEDI.register, eax );
+			stdout.put( regStrs[ eax*4] );
+
+		elseif( operandEDI.opClass = memory_c ) then
+
+			movzx( operandEDI.memory.size, eax );
+			stdout.put( " size: ", (type uns32 eax));
+			movzx( operandEDI.memory.baseReg, eax );
+			stdout.put( " base: ", regStrs[eax*4] );
+
+			movzx( operandEDI.memory.indexReg, eax );
+			stdout.put( " index: ", regStrs[eax*4] );
+
+			stdout.put( " scale: ", operandEDI.memory.scale );
+
+			
+			stdout.put( " offset: " );
+			mov( operandEDI.memory.offset, eax );
+			if( eax >= &StaticBase && eax <= &StaticEnd ) then
+
+				// Note: print the offset from StaticBase as the
+				// variable's offset rather than it's true memory
+				// address. This makes regression testing easier.
+
+				mov( operandEDI.memory.offset, eax );
+				sub( &StaticBase, eax );
+				stdout.put( "sb+", (type int32 eax), ", " );
+				mov( operandEDI.memory.offset, eax );
+				putName( eax );
+
+			else
+
+				stdout.put( (type int32 eax) );
+
+			endif;
+
+		elseif( al = immediate_c ) then
+
+			stdout.put( " immediate: ", operandEDI.immediate );
+
+		elseif( al = displacement_c ) then
+
+			stdout.put( " displacement: ", operandEDI.displacement );
+
+		endif;
+		stdout.newln();
+		pop( edi );
+
+	end dumpOp;
+
+begin dumpInstr;
+
+	pushad();
+	mov( adrs, esi );
+	mov( instr, edi );
+	mov( esi, eax );
+	sub( base, eax );
+	stdout.put( '$', eax, ": " ); 
+	mov( instrEDI.mnemonic, eax );
+	stdout.put( "(mnemonic:$", ax, "): ", instrStrs[eax], " [ " );
+
+	for( mov( 0, eax ); eax < instrEDI.size; inc( eax )) do
+
+		mov( [esi+eax], ecx );
+		lea( edx, [eax+4] );
+		if
+		( 
+				ecx >= &StaticBase 
+			&&	ecx < &StaticEnd 
+			&&	edx <= instrEDI.size
+		) then
+
+			putName( ecx );
+			stdout.put( ' ' );
+			add( 3, eax );
+
+		else
+
+			mov( [esi+eax], cl );
+			stdout.put( cl, ' ' );
+
+		endif;
+
+	endfor;
+	stdout.put( " ]" nl );
+
+
+		
+
+	stdout.put( stdio.tab, "size: ", instrEDI.size, nl );
+	if( instrEDI.lockPre ) then
+
+		stdout.put( stdio.tab, "has lock", nl );
+
+	endif;
+
+	if( instrEDI.repnePre ) then
+
+		stdout.put( stdio.tab, "has repne", nl );
+
+	endif;
+
+	if( instrEDI.repePre ) then
+
+		stdout.put( stdio.tab, "has repe/rep", nl );
+
+	endif;
+
+	if( instrEDI.sizePre ) then
+
+		stdout.put( stdio.tab, "is 16-bit", nl );
+
+	endif;
+
+	if( instrEDI.csPre ) then
+
+		stdout.put( stdio.tab, "has CS prefix", nl );
+
+	endif;
+
+	if( instrEDI.dsPre ) then
+
+		stdout.put( stdio.tab, "has DS prefix", nl );
+
+	endif;
+
+	if( instrEDI.esPre ) then
+
+		stdout.put( stdio.tab, "has ES prefix", nl );
+
+	endif;
+
+	if( instrEDI.fsPre ) then
+
+		stdout.put( stdio.tab, "has FS prefix", nl );
+
+	endif;
+
+	if( instrEDI.gsPre ) then
+
+		stdout.put( stdio.tab, "has GS prefix", nl );
+
+	endif;
+
+	if( instrEDI.ssPre ) then
+
+		stdout.put( stdio.tab, "has SS prefix", nl );
+
+	endif;
+
+
+	mov( instrEDI.firstOp.opClass, al );
+	if( al <> implied_c ) then
+
+		stdout.put( stdio.tab, "First operand: " ); 
+		dumpOp( al, instrEDI.firstOp );
+
+	endif;
+
+	mov( instrEDI.secondOp.opClass, al );
+	if( al <> implied_c ) then
+
+		stdout.put( stdio.tab, "Second operand: " ); 
+		dumpOp( al, instrEDI.secondOp );
+
+	endif;
+
+	mov( instrEDI.thirdOp.opClass, al );
+	if( al <> implied_c ) then
+
+		stdout.put( stdio.tab, "Third operand: " ); 
+		dumpOp( al, instrEDI.thirdOp );
+
+	endif;
+
+	popad();
+
+end dumpInstr;
+
+
+
+// Some test code to disassemble.
+
+procedure TestDisassembly( parm1:dword; parm2:dword );
+	@noframe;
+var
+	b1	:byte;
+	w1	:word;
+	d1	:dword;
+	q1	:qword;
+	l1	:lword;
+	r321:real32;
+	r641:real64;
+	r801:real80;
+
+var := $80;
+	b2	:byte;
+	w2	:word;
+	d2	:dword;
+	q2	:qword;
+	l2	:lword;
+	r322:real32;
+	r642:real64;
+	r802:real80;
+
+
+begin TestDisassembly;
+
+  StartDisasm::
+
+#if( true );
+
+	add( cl, dl );
+	add( bl, sb1 );
+	add( cx, dx );
+	add( bx, sw1 );
+	add( ecx, edx );
+	add( ebx, sd1 );
+
+	add( sb1, bl );
+	add( sw1, bx );
+	add( sd1, ebx );
+
+	add( al, b1 );
+	add( al, b1[ebx] );
+	add( ax, w1[ebx] );
+	add( eax, d1[ebx] );
+
+	add( b1[ebx], bl );
+	add( w1[ebx], bx );
+	add( d1[ebx], ebx );
+
+	add( al, b1[ebx*2] );
+	add( ax, w1[ebx*2] );
+	add( eax, d1[ebx*2] );
+
+	add( b1[ebx*2], bl );
+	add( w1[ebx*2], bx );
+	add( d1[ebx*2], ebx );
+
+	add( al, b1[ebx*4] );
+	add( ax, w1[ebx*4] );
+	add( eax, d1[ebx*4] );
+
+	add( b1[ebx*4], bl );
+	add( w1[ebx*4], bx );
+	add( d1[ebx*4], ebx );
+
+	add( al, b1[ebx*8] );
+	add( ax, w1[ebx*8] );
+	add( eax, d1[ebx*8] );
+
+	add( b1[ebx*8], bl );
+	add( w1[ebx*8], bx );
+	add( d1[ebx*8], ebx );
+
+
+	add( al, b2[ebx] );
+	add( ax, w2[ebx] );
+	add( eax, d2[ebx] );
+
+	add( b2[ebx], bl );
+	add( w2[ebx], bx );
+	add( d2[ebx], ebx );
+
+	add( al, b2[ebx*2] );
+	add( ax, w2[ebx*2] );
+	add( eax, d2[ebx*2] );
+
+	add( b2[ebx*2], bl );
+	add( w2[ebx*2], bx );
+	add( d2[ebx*2], ebx );
+
+	add( al, b2[ebx*4] );
+	add( ax, w2[ebx*4] );
+	add( eax, d2[ebx*4] );
+
+	add( b2[ebx*4], bl );
+	add( w2[ebx*4], bx );
+	add( d2[ebx*4], ebx );
+
+	add( al, b2[ebx*8] );
+	add( ax, w2[ebx*8] );
+	add( eax, d2[ebx*8] );
+
+	add( b2[ebx*8], bl );
+	add( w2[ebx*8], bx );
+	add( d2[ebx*8], ebx );
+
+	add( sb1, al );
+	add( al, sb1 );
+	add( sb1[ebx], bl );
+	add( bl, sb1[ebx] );
+
+	add( parm1, eax );
+	add( eax, parm2 );
+
+	add( sb1[ebx*1], al );
+	add( [ebx*2+16], al );
+	add( [ebx*4], al );
+
+	add( esi, edi );
+	add( d1, eax );
+	add( d1[ebx], eax );
+	add( ebx, d1[ebx*2] );
+	add( d2[ebx*4], ecx );
+	add( edx, d2[ebx*8] );
+	add( sd1, eax );
+	add( sd1[ebx], ebx );
+	add( sd1[ebx*4], ecx );
+	add( sd1[ecx+ebx*8], edx );
+
+	add( 8, al );
+	add( $100, eax );
+
+	push( eseg );
+	pop( eseg );
+
+	or( bl, sb1 );
+	or( bx, sw1 );
+	or( ebx, sd1 );
+	or( sb1, cl );
+	or( sw1, cx );
+	or( sd1, ecx );
+	or( 8, al );
+	or( $100, eax );
+
+	push( cseg );
+
+	// Do two-byte opcodes elsewhere
+
+	adc( bl, sb1 );
+	adc( bx, sw1 );
+	adc( ebx, sd1 );
+	adc( sb1, cl );
+	adc( sw1, cx );
+	adc( sd1, ecx );
+	adc( 8, al );
+	adc( $100, eax );
+
+	push( sseg );
+	pop( sseg );
+
+	sbb( bl, sb1 );
+	sbb( bx, sw1 );
+	sbb( ebx, sd1 );
+	sbb( sb1, cl );
+	sbb( sw1, cx );
+	sbb( sd1, ecx );
+	sbb( 8, al );
+	sbb( $100, eax );
+
+	push( dseg );
+	pop( dseg );
+
+	and( bl, sb1 );
+	and( bx, sw1 );
+	and( ebx, sd1 );
+	and( sb1, cl );
+	and( sw1, cx );
+	and( sd1, ecx );
+	and( 8, al );
+	and( $100, eax );
+
+	byte $26; // ESEG previx
+	and( al, sb1 );
+	daa();
+
+	sub( bl, sb1 );
+	sub( bx, sw1 );
+	sub( ebx, sd1 );
+	sub( sb1, cl );
+	sub( sw1, cx );
+	sub( sd1, ecx );
+	sub( 8, al );
+	sub( $100, eax );
+
+	byte $2E; // CSEG previx
+	sub( al, sb1 );
+	das();
+
+	xor( bl, sb1 );
+	xor( bx, sw1 );
+	xor( ebx, sd1 );
+	xor( sb1, cl );
+	xor( sw1, cx );
+	xor( sd1, ecx );
+	xor( 8, al );
+	xor( $100, eax );
+
+	byte $36; // SSEG previx
+	xor( al, sb1 );
+	aaa();
+
+	cmp( sb1, bl );
+	cmp( sw1, bx );
+	cmp( sd1, ebx );
+	cmp( cl, sb1 );
+	cmp( cx, sw1 );
+	cmp( ecx, sd1 );
+	cmp( al, 8 );
+	cmp( eax, $100 );
+
+	byte $3E; // DSEG previx
+	cmp( sb1, al );
+	aas();
+
+	inc( eax );
+	inc( ebx );
+	inc( ecx );
+	inc( edx );
+	inc( esi );
+	inc( edi );
+	inc( ebp );
+	inc( esp );
+
+	inc( ax );
+	inc( bx );
+	inc( cx );
+	inc( dx );
+	inc( si );
+	inc( di );
+	inc( bp );
+	inc( sp );
+
+	dec( eax );
+	dec( ebx );
+	dec( ecx );
+	dec( edx );
+	dec( esi );
+	dec( edi );
+	dec( ebp );
+	dec( esp );
+
+	dec( ax );
+	dec( bx );
+	dec( cx );
+	dec( dx );
+	dec( si );
+	dec( di );
+	dec( bp );
+	dec( sp );
+
+	push( eax );
+	push( ebx );
+	push( ecx );
+	push( edx );
+	push( esi );
+	push( edi );
+	push( ebp );
+	push( esp );
+
+	push( ax );
+	push( bx );
+	push( cx );
+	push( dx );
+	push( si );
+	push( di );
+	push( bp );
+	push( sp );
+
+	pop( eax );
+	pop( ebx );
+	pop( ecx );
+	pop( edx );
+	pop( esi );
+	pop( edi );
+	pop( ebp );
+	pop( esp );
+
+	pop( ax );
+	pop( bx );
+	pop( cx );
+	pop( dx );
+	pop( si );
+	pop( di );
+	pop( bp );
+	pop( sp );
+
+	pushad();
+	pusha();
+	popad();
+	popa();
+	bound( eax, sd1 );
+	arpl( ax, sw1 );
+
+	byte $64;		// FS prefix byte
+	add( b1, al );
+
+	byte $65;		// GS prefix byte
+	add( b1, al );
+
+	add( ax, bx );	// Has size prefix byte
+
+	byte $67;		// adrs prefix byte
+	add( b1, al );
+
+	pushd( $1234_5678 );
+	pushw( $9012 );
+
+	intmul( $100, eax, ebx );
+	intmul( $200, sd1, ecx );
+	intmul( $300, dx, si );
+	intmul( $400, sw1, di );
+	
+	pushw( 16 );
+	pushw( -16 );
+	pushd( 32 );
+	pushd( -32 );
+
+	intmul( 1, eax, ebx );
+	intmul( 2, sd1, ecx );
+	intmul( 3, dx, si );
+	intmul( 4, sw1, di );
+
+	insb();
+	insw();
+	insd();
+
+	outsb();
+	outsw();
+	outsd();
+
+	jo endBranches;
+	jno endBranches;
+	jc endBranches;
+	jnc endBranches;
+	jz endBranches;
+	jnz endBranches;
+	jbe endBranches;
+	ja endBranches;
+	js endBranches;
+	jns endBranches;
+	jp endBranches;
+	jnp endBranches;
+	jl endBranches;
+	jge endBranches;
+	jle endBranches;
+	jg endBranches;
+  endBranches:
+
+	add( 1, bl );
+	add( 2, bx );
+	add( 3, ebx );
+	add( $1234, bx );
+	add( $1234, ebx );
+
+	add( 4, sb1 );
+	add( 5, sw1 );
+	add( 6, sd1 );
+	add( $1234, sw1 );
+	add( $1234, sd1 );
+
+	byte $82;			// 8-bit immediate instruction
+	byte %11_000_011;	// ADD, BL.
+	byte $12;
+
+	byte $80;			// 8-bit immediate instruction
+	byte %11_000_011;	// ADD, BL.
+	byte $34;
+
+	test( cl, dl );
+	test( cx, dx );
+	test( ecx, edx );
+
+	test( sb1, bl );
+	test( sw1, bx );
+	test( sd1, ebx );
+
+	test( bl, sb1 );
+	test( bx, sw1 );
+	test( ebx, sd1 );
+
+	xchg( cl, dl );
+	xchg( cx, dx );
+	xchg( ecx, edx );
+
+	xchg( sb1, bl );
+	xchg( sw1, bx );
+	xchg( sd1, ebx );
+
+	xchg( bl, sb1 );
+	xchg( bx, sw1 );
+	xchg( ebx, sd1 );
+
+	mov( bl, sb1 );
+	mov( bl, sb1[ebx] );
+	mov( bx, sw1 );
+	mov( ebx, sd1 );
+	mov( sb1, bl );
+	mov( sb1[ebx], bl );
+	mov( sw1, bx );
+	mov( sd1, ebx );
+
+	//mov( ax, cseg );
+	mov( bx, dseg );
+	mov( cx, eseg );
+	mov( dx, fseg );
+	mov( bp, gseg );
+
+	lea( edx, sb1 );
+	lea( ebx, sw1 );
+	lea( ecx, sd1 );
+
+	mov( cseg, ax );
+	mov( dseg, bx );
+	mov( eseg, cx );
+	mov( fseg, dx );
+	mov( gseg, bp );
+
+	pop( sw1 );
+	pop( sd1 );
+
+	byte $8f; 			// pop mod-reg-r/m
+	byte %11_000_000;	// eax
+
+	nop();
+	xchg( eax, eax );
+	xchg( eax, ecx );
+	xchg( ecx, eax );
+	xchg( edx, eax );
+	xchg( ebx, eax );
+	xchg( esp, eax );
+	xchg( ebp, eax );
+	xchg( esi, eax );
+	xchg( edi, eax );
+
+	xchg( ax, ax );
+	xchg( ax, cx );
+	xchg( cx, ax );
+	xchg( dx, ax );
+	xchg( bx, ax );
+	xchg( sp, ax );
+	xchg( bp, ax );
+	xchg( si, ax );
+	xchg( di, ax );
+
+	cbw();
+	cwde();
+	cwd();
+	cdq();
+
+	wait();
+	fwait();
+
+	pushf();
+	pushfd();
+
+	popf();
+	popfd();
+
+	sahf();
+	lahf();
+
+	mov( sb1, al );
+	mov( sw1, ax );
+	mov( sd1, eax );
+
+	mov( al, sb1 );
+	mov( ax, sw1 );
+	mov( eax, sd1 );
+
+	movsb();
+	movsw();
+	movsd();
+
+	cmpsb();
+	cmpsw();
+	cmpsd();
+
+	test( 1, al );
+	test( 2, ax );
+	test( 3, eax );
+	
+	stosb();
+	stosw();
+	stosd();
+
+	lodsb();
+	lodsw();
+	lodsd();
+
+	scasb();
+	scasw();
+	scasd();
+
+	mov( 0, al );
+	mov( 1, bl );
+	mov( 2, cl );
+	mov( 3, dl );
+	mov( 4, ah );
+	mov( 5, bh );
+	mov( 6, ch );
+	mov( 7, dh );
+
+	mov( 0, ax );
+	mov( 1, bx );
+	mov( 2, cx );
+	mov( 3, dx );
+	mov( 4, si );
+	mov( 5, di );
+	mov( 6, bp );
+	mov( 7, sp );
+
+	mov( 0, eax );
+	mov( 1, ebx );
+	mov( 2, ecx );
+	mov( 3, edx );
+	mov( 4, esi );
+	mov( 5, edi );
+	mov( 6, ebp );
+	mov( 7, esp );
+
+	rol( 2, al );
+	ror( 3, sb1 );
+	rcl( 4, ax );
+	rcr( 5, sw1 );
+	shl( 6, eax );
+	shr( 7, sd1 );
+	sar( 8, ebx );
+
+	ret( 4 );
+	ret( 0 );
+
+	les( eax, sd1 );
+	lds( ebx, sd1 );
+
+	mov( 0, bl );
+	mov( 1, bx );
+	mov( 2, ebx );
+	mov( 3, sb1 );
+	mov( 4, sw1 );
+	mov( 5, sd1 );
+
+	
+	byte $C6, $0D;		// Illegal "mov mem,imm8" instruction.
+	byte $C7, $0D;		// Illegal "mov mem,imm32" instruction.
+	byte $66, $C7, $0D;	// Illegal "mov mem,imm16" instruction.
+	
+	
+
+	enter( 1, 2 );
+	leave();
+	byte $ca, 1, 0; // retf(1)
+	byte $cb;		// retf()
+	int(3);
+	int(0);
+	int(1);
+	int(255);
+	into();
+	iret();
+	iretd();
+
+	rol( 1, al );
+	ror( 1, sb1 );
+	rcl( 1, ax );
+	rcr( 1, sw1 );
+	shl( 1, eax );
+	shr( 1, sd1 );
+	sar( 1, ebx );
+
+	rol( CL, al );
+	ror( CL, sb1 );
+	rcl( CL, ax );
+	rcr( CL, sw1 );
+	shl( CL, eax );
+	shr( CL, sd1 );
+	sar( CL, ebx );
+
+	aam();
+	aad();
+	byte $d6; // Undefined instruction
+	xlat();
+
+	fadd( st0, st0 );
+	fadd( st1, st0 );
+	fadd( st2, st0 );
+	fadd( st3, st0 );
+	fadd( st4, st0 );
+	fadd( st5, st0 );
+	fadd( st6, st0 );
+	fadd( st7, st0 );
+
+	fcom( st1 );
+	fsub( st2, st0 );
+	fdiv( st3, st0 );
+	fmul( st4, st0 );
+	fcomp( st5 );
+	fsubr( st6, st0 );
+	fdivr( st7, st0 );
+
+	fld( sr32 );
+	fst( sr32 );
+	fstp( sr32 );
+
+	fldenv( sr32 );
+
+	byte $66, $d9, $25;	// fldenv instruction w/size prefix
+	dword &sr32;
+
+	fstenv( sr32 );
+	fnstenv( sr32 );
+
+	byte $66, $d9, $35;	// fstenv instruction w/size prefix
+	dword &sr32;
+
+	fldcw( sw1 );
+	fstcw( sw1 );
+
+	fld( st1 );
+	fxch( st2 );
+	fnop();
+	fchs();
+	fabs();
+	ftst();
+	fxam();
+	f2xm1();
+	fyl2x();
+	fptan();
+	fpatan();
+	fxtract();
+	fprem1();
+	fdecstp();
+	fincstp();
+	fld1();
+	fldl2t();
+	fldl2e();
+	fldpi();
+	fldlg2();
+	fldln2();
+	fldz();
+	fprem();
+	fyl2xp1();
+	fsqrt();
+	fsincos();
+	frndint();
+	fscale();
+	fsin();
+	fcos();
+
+	fiadd( sd1 );
+	ficom( sd1 );
+	ficomp( sd1 );
+	fimul(sd1 );
+	fisub( sd1 );
+	fisubr( sd1 );
+	fidiv( sd1 );
+	fidivr( sd1 );
+
+	fcmovb( st1, st0 );
+	fcmovbe( st2, st0 );
+	fcmovu( st3, st0 );
+	fcmovnu( st4, st0 );
+	fucompp();
+
+	fild( sd1 );
+
+	fisttp( sw1 );
+	fisttp( sd1 );
+	fisttp( sq1 );
+
+	fist( sd1 );
+	fistp( sd1 );
+
+	fld( sr80 );
+	fstp( sr80 );
+
+	fcmovnb( st1, st0 );
+	fcmovnbe( st2, st0 );
+	fcomi( st0, st3 );
+	fcmovne( st4, st0 );
+	fcmovnu( st5, st0 );
+	fucomi( st0, st6 );
+	fclex();
+	finit();
+
+	fadd( sr64 );
+	fmul( sr64 );
+	fcom( sr64 );
+	fcomp( sr64 );
+	fsub( sr64 );
+	fsubr( sr64 );
+	fdiv( sr64 );
+	fdivr( sr64 );
+
+	fadd( st0, st0 );
+	fadd( st0, st1 );
+	fadd( st0, st2 );
+	fadd( st0, st3 );
+	fadd( st0, st4 );
+	fadd( st0, st5 );
+	fadd( st0, st6 );
+	fadd( st0, st7 );
+
+	fsubr( st0, st2 );
+	fdivr( st0, st3 );
+	fmul( st0, st4 );
+	fsub( st0, st5 );
+	fdiv( st0, st6 );
+
+	ffree( st1 );
+	fst( st2 );
+	fucom( st3 );
+	fstp( st4 );
+	fucomp( st5 );
+
+	faddp( st0, st0 );
+	faddp( st0, st1 );
+	fsubrp( st0, st2 );
+	fdivrp( st0, st3 );
+	fmulp( st0, st4 );
+	fcompp();
+	fsubp( st0, st5 );
+	fdivp( st0, st6 );
+
+	fild( sw1 );
+	
+	fist( sw1 );
+	fistp( sw1 );
+	fbld( stb1 );
+	fild( sq1 );
+	fbstp( stb1 );
+	fistp( sq1 );
+
+	loopne shortDisp;
+	loopz shortDisp;
+	loop shortDisp;
+	jcxz shortDisp;
+	jecxz shortDisp;
+
+	in( $80, al );
+	in( $81, ax );
+	in( $82, eax );
+
+	out( al, $80 );
+	out( ax, $81 );
+	out( eax, $82 );
+
+  shortDisp:
+
+	call shortDisp2;
+	jmp shortDisp2;		// short jmp
+	jmp	StartDisasm;	// near jmp
+
+  shortDisp2:
+
+	in( dx, al );
+	in( dx, ax );
+	in( dx, eax );
+	out( al, dx );
+	out( ax, dx );
+	out( eax, dx );
+
+	lock.add( sd1, eax );
+	repne.cmpsb();
+	repe.cmpsb();
+	hlt();
+	cmc();
+
+	test( 1, sb1 );
+	not( sb1 );
+	not( bl );
+	neg( sb1 );
+	neg( cl );
+	mul( sb1 );
+	mul( bl );
+	imul( sb1 );
+	imul( bl );
+	div( sb1 );
+	div( bl );
+	idiv( sb1 );
+	idiv( bl );
+
+	test( 1, sw1 );
+	not( sw1 );
+	not( bx );
+	neg( sw1 );
+	neg( cx );
+	mul( sw1 );
+	mul( bx );
+	imul( sw1 );
+	imul( bx );
+	div( sw1 );
+	div( bx );
+	idiv( sw1 );
+	idiv( bx );
+
+	test( 1, sd1 );
+	not( sd1 );
+	not( ebx );
+	neg( sd1 );
+	neg( ecx );
+	mul( sd1 );
+	mul( ebx );
+	imul( sd1 );
+	imul( ebx );
+	div( sd1 );
+	div( ebx );
+	idiv( sd1 );
+	idiv( ebx );
+
+	inc( sb1 );
+	inc( sw1 );
+	inc( sd1 );
+	dec( sb1 );
+	dec( sw1 );
+	dec( sd1 );
+	call( ebx );
+	call( [ebx] );
+	jmp( ebx );
+	jmp( [ebx] );
+	push( (type word [ebx]) );
+	push( (type dword [ebx]) );
+
+	sldt( sw1 );
+	streg( sw1 );
+	lldt( sw1 );
+	ltreg( sw1 );
+	verr( sw1 );
+	verw( sw1 );
+
+	sgdt( sd1 );
+	sidt( sd1 );
+	lgdt( sd1 );
+	lidt( sd1 );
+
+	smsw( ax );
+	smsw( sw1 );
+	smsw( [eax] );
+
+	lmsw( ax );
+	lmsw( sw1 );
+	lmsw( [eax] );
+
+
+	invlpg( sb1 );
+
+
+	lar( eax, ebx );
+	//lar( eax, sw1 );
+	lar( ax, bx );
+	lar( cx, sw1 );
+
+	lsl( eax, ebx );
+	//lsl( eax, sw1 );
+	lsl( ax, bx );
+	lsl( cx, sw1 );
+
+
+
+
+
+	clts();
+	invd();
+	wbinvd();
+	ud2();
+	byte $0f, $0d, $00;	// NOP( [eax] );
+
+	movss(  sd1, xmm0 );
+	movsd( sq1, xmm1 );
+	movups( sl1, xmm2 );
+	movupd( sl1, xmm3 );
+
+	movss(  xmm0, sd1 );
+	movsd( xmm1, sq1 );
+	movups( xmm2, sl1 );
+	movupd( xmm3, sl1 );
+
+	movlps( sq1, xmm4 );
+	movlpd( sq1, xmm5 );
+	movhlps( xmm6, xmm7 );
+
+	movddup( sq1, xmm0 );
+	movddup( xmm1, xmm2 );
+	movsldup( sl1, xmm3 );
+	movsldup( xmm4, xmm5 );
+
+	movlps( sq1, xmm1 );
+	movlpd( sq1, xmm2 );
+
+	unpcklps( sl1, xmm3 );
+	unpcklpd( sl1, xmm4 );
+
+	unpckhps( sl1, xmm3 );
+	unpckhpd( sl1, xmm4 );
+
+	movlps( sq1, xmm4 );
+	movlpd( sq1, xmm5 );
+	movhlps( xmm6, xmm7 );
+
+	movhps( sq1, xmm0 );
+	movhpd( sq1, xmm1 );
+	movlhps( xmm2, xmm3 );
+
+	movshdup( sl1, xmm0 );
+
+	movhps( xmm4, sq1 );
+	movhpd( xmm5, sq1 );	 
+
+	prefetchnta( sb1 );
+	prefetcht0( sb1 );
+	prefetcht1( sb1 );
+	prefetcht2( sb1 );
+	
+	byte $0f, $1f, $00;	// nop( [eax] );
+	byte $66, $0f, $1f, $00; // nop( (type word [eax])); 
+
+	mov( cr0, eax );
+	mov( eax, cr0 );
+	mov( dr0, eax );
+	mov( eax, dr0 );
+
+	byte $0f, $24, $c0;	// mov eax, tr0
+	byte $0f, $26, $c0; // mov tr0, eax
+
+	movaps( sl1, xmm0 );
+	movaps( xmm1, xmm2 );
+	movapd( sl1, xmm3 );
+	movapd( xmm4, xmm5 );
+	movaps( xmm6, sl1 );
+	movaps( xmm7, xmm0 );
+	movapd( xmm1, sl1 );
+	movapd( xmm2, xmm3 );
+
+	cvtpi2ps( mm0, xmm0 );
+	cvtpi2ps( sq1, xmm1 );
+	cvtsi2ss( eax, xmm2 );
+	cvtsi2ss( sd1, xmm3 );
+	cvtpi2pd( mm1, xmm4 );
+	cvtpi2pd( sq1, xmm5 );
+	cvtsi2sd( ebx, xmm6 );
+	cvtsi2sd( sd1, xmm7 );
+
+	movntps( xmm0, sl1 );
+	movntpd( xmm1, sl1 );
+
+	byte $0f, $2b, %11_000_000;			// Illegal! movntps w/reg
+	byte $66, $0f, $2b, %11_000_000;	// Also illegal
+
+	cvttps2pi( xmm0, mm0 );
+
+	cvttps2pi( xmm0, mm0 );
+	cvttps2pi( sq1, mm0 );
+
+	cvttpd2pi( xmm1, mm2 );
+	cvttpd2pi( sl1, mm2 );
+	cvttsd2si( xmm3, ebx );
+	cvttsd2si( sq1, ecx );
+	cvttss2si( xmm4, ecx );
+	cvttss2si( sd1, edx );
+	cvtps2pi( xmm0, mm0 );
+	cvtps2pi( sq1, mm1 );
+	cvtpd2pi( xmm1, mm1 );
+	cvtpd2pi( sl1, mm2 );
+	cvtsd2si( xmm3, ebx );
+	cvtsd2si( sq1, ecx );
+	cvtss2si( xmm4, edx );
+	cvtss2si( sd1, eax );
+	ucomiss( xmm0, xmm1 );
+	ucomiss( sd1, xmm2 );
+	comiss( xmm0, xmm1 );
+	comiss( sd1, xmm2 );
+	
+	ucomisd( xmm0, xmm1 );
+	ucomisd( sq1, xmm2 );
+	comisd( xmm0, xmm1 );
+	comisd( sq1, xmm2 );
+
+	wrmsr();
+	rdtsc();
+	rdmsr();
+	rdpmc();
+
+	sysenter();
+	sysexit();
+
+	cmovo( eax, ebx );
+	cmovo( sd1, ecx );
+
+	cmovno( eax, ebx );
+	cmovno( sd1, ecx );
+
+	cmovc( eax, ebx );
+	cmovnc( sd1, ecx );
+
+	cmove( eax, ebx );
+	cmovne( sd1, ecx );
+
+	cmovbe( eax, ebx );
+	cmova( sd1, ecx );
+
+	cmovs( eax, ebx );
+	cmovs( sd1, ecx );
+
+	cmovns( eax, ebx );
+	cmovns( sd1, ecx );
+
+	cmovpe( eax, ebx );
+	cmovpo( sd1, ecx );
+
+	cmovl( eax, ebx );
+	cmovge( sd1, ecx );
+
+	cmovle( eax, ebx );
+	cmovg( sd1, ecx );
+
+	movmskps( xmm0, eax );
+	sqrtps( xmm1, xmm2 );
+	sqrtps( sl1, xmm3 );
+
+	rsqrtps( xmm4, xmm5 );
+
+	rcpps( xmm6, xmm7 );
+	andps( xmm0, xmm1 );
+	andnps( xmm2, xmm3 );
+	orps( xmm4, xmm5 );
+	xorps( xmm6, xmm7 );
+
+	movmskpd( xmm0, eax );
+	sqrtpd( sl1, xmm0 );
+	sqrtpd( xmm2, xmm3 );
+	andpd( xmm4, xmm5 );
+	andnpd( xmm6, xmm7 );
+	orpd( xmm0, xmm1 );
+	xorpd( xmm2, xmm3 );
+
+	sqrtsd( xmm0, xmm1 );
+	sqrtsd( sq1, xmm2 );
+
+	sqrtss( xmm0, xmm1 );
+
+	sqrtss( sd1, xmm2 );
+
+	rsqrtss( xmm3, xmm4 );
+	rcpss( xmm5, xmm6 );
+
+	addps( xmm0, xmm1 );
+	addps( sl1, xmm2 );
+	mulps( xmm3, xmm4 );
+	cvtps2pd( xmm5, xmm6 );
+	cvtps2pd( sq1, xmm7 );
+
+	cvtdq2ps( xmm0, xmm1 );
+	cvtdq2ps( sl1, xmm2 );
+	subps( xmm3, xmm4 );
+	minps( xmm5, xmm6 );
+	divps( xmm7, xmm0 );
+	maxps( xmm1, xmm2 );
+
+	addpd( xmm0, xmm1 );
+	addpd( sl1, xmm2 );
+	mulpd( xmm3, xmm4 );
+	cvtpd2ps( xmm5, xmm6 );
+	cvtps2dq( xmm7, xmm0 );
+	subpd( xmm1, xmm2 );
+	minpd( xmm3, xmm4 );
+	divpd( xmm5, xmm6 );
+	maxpd( xmm7, xmm0 );
+
+	addsd( xmm0, xmm1 );
+	addsd( sq1, xmm2 );
+	mulsd( xmm3, xmm4 );
+	cvtsd2ss( xmm5, xmm6 );
+	subsd( xmm1, xmm2 );
+	minsd( xmm3, xmm4 );
+	divsd( xmm5, xmm6 );
+	maxsd( xmm7, xmm0 );
+	addss( xmm0, xmm1 );
+	addss( sd1, xmm2 );
+	mulss( xmm3, xmm4 );
+	cvtss2sd( xmm5, xmm6 );
+	cvttps2dq( xmm5, xmm6 );
+	subss( xmm1, xmm2 );
+	minss( xmm3, xmm4 );
+	divss( xmm5, xmm6 );
+	maxss( xmm7, xmm0 );
+
+	punpcklbw( mm0, mm1 );
+	punpcklbw( sd1, mm2 );
+	punpcklwd( mm3, mm4 );
+	punpckldq( mm5, mm6 );
+	packsswb( mm7, mm0 );
+	pcmpgtb( mm1, mm2 );
+	pcmpgtw( mm3, mm4 );
+	pcmpgtd( mm5, mm6 );
+	packuswb( mm7, mm0 );
+	punpckhbw( mm1, mm2 );
+	punpckhwd( mm3, mm4 );
+	punpckhdq( mm5, mm6 );
+	packssdw( mm7, mm0 );
+	movd( eax, mm1 );
+	movd( sd1, mm2 );
+	movq( mm3, mm4 );
+
+	punpcklbw( xmm0, xmm1 );
+	punpcklbw( sq1, xmm2 );
+	punpcklwd( xmm3, xmm4 );
+	punpckldq( xmm5, xmm6 );
+	packsswb( xmm7, xmm0 );
+	pcmpgtb( xmm1, xmm2 );
+	pcmpgtw( xmm3, xmm4 );
+	pcmpgtd( xmm5, xmm6 );
+	packuswb( xmm7, xmm0 );
+	punpckhbw( xmm1, xmm2 );
+	punpckhwd( xmm3, xmm4 );
+	punpckhdq( xmm5, xmm6 );
+	packssdw( xmm7, xmm0 );
+	punpcklqdq( xmm1, xmm2 );
+	punpckhqdq( xmm3, xmm4 );
+
+	movd( eax, xmm1 );
+	movd( sd1, xmm2 );
+
+	movdqa( xmm3, xmm4 );
+	movdqu( xmm0, xmm1 );
+	movdqu( sl1, xmm2 );
+
+	pshufw( 2, mm0, mm1 );
+	pshufw( 1, sq1, mm2 );
+
+	pshufd( 2, xmm0, xmm1 );
+	pshufd( 1, sl1, xmm2 );
+
+	byte $0f, $71, 0, 2;	// Illegal! psrlw(2, [eax]);
+	psrlw( 2, mm1 );
+	psrlw( 3, xmm2 );
+	psraw( 4, mm3 );
+	psraw( 5, xmm4 );
+	psllw( 6, mm5 );
+	psllw( 7, xmm6 );
+
+	byte $0f, $72, 0, 2;	// Illegal! psrld(2, [eax]);
+	psrld( 2, mm1 );
+	psrld( 3, xmm2 );
+	psrad( 4, mm3 );
+	psrad( 5, xmm4 );
+	pslld( 6, mm5 );
+	pslld( 7, xmm6 );
+
+	byte $0f, $72, 0, 2;	// Illegal! psrld(2, [eax]);
+	psrlq( 2, mm1 );
+	psrlq( 3, xmm2 );
+
+	psrldq( 5, xmm3 );
+	psllq( 6, mm4 );
+	psllq( 7, xmm5 ); 
+	pslldq( 8, xmm6 );
+
+	pcmpeqb( mm0, mm1 );
+	pcmpeqw( sq1, mm2 );
+	pcmpeqd( sq1, mm3 );
+	emms();
+
+	movd( eax, mm4 );
+	movd( sd1, mm5 );
+
+	movq( mm6, mm7 );
+	movq( sq1, mm0 );
+
+	pcmpeqb( xmm0, xmm1 );
+	pcmpeqw( sl1, xmm2 );
+	pcmpeqd( sl1, xmm3 );
+
+	haddpd( xmm4, xmm5 );
+	haddpd( sl1, xmm6 );
+	hsubpd( xmm7, xmm0 );
+	hsubpd( sl1, xmm6 );
+	movd( mm0, eax );
+	movd( mm1, sd1 );
+	movq( mm2, mm3 );
+	movq( mm4, sq1 );
+
+	movd( xmm2, eax );
+	movd( sd1, xmm3 );
+	movdqa( xmm4, xmm5 );
+	movdqa( sl1, xmm6 );
+	pshuflw( 1, xmm0, xmm1 );
+	pshuflw( 2, sl1, xmm2 );
+	pshufhw( 3, xmm3, xmm4 );
+	pshufhw( 4, sl1, xmm5 );
+	haddps( sl1, xmm6 );
+	hsubps( xmm7, xmm0 );
+	hsubps( sl1, xmm6 );
+
+	movq( xmm2, xmm3 );
+	movq( sq1, xmm4 );
+	movdqu( xmm5, xmm6 );
+	movdqu( sl1, xmm7 );
+	jo EndDisasm;
+	jno EndDisasm;
+	jc EndDisasm;
+	jnc EndDisasm;
+	jz EndDisasm;
+	jnz EndDisasm;
+	jbe EndDisasm;
+	ja EndDisasm;
+	js EndDisasm;
+	jns EndDisasm;
+	jp EndDisasm;
+	jnp EndDisasm;
+	jl EndDisasm;
+	jge EndDisasm;
+	jle EndDisasm;
+	jg EndDisasm;
+
+	seto( al );
+	seto( sb1 );
+	setno( bl );
+	setc( cl );
+	setnc( dl );
+	setz( al );
+	setnz( bl );
+	setbe( cl );
+	seta( dl );
+	sets( al );
+	setns( bl );
+	setp( cl );
+	setnp( dl );
+	setl( ah );
+	setge( bh );
+	setle( ch );
+	setg( dh );
+
+	push( fseg );
+	pop( fseg );
+	cpuid();
+	bt( eax, ebx );
+	bt( ecx, sd1 );
+	bt( ax, bx );
+	bt( cx, sw1 );
+	shld( 1, edx, eax );
+	shld( 2, ebx, sd1 );
+	shld( 3, dx, ax );
+	shld( 4, bx, sw1 );
+	shld( cl, edx, eax );
+	shld( cl, ebx, sd1 );
+	shld( cl, dx, ax );
+	shld( cl, bx, sw1 );
+
+	push( gseg );
+	pop( gseg );
+	rsm();
+	bts( eax, ebx );
+	bts( ecx, sd1 );
+	bts( ax, bx );
+	bts( cx, sw1 );
+	shrd( 1, edx, eax );
+	shrd( 2, ebx, sd1 );
+	shrd( 3, dx, ax );
+	shrd( 4, bx, sw1 );
+	shrd( cl, edx, eax );
+	shrd( cl, ebx, sd1 );
+	shrd( cl, dx, ax );
+	shrd( cl, bx, sw1 );
+
+	fxsave( [eax] );
+	fxrstor( [ebx] );
+	
+	ldmxcsr( (type dword [ecx]) );
+	stmxcsr( (type dword [edx]) );
+	lfence();
+	mfence();
+	sfence();
+	clflush( sb1 );
+	intmul( eax, ebx );
+	intmul( sw1, cx );
+
+	cmpxchg( al, bl );
+	cmpxchg( sb1, cl );
+	cmpxchg( dx, si );
+	cmpxchg( esi, ebp );
+	cmpxchg( sw1, ax );
+	cmpxchg( sd1, eax );
+
+	lss( edx, sd1 );	// HLA won't do "lss( edx, [eax]);"
+	lss( edx, [eax] );
+
+	// HLA doesn't support lss( dx, sd1 );
+	// (No 16-bit load segment instructions valid only for 16-bit mode)
+
+	byte $66, $0f, $b2, %00_000_101;
+	dword &sd1;
+
+	btr( eax, ebx );
+	btr( ecx, sd1 );
+
+	lfs( edx, sd1 );
+	lgs( edx, sd1 );
+
+	// HLA doesn't support lfs( dx, sd1 );
+
+	byte $66, $0f, $b4, %00_000_101;
+	dword &sd1;
+
+	// HLA doesn't support lgs( dx, sd1 );
+
+	byte $66, $0f, $b5, %00_000_101;
+	dword &sd1;
+
+	movzx( al, ax );
+	movzx( al, eax );
+	movzx( ax, eax );
+	movzx( sb1, ax );
+	movzx( sb1, eax );
+	movzx( sw1, eax );
+
+	bt( 1, eax );
+	btr( 2, ebx );
+	bts( 3, ecx );
+	btc( 4, edx );
+	bt( 5, ax );
+	btr( 6, bx );
+	bts( 7, cx );
+	btc( 8, dx );
+
+	btc( eax, ebx );
+	btc( cx, dx );
+	bsf( eax, ebx );
+	bsf( sd1, ecx );
+	bsr( ax, bx );
+	bsf( sw1, cx );
+	bsr( eax, ebx );
+	bsr( sd1, ecx );
+	bsr( ax, bx );
+	bsr( sw1, cx );
+
+	movsx( al, ax );
+	movsx( al, eax );
+	movsx( ax, eax );
+	movsx( sb1, ax );
+	movsx( sb1, eax );
+	movsx( sw1, eax );
+
+	xadd( al, bl );
+	xadd( cl, sb1 );
+	xadd( dx, si );
+	xadd( sp, sw1 );
+	xadd( edi, ebp );
+	xadd( eax, sd1 );
+
+	cmpeqps( sl1, xmm1 );
+	cmpeqps( xmm0, xmm1 );
+	cmpltps( xmm2, xmm3 );
+	cmpleps( xmm4, xmm5 );
+	cmpunordps( xmm6, xmm7 );
+	cmpneqps( xmm0, xmm1 );
+	cmpnltps( xmm2, xmm3 );
+	cmpnleps( xmm4, xmm5 );
+	cmpordps( xmm6, xmm7 );
+
+	cmpeqss( sd1, xmm1 );
+	cmpeqss( xmm0, xmm1 );
+	cmpltss( xmm2, xmm3 );
+	cmpless( xmm4, xmm5 );
+	cmpunordss( xmm6, xmm7 );
+	cmpneqss( xmm0, xmm1 );
+	cmpnltss( xmm2, xmm3 );
+	cmpnless( xmm4, xmm5 );
+	cmpordss( xmm6, xmm7 );
+
+	cmpeqpd( sl1, xmm1 );
+	cmpeqpd( xmm0, xmm1 );
+	cmpltpd( xmm2, xmm3 );
+	cmplepd( xmm4, xmm5 );
+	cmpunordpd( xmm6, xmm7 );
+	cmpneqpd( xmm0, xmm1 );
+	cmpnltpd( xmm2, xmm3 );
+	cmpnlepd( xmm4, xmm5 );
+	cmpordpd( xmm6, xmm7 );
+
+	cmpeqsd( sq1, xmm1 );
+	cmpeqsd( xmm0, xmm1 );
+	cmpltsd( xmm2, xmm3 );
+	cmplesd( xmm4, xmm5 );
+	cmpunordsd( xmm6, xmm7 );
+	cmpneqsd( xmm0, xmm1 );
+	cmpnltsd( xmm2, xmm3 );
+	cmpnlesd( xmm4, xmm5 );
+	cmpordsd( xmm6, xmm7 );
+	movnti( eax, sd1 );
+
+
+	// movnti( eax, ebx ); (illegal)
+
+	byte $0f, $c3, %11_000_001;
+
+	pinsrw( 1, eax, mm0 );
+	pinsrw( 2, sw1, mm1 );
+	pinsrw( 3, eax, xmm2 );
+	pinsrw( 0, sw1, xmm3 );
+	pextrw( 1, mm0, eax );
+
+	// pextrw( 2, mm1, sw1 ); Illegal!
+
+	byte $0f, $c5, %00_001_101;
+	dword &sw1;
+	byte 2;
+
+
+	pextrw( 3, xmm3, ebx );
+	
+	// pextrw( 4, xmm4, sw1 ); Illegal!
+
+	byte $66, $0f, $c5, %00_001_101;
+	dword &sw1;
+	byte 4;
+
+	shufps( 1, xmm0, xmm1 );
+	shufps( 2, sl1, xmm2 );
+	shufpd( 3, xmm3, xmm4 );
+	shufpd( 4, xmm5, xmm6 );
+
+	cmpxchg8b( sq1 );
+
+	bswap( eax );
+	bswap( ebx );
+	bswap( ecx );
+	bswap( edx );
+	bswap( esi );
+	bswap( edi );
+	bswap( ebp );
+	bswap( esp );
+
+
+	addsubpd( xmm0, xmm1 );
+	addsubpd( sl1, xmm2 );
+	addsubps( xmm3, xmm4 );
+	addsubps( sl1, xmm5 );
+
+	psrlw( mm0, mm1 );
+	psrlw( sq1, mm2 );
+	psrlw( xmm3, xmm4 );
+	psrlw( sl1, xmm5 );
+
+	psrld( mm0, mm1 );
+	psrld( sq1, mm2 );
+	psrld( xmm3, xmm4 );
+	psrld( sl1, xmm5 );
+
+	psrlq( mm0, mm1 );
+	psrlq( sq1, mm2 );
+	psrlq( xmm3, xmm4 );
+	psrlq( sl1, xmm5 );
+
+	paddq( mm0, mm1 );
+	paddq( sq1, mm2 );
+	paddq( xmm3, xmm4 );
+	paddq( sl1, xmm5 );
+
+	pmullw( mm0, mm1 );
+	pmullw( sq1, mm2 );
+	pmullw( xmm3, xmm4 );
+	pmullw( sl1, xmm5 );
+
+	movq( xmm0, xmm1 );
+	movq( xmm2, sq1 );
+	movq2dq( mm3, xmm4 );
+
+	movdq2q( xmm6, mm7 );
+
+	pmovmskb( mm0, eax );
+	pmovmskb( xmm1, ebx );
+
+	psubusb( mm0, mm1 );
+	psubusb( sq1, mm2 );
+	psubusw( mm3, mm4 );
+	psubusw( sq1, mm5 );
+	pminub( mm6, mm7 );
+	pminub( sq1, mm0 );
+	pand( mm2, mm3 );
+	pand( sq1, mm4 );
+	paddusb( mm5, mm6 );
+	paddusb( sq1, mm7 );
+	paddusw( mm0, mm1 );
+	paddusw( sq1, mm2 );
+	pmaxub( mm3, mm4 );
+	pmaxub( sq1, mm5 );
+	pandn( mm6, mm7 );
+	pandn( sq1, mm0 );
+
+	psubusb( xmm0, xmm1 );
+	psubusb( sl1, xmm2 );
+	psubusw( xmm3, xmm4 );
+	psubusw( sl1, xmm5 );
+	pminub( xmm6, xmm7 );
+	pminub( sl1, xmm0 );
+	pand( xmm2, xmm3 );
+	pand( sl1, xmm4 );
+	paddusb( xmm5, xmm6 );
+	paddusb( sl1, xmm7 );
+	paddusw( xmm0, xmm1 );
+	paddusw( sl1, xmm2 );
+	pmaxub( xmm3, xmm4 );
+	pmaxub( sl1, xmm5 );
+	pandn( xmm6, xmm7 );
+	pandn( sl1, xmm0 );
+
+	pavgb( mm0, mm1 );
+	pavgb( sq1, mm2 );
+	pavgb( xmm0, xmm1 );
+	pavgb( sl1, xmm2 );
+		 
+	psraw( mm3, mm4 );
+	psraw( sq1, mm5 );
+	psraw( xmm6, xmm7 );
+	psraw( sq1, xmm0 );
+		 
+	psrad( mm1, mm2 );
+	psrad( sq1, mm3 );
+	psrad( xmm4, xmm5 );
+	psrad( sq1, xmm6 );
+	
+	pavgw( mm7, mm0 );
+	pavgw( sq1, mm1 );
+	pavgw( xmm2, xmm3 );
+	pavgw( sl1, xmm4 );
+	
+	pmulhuw( mm5, mm6 );
+	pmulhuw( sq1, mm7 );
+	pmulhuw( xmm0, xmm1 );
+	pmulhuw( sl1, xmm2 );
+	
+	pmulhw( mm3, mm4 );
+	pmulhw( sq1, mm5 );
+	pmulhw( xmm6, xmm7 );
+	pmulhw( sl1, xmm0 );
+
+	cvtpd2dq( xmm1, xmm2 );
+	cvtpd2dq( sl1, xmm3 );
+
+	cvttpd2dq( xmm4, xmm5 );
+	cvttpd2dq( sl1, xmm6 );
+
+	cvtdq2pd( xmm7, xmm0 );
+	cvtdq2pd( sq1, xmm2 );
+		 
+	psubsb( mm0, mm1 );
+	psubsb( sq1, mm2 );
+	psubsw( mm3, mm4 );
+	psubsw( sq1, mm5 );
+	pminsw( mm6, mm7 );
+	pminsw( sq1, mm0 );
+	por( mm1, mm2 );
+	por( sq1, mm3 );
+	paddsb( mm4, mm5 );
+	paddsb( sq1, mm6 );
+	paddsw( mm7, mm0 );
+	paddsw( sq1, mm1 );
+	pmaxsw( mm2, mm3 );
+	pmaxsw( sq1, mm4 );
+	pxor( mm5, mm6 );
+	pxor( sq1, mm7 );
+
+	psubsb( xmm0, xmm1 );
+	psubsb( sl1, xmm2 );
+	psubsw( xmm3, xmm4 );
+	psubsw( sl1, xmm5 );
+	pminsw( xmm6, xmm7 );
+	pminsw( sl1, xmm0 );
+	por( xmm1, xmm2 );
+	por( sl1, xmm3 );
+	paddsb( xmm4, xmm5 );
+	paddsb( sl1, xmm6 );
+	paddsw( xmm7, xmm0 );
+	paddsw( sl1, xmm1 );
+	pmaxsw( xmm2, xmm3 );
+	pmaxsw( sl1, xmm4 );
+	pxor( xmm5, xmm6 );
+	pxor( sl1, xmm7 );
+
+	psubb( mm0, mm1 );
+	psubb( sq1, mm2 );
+	psubw( mm3, mm4 );
+	psubw( sq1, mm5 );
+	psubd( mm6, mm7 );
+	psubd( sq1, mm0 );
+	psubq( mm1, mm2 );
+	psubq( sq1, mm3 );
+
+	paddb( mm0, mm1 );
+	paddb( sq1, mm2 );
+	paddw( mm3, mm4 );
+	paddw( sq1, mm5 );
+	paddd( mm6, mm7 );
+	paddd( sq1, mm0 );
+
+	lddqu( xmm1, sl1 );
+	psllw( mm3, mm4 );
+	psllw( sq1, mm5 );
+	psllw( xmm6, xmm7 );
+	psllw( sq1, xmm0 );
+		 
+	pslld( mm1, mm2 );
+	pslld( sq1, mm3 );
+	pslld( xmm4, xmm5 );
+	pslld( sq1, xmm6 );
+	
+	psllq( mm7, mm0 );
+	psllq( sq1, mm1 );
+	psllq( xmm2, xmm3 );
+	psllq( sq1, xmm4 );
+	
+	pmuludq( mm5, mm6 );
+	pmuludq( sq1, mm7 );
+	pmuludq( xmm0, xmm1 );
+	pmuludq( sl1, xmm2 );
+	
+	pmaddwd( mm3, mm4 );
+	pmaddwd( sq1, mm5 );
+	pmaddwd( xmm6, xmm7 );
+	pmaddwd( sl1, xmm0 );
+	
+	psadbw( mm5, mm6 );
+	psadbw( sq1, mm7 );
+	psadbw( xmm0, xmm1 );
+	psadbw( sl1, xmm2 );
+	
+	maskmovq( mm3, mm4 );
+	maskmovdqu( xmm6, xmm7 );	
+
+#endif
+		  
+  EndDisasm::
+
+end TestDisassembly;
+
+var
+	curInstr	:instr_t;
+
+begin disasm;
+
+#if( true )
+	lea( edx, EndDisasm );
+	lea( esi, StartDisasm );
+	while( esi < edx ) do
+
+		initInstr( curInstr );	// Also loads &initInstr into edi
+		push( esi );
+		dInstr( esi, [edi] );
+
+		pop( eax );
+		push( esi );
+		lea( ecx, StartDisasm );
+		dumpInstr( ecx, eax, [edi] );
+		pop( esi );
+
+	endwhile;
+	stdout.put( "Disassembly ended at address $", edx, nl );
+#endif
+
+	myTimer.create();
+	myTimer.start();
+	mov( 0, instrCnt );
+	for( mov(0, ecx ); ecx < 10000; inc( ecx )) do
+
+		push( ecx );
+
+		lea( edx, EndDisasm );
+		lea( esi, StartDisasm );
+		while( esi < edx ) do
+
+			inc( instrCnt );
+			initInstr( curInstr );	// Also loads &initInstr into edi
+			dInstr( esi, [edi] );
+
+		endwhile;
+		pop( ecx );
+
+	endfor;
+	myTimer.stop();
+	mov( eax, (type dword totalTime));
+	mov( edx, (type dword totalTime[4]));
+	fild( totalTime );
+	fild( instrCnt );
+	fdivr();
+	fild( thousand );
+	fmul();
+	fstp( speed );
+	stdout.put
+	( 
+		"Total time for ", 
+		instrCnt, 
+		" instructions is ",
+		totalTime, 
+		" milliseconds," nl
+		"which is about ", 
+		speed:10:2, 
+		" instructions/sec" nl 
+	); 
+
+
+end disasm;

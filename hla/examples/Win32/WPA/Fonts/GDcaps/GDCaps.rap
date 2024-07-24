@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly-Get Device Capabilities Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=GDCaps.rap
+1=GDCaps.rc
+2=GDCaps.asm
+3=GDCaps.obj
+4=GDCaps.res
+5=GDCaps.exe
+6=GDCaps.def
+7=GDCaps.dll
+8=GDCaps.txt
+9=GDCaps.lib
+10=GDCaps.mak
+11=GDCaps.hla
+[Files]
+1=GDCaps.hla
+2=
+3=
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Size]
+3=
+2=
+1=0,0,0,0,0

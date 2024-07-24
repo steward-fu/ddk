@@ -1,0 +1,12 @@
+ASL.EXE is the ACPI compiler. Type 'asl /?' and it will list a help file.
+The below usage is also provided for you.
+
+Usage:
+asl /?
+asl [/nologo] /d <BinFile>
+asl [/nologo] /u [/Fa=<ASMFile>] [/Fl=<LSTFile>] [/Fn=<NSDFile>] <AMLFile>
+asl [/nologo] /tab=<TabSig> [/c] [/Fa=<ASMfile>] [/Fl=<LSTFile>] [/Fn=<NSDFile>]
+asl [/nologo] [/Fo=<AMLFile>] [/Fa=<ASMFile>] [/Fl=<LSTFile>] [/Fn=<NSDFile>] <ASLFile>
+
+For the ASL compiler, go to http://www.microsoft.com/hwdev/onnow/.
+

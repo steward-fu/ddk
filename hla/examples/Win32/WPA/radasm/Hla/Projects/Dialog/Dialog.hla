@@ -1,0 +1,71 @@
+
+program Dialog;
+
+#include ("w.hhf")
+
+const
+
+	IDD_DLG01		:= 2000;
+	IDC_BTNEXIT		:= 2001;
+	WM_CLOSE		:= $10;
+	WM_COPYDATA		:= $4A;
+	WM_COMMAND		:= $111;
+
+// Include this file to use source code breakpoints.
+//#include ("RADbg.inc")
+#asm
+	includelib comctl32.lib
+#endasm
+// If you prefer using int 3 and a debugger, then open RadASM.ini and change:
+// [Addins]
+// XX=RADbg.dll,0
+// to:
+// XX=RADbg.dll,1
+//
+// Note: Breakpoints does not work if you build to console.
+//
+
+//Just to test structure code complete
+
+static 
+	hInstance	: dword;
+	//Just to test structure code complete
+	pt			:w.POINT;
+
+procedure DialogProc ( lParam:dword; wParam:dword; uMsg:dword; hwnd:dword );
+	@nodisplay;
+
+begin DialogProc;
+
+	if ( uMsg = w.WM_CLOSE ) then
+
+		w.EndDialog ( hwnd, 0 );
+
+	elseif ( uMsg = w.WM_COMMAND ) then
+
+		if ( wParam = IDC_BTNEXIT ) then
+
+			w.SendMessage (hwnd, w.WM_CLOSE, 0, 0);
+
+		endif;
+
+	else
+
+		mov ( 0 , eax );
+		exit DialogProc;
+
+	endif;
+
+	mov ( 1, eax );
+
+end DialogProc;
+
+begin Dialog;
+
+	w.InitCommonControls ();
+	w.GetModuleHandle ( 0 );
+	mov ( eax , hInstance );
+	w.DialogBoxParam ( eax , IDD_DLG01, 0 , &DialogProc , 0 );
+	w.ExitProcess ( 0 );
+
+end Dialog;

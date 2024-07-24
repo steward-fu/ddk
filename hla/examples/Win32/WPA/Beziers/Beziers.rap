@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Beziers Plotting Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=Beziers.rap
+1=Beziers.rc
+2=Beziers.asm
+3=Beziers.obj
+4=Beziers.res
+5=Beziers.exe
+6=Beziers.def
+7=Beziers.dll
+8=Beziers.txt
+9=Beziers.lib
+10=Beziers.mak
+11=Beziers.hla
+[Files]
+1=Beziers.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

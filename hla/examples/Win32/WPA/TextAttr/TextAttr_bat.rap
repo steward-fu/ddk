@@ -1,0 +1,51 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Windows Assembly - Text Attributes Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,build.bat,
+2=0,O,build.bat,
+3=0,C,compilerc.bat,
+4=0,O,syntax.bat,
+5=0,C,run.bat,
+6=
+11=0,O,make dbg_build,
+12=0,O,make dbg_buildall,
+13=0,O,make dbg_compilerc,
+14=0,O,make dbg_syntax,
+15=0,C,make dbg_run,
+16=
+[MakeFiles]
+0=TextAttr.rap
+1=TextAttr.rc
+2=TextAttr.asm
+3=TextAttr.obj
+4=TextAttr.res
+5=TextAttr.exe
+6=TextAttr.def
+7=TextAttr.dll
+8=TextAttr.txt
+9=TextAttr.lib
+10=TextAttr.mak
+11=TextAttr.hla
+[Files]
+1=TextAttr.hla
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

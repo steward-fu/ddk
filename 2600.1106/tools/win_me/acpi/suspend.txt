@@ -1,0 +1,57 @@
+SUSPEND.EXE
+
+Overview:
+
+Suspender consists of one executable, SUSPEND.EXE. You can launch Suspender
+via the Run command on the Start menu or via Explorer.
+
+Once running, Suspender will confirm that it can test your machine's power
+management functions.  Then, using your system's resume timer, it will
+repeatedly suspend and resume your machine.
+
+Note:
+This version of suspender will only run on Millennium platforms.
+
+Usage:
+        SUSPEND -d <int> -n <int> -p <FilePath> -u <UNCFilePath> -f
+        -[ceghklmqrstvyz]
+	
+	-c Stop running on resume test failure
+	-d <minutes> is the [WAKE] wait time between suspends
+	-e force Suspender to Autoexit
+	-g Name of Log file if using NTLOG.DLL
+	-f Force Suspend
+	-h Define preferred method of hibernate on Windows 98
+		3 - SetSystemPowerState
+	-k <number> hours for Suspend/Resume tests to run
+	-l is name of log file. Default: C:\SUSPEND.TXT
+	-m Enable Messages
+	-n <number> number of times to Suspend/Resume
+	-p Local file locations on disk: 'C:\' (Default: C:\)
+	-q Deny the suspend query message
+	-r <minutes> lengh in minutes to sleep
+	-s <num> Set Sleep State (Example -s 4 to set S4 Sleep State)
+	-t <minutes> amount of time suspend grows each iteration. Ignored if -r is used
+	-u UNC net path to file locations
+	-v Uses a VxD to set Waitable timer
+	-w Used for Logo Certificate
+		1 WHQL System Testing
+		2 EasyPC
+		3 Block User Input
+		5 Video Hardware Compatibility Tests
+		6 S4 Cold Testing
+		7 WHQL Device Testing
+        -y Bit Switches for Device Testing
+           The values below are in hex, but the actual values must be in Decimal.
+                0x000000000UL   No Device Testing
+                0x000000002UL   Com Port
+                0x000000004UL   LPT Port
+                0x000000008UL   Floppy
+                0x000000010UL   Modem
+                0x000000020UL   CD Rom Drive
+                0x000000040UL   Hard Drive
+                0x000000080UL   Sound
+                0x000000100UL   Net
+                0x000000200UL   Device Node Check
+	-z Time value submitted to SetWaitabletime is relative rather absolute
+

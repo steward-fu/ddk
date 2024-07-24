@@ -1,0 +1,10 @@
+-heap:0x1000000,0x1000000
+-stack:0x1000000,0x1000000
+-base:0x4000000
+-entry:HLAMain
+-section:.text,ER
+-section:.data,RW
+-section:.bss,RW
+kernel32.lib
+user32.lib
+gdi32.lib

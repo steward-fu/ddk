@@ -1,0 +1,2740 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./me_inst_files/filelist.xml">
+<title>Getting Started - Windows Me DDK</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Subject>User's Guides and References</o:Subject>
+  <o:Author>Lori Whippler</o:Author>
+  <o:Description>text column width - 348 pts</o:Description>
+  <o:Template>backsdk7.dot</o:Template>
+  <o:LastAuthor>Shelly Weigant</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>86</o:TotalTime>
+  <o:LastPrinted>2000-05-23T18:30:00Z</o:LastPrinted>
+  <o:Created>2000-05-23T19:41:00Z</o:Created>
+  <o:LastSaved>2000-05-23T19:41:00Z</o:LastSaved>
+  <o:Pages>7</o:Pages>
+  <o:Words>1813</o:Words>
+  <o:Characters>10337</o:Characters>
+  <o:Company>Microsoft</o:Company>
+  <o:Lines>86</o:Lines>
+  <o:Paragraphs>20</o:Paragraphs>
+  <o:CharactersWithSpaces>12694</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:PrintFractionalCharacterWidth/>
+  <w:HideSpellingErrors/>
+  <w:HideGrammaticalErrors/>
+  <w:ActiveWritingStyle Lang="EN-US" VendorID="64" DLLVersion="131077"
+   NLCheck="1">1</w:ActiveWritingStyle>
+  <w:UpdateStylesOnOpen/>
+  <w:DoNotShowRevisions/>
+  <w:DoNotPrintRevisions/>
+  <w:DoNotHyphenateCaps/>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:ShowBreaksInFrames/>
+   <w:SuppressSpBfAfterPgBrk/>
+   <w:SwapBordersFacingPages/>
+   <w:ConvMailMergeEsc/>
+   <w:UsePrinterMetrics/>
+   <w:WW6BorderRules/>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:NoSpaceRaiseLower/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+  <w:DocumentVariables>
+   <w:CreateVersion>1.0</w:CreateVersion>
+  </w:DocumentVariables>
+ </w:WordDocument>
+</xml><![endif]--><![if !supportAnnotations]>
+<style id="dynCom" type="text/css"><!-- --></style>
+<script language="JavaScript"><!--
+function msoCommentShow(anchor_id, com_id)
+{
+	if(msoBrowserCheck()) 
+		{
+		c = document.all(com_id);
+		if (null != c)
+			{
+			a = document.all(anchor_id);
+			var cw = c.offsetWidth;
+			var ch = c.offsetHeight;
+			var aw = a.offsetWidth;
+			var ah = a.offsetHeight;
+			var x  = a.offsetLeft;
+			var y  = a.offsetTop;
+			var el = a;
+			while (el.tagName != "BODY") 
+				{
+				el = el.offsetParent;
+				x = x + el.offsetLeft;
+				y = y + el.offsetTop;
+				}
+			var bw = document.body.clientWidth;
+			var bh = document.body.clientHeight;
+			var bsl = document.body.scrollLeft;
+			var bst = document.body.scrollTop;
+			if (x + cw + ah / 2 > bw + bsl && x + aw - ah / 2 - cw >= bsl ) 
+				{ c.style.left = x + aw - ah / 2 - cw; }
+			else 
+				{ c.style.left = x + ah / 2; }
+			if (y + ch + ah / 2 > bh + bst && y + ah / 2 - ch >= bst ) 
+				{ c.style.top = y + ah / 2 - ch; }
+			else 
+				{ c.style.top = y + ah / 2; }
+			c.style.visibility = "visible";
+}	}	}
+function msoCommentHide(com_id) 
+{
+	if(msoBrowserCheck())
+		{
+		c = document.all(com_id);
+		if (null != c)
+		{
+		c.style.visibility = "hidden";
+		c.style.left = -1000;
+		c.style.top = -1000;
+		} } 
+}
+function msoBrowserCheck()
+{
+	ms = navigator.appVersion.indexOf("MSIE");
+	vers = navigator.appVersion.substring(ms + 5, ms + 6);
+	ie4 = (ms > 0) && (parseInt(vers) >= 4);
+	return ie4;
+}
+if (msoBrowserCheck())
+{
+	document.styleSheets.dynCom.addRule(".msocomanchor","background: infobackground");
+	document.styleSheets.dynCom.addRule(".msocomoff","display: none");
+	document.styleSheets.dynCom.addRule(".msocomtxt","visibility: hidden");
+	document.styleSheets.dynCom.addRule(".msocomtxt","position: absolute");
+	document.styleSheets.dynCom.addRule(".msocomtxt","top: -1000");
+	document.styleSheets.dynCom.addRule(".msocomtxt","left: -1000");
+	document.styleSheets.dynCom.addRule(".msocomtxt","width: 33%");
+	document.styleSheets.dynCom.addRule(".msocomtxt","background: infobackground");
+	document.styleSheets.dynCom.addRule(".msocomtxt","color: infotext");
+	document.styleSheets.dynCom.addRule(".msocomtxt","border-top: 1pt solid threedlightshadow");
+	document.styleSheets.dynCom.addRule(".msocomtxt","border-right: 2pt solid threedshadow");
+	document.styleSheets.dynCom.addRule(".msocomtxt","border-bottom: 2pt solid threedshadow");
+	document.styleSheets.dynCom.addRule(".msocomtxt","border-left: 1pt solid threedlightshadow");
+	document.styleSheets.dynCom.addRule(".msocomtxt","padding: 3pt 3pt 3pt 3pt");
+}
+// --></script>
+<![endif]>
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Times;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Arial Narrow";
+	panose-1:2 11 5 6 2 2 2 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:647 0 0 0 159 0;}
+@font-face
+	{font-family:"Lucida Sans Typewriter";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:11.0pt;
+	margin-right:6.0pt;
+	margin-bottom:11.0pt;
+	margin-left:6.0pt;
+	line-height:22.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-font-kerning:0pt;
+	mso-bidi-font-weight:normal;}
+h2
+	{mso-style-next:Normal;
+	margin-top:9.0pt;
+	margin-right:6.0pt;
+	margin-bottom:9.0pt;
+	margin-left:6.0pt;
+	line-height:19.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:17.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-bidi-font-weight:normal;}
+h3
+	{mso-style-next:Normal;
+	margin-top:8.0pt;
+	margin-right:6.0pt;
+	margin-bottom:8.0pt;
+	margin-left:6.0pt;
+	line-height:17.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:15.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-bidi-font-weight:normal;}
+h4
+	{mso-style-next:Normal;
+	margin-top:7.0pt;
+	margin-right:6.0pt;
+	margin-bottom:7.0pt;
+	margin-left:6.0pt;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-bidi-font-weight:normal;}
+h5
+	{mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:6.0pt;
+	margin-bottom:5.0pt;
+	margin-left:6.0pt;
+	mso-pagination:widow-orphan;
+	mso-outline-level:5;
+	font-size:11.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-bidi-font-weight:normal;}
+h6
+	{mso-style-next:Normal;
+	margin-top:2.0pt;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:11.9pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-outline-level:6;
+	font-size:10.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-bidi-font-weight:normal;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoNormalIndent, li.MsoNormalIndent, div.MsoNormalIndent
+	{margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-next:"header rule";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:10.5pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 340.0pt 426.0pt;
+	font-size:9.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0in;
+	margin-bottom:.0001pt;
+	line-height:7.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-element:frame;
+	mso-element-wrap:auto;
+	mso-element-anchor-vertical:page;
+	mso-element-anchor-horizontal:page;
+	mso-element-left:99.95pt;
+	mso-element-top:735.2pt;
+	mso-height-rule:exactly;
+	font-size:5.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.MsoFootnoteReference
+	{mso-ansi-font-size:8.0pt;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-text-raise:2.0pt;
+	mso-ansi-language:EN-US;}
+span.MsoCommentReference
+	{mso-ansi-font-size:10.5pt;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	color:green;
+	mso-ansi-language:EN-US;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.ih, li.ih, div.ih
+	{mso-style-name:ih;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:21.0pt;
+	margin-left:-1.25in;
+	line-height:30.0pt;
+	mso-line-height-rule:exactly;
+	page-break-before:always;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	font-size:24.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.headerrule, li.headerrule, div.headerrule
+	{mso-style-name:"header rule";
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:2.5pt;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:4.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	border:none;
+	mso-border-top-alt:solid windowtext .75pt;
+	padding:0in;
+	mso-padding-alt:0in 0in 0in 0in;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Def1, li.Def1, div.Def1
+	{mso-style-name:Def1;
+	mso-style-next:Term1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Term1, li.Term1, div.Term1
+	{mso-style-name:Term1;
+	mso-style-next:Def1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Def2, li.Def2, div.Def2
+	{mso-style-name:Def2;
+	mso-style-parent:Def1;
+	mso-style-next:Term2;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:30.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Term2, li.Term2, div.Term2
+	{mso-style-name:Term2;
+	mso-style-parent:Term1;
+	mso-style-next:Def2;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ex, li.Ex, div.Ex
+	{mso-style-name:Ex;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Exl, li.Exl, div.Exl
+	{mso-style-name:Exl;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Exl2, li.Exl2, div.Exl2
+	{mso-style-name:Exl2;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:30.0pt;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lb1, li.Lb1, div.Lb1
+	{mso-style-name:Lb1;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ln1, li.Ln1, div.Ln1
+	{mso-style-name:Ln1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 14.0pt left .25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lb2, li.Lb2, div.Lb2
+	{mso-style-name:Lb2;
+	mso-style-parent:Lb1;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:30.0pt;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ln2, li.Ln2, div.Ln2
+	{mso-style-name:Ln2;
+	mso-style-parent:Ln1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:30.0pt;
+	text-indent:-.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 26.0pt left 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lp1, li.Lp1, div.Lp1
+	{mso-style-name:Lp1;
+	mso-style-parent:Ln1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 14.0pt left .25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lp2, li.Lp2, div.Lp2
+	{mso-style-name:Lp2;
+	mso-style-parent:Lp1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:30.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 14.0pt left .25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lbp, li.Lbp, div.Lbp
+	{mso-style-name:Lbp;
+	mso-style-parent:Lb1;
+	mso-style-next:Le;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Le, li.Le, div.Le
+	{mso-style-name:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Proch, li.Proch, div.Proch
+	{mso-style-name:Proch;
+	mso-style-parent:"";
+	mso-style-next:Procp;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Procp, li.Procp, div.Procp
+	{mso-style-name:Procp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Th, li.Th, div.Th
+	{mso-style-name:Th;
+	mso-style-parent:Tp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Tp, li.Tp, div.Tp
+	{mso-style-name:Tp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tsyn, li.Tsyn, div.Tsyn
+	{mso-style-name:Tsyn;
+	mso-style-parent:Syn;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:2.0pt;
+	margin-left:0in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Syn, li.Syn, div.Syn
+	{mso-style-name:Syn;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Art, li.Art, div.Art
+	{mso-style-name:Art;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Rmh, li.Rmh, div.Rmh
+	{mso-style-name:Rmh;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:7.0pt;
+	margin-right:0in;
+	margin-bottom:7.0pt;
+	margin-left:0in;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Thf, li.Thf, div.Thf
+	{mso-style-name:Thf;
+	mso-style-parent:Th;
+	mso-style-next:Th;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Tpf, li.Tpf, div.Tpf
+	{mso-style-name:Tpf;
+	mso-style-parent:Tp;
+	mso-style-next:Tp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Rh1, li.Rh1, div.Rh1
+	{mso-style-name:Rh1;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:6.0pt;
+	line-height:22.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Cap, li.Cap, div.Cap
+	{mso-style-name:Cap;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:3.0pt;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Ch, li.Ch, div.Ch
+	{mso-style-name:Ch;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:13.0pt;
+	margin-right:0in;
+	margin-bottom:13.0pt;
+	margin-left:0in;
+	line-height:27.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:24.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Cn, li.Cn, div.Cn
+	{mso-style-name:Cn;
+	mso-style-parent:"";
+	mso-style-next:Ch;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	letter-spacing:3.0pt;}
+p.Erm, li.Erm, div.Erm
+	{mso-style-name:Erm;
+	mso-style-parent:"";
+	mso-style-next:Erp;
+	margin-top:5.0pt;
+	margin-right:12.0pt;
+	margin-bottom:2.0pt;
+	margin-left:0in;
+	line-height:12.0pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Erp, li.Erp, div.Erp
+	{mso-style-name:Erp;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ermn, li.Ermn, div.Ermn
+	{mso-style-name:Ermn;
+	mso-style-parent:"";
+	margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Exw, li.Exw, div.Exw
+	{mso-style-name:Exw;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Hn1, li.Hn1, div.Hn1
+	{mso-style-name:Hn1;
+	mso-style-parent:"Heading 1";
+	mso-style-next:Normal;
+	margin-top:11.0pt;
+	margin-right:6.0pt;
+	margin-bottom:11.0pt;
+	margin-left:6.0pt;
+	line-height:22.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Hn2, li.Hn2, div.Hn2
+	{mso-style-name:Hn2;
+	mso-style-parent:"Heading 2";
+	mso-style-next:Normal;
+	margin-top:9.0pt;
+	margin-right:6.0pt;
+	margin-bottom:9.0pt;
+	margin-left:6.0pt;
+	line-height:19.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:17.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Hn3, li.Hn3, div.Hn3
+	{mso-style-name:Hn3;
+	mso-style-parent:"Heading 3";
+	mso-style-next:Normal;
+	margin-top:8.0pt;
+	margin-right:6.0pt;
+	margin-bottom:8.0pt;
+	margin-left:6.0pt;
+	line-height:17.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:15.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.index, li.index, div.index
+	{mso-style-name:index;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:fuchsia;
+	display:none;
+	mso-hide:all;}
+p.Leh, li.Leh, div.Leh
+	{mso-style-name:Leh;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:4.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Lmc, li.Lmc, div.Lmc
+	{mso-style-name:Lmc;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ne, li.Ne, div.Ne
+	{mso-style-name:Ne;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Nei, li.Nei, div.Nei
+	{mso-style-name:Nei;
+	mso-style-parent:Ne;
+	mso-style-next:Ln1;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:15.5pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Nh, li.Nh, div.Nh
+	{mso-style-name:Nh;
+	mso-style-parent:"";
+	mso-style-next:Np1;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Np1, li.Np1, div.Np1
+	{mso-style-name:Np1;
+	mso-style-next:Ne;
+	margin-top:0in;
+	margin-right:9.0pt;
+	margin-bottom:6.0pt;
+	margin-left:9.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Nhi, li.Nhi, div.Nhi
+	{mso-style-name:Nhi;
+	mso-style-parent:Nh;
+	mso-style-next:Np1i;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:14.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Np1i, li.Np1i, div.Np1i
+	{mso-style-name:Np1i;
+	mso-style-parent:Np1;
+	mso-style-next:Nei;
+	margin-top:0in;
+	margin-right:3.0pt;
+	margin-bottom:6.0pt;
+	margin-left:17.0pt;
+	text-indent:-14.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Np2, li.Np2, div.Np2
+	{mso-style-name:Np2;
+	mso-style-next:Ne;
+	margin-top:0in;
+	margin-right:9.0pt;
+	margin-bottom:6.0pt;
+	margin-left:9.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Np2i, li.Np2i, div.Np2i
+	{mso-style-name:Np2i;
+	mso-style-parent:Np2;
+	mso-style-next:Ne;
+	margin-top:0in;
+	margin-right:3.0pt;
+	margin-bottom:6.0pt;
+	margin-left:17.0pt;
+	text-indent:-14.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ns, li.Ns, div.Ns
+	{mso-style-name:Ns;
+	mso-style-parent:"";
+	mso-style-next:Nh;
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:6.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Nsi, li.Nsi, div.Nsi
+	{mso-style-name:Nsi;
+	mso-style-parent:Ns;
+	mso-style-next:Nhi;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:15.5pt;
+	margin-bottom:.0001pt;
+	line-height:6.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Synw, li.Synw, div.Synw
+	{mso-style-name:Synw;
+	mso-style-parent:Syn;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tart, li.Tart, div.Tart
+	{mso-style-name:Tart;
+	mso-style-parent:Art;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Te, li.Te, div.Te
+	{mso-style-name:Te;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Teh, li.Teh, div.Teh
+	{mso-style-name:Teh;
+	mso-style-parent:Leh;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:4.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tes, li.Tes, div.Tes
+	{mso-style-name:Tes;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tex, li.Tex, div.Tex
+	{mso-style-name:Tex;
+	mso-style-parent:Ex;
+	margin-top:1.0pt;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Texf, li.Texf, div.Texf
+	{mso-style-name:Texf;
+	mso-style-parent:Tex;
+	mso-style-next:Tex;
+	margin-top:1.0pt;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tf, li.Tf, div.Tf
+	{mso-style-name:Tf;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:10.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tpi, li.Tpi, div.Tpi
+	{mso-style-name:Tpi;
+	mso-style-parent:Tp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tpif, li.Tpif, div.Tpif
+	{mso-style-name:Tpif;
+	mso-style-parent:Tpi;
+	mso-style-next:Tpi;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tr, li.Tr, div.Tr
+	{mso-style-name:Tr;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:4.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tt, li.Tt, div.Tt
+	{mso-style-name:Tt;
+	mso-style-parent:"";
+	mso-style-next:Thf;
+	margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	line-height:11.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:9.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Ttw, li.Ttw, div.Ttw
+	{mso-style-name:Ttw;
+	mso-style-parent:Tt;
+	mso-style-next:Thf;
+	margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	line-height:11.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:9.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H6p, li.H6p, div.H6p
+	{mso-style-name:H6p;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Rh2, li.Rh2, div.Rh2
+	{mso-style-name:Rh2;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:6.0pt;
+	line-height:19.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:17.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.HTML
+	{mso-style-name:HTML;
+	mso-style-parent:"";
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	color:fuchsia;
+	display:none;
+	mso-hide:all;}
+p.Rule, li.Rule, div.Rule
+	{mso-style-name:Rule;
+	mso-style-parent:"";
+	mso-style-next:Rh1;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	border:none;
+	mso-border-bottom-alt:solid blue .75pt;
+	padding:0in;
+	mso-padding-alt:0in 0in 0in 0in;
+	font-size:4.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:white;}
+span.Small
+	{mso-style-name:*Small;
+	mso-style-parent:"";
+	mso-ansi-font-size:10.0pt;}
+p.QiB, li.QiB, div.QiB
+	{mso-style-name:QiB;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	background:#FFFFBA;
+	mso-shading:windowtext;
+	mso-pattern:gray-40 yellow;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.We, li.We, div.We
+	{mso-style-name:We;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Wei, li.Wei, div.Wei
+	{mso-style-name:Wei;
+	mso-style-parent:We;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Wh, li.Wh, div.Wh
+	{mso-style-name:Wh;
+	mso-style-parent:"Heading 4";
+	mso-style-next:Np1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Whi, li.Whi, div.Whi
+	{mso-style-name:Whi;
+	mso-style-parent:Wh;
+	mso-style-next:Np1i;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Ws, li.Ws, div.Ws
+	{mso-style-name:Ws;
+	mso-style-parent:Le;
+	mso-style-next:Wh;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Wsi, li.Wsi, div.Wsi
+	{mso-style-name:Wsi;
+	mso-style-parent:Ws;
+	mso-style-next:Whi;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Ph, li.Ph, div.Ph
+	{mso-style-name:Ph;
+	mso-style-parent:"Heading 1";
+	mso-style-next:Normal;
+	margin-top:11.0pt;
+	margin-right:6.0pt;
+	margin-bottom:11.0pt;
+	margin-left:6.0pt;
+	line-height:22.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Tpr, li.Tpr, div.Tpr
+	{mso-style-name:Tpr;
+	mso-style-parent:Tp;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Cbx, li.Cbx, div.Cbx
+	{mso-style-name:*Cbx;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Cbxe, li.Cbxe, div.Cbxe
+	{mso-style-name:*Cbxe;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.hb1, li.hb1, div.hb1
+	{mso-style-name:*hb1;
+	mso-style-parent:"";
+	mso-style-next:"Heading 4";
+	margin:0in;
+	margin-bottom:.0001pt;
+	text-align:center;
+	line-height:18.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	background:#9C9CFF;
+	mso-shading:windowtext;
+	mso-pattern:gray-60 blue;
+	border:none;
+	mso-border-alt:solid white .75pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 1.0pt 1.0pt 1.0pt;
+	mso-element:frame;
+	mso-element-frame-width:73.0pt;
+	mso-element-frame-height:19.5pt;
+	mso-element-frame-hspace:11.0pt;
+	mso-element-wrap:auto;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:page;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:white;
+	mso-text-raise:2.0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.hb2, li.hb2, div.hb2
+	{mso-style-name:*hb2;
+	mso-style-parent:"";
+	mso-style-next:Rh1;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	line-height:18.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	background:#9C9CFF;
+	mso-shading:windowtext;
+	mso-pattern:gray-60 blue;
+	border:none;
+	mso-border-alt:solid white .75pt;
+	padding:0in;
+	mso-padding-alt:4.0pt 4.0pt 4.0pt 4.0pt;
+	mso-element:frame;
+	mso-element-frame-height:19.5pt;
+	mso-element-wrap:auto;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:margin;
+	mso-element-left:right;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:white;
+	mso-text-raise:5.0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.ArtSd, li.ArtSd, div.ArtSd
+	{mso-style-name:ArtSd;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.CapSd, li.CapSd, div.CapSd
+	{mso-style-name:CapSd;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.QiH, li.QiH, div.QiH
+	{mso-style-name:QiH;
+	mso-style-parent:Rmh;
+	mso-style-next:QiB;
+	margin-top:7.0pt;
+	margin-right:0in;
+	margin-bottom:7.0pt;
+	margin-left:0in;
+	line-height:14.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	background:#FFFFBA;
+	mso-shading:windowtext;
+	mso-pattern:gray-40 yellow;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Mp, li.Mp, div.Mp
+	{mso-style-name:Mp;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:6.0pt;
+	line-height:10.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Pb, li.Pb, div.Pb
+	{mso-style-name:Pb;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Sb, li.Sb, div.Sb
+	{mso-style-name:Sb;
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:9.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	mso-element:frame;
+	mso-element-frame-height:12.0pt;
+	mso-element-frame-hspace:12.0pt;
+	mso-element-wrap:auto;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:column;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:red;
+	display:none;
+	mso-hide:all;}
+p.Sbre, li.Sbre, div.Sbre
+	{mso-style-name:Sbre;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.SbrEx, li.SbrEx, div.SbrEx
+	{mso-style-name:SbrEx;
+	mso-style-parent:Ex;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Sbrh, li.Sbrh, div.Sbrh
+	{mso-style-name:Sbrh;
+	mso-style-parent:"Heading 2";
+	mso-style-next:Normal;
+	margin-top:9.0pt;
+	margin-right:6.0pt;
+	margin-bottom:9.0pt;
+	margin-left:6.0pt;
+	line-height:19.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:17.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Sbrh2, li.Sbrh2, div.Sbrh2
+	{mso-style-name:Sbrh2;
+	mso-style-parent:"Heading 2";
+	mso-style-next:Normal;
+	margin-top:9.0pt;
+	margin-right:6.0pt;
+	margin-bottom:9.0pt;
+	margin-left:6.0pt;
+	line-height:19.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:17.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.SbrLb, li.SbrLb, div.SbrLb
+	{mso-style-name:SbrLb;
+	mso-style-parent:Lb1;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-12.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.SbrLe, li.SbrLe, div.SbrLe
+	{mso-style-name:SbrLe;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.SbrLp, li.SbrLp, div.SbrLp
+	{mso-style-name:SbrLp;
+	mso-style-parent:Lp1;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:right 14.0pt left .25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Sbrp, li.Sbrp, div.Sbrp
+	{mso-style-name:Sbrp;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Sbrs, li.Sbrs, div.Sbrs
+	{mso-style-name:Sbrs;
+	mso-style-parent:"";
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:20.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tei, li.Tei, div.Tei
+	{mso-style-name:Tei;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Tew, li.Tew, div.Tew
+	{mso-style-name:Tew;
+	mso-style-parent:Le;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:0in;
+	margin-left:6.0pt;
+	margin-bottom:.0001pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.ExSyn, li.ExSyn, div.ExSyn
+	{mso-style-name:ExSyn;
+	mso-style-parent:Exw;
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:9.5pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Lucida Sans Typewriter";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+span.Lang
+	{mso-style-name:*Lang;
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	color:blue;
+	font-weight:bold;
+	text-decoration:underline;
+	text-underline:single;}
+span.Alt
+	{mso-style-name:Alt;
+	mso-style-parent:HTML;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	color:olive;
+	display:none;
+	mso-hide:all;}
+p.LangBegin, li.LangBegin, div.LangBegin
+	{mso-style-name:LangBegin;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:6.0pt;
+	margin-left:6.0pt;
+	line-height:12.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	border:none;
+	mso-border-top-alt:solid windowtext .75pt;
+	padding:0in;
+	mso-padding-alt:3.0pt 0in 0in 0in;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:blue;}
+p.LangEnd, li.LangEnd, div.LangEnd
+	{mso-style-name:LangEnd;
+	mso-style-parent:Ne;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:6.0pt;
+	margin-bottom:12.0pt;
+	margin-left:6.0pt;
+	line-height:8.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	tab-stops:.25in 30.0pt 42.0pt;
+	border:none;
+	mso-border-top-alt:solid windowtext .75pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 0in 0in 0in;
+	font-size:6.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:blue;}
+ /* Page Definitions */
+@page
+	{mso-facing-pages:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:-127.0pt 76.5pt -111.0pt 166.5pt;
+	mso-header-margin:99.5pt;
+	mso-footer-margin:.25in;
+	mso-gutter-margin:21.0pt;
+	mso-title-page:yes;
+	mso-even-header:url("./me_inst_files/header.htm") eh1;
+	mso-header:url("./me_inst_files/header.htm") h1;
+	mso-even-footer:url("./me_inst_files/header.htm") ef1;
+	mso-footer:url("./me_inst_files/header.htm") f1;
+	mso-first-header:url("./me_inst_files/header.htm") fh1;
+	mso-paper-source:15;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1572276393;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1506035062 13040020 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-start-at:3;
+	mso-level-tab-stop:24.0pt;
+	mso-level-number-position:left;
+	margin-left:24.0pt;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:13.7pt'>
+
+<div class=Section1>
+
+<p class=Ch>Getting Started </p>
+
+<p class=MsoNormal>This section describes the contents of the Microsoft<sup>®</sup>
+Windows<sup>®</sup> Me Device Driver Kit (DDK). The Windows Me DDK includes
+information about building drivers based on Microsoft<sup>®</sup> Windows<sup>®</sup>
+Driver Model (WDM). This section also includes information on: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>System requirements and instructions for installing the Windows Me
+DDK. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Instructions for using the winmebld.bat batch file provided with
+the Windows Me DDK to set up the device driver build environment. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>A description of the directory structure on your hard disk after the
+Windows Me DDK has been installed, plus descriptions of the sample driver
+source code files and documentation files that are installed. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>A list of formats and standards used in the Windows Me DDK. </p>
+
+<p class=Leh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Contents</h3>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#install">Installing
+the Windows Me DDK</a><span style='color:maroon;display:none;mso-hide:all'>_install_Installing_the_Windows_98_DDK</span>
+<o:p></o:p></span></p>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#setup">Setting
+Up and Using the Windows Me Driver Build Environment</a><span style='color:maroon;
+display:none;mso-hide:all'>_install_Setting_Up_and_Using_the_Windows_98_Driver_Build_Environment</span>
+<o:p></o:p></span></p>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#verify">
+Verifying DDK Installation</a><span style='color:maroon;
+display:none;mso-hide:all'>_install_Setting_Up_and_Using_the_Windows_98_Driver_Build_Environment</span>
+<o:p></o:p></span></p>
+
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#build">Starting
+to Build Your Own Drivers</a><span style='color:maroon;display:none;mso-hide:
+all'>_install_Starting_to_Build_Your_Own_WDM_Drivers</span> <o:p></o:p></span></p>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#debug">
+Debugging Windows Me</a><span style='color:maroon;display:none;mso-hide:
+all'>_install_Starting_to_Build_Your_Own_WDM_Drivers</span> <o:p></o:p></span></p>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#webinfo">Information
+on the Microsoft Web Site</a><span style='color:maroon;display:none;mso-hide:all'>_install_Information_on_the_Microsoft_Web_Site</span>
+<o:p></o:p></span></p>
+
+<p class=Lp1><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><a href="#relnotes">Release
+Notes<span style='color:maroon;display:none;mso-hide:all'>_install_Release_Notes</span>
+<o:p></o:p></span></p>
+<br><br>
+<h2><a name="install">Installing the Windows Me DDK<a/></h2>
+
+<p class=MsoNormal>This topic describes how to install the Windows Me DDK. The
+following notation conventions are used. </p>
+
+<table border=0 cellspacing=0 cellpadding=0 style='margin-left:.4pt;border-collapse:
+ collapse;mso-padding-alt:0in 0in 0in 0in'>
+ <tr>
+  <td width=133 valign=top style='width:100.0pt;padding:0in 0in 0in 0in'>
+  <p class=Thf>Convention</p>
+  </td>
+  <td width=331 valign=top style='width:248.0pt;padding:0in 0in 0in 0in'>
+  <p class=Th>Description</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=464 colspan=2 valign=top style='width:348.0pt;padding:0in 0in 0in 0in'>
+  <p class=Tr><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=133 valign=top style='width:100.0pt;padding:0in 0in 0in 0in'>
+  <p class=Tpf>%NTDDK%</p>
+  </td>
+  <td width=331 valign=top style='width:248.0pt;padding:0in 0in 0in 0in'>
+  <p class=Tp>Root directory of the installed Windows Me DDK</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=133 valign=top style='width:100.0pt;padding:0in 0in 0in 0in'>
+  <p class=Tpf>%MSVCDIR%</p>
+  </td>
+  <td width=331 valign=top style='width:248.0pt;padding:0in 0in 0in 0in'>
+  <p class=Tp>Root directory of the installed Microsoft<span style='font-size:
+  7.0pt;mso-bidi-font-size:10.0pt'>®</span> Visual C++® development
+  environment. </p>
+  </td>
+ </tr>
+</table>
+
+<p class=Tes><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>System Requirements</h3>
+
+<p class=MsoNormal>The minimum requirements for using the DDK include the
+following software and hardware: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Microsoft Windows Me operating system final release</p>
+
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Microsoft Visual C++<span style="mso-spacerun: yes">  </span>6.0
+(including service packs) for x86-based systems. </p>
+
+<p class=Ns><span style="mso-spacerun: yes"> </span></p>
+
+<p class=Nh>Important</p>
+
+<p class=Np1>You must install the Visual C++ compiler and development
+environment <i style='mso-bidi-font-style:normal'>before</i> running
+winmebld.bat. Otherwise, the winmebld.bat file in the Windows Me DDK will not
+set up the correct environment when you run it. For more information, see
+<a href="#setup">Setting Up and Using the Windows Me Driver Build Environment.</a></p>
+
+<p class=Ne><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>CD-ROM drive, if installing from CD or testing CD drivers. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>32MB RAM. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>193 MB hard disk space for the full installation (35 MB of hard
+disk space for a minimum installation, which does not include the sample driver
+source code, Help files, or other documentation files). </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Legacy driver samples. The legacy driver samples require a 16-bit
+compiler and linker. The 16-bit compiler and linker are provided in the
+%NTDDK%\bin\win_me\bin16 directory.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Proch>Using the Setup Program to Install the DDK</p>
+
+<p class=Ln1><span style='mso-tab-count:1'>  </span>1.<span style='mso-tab-count:
+1'> </span>Run <b style='mso-bidi-font-weight:normal'>Setup.exe</b> from the
+Windows Me DDK CD-ROM, or download the self-extracting executable file, which
+will begin Setup.exe upon completion of the uncompression. Setup.exe is a
+Windows-based application you can run from either the <b style='mso-bidi-font-weight:
+normal'>Start</b> or <b style='mso-bidi-font-weight:normal'>Run </b>button, or
+from an MS-DOS<span style='font-size:7.0pt;mso-bidi-font-size:10.0pt'>®</span>
+prompt. </p>
+
+<p class=Ln1><span style='mso-tab-count:1'>  </span>2.<span style='mso-tab-count:
+1'> </span>Click <b style='mso-bidi-font-weight:normal'>Next</b> to install the
+DDK. </p>
+
+<p class=Ln1 style='margin-left:24.0pt;mso-list:l0 level1 lfo1;tab-stops:right 14.0pt left .25in list 24.0pt left 30.0pt 42.0pt'><![if !supportLists]>3.<![endif]>Read
+the Software License Agreement and, if you agree with its terms, click <b
+style='mso-bidi-font-weight:normal'>I accept the Agreement</b> and click <b
+style='mso-bidi-font-weight:normal'>Next</b>. </p>
+
+<p class=Ln1 style='margin-left:24.0pt;mso-list:l0 level1 lfo1;tab-stops:right 14.0pt left .25in list 24.0pt left 30.0pt 42.0pt'><![if !supportLists]>4.<![endif]>Select
+the drive and directory where you want to install the Windows Me DDK and then
+click <b style='mso-bidi-font-weight:normal'>Next</b>. </p>
+
+<p class=Nsi><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Nhi>Note</p>
+
+<p class=Np1i><span style='mso-tab-count:1'>     </span>The Windows Me DDK
+cannot be installed in a directory that does not follow the 8.3 naming
+convention. </p>
+
+<p class=Nei><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Ln1><span style='mso-tab-count:1'>  </span>5.<span style='mso-tab-count:
+1'> </span>Select the component groups you want to install. Click <b
+style='mso-bidi-font-weight:normal'>Details </b>to select or deselect
+subcomponents. Click <b style='mso-bidi-font-weight:normal'>Next</b>. </p>
+
+<p class=Ln1><span style='mso-tab-count:1'>  </span>6.<span style='mso-tab-count:
+1'> </span>Verify that the appropriate components will be installed and click
+Finish. </p>
+
+<p class=Ln1><span style='mso-tab-count:1'>  </span>7.<span style='mso-tab-count:
+1'> </span>After the installation of components is completed, click <b
+style='mso-bidi-font-weight:normal'>Next</b> and then click <b
+style='mso-bidi-font-weight:normal'>Exit</b>. </p>
+
+<p class=Leh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h4>Installation Notes </h4>
+
+<p class=MsoNormal>The Setup program installs the selected Windows Me DDK
+components in the specified installation directory and creates program folders.
+</p>
+
+<p class=MsoNormal>You should increase your environment space because the
+Windows Me DDK, compiler, and assembler all use additional environment space for storage of search paths.<span
+style="mso-spacerun: yes">   </span></p>
+
+<p class=Th style='margin-bottom:6.0pt'>Note: </p>
+
+<p class=MsoNormal>This is done automatically if you use a Build Environment
+short cut the from the Development Kits\Windows Me DDK group on the Start Menu.</p>
+
+<p class=Ns><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Nh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Nh>Note</p>
+
+<p class=Np1>The Windows Me DDK uses the current VCVars32.Bat as part of
+creating the build environment. This includes setting your current path to
+include the installation source of Visual C++. </p>
+
+<p class=Ne><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Manually increasing the environment space if you do not
+use a Start Menu shortcut</b></p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Create a shortcut for the MS-DOS Prompt and place the following in
+the “Cmd line” of the Program Tab. </p>
+
+<p class=Lp1><b style='mso-bidi-font-weight:normal'>%windir%\command.com
+/e:4096</b></p>
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This command gives you an environment of 4,096 bytes. If you
+receive &quot;out of environment space&quot; messages, you should increase the
+size of the environment further. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><a name="setup">Setting Up and Using the Windows Me Driver Build Environment</a></h2>
+
+<p class=MsoNormal>This topic provides instructions for establishing a WDM
+driver build environment and using the Build utility to build drivers. </p>
+
+<h3>Using WINMEBLD.BAT to Set Up the Driver Build Environment </h3>
+
+<p class=MsoNormal>A program folder named Development Kits\Windows Me DDK is
+created during the DDK installation. This folder contains items for 
+automatically creating the build environments.  They are:</p>
+
+<ul>
+<li>Free Build Environment for Win Me
+<li>Checked Build Environment for Win Me
+</ul>
+
+</p>
+<p class=MsoNormal>Each time you restart the operating system, and before you
+build a driver, click one or the other of these program folder items. These
+items call <i>winmebld.bat</i> in
+%NTDDK%\bin\win_me\bin to create the driver build environment using the correct
+environment variables. </p>
+
+<p class=Proch><span style='color:black'><span style='mso-tab-count:1'>    </span></span>
+Running winmebld.bat manually </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Use the following syntax at the MS-DOS prompt or in the <b
+style='mso-bidi-font-weight:normal'>Start</b> or <b style='mso-bidi-font-weight:
+normal'>Run </b>box: </p>
+
+<p class=Proch><span style='color:black'><span style='mso-tab-count:1'>    </span></span>
+winmebld<i style='mso-bidi-font-style:normal'>%NTDDK%</i> [free | checked] </p>
+
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>For example, from the C:\NTddk\bin\win_me\bin&gt; prompt,
+type <b style='mso-bidi-font-weight:normal'>winmebld C:\NTddk free</b> </p>
+
+<p class=MsoNormal>The first argument, &lt;<i style='mso-bidi-font-style:normal'>destination</i>&gt;,
+specifies the directory where the DDK is installed. Note that in the case of
+default setup, the destination is \NTddk. The optional second argument
+specifies the target build environment; the default type is <b
+style='mso-bidi-font-weight:normal'>free</b>. </p>
+
+<p class=Lb1><span style='color:black'><span style='mso-tab-count:1'>    </span></span><span
+style="mso-spacerun: yes"> </span></p>
+
+<h2><a name="verify">Verifying DDK Installation</a></h2>
+
+<p class=MsoNormal>Start either the <i>free</i> or <i>checked</i> build
+environment by the choosing the appropriate icon from the Windows Me DDK
+menu.
+
+Verify your installation of the Windows Me DDK by running <b>nmake</B> from
+the %NTDDK%\src\win_me\general directory.  You may also want to verify
+other projects by running <b>nmake</b> in the base, block, display, and
+storage\lockcd directories under the %NTDDK%\src\win_me location.
+</p>
+
+
+<p class=Leh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><a name="build">Starting to Build Your Own Drivers</a></h2>
+
+<p class=MsoNormal>Once you have built the sample drivers to verify the Windows
+Me DDK installation, you can start building your own driver. The Windows Me
+DDK samples use the VC <b>nmake</b> utility to build its components.</p>
+
+<p class=MsoNormal>
+<b>Note:</b> The Windows 2000 DDK uses the <b><i>build</i></b> utility to
+build drivers. If you want to integrate Windows Me samples to use the
+<i>build</i> utility, you need to create your own DIRS/SOURCES files for
+your project.  There are several ways to do this, but the easiest is to
+create a sources file which builds no target.  It can then call your
+existing build process. In this case, the <i>build</i> utility is used
+strictly to spawn nmake.  The below example is a dummy sources file:
+</p>
+
+<pre><code>
+======== SOURCES file ========
+
+TARGETNAME=
+TARGETTYPE=NOTARGET
+TARGETPATH=
+SOURCES=
+</pre></code>
+
+<p class=MsoNormal>
+For more detailed information about the <i>build</i> utility and the
+Windows 2000 DDK build environment, see the Driver Writer's Guide in the
+Windows 2000 DDK Online Help.  For the demostration of the NMAKE/BUILD
+integration, see the sample in %NTDDK%\src\win_me\general directory.
+</p>
+
+<p class=MsoNormal>
+For building WDM drivers, refer to the Windows 2000 DDK documentation.
+Note that much of the detailed information about building kernel-mode
+drivers in the Windows NT 4.0 and Windows 2000 DDKs also applies to
+building WDM drivers.</p>
+
+<p class=Leh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+
+<h2><a name="debug">Debugging Windows Me</a></h2>
+
+<p class=MsoNormal>The debugger tool provided in the Windows Me DDK is the
+Windows System Debugger <b>debugger.exe</b>. For detailed information on how
+to install and use debugger.exe, see &quot;Windows Me Debugging and Other
+Tools\<i>Windows 9x Debugging</i>&quot; under Millennium DDK in the online
+documentation</p>
+
+<p class=MsoNormal>A remote terminal is provided for additional debugging
+capabilities. <b>RTerm</b>, located in the \bin\win_me\fre and \bin\win_me\chk
+folders of the DDK, supports source-level debugging as well as being
+Win32<span style='font-size:7.0pt;mso-bidi-font-size:10.0pt'>®</span>-aware.
+The new application handles higher transfer rates, up to 115.2 kbps, the
+Pentium instruction set, and the ability to load debug symbols dynamically
+from RTerm. Additional information is available under the application's
+<b style='mso-bidi-font-weight:normal'>Help</b> menu or by typing
+<b style='mso-bidi-font-weight:normal'>-?</b> or
+.<bstyle='mso-bidi-font-weight:normal'>-?</b>, using the debugger's command
+line switches.</p>
+
+<p class=MsoNormal>The Windows Me DDK RTerm<i style='mso-bidi-font-style:normal'>
+</i>may be used in combination with the DDK debugger, <i>debugger.exe</i>,
+but is incompatible with the older WDEB applications. The previous Rterm
+utility, Rterm98, must be paired with WDEB98 to function.<span style="mso-spacerun:
+yes">  </span>Likewise, the older Windows<span style='font-size:7.0pt;
+mso-bidi-font-size:10.0pt'>®</span> 95 version of RTerm<i style='mso-bidi-font-style:
+normal'>, </i>or an equivalent remote terminal application such as HyperTerm,
+may be used with WDEB386.EXE.</p>
+
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></i></p>
+
+<h2><span style='font-size:18.0pt;mso-bidi-font-size:10.0pt'><a name="webinfo">Information on the
+Microsoft Web Site</a></span></h2>
+
+<p class=MsoNormal>The <b style='mso-bidi-font-weight:normal'>Hardware Development
+Web Site</b> at <a href="http://www.microsoft.com/hwdev">http://www.microsoft.com/hwdev</a>
+<span style='color:maroon;display:none;mso-hide:all'>!href(&quot;http://www.microsoft.com/hwdev&quot;)</span>provides
+information on hardware and driver development. This Web site provides the
+following: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Driver development information for Plug and Play, power
+management, manageability, NDIS 5.0, WDM, and specific device classes such as
+audio and imaging. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Third-party driver development and training resources. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Advice from &quot;Dr. Iver&quot; on special driver topics, such as
+WDM, Plug and Play, and power management. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Specifications for power management, Plug and Play, and other
+special topics. </p>
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The MSDN<span style='font-size:7.0pt;mso-bidi-font-size:
+10.0pt'>®</span> (<b style='mso-bidi-font-weight:normal'>Microsoft Developers
+Network) Web site</b> at <a
+href="http://www.msdn.microsoft.com">http://www.msdn.microsoft.com</a>
+provides information on software development. This Web site provides the
+following: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Downloads of service packs or patches for Microsoft development
+tools. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Special developer tools for MSDN Online Members to try out and
+evaluate. These tools are designed to complement and integrate with the
+Microsoft programming environments you already use. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Up-to-date releases of the Platform SDK. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Access to user groups, chats, event information, the MSDN Library
+Online, and a host of products and technologies for developers. </p>
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The<b style='mso-bidi-font-weight:normal'> Microsoft</b><b
+style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt;mso-bidi-font-size:
+10.0pt'>®</span> DirectX</b><b style='mso-bidi-font-weight:normal'><span
+style='font-size:7.0pt;mso-bidi-font-size:10.0pt'>®</span> Web site</b> at
+<a href="http://www.microsoft.com/directx">http://www.microsoft.com/directx</a>
+provides information for DirectX hardware and software developers,
+including: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Microsoft DirectX SDK download. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Connections to technical articles, support information, news
+groups, and so on. </p>
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The <b style='mso-bidi-font-weight:normal'>DDK Web site</b>
+at <a href="http://www.microsoft.com/ddk">http://www.microsoft.com/ddk</a>
+provides information and resources for driver development, including: </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>The most current version of the DDK. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Online Help for the DDK. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Announcements of new DDK developments.</p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Feedback for reporting bugs, suggesting content, and rating the
+DDK.</p>
+
+<p class=Le><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The <b style='mso-bidi-font-weight:normal'>Product Support
+Services Web site</b> at <u><a href="http://support.microsoft.com/support/ddk">http://support.microsoft.com/support/ddk</a>.</u><span
+style='color:maroon;display:none;mso-hide:all'>!href(&quot;http://support.microsoft.com/support/ddk&quot;)</span>
+This Web site provides information on developing and maintaining drivers,
+including:</p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Additional driver samples. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>Tools for device drivers and debugging. </p>
+
+<p class=Lb1><!--[if supportFields]><sup><span style='mso-element:field-begin'></span>SYMBOL
+183 \f &quot;Symbol&quot; \s 11 \h </sup><![endif]--><!--[if supportFields]><sup><span
+style='mso-element:field-end'></span></sup><![endif]--><span style='mso-tab-count:
+1'>   </span>FAQs on Windows driver development. </p>
+
+<p class=Leh><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><a name="relnotes">Release Notes</a></h2>
+
+<h3><span style='color:black'>I</span>nternet Explorer Required for
+Documentation</h3>
+
+<p class=MsoNormal>This refresh of the Windows Me DDK requires Microsoft<span
+style='font-size:7.0pt;mso-bidi-font-size:10.0pt'>®</span> Internet Explorer
+4.01 or later for full functionality. If the setup program does not detect IE
+4.01 or later on your hard drive, the documentation will not be installed. The
+latest version of Microsoft Internet Explorer can be downloaded separately from
+the Web at <a href="http://www.microsoft.com/ie">
+http://www.microsoft.com/ie.</a></p>
+
+<h3>Running Windows Me DDK tools on Windows 2000 and Windows XP</h3>
+<p class=MsoNormal><span style='color:black'>The Windows Me DDK tools must be run on a computer under Windows Me.  The tools
+will not necessarily run under Windows 2000 or Windows XP (depending on the tool). </span></p>
+
+<h3>Visual C++ 6.0 Service Pack 3 Recommended</h3>
+
+<p class=MsoNormal><span style='color:black'>Visual C++ 6.0 Professional Service Pack 3
+(or greater) is required to build samples.</span></p>
+
+<h3>Information on Creating IrDA Drivers</h3>
+
+<p class=MsoNormal>For information on creating infrared (IrDA) miniport drivers
+for Windows Me, see the Windows 2000 Driver Development Kit.</p>
+
+<h3>Information on Creating WDM Audio Drivers</h3>
+
+<p class=MsoNormal>For information on creating WDM Audio drivers for Windows
+Me, see the Windows 2000 Driver Development Kit.</p>
+
+<h3>Information on Creating WDM DVD Drivers</h3>
+
+<p class=MsoNormal>For information on creating WDM DVD drivers for Windows Me,
+see the Windows 2000 Driver Development Kit.</p>
+
+<h3>Information on Creating 1394 Drivers</h3>
+
+<p class=MsoNormal>For information on creating 1394 drivers for Windows Me, see
+the Windows 2000 Driver Development Kit.</p>
+
+<h3>Information on Creating Modem Drivers</h3>
+
+<p class=MsoNormal>To create modem drivers for Windows Me, use the tool
+provided in the Windows 2000 DDK. Complete information on creating modem drivers is
+included in the Windows 2000 Driver Development Kit. </p>
+
+<h3>Legacy Documentation</h3>
+
+<p class=MsoNormal>Windows Me continues to support Windows 95 driver
+technologies. This DDK includes updated documentation from the Windows 95 DDK
+and selected documentation from the Windows<span style='font-size:7.0pt;
+mso-bidi-font-size:10.0pt'>®</span> 3.1 DDK as a convenience to developers who
+continue to use these technologies. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<div style='mso-element:comment-list'><![if !supportAnnotations]>
+
+<hr class=msocomoff align=left size=1 width="33%">
+
+<![endif]></div>
+
+</body>
+
+</html>

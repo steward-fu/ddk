@@ -1,0 +1,63 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Mouse Capture Program
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=MouseCapture.rap
+1=MouseCapture.rc
+2=MouseCapture.asm
+3=MouseCapture.obj
+4=MouseCapture.res
+5=MouseCapture.exe
+6=MouseCapture.def
+7=MouseCapture.dll
+8=MouseCapture.txt
+9=MouseCapture.lib
+10=MouseCapture.mak
+11=MouseCapture.hla
+[Files]
+1=
+2=wpa.hhf
+3=makefile
+4=MouseCapture.hla
+[Size]
+1=
+3=0,0,0,0,272
+2=0,0,0,0,0
+4=0,0,0,0,5609
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+[Find]
+1="fvalidBox"
+2="ebp::"
+3="newRadius"
+4="smallRadius"
+5="C1Y"
+6="C1X"
+7="Center1.y"
+8="InnerRadius"
+9="Center1.x"
+10="Center"

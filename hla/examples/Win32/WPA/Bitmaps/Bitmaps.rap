@@ -1,0 +1,50 @@
+[Project]
+Assembler=hla
+Type=Windows App
+Description=Bitmaps Demo
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[MakeDef]
+Menu=1,1,1,1,1,0,0,0
+1=0,O,make build,
+2=0,O,make buildall,
+3=0,O,make compilerc,
+4=0,O,make syntax,
+5=0,C,make run,
+6=
+[MakeFiles]
+0=Bitmaps.rap
+1=Bitmaps.rc
+2=Bitmaps.asm
+3=Bitmaps.obj
+4=Bitmaps.res
+5=Bitmaps.exe
+6=Bitmaps.def
+7=Bitmaps.dll
+8=Bitmaps.txt
+9=Bitmaps.lib
+10=Bitmaps.mak
+11=Bitmaps.hla
+[Files]
+1=Bitmaps.hla
+2=wpa.hhf
+3=makefile
+[Size]
+1=0,0,0,0,0
+3=0,0,0,0,272
+2=0,0,0,0,0
+[Version-Inc]
+Options=52
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]

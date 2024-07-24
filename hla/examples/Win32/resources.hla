@@ -1,0 +1,58 @@
+program resourceDemo;
+#include( "stdlib.hhf" )
+#include( "resources.hhf" )
+
+resource( "myres.rc" )
+
+	STRINGTABLE
+		str1:strres( "Hello World" );
+		str2:strres( "How are you?" );
+		str3:strres( "I am fine" );
+	ENDSTRINGTABLE;
+
+	myaccs: ACCELERATOR
+
+		acc1:acc( "^C" );
+		acc2:acc( "K" );
+		acc3:acc( "k", ALT );
+		acc4:acc( 98, ASCII );
+		acc5:acc( VK_F1, ALT, VIRTKEY );
+
+	ENDACCELERATOR;
+
+	myDlg: DIALOG( 10, 20, 300, 400 )
+
+		a3s	:AUTO3STATE( "caption", 10, 20, 100, 200 );
+		acb	:AUTOCHECKBOX( "caption1", 11, 21, 101, 201 );
+		cb	:CHECKBOX( "caption2", 12, 22, 102, 202 );
+		cmbo:COMBOBOX( 13, 23, 103, 203 );
+		ctxt:CTEXT( "Centered Text", 14, 24, 104, 204 );
+		dpb :DEFPUSHBUTTON( "Default Push Button", 15, 25, 105, 205 );
+		etxt:EDITTEXT( 16, 26, 106, 206 );
+		gbx :GROUPBOX( "Group Box", 17, 27, 107, 207 );
+		icn :ICON( "ICON", 1, 2, 3, 4 );
+		lbx :LISTBOX( 1, 2, 3, 4 );
+		ltxt:LTEXT( "LTEXT", 1, 2, 3, 4 );
+		pbx :PUSHBOX( "PBOX", 1, 2, 3, 4 );
+		pbtn:PUSHBUTTON( "PUSH BUTTON", 1, 2, 3, 4 );
+		rbtn:RADIOBUTTON( "RADIO BUTTON", 1, 2, 3, 4 );
+		rtxt:RTEXT( "RTEXT", 1, 2, 3, 4 );
+		sbar:SCROLLBAR( 1, 2, 3, 4 );
+		s3c :STATE3( "STATE3", 1, 2, 3, 4 );
+
+	ENDDIALOG;
+
+	myCurs		:CURSOR( "arrow.cur" );
+	myBM		:BITMAP( "Buttons.bmp" );
+	myFont		:FONT( "roman.fon" );
+	FONT( 12, "roman.fon" );
+
+endresource;
+
+#system( "rc -v myres.rc" )
+
+
+begin resourceDemo;
+
+
+end resourceDemo;

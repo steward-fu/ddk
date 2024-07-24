@@ -1,0 +1,1244 @@
+// gsactions.hla
+//
+// This file contains game-specific actions (verb handlers).
+// This code is specific to a particular adventure game created with AGE.
+
+unit gsactions_hla;
+?@nodisplay := true;
+?@nostackalign := true;
+#includeonce( "stdlib.hhf" )
+#includeonce( "age.hhf" )
+#includeonce( "gamespecific.hhf" )
+
+
+readonly
+	sapln :string := SeeAPathLeadingNorth;
+	gn		:string := GoingNorth;
+endreadonly;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// eachTurn-
+//
+//	Executes after the player's turn (and any turns needed by agents in the
+// same room as the player).
+
+_procedure( eachTurn )( p:playerPtr );
+static
+	largeRock208_counter	:int32 := 3;
+
+begin eachTurn;
+
+
+	// If the player spends more than four turns in room 208, collapse
+	// the rock and trap them:
+
+	mov( p, eax );
+	mov( playerEAX.curRoom, eax );
+	if( eax = rooms[ r_largeRock208 ] ) then
+
+		dec( largeRock208_counter );
+		if( @s ) then
+
+			console.setAttrs( warningFGColor, warningBGColor );
+			stdout.put
+			(
+				"The western wall collapses. You are now trapped!" nl
+			);
+			console.setAttrs( gameFGColor, gameBGColor );
+			mov( NULL, roomEAX.west );
+
+		endif;
+			
+	endif;
+		
+end eachTurn;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// readBulletinBoard
+//
+//	This is a replacement for verb_read and verb_examine for the bulletin
+// board so we can generate dynamic content for the board.
+
+_procedure( readBulletinBoard )
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);
+
+	procedure putQuest
+	(
+		playersQuest	:uns32;
+		thisQuest 		:uns32;
+		questMsg		:string
+	);
+	begin putQuest; debug( "putQuest" );
+	
+		push( eax );
+		console.setAttrs( bulletinFGColor, bulletinBGColor );
+		mov( playersQuest, eax );
+		if( eax > thisQuest ) then
+		
+			stdout.put( questMsg, "yes" nl );
+						
+		elseif( eax = thisQuest ) then
+		
+			stdout.put( questMsg, "no" nl );
+			
+		endif;
+		console.setAttrs( gameFGColor, gameBGColor );
+		pop( eax );
+		
+	end putQuest;
+	
+begin readBulletinBoard; debug( "readBulletinBoard" );
+
+	pushad();
+	
+	mov( p, esi );
+	mov( playerESI.quest, eax );
+	stdout.put( nl, QuestHeaderOnBB, nl );
+	putQuest
+	( 
+		playerESI.quest, 
+		lantern_quest_c,
+		"1. Lantern Quest   Find a missing lantern      100 gold      "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		goblin_quest_c,
+		"2. Goblin Quest    Defeat an evil goblin       250 gold      "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		castle_quest_c,
+		"3. Castle Quest    Can you find the castle?    300 gold      "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		sorcerer_quest_c,
+		"4. Sorcerer Quest  Find/dispatch the sorcerer  325 gold      "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		mansion_quest_c,
+		"5. Mansion Quest   Explore a hidden mansion    ???           "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		werewolf_quest_c,
+		"6. Werewolf Quest  Befriend a lone werewolf    ???           "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		vampire_quest_c,
+		"7. Vampire Quest   Vanquish the evil vampire   ???           "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		cavern_quest_c,
+		"8. Cavern Quest    Defeat the evil guardian    ???           "
+	);
+	putQuest
+	( 
+		playerESI.quest, 
+		dragon_quest_c,
+		"9. Dragon Quest    This is the main quest      ???           "
+	);
+	
+	stdout.put
+	(
+		"------------------------------------------------------------------"
+		nl
+		nl
+	);
+	popad();
+
+end readBulletinBoard;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// quest_lantern-
+//
+//	This code executes the first time the player "gets" a lantern.
+// This completes the "lantern quest" and then resets the dynamic
+// "get" pointer to point at "get" from that point forward.
+
+procedure quest_lantern
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);
+begin quest_lantern;
+
+	push( esi );
+	
+	// First, do the actual "get" operation so that the lantern becomes
+	// part of the player's inventory:
+	
+	verb_get( p, n1, n2, cmd );
+	
+	// Okay, this quest is complete.
+	
+	console.setAttrs( gameFGColor, gameBGColor );
+	stdout.put
+	( 
+		nl 
+		"*** Congratulations ***" nl
+		"You've finished the lantern quest" nl
+	);
+	
+	mov( p, esi );
+	mov( goblin_quest_c, playerESI.quest );
+	
+	// This quest was worth 100.00 gold pieces. Credit the
+	// player with this value:
+	
+	fld( 100.00 );
+	fld( playerESI.wealth );
+	fadd();
+	fstp( playerESI.wealth );
+	
+	// Okay, change the lantern's "get" verb back to an
+	// actual get (they only get to complete this quest once).
+	
+	mov( n1, esi );
+	mov( &verb_get, possessionESI.actions[ uns32( v_get )*4 ] );
+	pop( esi );
+	
+end quest_lantern;
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_goblin-
+//
+//	This code executes when the player fights the goblin.
+
+procedure quest_goblin
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_goblin;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = goblinAgent && playerEBX.quest <> goblin_quest_c ) then
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		( 
+			nl
+			"You have other quests to complete before ", 
+			"fighting the goblin" nl
+			nl 
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+		
+	else
+	 
+		// Do the normal fight verb to do the real work.
+		
+		verb_fight( p, n1, n2, cmd );
+
+		// If the goblin is defeated, then they've completed
+		// quest #2:
+		
+		mov( n1, esi );
+		mov( p, ecx );
+		if( esi = goblinAgent && playerECX.quest = goblin_quest_c ) then
+		
+			mov( agentESI.curPower, eax );
+			if( (type int32 eax) <= 0 ) then
+			
+				// Quest #2 is officially complete:
+				
+				stdout.put
+				( 
+					nl 
+					"Congratulations! You've completed the Goblin Quest" nl 
+				);
+				mov( p, esi );
+				mov( castle_quest_c, playerESI.quest );
+				
+				// Reward them with 250 pieces of gold.
+				
+				fld( 250.00 );
+				fld( playerESI.wealth );
+				fadd();
+				fstp( playerESI.wealth );		
+			
+			endif;
+			
+		endif;
+		
+	endif;
+
+end quest_goblin;
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_sorcerer-
+//
+//	This code executes with the player attempts to fight the sorcerer
+
+procedure quest_sorcerer
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_sorcerer;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = sorcererAgent && playerEBX.quest <> sorcerer_quest_c ) then
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		( 
+			nl
+			"You have other quests to complete before ", 
+			"fighting the sorcerer" nl
+			nl 
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+		
+	else
+	 
+		// Do the normal fight verb to do the real work.
+		
+		verb_fight( p, n1, n2, cmd );
+
+		// If the sorcerer is defeated, then they've completed
+		// quest #4:
+		
+		mov( n1, esi );
+		mov( p, ecx );
+		if( esi = sorcererAgent && playerECX.quest = sorcerer_quest_c ) then
+		
+			mov( agentESI.curPower, eax );
+			if( (type int32 eax) <= 0 ) then
+			
+				// Quest #4 is officially complete:
+				
+				stdout.put
+				( 
+					nl 
+					"Congratulations! You've completed the Sorcerer Quest" nl 
+				);
+				mov( p, esi );
+				mov( mansion_quest_c, playerESI.quest );
+				
+				// Reward them with 325 pieces of gold.
+				
+				fld( 325.00 );
+				fld( playerESI.wealth );
+				fadd();
+				fstp( playerESI.wealth );		
+			
+			endif;
+			
+		endif;
+		
+	endif;
+
+end quest_sorcerer;
+		
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_mansion-
+//
+//	This code executes when you fight the butler during quest #5.
+
+procedure quest_mansion
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_mansion;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = butlerAgent && playerEBX.quest <> mansion_quest_c ) then
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		( 
+			nl
+			"You have other quests to complete before ", 
+			"dealing with the butler" nl
+			nl 
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+		
+	else
+	 
+		// Do the normal fight verb to do the real work.
+		
+		verb_fight( p, n1, n2, cmd );
+
+		// If the butler is defeated, then they've completed
+		// quest #5:
+		
+		mov( n1, esi );
+		mov( p, ecx );
+		if( esi = butlerAgent && playerECX.quest = mansion_quest_c ) then
+		
+			mov( agentESI.curPower, eax );
+			if( (type int32 eax) <= 0 ) then
+			
+				// Quest #5 is officially complete:
+				
+				stdout.put
+				( 
+					nl 
+					"Congratulations! You've completed the Mansion Quest" nl 
+				);
+				mov( p, esi );
+				mov( werewolf_quest_c, playerESI.quest );
+				
+				// Reward them with 450 pieces of gold.
+				
+				fld( 450.00 );
+				fld( playerESI.wealth );
+				fadd();
+				fstp( playerESI.wealth );
+				
+				// Now that the butler isn't blocking the path, we
+				// need to set the NORTH path to outdoorPatio165
+				
+				mov( rooms[r_outdoorPatio165], eax );
+				mov( rooms[r_livingRoom161], ebx );
+				mov( eax, roomEBX.north );
+				
+				// Need to change the strings, too, in case we pass this
+				// way again.
+				
+				mov( sapln, eax );
+				mov( eax, roomEBX.lookNorthStr );
+				mov( gn, eax );
+				mov( eax, roomEBX.goNorthStr );
+				
+							
+			endif;
+			
+		endif;
+		
+	endif;
+
+end quest_mansion;
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_werewolf-
+//
+//	This code executes when you fight the butler during quest #6.
+
+procedure quest_werewolf
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_werewolf;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = werewolfAgent ) then
+	
+		if( playerEBX.quest < werewolf_quest_c ) then
+	
+			console.setAttrs( warningFGColor, warningBGColor );
+			stdout.put
+			( 
+				nl
+				"The Werewolf says ""I don't feel like company yet!" nl
+				"He attacks you and runs off" nl
+				nl 
+			);
+			console.setAttrs( gameFGColor, gameBGColor );
+			mov( p, ecx );
+			sub( 10, playerECX.health );
+			
+		elseif( playerEBX.quest > werewolf_quest_c ) then
+		 
+			// If they insist on fighting the werewolf after
+			// quest #6, then it's their own skin.
+			
+			verb_fight( p, n1, n2, cmd );
+
+		else // Must be quest #6
+		
+			stdout.put
+			(
+				"You sense a friendly aura around werewolf and back off!" nl
+			);
+				
+			// Reward them with 500 pieces of gold.
+			
+			fld( 500.00 );
+			fld( playerESI.wealth );
+			fadd();
+			fstp( playerESI.wealth );
+
+			// Switch on to the vampire quest:
+
+			mov( vampire_quest_c, playerESI.quest );
+
+			// Now that the werewolf isn't blocking the path, we
+			// need to set the NORTH path to middleCorridor157
+			
+			mov( rooms[r_middleCorridor157], eax );
+			mov( rooms[r_frontOfMansion151], ebx );
+			mov( eax, roomEBX.north );
+			
+			// Need to change the strings, too, in case we pass this
+			// way again.
+			
+
+			mov( sapln, eax );
+			mov( eax, roomEBX.lookNorthStr );
+			mov( gn, eax );
+			mov( eax, roomEBX.goNorthStr );
+				
+		endif;				
+					
+	endif;
+
+end quest_werewolf;
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_vampire-
+//
+//	This code executes when the player fights the vampire.
+
+procedure quest_vampire
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_vampire;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = vampireAgent && playerEBX.quest <> vampire_quest_c ) then
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		( 
+			nl
+			"You have other quests to complete before ", 
+			"fighting the vampire" nl
+			nl 
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+		
+	else
+	 
+		// Do the normal fight verb to do the real work.
+		
+		verb_fight( p, n1, n2, cmd );
+
+		// If the vampire is defeated, then they've completed
+		// quest #7:
+		
+		mov( n1, esi );
+		mov( p, ecx );
+		if( esi = vampireAgent && playerECX.quest = vampire_quest_c ) then
+		
+			mov( agentESI.curPower, eax );
+			if( (type int32 eax) <= 0 ) then
+			
+				// Quest #7 is officially complete:
+				
+				stdout.put
+				( 
+					nl 
+					"Congratulations! You've completed the vampire Quest" nl 
+				);
+				mov( p, esi );
+				mov( cavern_quest_c, playerESI.quest );
+				
+				// Reward them with 525 pieces of gold.
+				
+				fld( 525.00 );
+				fld( playerESI.wealth );
+				fadd();
+				fstp( playerESI.wealth );		
+			
+			endif;
+			
+		endif;
+		
+	endif;
+
+end quest_vampire;
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_caverns-
+//
+//	This code executes when the player fights the hellhound.
+
+procedure quest_caverns
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_caverns;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = hellhoundAgent ) then
+
+		if( agentESI.strength <> 0 ) then
+	
+			// If the hellhound is awake (strength <> 0 ) then roast
+			// the player:
+
+			console.setAttrs( warningFGColor, warningBGColor );
+			stdout.puts("The hellhound growls at you!" nl);
+			console.setAttrs( console.yellow, console.blue );
+			stdout.puts
+			(
+				"It growls,'Get out of here, knave! "
+				"Go where you belong...like HELL!!'" nl
+			);
+			console.setAttrs( console.white, console.blue );
+			stdout.puts("The hellhound breathes fires on you!" nl);
+			console.setAttrs( console.red, console.blue );
+			stdout.puts(">>>>>");
+			console.setAttrs( console.yellow, console.blue );
+			stdout.puts(">>>>>");
+			console.setAttrs( console.white, console.blue );
+			stdout.puts(">>>>> ");
+			console.setAttrs( console.cyan, console.blue );
+			stdout.puts("F I R E - B A L L ! ! !" nl);
+			console.setAttrs( console.white, console.blue );
+			stdout.puts("You are engulfed in flames!" nl);
+			console.setAttrs( console.yellow, console.blue );
+			stdout.puts
+			(
+				"""That'll teach to to fight me!"" the Hellhound growls!" nl
+			);
+
+			console.setAttrs( gameFGColor, gameBGColor );
+
+			// Reduce the player's health to 1/4 it's current value.
+
+			shr( 2, playerEBX.health );
+			if( @z ) then
+
+				quit( p );
+
+			endif;
+
+			// Ditto to the player's food:
+
+			shr( 2, playerEBX.food );
+
+		elseif( playerEBX.quest = cavern_quest_c ) then
+		
+			// Hellhound is asleep, easy victory.
+			//
+			// Quest #8 is officially complete:
+			
+			stdout.put
+			( 
+				nl 
+				"Congratulations! You've completed the Caverns Quest" nl 
+			);
+			mov( p, esi );
+			mov( dragon_quest_c, playerESI.quest );
+			
+			// Reward them with 600 pieces of gold.
+			
+			fld( 600.00 );
+			fld( playerESI.wealth );
+			fadd();
+			fstp( playerESI.wealth );		
+
+		endif;
+		
+	endif;
+
+end quest_caverns;
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// quest_dragon-
+//
+//	This code executes when the player fights the dragon.
+
+procedure quest_dragon
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin quest_dragon;
+
+	mov( n1, esi );
+	mov( p, ebx );
+	if( esi = dragonAgent && playerEBX.quest <> dragon_quest_c ) then
+	
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		( 
+			nl
+			"You have other quests to complete before ", 
+			"fighting the dragon" nl
+			nl 
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+		
+	else
+	 
+		// Do the normal fight verb to do the real work.
+		
+		verb_fight( p, n1, n2, cmd );
+
+		// If the dragon is defeated, then they've completed
+		// quest #9:
+		
+		mov( n1, esi );
+		mov( p, ecx );
+		if( esi = dragonAgent && playerECX.quest = dragon_quest_c ) then
+		
+			mov( agentESI.curPower, eax );
+			if( (type int32 eax) <= 0 ) then
+			
+				// Quest #9 is officially complete:
+				
+				stdout.puts
+				( 
+					nl 
+					"Congratulations! You've completed the Dragon Quest" nl
+					"And you won the HLA Adventure!" nl 
+
+					"The dead dragon lay at your feet. "
+						"The king was right, it WAS" nl
+
+					"a dragon after all (and not some guy in a clown suit). "
+						"Ugh, clowns!" nl
+
+					"As your accountant arrives to shake you down, "
+						"you struggle to remove" nl
+
+					"your sword from the beast's belly. "
+						"With blood splattered everywhere, you" nl
+
+					"feel relieved of your duties. "
+						"You'll soon retire on a nice bounty and" nl
+
+					"marry the princess after all. "
+						"The king warned her about you, but alas, you've" nl
+
+					"got bigger fish to fry. You have a castle to take over, "
+						"a wife to knock up," nl
+
+					"and kids to blame for your drinking problem. "
+						"But over a few tankards of" nl
+
+					"beer, much will disappear as the room returns to "
+						"spinning once more." nl nl
+
+					"Where is Merlin when you need his advice? "
+						"(Drunk as usual, sheesh!)" nl nl
+
+					"Guy with sword 1, evil dragon 0. Time for another "
+						"drink... <THE END!>" nl
+				);
+				
+				quit( p );				
+							
+			endif;
+			
+		endif;
+		
+	endif;
+
+end quest_dragon;
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// play_flute
+//
+//	Handles the "use flute" command.
+//
+//	If the hellhound is in the same room, playing the flute puts the hellhound
+// to sleep.
+
+_procedure( play_flute )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin play_flute; debug( "verb_use");
+
+
+	// First, see if the player possesses the flute:
+	
+	mov( p, ebx );
+	mov( playerEBX.contains, ecx );
+	containerECX.searchObj( "flute" );
+	if( eax = NULL ) then
+
+		console.setAttrs( warningFGColor, warningBGColor );
+		stdout.put
+		(
+			"You cannot play the flute as you do not possess it!" nl
+		);
+		console.setAttrs( gameFGColor, gameBGColor );
+
+	else // Okay, the player has the flute
+
+		// See if the hellhound is in the same room as the player:
+
+		mov( playerEBX.curRoom, ebx );
+		mov( roomEBX.agents, ecx );
+		roomECX.searchObj( "hellhound" );
+		if( eax = NULL ) then
+
+			// No hellhound here, just play the flute:
+
+			console.setAttrs( console.green, console.blue );
+			stdout.puts("You play the flute..." nl);
+			stdout.puts
+			(
+				"A mystic sound is heard, echoing throughout the trees..." nl
+			);
+			console.setAttrs( gameFGColor, gameBGColor );
+			stdout.puts
+			(
+				"The sound is returned by the empty rustling of leaves." nl
+			);
+
+		else // Okay, the hellhound is in this room. Is it already asleep?
+
+			// If the strength field is zero, we'll assume the hellhound
+			// is asleep:
+
+			if( agentEAX.strength = 0 ) then
+			
+				console.setAttrs( console.green, console.blue );
+				stdout.puts
+				(
+					"You play the flute..." nl
+					"A mystic sound is heard, echoing throughout "
+					"the trees..." nl
+				);
+				console.setAttrs( gameFGColor, gameBGColor );
+				stdout.puts("The hellhound is already fast asleep." nl);
+
+			else
+
+				console.setAttrs( console.green, console.blue ); 
+				stdout.puts
+				(
+					"You play the flute..." nl
+					"A mystic sound is heard, echoing throughout "
+					"the trees..." nl
+				);
+				console.setAttrs( gameFGColor, gameBGColor );
+				stdout.puts("The hellhound has fallen fast asleep." nl);
+				mov( 0, agentEAX.strength );
+
+			endif;
+
+		endif;
+
+	endif;
+		
+end play_flute;
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//
+// gs_go-
+//
+//	This procedure intercepts the main "VERB_GO" operation so we can
+// determine if certain quests have been fulfilled (achieved by reaching
+// certain rooms in the game).
+
+procedure gs_go
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);	
+begin gs_go;
+
+	// Call verb_go to do the real work.
+	
+	verb_go( p, n1, n2, cmd );
+	
+	// Check for quests that are fulfilled by winding up at a
+	// certain room in the game:
+	//
+	// Quest #3 - Finding the castle
+	
+	mov( p, esi );
+	mov( playerESI.curRoom, eax );
+	if
+	( 
+			playerESI.quest = 3 
+		&&	eax = rooms[ r_castleMoat67 ] 
+	) then
+	
+		// Quest #3 is completed by reaching the castle moat
+		
+		stdout.put
+		( 
+			nl
+			"Congratulations! You've completed the castle quest" nl
+			"Your reward is 300 pieces of gold" nl 
+			nl 
+		);		
+		mov( sorcerer_quest_c, playerESI.quest );
+		fld( playerESI.wealth );
+		fld( 300.00 );
+		fadd();
+		fstp( playerESI.wealth );
+		
+	endif;
+	
+end gs_go;
+		
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// wearShroud-
+//
+//	Shroud-specific "wear" command handler
+
+procedure wearShroud
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);
+begin wearShroud;
+	
+	// First, do the actual "wear" operation:
+	
+	verb_wear( p, n1, n2, cmd );
+	if( eax ) then
+	
+		stdout.put( "The shroud feels warm" nl );
+		
+	endif;
+	
+end wearShroud;		
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// removeShroud-
+//
+//	Shroud-specific "remove" command handler
+
+procedure removeShroud
+( 
+	p:playerPtr; 
+	n1:nounPtr; 
+	n2:nounPtr; 
+	cmd:string 
+);
+begin removeShroud;
+	
+	// First, do the actual "remove" operation:
+	
+	verb_remove( p, n1, n2, cmd );
+	if( eax ) then
+	
+		stdout.put( "The shroud no longer feels warm" nl );
+		
+	endif;
+	
+end removeShroud;
+
+
+
+/////////////////////////////////////////////////////////////////////////
+//
+// gs_buy
+//
+//	Handles the "buy" command.
+//	(You have to define this.)
+
+_procedure( gs_buy )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );
+var
+	item	:possessionPtr;
+			
+begin gs_buy; debug( "verb_buy");
+
+
+	push( eax );
+	push( ebx );
+	push( ecx );
+	push( esi );
+	
+	// Note: must be in the village shop in order to buy anything:
+	
+	mov( p, esi );
+	mov( playerESI.curRoom, eax );
+	if( eax <> rooms[ r_villageStore3 ] ) then
+	
+		stdout.put( MustBeInVillageShopToBuy, nl );
+	
+	else
+	
+		// Okay, does the clerk possess the item the player wants to buy?
+		
+		mov( n1, eax );
+		mov( villageClerk, esi );
+		agentESI.searchObj( nounEAX.objName );
+		if( eax = NULL ) then
+		
+			stdout.put( ClerkDoesntHaveThat, nl );
+			
+		else
+		
+			// Does the player have enough money to buy the item?
+			
+			mov( eax, item );
+			mov( possessionEAX.possObjNode, ebx );
+			mov( p, esi );
+			fld( possessionEAX.retail );
+			fld( playerESI.wealth );
+			fcompp();
+			fstsw( ax );
+			sahf();
+			if( @b ) then
+			
+				stdout.put( YouDontHaveEnoughMoney, nl );
+				
+			else
+		
+				// Subtract the retail cost of the object from the
+				// player's wealth:
+				
+				mov( p, esi );
+				mov( item, eax );
+				fld( playerESI.wealth );
+				fld( possessionEAX.retail );
+				fsub();
+				fstp( playerESI.wealth );			
+
+				// Remove the object from the clerk's inventory:
+				
+				mov( villageClerk, ebx );
+				mov( agentEBX.contains, ecx );
+				objListECX.deleteNode( possessionEAX.possObjNode );
+				
+				// Add the object to the shop-keeper's inventory
+
+				mov( p, esi );			
+				mov( playerESI.contains, ecx );
+				mov( item, eax );
+				objListECX.appendLast( possessionEAX.possObjNode );
+				
+				stdout.put
+				( 
+					YouPurchasedThe, 
+					possessionEAX.objName,
+					For_c,
+					CurrencySymbol,
+					possessionEAX.retail:8:2,
+					CurrencyPostfix,
+					nl 
+				);
+
+				// Now that they've bought it, they can drop it and
+				// get it, etc.
+				
+				mov( &verb_get, possessionEAX.actions[ uns32( v_get )*4 ] );
+				
+			endif;
+						
+		
+		endif;
+	
+	endif;
+	
+	pop( esi );
+	pop( ecx );
+	pop( ebx );
+	pop( eax );
+		
+	
+end gs_buy;
+
+
+// gs_sell
+//
+//	Handles the "sell" command. Give the player the wholesale price
+// for whatever goods they are selling.
+
+_procedure( gs_sell )( p:playerPtr; n1:nounPtr; n2:nounPtr; cmd:string );		
+begin gs_sell; debug( "verb_sell");
+
+	push( eax );
+	push( ebx );
+	push( ecx );
+	push( esi );
+	
+	// Note: must be in the village shop in order to sell anything:
+	
+	mov( p, esi );
+	mov( playerESI.curRoom, eax );
+	if( eax <> rooms[ r_villageStore3 ] ) then
+	
+		stdout.put( MustBeInVillageShopToSell, nl );
+	
+	else
+	
+		// Okay, does the player possess the item they want to sell?
+		
+		mov( n1, eax );
+		playerESI.searchObj( nounEAX.objName );
+		if( eax = NULL ) then
+		
+			stdout.put( YouCanOnlySellWhatYouOwn, nl );
+			
+		else
+		
+			// Give the player the wholesale cost of the object:
+			
+			fld( possessionEAX.wholesale );
+			fld( playerESI.wealth );
+			fadd();
+			fstp( playerESI.wealth );			
+
+			// Remove the object from the player's inventory:
+			
+			push( eax );
+			mov( playerESI.contains, ecx );
+			objListECX.deleteNode( possessionEAX.possObjNode );
+			pop( eax );
+			
+			// Add the object to the shop-keeper's inventory
+			
+			mov( villageClerk, ebx );
+			mov( agentEBX.contains, ebx );
+			objListEBX.appendLast( possessionEAX.possObjNode );
+						
+			stdout.put
+			( 
+				YouSellThe, 
+				possessionEAX.objName,
+				For_c,
+				CurrencySymbol,
+				possessionEAX.wholesale:8:2,
+				CurrencyPostfix,
+				nl 
+			);
+			
+			// Don't allow the player to "get" the object anymore.
+			// They have to buy it from this point forward.
+			
+			mov( &must_buy, possessionEAX.actions[ uns32( v_get )*4 ] );
+		
+		endif;
+	
+	endif;
+	
+	pop( esi );
+	pop( ecx );
+	pop( ebx );
+	pop( eax );
+		
+end gs_sell;
+
+		
+
+end gsactions_hla;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    
