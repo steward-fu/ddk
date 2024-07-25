@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Firefly"
+	ProjectGUID="{E56BF81F-57AF-4295-B01B-947DB11BCE97}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Win32 Free|Win32"
+			OutputDirectory=".\objfre\i386"
+			IntermediateDirectory=".\objfre\i386"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zel -cbstring /QIfdiv- /QIf "
+				Optimization="3"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="FALSE"
+				AdditionalIncludeDirectories=".,$(DRIVERWORKS)\..\common\include\stl,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),..,$(DRIVERWORKS)\include,$(DRIVERWORKS)\source,$(DRIVERWORKS)\include\dep_vxd"
+				PreprocessorDefinitions="_X86_=1;i386=1;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;FPO=1;NTVERSION=&apos;WDM&apos;"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="4"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				PrecompiledHeaderFile=".\objfre\i386/Firefly.pch"
+				AssemblerListingLocation=".\objfre\i386/"
+				ObjectFile=".\objfre\i386/"
+				ProgramDataBaseFileName=".\objfre\i386/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="---------------------------Build SoftICE Symbols----------------------------"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /trans:source,package,always $(OUTDIR)\$(TARGETNAME).sys
+"
+				Outputs=".\objfre\i386\$(TARGETNAME).nms"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:native,1.10 /ignore:4001,4037,4039,4065,4070,4078,4087,4089,4096,4210 /driver:WDM"
+				AdditionalDependencies="$(DRIVERWORKS)\lib\i386\free\vdw_wdm.lib wdm.lib ntoskrnl.lib usbd.lib ks.lib hidparse.lib $(NOINHERIT)"
+				OutputFile=".\objfre\i386\Firefly.sys"
+				Version="5.0"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(TARGET_LIB_PATH)"
+				IgnoreAllDefaultLibraries="TRUE"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=""
+				StackReserveSize="262144"
+				StackCommitSize="4096"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				MergeSections=".rdata=.text"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\objfre\i386/Firefly.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG,NTVERSION=400"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(TARGET_INC_PATH),$(CRT_INC_PATH),..,$(DRIVERWORKS)\include,$(DRIVERWORKS)\source,$(DRIVERWORKS)\include\dep_vxd"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Win32 Checked|Win32"
+			OutputDirectory=".\objchk\i386"
+			IntermediateDirectory=".\objchk\i386"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zel -cbstring /QIfdiv- /QIf "
+				Optimization="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".,$(DRIVERWORKS)\..\common\include\stl,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),..,$(DRIVERWORKS)\include,$(DRIVERWORKS)\source,$(DRIVERWORKS)\include\dep_vxd"
+				PreprocessorDefinitions="_X86_=1;i386=1;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;DBG=1;FPO=0;NTVERSION=&apos;WDM&apos;"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="4"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				PrecompiledHeaderFile=".\objchk\i386/Firefly.pch"
+				AssemblerListingLocation=".\objchk\i386/"
+				ObjectFile=".\objchk\i386/"
+				ProgramDataBaseFileName=".\objchk\i386\Firefly.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="---------------------------Build SoftICE Symbols----------------------------"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /trans:source,package,always $(OUTDIR)\$(TARGETNAME).sys
+"
+				Outputs=".\objchk\i386\$(TARGETNAME).nms"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:native,1.10 /ignore:4001,4037,4039,4065,4070,4078,4087,4089,4096,4210 /driver:WDM"
+				AdditionalDependencies="$(DRIVERWORKS)\lib\i386\checked\vdw_wdm.lib wdm.lib ntoskrnl.lib usbd.lib hidparse.lib $(NOINHERIT)"
+				OutputFile=".\objchk\i386\Firefly.sys"
+				Version="5.0"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(TARGET_LIB_PATH)"
+				IgnoreAllDefaultLibraries="TRUE"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\objchk\i386/Firefly.pdb"
+				StackReserveSize="262144"
+				StackCommitSize="4096"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				MergeSections=".rdata=.text"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\objchk\i386/Firefly.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG,NTVERSION=400"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(TARGET_INC_PATH),$(CRT_INC_PATH),..,$(DRIVERWORKS)\include,$(DRIVERWORKS)\source,$(DRIVERWORKS)\include\dep_vxd"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter=".c;.cpp">
+			<File
+				RelativePath=".\Firefly.cpp">
+			</File>
+			<File
+				RelativePath=".\FireflyDevice.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter=".h">
+			<File
+				RelativePath=".\Firefly.h">
+			</File>
+			<File
+				RelativePath=".\FireflyDevice.h">
+			</File>
+			<File
+				RelativePath=".\function.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter=".rc">
+			<File
+				RelativePath="Firefly.mof">
+				<FileConfiguration
+					Name="Win32 Free|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling MOF resource . . ."
+						CommandLine="if not exist $(BASEDIR)\bin\x86 $(BASEDIR)\bin\mofcomp  -B:$(TargetName).bmf $(InputPath)
+if exist $(BASEDIR)\bin\x86 mofcomp  -B:$(TargetName).bmf $(InputPath)
+"
+						AdditionalDependencies=""
+						Outputs="Firefly.bmf"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Win32 Checked|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling MOF resource . . ."
+						CommandLine="if not exist $(BASEDIR)\bin\x86 $(BASEDIR)\bin\mofcomp  -B:$(TargetName).bmf $(InputPath)
+if exist $(BASEDIR)\bin\x86 mofcomp  -B:$(TargetName).bmf $(InputPath)
+"
+						AdditionalDependencies=""
+						Outputs="Firefly.bmf"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Firefly.rc">
+			</File>
+		</Filter>
+		<File
+			RelativePath="Firefly.inf">
+		</File>
+		<File
+			RelativePath="FireflyTest.htm"
+			DeploymentContent="TRUE">
+			<FileConfiguration
+				Name="Win32 Free|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCustomBuildTool"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Win32 Checked|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCustomBuildTool"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="makefile.inc">
+		</File>
+		<File
+			RelativePath="sources">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

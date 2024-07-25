@@ -1,0 +1,33 @@
+# SOURCES - for HELLOWDM example driver
+# Copyright (c) 1998, Compuware Corporation
+
+# This is the SOURCES file for the simple HELLOWDM example. It names the
+# driver and its source files. Most drivers can follow this simple format.
+
+TARGETNAME=HelloWdm
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib
+
+LINK_LIB_IGNORE=4210
+
+C_DEFINES=-DNTVERSION='WDM' 
+BROWSER_INFO=TRUE
+RCNOFONTMAP=1
+
+INCLUDES=\
+	..;\
+	$(DRIVERWORKS)\include ; \
+	$(DRIVERWORKS)\source;	\
+	$(DRIVERWORKS)\include\dep_vxd
+
+SOURCES=HelloWdm.rc HelloWdm.cpp HelloDev.cpp

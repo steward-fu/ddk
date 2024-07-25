@@ -1,0 +1,19 @@
+# SOURCES - for vbuscon application
+
+TARGETNAME=vbuscon
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+TARGETLIBS = $(SDK_LIB_PATH)\setupapi.lib
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+USE_MSVCRT=1
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+
+SOURCES=vbuscon.cpp        \
+        ..\openintf.cpp
+            

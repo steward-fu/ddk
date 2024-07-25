@@ -1,0 +1,55 @@
+;; basicusb.inf - INF file for BASICUSB example
+;;=============================================================================
+;;
+;; Compuware Corporation
+;; NuMega Lab
+;; 9 Townsend West
+;; Nashua, NH 03060  USA
+;;
+;; Copyright (c) 1998 Compuware Corporation. All Rights Reserved.
+;; Unpublished - rights reserved under the Copyright laws of the
+;; United States.
+;;
+;;=============================================================================
+
+;; This driver was developed using a USB keyboard from Cherry,
+;; as indicated by the VID and PID codes. These IDs must be
+;; set for the device you intend to support. Similarly, you 
+;; will need to set Class to the appropriate string for your
+;; device class. 
+
+[Version]
+Signature="$CHICAGO$"
+Class=Unknown
+Provider=%NuMega%
+LayoutFile=layout.inf
+      
+[Manufacturer]
+%NuMega%=BasicUsbInstall
+      
+[BasicUsbInstall]
+%USB\VID_046A&PID_0001.DeviceDesc%=BasicUsbDevice, USB\VID_046A&PID_0001
+      
+[DestinationDirs]
+BasicUsb.Files = 11 ; LDID_SYS
+      
+[BasicUsbDevice]
+AddReg=BasicUsb.AddReg
+CopyFiles=BasicUsb.Files
+      
+[BasicUsb.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,basicusb.sys
+      
+[BasicUsb.Files]
+basicusb.sys
+
+[SourceDisksNames]
+1=InstallDisk, DISK1,
+
+[SourceDisksFiles]
+basicusb.sys=1
+      
+[Strings]
+NuMega="compuware NuMega"
+USB\VID_046A&PID_0001.DeviceDesc="Basic USB Device"

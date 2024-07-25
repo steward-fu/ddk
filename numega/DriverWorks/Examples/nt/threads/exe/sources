@@ -1,0 +1,19 @@
+# SOURCES - for thread test application
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=testthrd
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+SOURCES=testthrd.cpp
+

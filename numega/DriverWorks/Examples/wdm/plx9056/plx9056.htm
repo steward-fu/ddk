@@ -1,0 +1,601 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./plx9056_files/filelist.xml">
+<title>Sample Driver for PLX9056</title>
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;}
+h2
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Tahoma;
+	color:navy;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-style:italic;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+h5
+	{mso-style-next:Normal;
+	margin-top:2.0pt;
+	margin-right:0in;
+	margin-bottom:2.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Courier New";}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-indent:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+pre
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:8725192;
+	mso-list-type:hybrid;
+	mso-list-template-ids:975200992 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1546672719;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-708792222 -480744580 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l1:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.5in;}
+@list l2
+	{mso-list-id:2129230171;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-80344368 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+<meta name=Template content="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</head>
+
+<body bgcolor=white lang=EN-US link=blue vlink=purple style='tab-interval:.5in'
+leftmargin=8>
+
+<div class=Section1>
+
+<h1><a name=top></a>Sample Driver for PLX9056 Development Board</h1>
+
+<p class=MsoNormal><span style='font-family:Verdana;color:white'>[This is
+preliminary documentation and subject to change.] <o:p></o:p></span></p>
+
+<h2>Summary</h2>
+
+<p class=MsoNormal>This sample driver demonstrates how to program a PLX906
+Development Board<span style='mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+
+<h2>Theory of Operation</h2>
+
+<p class=MsoNormal style='text-align:justify'>DriverWorks library provides KPlx9056
+class to help with programming PLX9056-based PCI boards. The sample driver
+demonstrates how to use this class to program PLX9056 board to perform the
+following operations:</p>
+
+<ul type=disc>
+ <li class=MsoNormal style='text-align:justify;mso-list:l2 level1 lfo6;
+     tab-stops:list .5in'>Read/Write Local Bus Address Space in Direct Slave
+     Mode<span style='font-family:Verdana'><o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l2 level1 lfo6;
+     tab-stops:list .5in'>Read/Write Local Bus Address Space using DMA engine<span
+     style='font-family:Verdana'><o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l2 level1 lfo6;
+     tab-stops:list .5in'>Read/Write Mailbox Registers<span style='font-family:
+     Verdana'><o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l2 level1 lfo6;
+     tab-stops:list .5in'>Read/Write EEPROM<span style='font-family:Verdana'><o:p></o:p></span></li>
+</ul>
+
+<h2>Building the Driver</h2>
+
+<p class=MsoNormal><span style='mso-bidi-font-size:10.0pt;mso-bidi-font-family:
+Tahoma'>First, build the DriverWorks libraries. </span>Next build the plx9056
+and plxcon projects.</p>
+
+<h2>Installing the Driver</h2>
+
+<p class=MsoNormal style='margin-right:153.0pt'><span style='mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:Tahoma'>First install the PLX9056 Development Board
+into a machine. Next time you boot Windows XP will detect the board and will
+ask you for an inf file. Point to plxdrv.inf file. You can use plxcon.exe
+utility to perform different operations with PLX9056 Board.<o:p></o:p></span></p>
+
+<h2>Code Tour</h2>
+
+<table border=1 cellspacing=3 cellpadding=0 width=666 style='width:499.5pt;
+ mso-cellspacing:2.0pt;margin-left:4.1pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='mso-fareast-font-family:"Courier New"'>File<o:p></o:p></span></b></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <h5>Description</h5>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\function.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Definitions or IRP handlers<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdrv.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of PlxDriver class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdev.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of PlxDevice class <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdrv.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of PlxDriver
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdev.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of PlxDevice
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdrv.rc<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Resource file for plx9056.sys.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sys\plxdrv.inf<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Inf file for plx9056 driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Exe\plxcon.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implements device
+  read\write\configuration calls.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Exe\Openintf.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implements method to open
+  device by interface guid.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Plxioctl.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Device I/O Control codes<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Plxintf.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Interface guid definitions.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Plx9056.htm<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>This file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in'><span style='mso-bidi-font-family:Tahoma;color:windowtext'>Plx9056.dsw</span><span
+  style='font-size:12.0pt;mso-bidi-font-family:Tahoma;color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Visual Studio
+  6.0&nbsp;workspace file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='margin:0in;margin-bottom:.0001pt;
+text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'><a href="#top">Return to Top
+of Page</a><o:p></o:p></span></p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:aqua'>
+
+<p class=EndBar><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2001 Compuware Corporation<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
+ 

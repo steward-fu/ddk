@@ -1,0 +1,116 @@
+# vxdtarg.mak
+#
+# Master makefile for VtoolsD examples
+# Copyright (c) 1994 Compuware Numega, Inc.
+
+#########################################################################
+#
+# VxD Target
+#
+# The makefile that includes this makefile must define the following
+# symbols before inclusion:
+#
+# DEVICENAME	Set this to the name of the virtual device you are
+#		building.  Specify the name in all upper case characters,
+#		with a maximum length of eight.  This name is used as
+#		the file name for the target VxD, with an extension of
+#		.VXD.
+#
+#		Example: 
+#			DEVICENAME = VSAMPLED
+#
+#			(builds VSAMPLED.VXD)
+#
+# OBJECTS	Set this to the list of object modules that comprise the
+#		object code for your VxD.
+#
+#		Example:
+#			OBJECTS = mymod1.obj mymod2.obj mymod3.obj 
+#
+# FRAMEWORK	Define this to be either C or CPP, depending on whether
+#		your VxD is to be built using the C framework or the
+#		class library.
+#
+#		Example:
+#			FRAMEWORK = CPP
+#
+# In addition, you must also include vtoolsd.mak prior to including this
+# file.
+#
+#########################################################################
+#
+#	The VxD output file is dependent on the object files and the 
+#	.DEF file.  The .DEF file is generated automatically by NMAKE.
+
+
+PACKSWITCH =	/NOPACKCODE 
+VERSUFFIX  =	40
+
+!ifdef DYNAMIC
+DYNAMIC=DYNAMIC
+!else
+DYNAMIC=
+!endif
+
+!if "$(FRAMEWORK)" == "C"
+FWLIB=vcfw
+!endif
+
+!if "$(FRAMEWORK)" == "CPP"
+FWLIB=vcls
+!endif
+
+!ifndef FWLIB
+!error You must define FRAMEWORK to be either C or CPP
+!endif
+
+
+$(DEVICENAME).VXD:	$(OBJECTS) $(DEVICENAME).D$(VERSUFFIX)
+	$(LINK386) /NOI /NOD /NOE /L /MAP $(PACKSWITCH) @<<
+$(OBJECTS)
+$(DEVICENAME).VXD
+
+$(VTOOLSD)\LIB\$(FWLIB)$(LIBSUFFIX).LIB + $(VTOOLSD)\LIB\VWRP$(LIBSUFFIX).LIB 
+$(DEVICENAME).D$(VERSUFFIX)
+<<
+
+# The following lines produce a .SYM file for the VxD whenever it is
+# relinked.  
+
+!if "$(DEBUGGER)" == "WDEB386"
+	$(MAPSYM)  -s -o $(DEVICENAME).SYM $(DEVICENAME).MAP
+!endif
+
+!if "$(DEBUGGER)" == "SOFTICE"
+	$(MSYM) $(DEVICENAME).map
+!endif
+
+# The following lines produce the .DEF file required for linking.
+
+$(DEVICENAME).d$(VERSUFFIX):
+	copy <<$(DEVICENAME).d$(VERSUFFIX) nul
+VXD $(DEVICENAME) $(DYNAMIC)
+DESCRIPTION 'Virtual Device  (Version 4.0)'
+COMMON _BSS CLASS 'LCODE'
+
+SEGMENTS
+	_LTEXT   	CLASS 'LCODE'   PRELOAD NONDISCARDABLE
+	_LDATA   	CLASS 'LCODE'   PRELOAD NONDISCARDABLE
+	_LPTEXT  	CLASS 'LCODE'   PRELOAD NONDISCARDABLE
+	_TEXT    	CLASS 'CODE'    PRELOAD NONDISCARDABLE
+	_DATA		CLASS 'DATA'	PRELOAD NONDISCARDABLE
+        _MSGTABLE  	CLASS 'MCODE' 	PRELOAD NONDISCARDABLE IOPL
+        _MSGDATA   	CLASS 'MCODE' 	PRELOAD NONDISCARDABLE IOPL
+        _IMSGTABLE 	CLASS 'MCODE' 	PRELOAD DISCARDABLE IOPL
+        _IMSGDATA  	CLASS 'MCODE' 	PRELOAD DISCARDABLE IOPL
+        _ITEXT   	CLASS 'ICODE'   DISCARDABLE
+	_IDATA   	CLASS 'ICODE'   DISCARDABLE
+	_PTEXT   	CLASS 'PCODE'   NONDISCARDABLE
+	_PDATA   	CLASS 'PCODE'   NONDISCARDABLE
+	_STEXT   	CLASS 'SCODE'   RESIDENT
+	_SDATA   	CLASS 'SCODE'   RESIDENT
+	_16ICODE 	CLASS '16ICODE' PRELOAD DISCARDABLE
+	_RCODE   	CLASS 'RCODE'
+EXPORTS
+	$(DEVICENAME)_DDB = _The_DDB @1
+<<KEEP

@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation" 
+FileDescription =	"Simple VxD with Fancy Makefile"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"HELLO"
+LegalCopyright	= 	"Copyright \251 1998, Compuware Corporation"
+OriginalFilename = 	"hello.vxd"
+ProductName	=	"VToolsD"
+ProductVersion	= 	"Version 1.00"
+Translation	=	0x409, 0x4E4

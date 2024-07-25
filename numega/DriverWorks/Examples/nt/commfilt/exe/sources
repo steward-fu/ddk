@@ -1,0 +1,23 @@
+# SOURCES - for Com Filter Test application
+
+TARGETNAME=TestApp
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=windows
+UMBASE=0x01000000
+UMENTRY=winmain
+
+TARGETLIBS=$(TARGETLIBS) $(SDK_LIB_PATH)\setupapi.lib
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+386_STDCALL=0
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+LINKER_FLAGS=USER32.lib comctl32.lib 
+
+SOURCES=commfilt.c commfilt.rc instdrv.c

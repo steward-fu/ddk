@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Numega" 
+FileDescription =	"Tcpecho sample"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"DEVNAME"
+LegalCopyright	= 	"Copyright \251 2000, Compuware Numega"
+OriginalFilename = 	"tcpecho.vxd"
+ProductName	=	"DriverNetworks"
+ProductVersion	= 	"Version 1.00"
+Translation	=	0x409, 0x4E4

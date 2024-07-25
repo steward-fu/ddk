@@ -1,0 +1,77 @@
+[Version]
+Signature="$WINDOWS NT$"
+Class=VCOM1394
+ClassGuid={EF5B7C50-6A01-11d2-B841-00C04FAD5171}
+Provider=%MSFT%
+DriverVer=06/16/1999,5.00.2064
+CatalogFile=VCom1394.cat
+
+[DestinationDirs]
+DefaultDestDir = 12
+VCom1394ClassInstallerCopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=VCom1394ClassReg     
+CopyFiles=VCom1394ClassInstallerCopyFiles
+
+[VCom1394ClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,102
+HKR,,Installer32,,"VComClsInst.dll,VCom1394ClsInst"
+
+[VCom1394ClassInstallerCopyFiles]
+VComClsInst.dll
+
+;*****************************************
+; VCom1394 Device  Install Section
+;*****************************************
+
+[Manufacturer]
+%StdMfg%=Standard
+
+[Standard]
+; DisplayName       		Section           DeviceId
+; -----------       		-------           --------
+%VCom1394Device.DeviceDesc%=VCom1394_Device, 1394\Microsoft&1394_PC
+%VCom1394Device.DeviceDesc%=VCom1394_Device, V1394\VCOM1394_BUS_DEVICE
+
+[VCom1394_Device.NT]
+CopyFiles=VCom1394_Device.NT.Copy
+AddReg=VCom1394_Device.NT.Reg
+
+[VCom1394_Device.NT.Copy]
+VCom1394.sys
+
+[VCom1394_Device.NT.Reg]
+; Start off with each bus instance creating 2 virtual COM ports
+HKR,,"NumberOfPorts",0x00010001,2
+
+;-------------- Service installation
+
+[VCom1394_Device.NT.Services]
+AddService = VCom1394, %SPSVCINST_ASSOCSERVICE%, VCom1394_Service_Inst
+
+[VCom1394_Service_Inst]
+DisplayName    = %VCom1394.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START 
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\VCom1394.sys
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+VCom1394.sys  = 1,,
+VComClsInst.dll = 1,,
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+MSFT = "Compuware"
+StdMfg = "Virtual COM Over 1394 - Bus Driver"
+ClassName = "VCom1394"
+DiskId1 = "VCom1394 Device Installation Disk #1"
+VCom1394Device.DeviceDesc = "DriverWorks Virtual COM Over 1394 - Bus Driver"
+VCom1394.SVCDESC = "DriverWorks Virtual COM Over 1394 - Bus Driver"

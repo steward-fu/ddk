@@ -1,0 +1,28 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=isoc1394
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+NTDEBUG=
+BUILDTYPE = FREE
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib 
+
+C_DEFINES=-DNTVERSION='WDM'
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+
+INCLUDES=$(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\include\dep_vxd
+
+SOURCES=isoc1394.rc isoc1394.cpp isoc1394Device.cpp isocclient.cpp asynccommands.cpp
+

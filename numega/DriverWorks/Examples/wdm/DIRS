@@ -1,0 +1,27 @@
+DIRS=			\
+	avstream	\
+	basicusb	\
+	cam1394		\
+	chat1394	\
+	ezusb		\
+	firefly		\
+	HelloWdm	\
+	hidmouse	\
+	isoc1394	\
+	kbfilter	\
+	multfunc	\
+	pciwdm		\
+	plx9056		\
+	simple1394	\
+	stream		\
+	taillight	\
+	usbbulk		\
+	usbfilt		\
+	usbisoch	\
+	usbtherm	\
+	vcom1394	\
+	vdev1394	\
+	vhidmini	\
+	vscsi		\
+	wmi
+

@@ -1,0 +1,61 @@
+; Firefly.inf - Install information file for the Firefly USB Mouse Filter driver.  
+;
+[Version]
+Signature="$Windows NT$"
+Class=Mouse
+ClassGUID={4D36E96F-E325-11CE-BFC1-08002BE10318}
+Provider=%CPWR%
+
+[DestinationDirs]
+DefaultDestDir = 12 ; DIRID_DRIVERS
+
+[ControlFlags]
+; Don't allow device to be installable via the non-PnP hardware dialogs
+ExcludeFromSelect = *
+
+[Manufacturer]
+%CPWR%=MANUF
+
+[MANUF]
+; Support the Microsoft USB mouse
+%HID\Vid_045E&Pid_001E.DeviceDesc%=FireflyInstall,, HID\Vid_045E&Pid_001E
+%HID\Vid_045E&Pid_0029.DeviceDesc%=FireflyInstall,, HID\Vid_045E&Pid_0029
+%HID\Vid_045E&Pid_0039.DeviceDesc%=FireflyInstall,, HID\Vid_045E&Pid_0039
+%HID\Vid_045E&Pid_0040.DeviceDesc%=FireflyInstall,, HID\Vid_045E&Pid_0040
+%HID\Vid_045E&Pid_0047.DeviceDesc%=FireflyInstall,, HID\Vid_045E&Pid_0047
+
+[FireflyInstall.NT]
+Include = MSMOUSE.INF
+Needs = HID_Mouse_Inst.NT
+CopyFiles=FireflyCopyFiles.NT
+
+[FireflyInstall.NT.HW]
+Include = MSMOUSE.INF
+Needs = HID_Mouse_Inst.NT
+AddReg=FireflyHWAddReg.NT
+
+[FireflyInstall.NT.Services]
+Needs = HID_Mouse_Inst.NT.Services
+Addservice = Firefly,, FireflyAddservice
+
+[FireflyAddservice]
+DisplayName    = "FireflyCpwr"
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\Firefly.sys
+LoadOrderGroup = PNP Filter
+
+[FireflyCopyFiles.NT]
+Firefly.sys
+
+[FireflyHWAddReg.NT]
+HKR,,"UpperFilters",0x00010000,"Firefly"
+
+[Strings]
+CPWR = "Compuware Corp."
+HID\Vid_045E&Pid_001E.DeviceDesc = "DriverWorks Firefly Mouse"
+HID\Vid_045E&Pid_0029.DeviceDesc = "DriverWorks Firefly Mouse"
+HID\Vid_045E&Pid_0039.DeviceDesc = "DriverWorks Firefly Mouse"
+HID\Vid_045E&Pid_0040.DeviceDesc = "DriverWorks Firefly Mouse"
+HID\Vid_045E&Pid_0047.DeviceDesc = "DriverWorks Firefly Mouse"

@@ -1,0 +1,18 @@
+# SOURCES for use with BUILD command
+
+MAKEDIR=.
+TARGETNAME=VtdWdm
+TARGETPATH=.
+TARGETTYPE=DRIVER
+TARGETLIBS=	$(DRIVERWORKS)\lib\*\$(DDKBUILDENV)\vdw_wdm.lib
+
+C_DEFINES=-DNTVERSION='WDM'
+BROWSER_INFO=1
+RCNOFONTMAP=1
+
+INCLUDES= $(DRIVERWORKS)\include;	\
+		  $(DRIVERWORKS)\source;	\
+		  $(DRIVERWORKS)\include\dep_vxd
+
+SOURCES=VtdWdm.rc VtdWdm.cpp VtdWdmDevice.cpp 
+

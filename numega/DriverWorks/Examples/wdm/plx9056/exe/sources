@@ -1,0 +1,20 @@
+# SOURCES - for plxcon application
+
+TARGETNAME=plxcon
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+TARGETLIBS=	$(SDK_LIB_PATH)\setupapi.lib
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+
+SOURCES=plxcon.cpp openintf.cpp

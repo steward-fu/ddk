@@ -1,0 +1,185 @@
+<html>
+
+ 
+<head>
+<style>
+em { font-style: italic; font-weight: bold; }
+td { font-style: italic; font-weight: bold; padding-right: 30px; }
+</style>
+</head>
+
+<body>
+
+<h1>IPFilterHook Sample DW Driver</h1>
+
+<h2>General Description</h2>
+
+<p>
+The Compuware Numega's <em>IPFilterHook</em> sample driver demonstrates how to create an IP filter
+hook driver for Windows 2000, Windows XP or Windows 2003, using Compuware's DriverWorks. 
+</p>
+
+<p>
+The filter-hook driver processes network packets in the context of the 
+<em>ipfltdrv.sys</em> IP filter driver that is supplied with Windows 2000/XP/2003. A filter-hook 
+driver extends the functionality of the IP filter driver. Only a <em>single</em> filter-hook
+driver may be installed and used by the IP filter driver.
+</p>
+
+<p>
+The sample driver was created using the DriverWorks Wizard. Two entities are
+included within the IPFilterHook workspace: the IPFilterHook.sys
+project and a sample program project, Test_IPFilterHook.exe.
+</p>
+
+
+<h2>Building the Driver</h2>
+
+<p>
+In order to successfully build the driver, ensure that the Microsoft Windows
+DDK and Compuware NuMega’s <em>DriverNetworks</em> and <em>DriverWorks</em>
+framework have been installed before you proceed. To build the <b>Debug</b>
+version driver and test application, do the following:
+</p>
+
+<ul>
+<li>Open <em>IPFilterHook.dsp</em> in the MSVC 6.0 IDE.</li>
+<li>Select the drivers <em>Debug</em> configuration and build it.
+    This action creates files <em>IPFilterHook.sys</em> and <em>IPFilterHook.nms</em>.</li>
+<li>Select the test application <em>Debug</em> configuration and build it. This will produce 
+    file <em>Test_IPFilterHook.exe.</em>
+<li>Of course, you may select to build the <em>Release</em> versions also.</li>
+</ul>
+
+<h2>Testing the Driver</h2>
+
+<p>
+Before you test the IpFilterHook.sys driver, it is necessary that the 
+<em>IPFLTDRV.SYS</em> driver is running. You should change its <em>Start</em> value
+at Registry entry <em>HKLM\System\CurrentControlSet\Services\IpFilterHook\Start</em>
+to <em>Automatic</em> start, that is, the value should be set to <em>2</em>. 
+This is done using the Compuware Numega’s <b>DriverMonitor</b> program
+or editing the <b>Start</b> registry value from <em>3</em> to <em>2</em>. 
+</p>
+
+<p>
+Using Driver Monitor is safest: 
+</p>
+
+<ul>
+<li>Run <em>DriverMonitor</em>.</li>
+<li><em>Open</em> the Ipfltdrv.sys driver.</li>
+<li><em>Edit</em> its <em>Properties</em>.</li>
+<li>Reboot the system for the changes to take effect.</li>
+</ul>
+
+<p>
+Once <em>ipfltdrv.sys</em> is loaded in Auto mode, our <em>ipfilterhook.sys</em> driver may be loaded 
+and started using <em>DriverMonitor</em>. The configuration file may be used to setup the registry 
+entries so that the driver may be loaded at system startup time. Alternatively, you can run 
+<em>regini</em> on the provided <em>ipfilterhook.ini</em> file, copy <em>ipfilterhook.sys</em>
+and <em>ipfilterhook.nms</em> to your <em>%windir%\system32\drivers</em> directory, and reboot. 
+</p>
+
+<p>
+If you have DriverMonitor turned on, you will be able to catch the Debug Messages issued by the
+<em>ipfilterhook.sys</em> driver as it installs and turns on. You can also control the driver
+by issuing <em>net start ipfilterhook</em> or <em>net stop ipfilterhook</em> commands from a cmd box. 
+</p>
+
+<p>
+<em>Caution: </em>Unwise editing of the Registry may be dangerous. Make sure you back it up before editing ! 
+</p>
+
+<h2>Running the Test Program</h2>
+
+<p>
+The <em>Test_IpFilterHook.exe</em> test program is capable of controlling the capabilities of the 
+<em>ipfilterhook.sys</em> driver through user-supplied command line switches. 
+When the filter hook is enabled through the test application, a Trace
+object will output the IP header information to <b>SoftICE</b> and to <b>DriverMonitor</b>.
+You may modify the SendHandler(…) or ReceiveHandler(…) methods of myKipFilter.cpp to display the packet 
+data and the interface index.
+</p>
+
+<p>
+The <em>Test_IpFilterHook</em> application is run from a dos box using the following command line:
+</p>
+
+<p style="margin-left: 120px;">
+<em>Test_IpFilterHook [r n] [w n] [i n]</em>
+</p>
+
+<p>Where the options are the following</p>
+
+<ul style="margin-left:140px;">
+<li><em>r n</em> initiates a read of specified number of bytes</li>
+<li><em>w n</em> initiates a write of specified number of bytes</li>
+<li><em>i 0</em> turns the hook on</li>
+<li><em>i 1</em> turns the hook off</li>
+</ul>
+
+<p>Some examples follow:</p>
+
+<p style="margin-left:120px;">
+<table>
+<tr><td>Test_IPFilterHook r 32 w 32</td><td>Read 32 bytes, then write 32 bytes.</td></tr>
+<tr><td>Test_IPFilterHook i 0</td><td>Turn hooking on.</td></tr>
+<tr><td>Test_IPFilterHook i 1</td><td>Turn hooking off.</td></tr>
+</table>
+</p>
+
+<p>
+Note however that the <em>r</em> and <em>w</em> options require Read and Write function handlers in the 
+<em>ipfilterhook</em> driver. If you use them without writing your own read and write handlers, you will get
+an error report from the driver saying that those functions are not implemented. 
+</p>
+
+<h2>Tools</h2>
+
+<p>
+Compuware NuMega's <em>DriverWorkbench, DriverMonitor, SoftICE</em> and <em>Visual SoftICE</em>
+can be used to test some of the features of this driver.
+</p>
+
+<h2>File Manifest</h2>
+
+<p style="margin-left:60px;">..\IPFilterHook</p>
+
+<table border=1 style="margin-left:120px;">
+<tr><td>IPFilterHook.htm</td><td>This file !</td></tr>
+<tr><td>IPFilterHookioctl.h</td><td>Contains the IOCTL codes for the driver and test app.</td></tr>
+<tr><td>IPFilterHook.dsw</td><td>Visual C++ Workspace.</td></tr>
+<tr><td>\exe</td><td>Directory containing the sample application file.</td></tr>
+<tr><td>\sys</td><td>Directory containing the sample driver files.</td></tr>
+</table>
+
+<p></p>
+<p style="margin-left:60px;">..\IPFilterHook\sys</p>
+
+<table border=1 style="margin-left:120px">
+<tr><td>IPFilterHook.h</td><td>Driver object definition file.</td></tr>
+<tr><td>IPFilterHook.cpp</td><td>Driver Entry, Unload implementation.</td></tr>
+<tr><td>IPFilterHookDevice.h</td><td>Functional device object definition file.</td></tr>
+<tr><td>IPFilterHookDevice.cpp</td><td>Functional device object major functions implementation.</td></tr>
+<tr><td>Function.h</td><td>Driver function control file.</td></tr>
+<tr><td>IPFilterHook.dsp</td><td>Project file.</td></tr>
+<tr><td>IPFilterHook.cfg</td><td>Configuration file</td></tr>
+<tr><td>MyKIPFilter.h</td><td>Definition of a filter-hook that inherits the KIPFilterHook class.</td></tr>
+<tr><td>MyKIPFilter.cpp</td><td>Receive and Send implementation.</td></tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p style="margin-left:60px;">..\IPFilterHook\exe</p>
+
+<table border=1 style="margin-left:120px;">
+<tr><td>Test_IPFilterHook.dsp</td><td>Test application project file.</td></tr>
+<tr><td>Test_IPFilterHook.cpp</td><td>Main test application file.</td></tr>
+<tr><td>Makefile</td><td>The make file.</td></tr>
+<tr><td>Sources</td><td>The sources file.</td></tr>
+</table>
+
+</body>
+
+</html>

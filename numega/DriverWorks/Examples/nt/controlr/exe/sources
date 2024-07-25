@@ -1,0 +1,17 @@
+# SOURCES - for controller application
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=testctrl
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+INCLUDES=..\
+
+SOURCES=testctrl.cpp

@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware" 
+FileDescription =	"Real Time Clock Driver Using DAA"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"DAAHWINT"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation. "
+OriginalFilename = 	"daahwint.vxd"
+ProductName	=	"VToolsD Example"
+ProductVersion	= 	"Version 1.00"
+Translation	=	0x409, 0x4E4

@@ -1,0 +1,77 @@
+; -- NETIMDELAYMP.INF --
+;
+; ImDelay Filter Miniport INF file
+;
+; This file is a suppliment to netFilter.inf and is used to install
+; a miniport part of the filter. For standalone IM drivers, use netImDelay.inf
+;
+; Copyright (c) 2000
+
+[Version]
+signature  = "$Windows NT$"
+Class      = Net
+ClassGUID  = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+[ControlFlags]
+ExcludeFromSelect = numega_ImDelayFiltermp
+
+[DestinationDirs]
+DefaultDestDir=12
+; No files to copy 
+
+[Manufacturer]
+%NuMega% = Models
+
+[Models]
+%ImDelayFilterMP_Desc% = ImDelayFilterMP.ndi, numega_ImDelayFiltermp
+
+[ImDelayFilterMP.ndi]
+Characteristics = 0x01 ;NCF_VIRTUAL. Consider: NCF_NOT_USER_REMOVABLE | NCF_HIDDEN 
+CopyFiles = 
+
+[ImDelayFilterMP.ndi.Services]
+AddService = ImDelay,0x2, ImDelayFilterMP.AddService
+
+
+[ImDelayFilterMP.AddService]
+DisplayName    = %ImDelayFilterMP_Desc%
+ServiceType    = 1 ;SERVICE_KERNEL_DRIVER
+StartType      = 3 ;SERVICE_DEMAND_START
+ErrorControl   = 1 ;SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\ImDelay.sys
+LoadOrderGroup = PNP_TDI
+AddReg         = ImDelayFilterMP.AddService.AddReg
+
+
+[ImDelayFilterMP.AddService.AddReg]
+; ----------------------------------------------------------------------
+; Add any miniport-specific parameters here. Those are accessed
+; from KNdisFilterAdapter::Initialize() and ImDelayAdapter::OnInitialize()
+;
+HKR, NDI\params\MaxPoolSize,           ParamDesc,      0, %MaxPoolSize%
+HKR, NDI\params\MaxPoolSize,           type,           0, "dword"
+HKR, NDI\params\MaxPoolSize,           default,        0, 1024
+HKR, NDI\params\MaxPoolSize,           optional,       0, "1"
+HKR, NDI\params\MaxPoolSize,           max,		       0, 65535
+
+HKR, NDI\params\Delay,           ParamDesc,      0, %Delay%
+HKR, NDI\params\Delay,           type,           0, "dword"
+HKR, NDI\params\Delay,           default,        0, 10
+HKR, NDI\params\Delay,           max,            0, 65535
+
+
+[SourceDisksNames]
+;None 
+
+[SourceDisksFiles]
+;None
+
+[Strings]
+NuMega = "NuMega"
+ImDelayFilterMP_Desc = "ImDelay Filter Miniport"
+MaxPoolSize = "Maximum number of packet descriptors for repackaging"
+Delay = "Packet Delay in msec"
+
+ 

@@ -1,0 +1,4 @@
+DIRS=	sys 		\
+	exe		\
+	ClassInstaller	\
+	CoInstaller

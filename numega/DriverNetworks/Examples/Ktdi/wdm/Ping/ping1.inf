@@ -1,0 +1,110 @@
+;; Ping.inf
+
+;; *********  PLEASE READ ***********
+;; The wizard cannot create exact INF files for all buses and device types.
+;; You may have to make changes to this file in order to get your device to
+;; install. In particular, hardware IDs and logical configurations require
+;; intervention.
+;;
+;; The Win2K DDK documentation contains an excellent INF reference.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%ProviderName%
+
+; If device fits one of the standard classes, use the name and GUID here,
+; otherwise create your own device class and GUID as this example shows.
+
+Class=NewDeviceClass
+ClassGUID={ff646f80-8def-11d2-9449-00105a075f6c}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;Ping1.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+Ping_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=Ping_DDI, *Ping1Sample
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[Ping_DDI]
+CopyFiles=Ping_Files_Driver
+AddReg=Ping_9X_AddReg
+
+[Ping_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,Ping1.sys
+HKR, "Parameters", "BreakOnEntry", 0x00010001, 0
+
+; --------- Windows NT -----------------
+
+[Ping_DDI.NT]
+CopyFiles=Ping_Files_Driver
+AddReg=Ping_NT_AddReg
+
+[Ping_DDI.NT.Services]
+Addservice = Ping1, 0x00000002, Ping_AddService
+
+[Ping_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\Ping1.sys
+
+[Ping_NT_AddReg]
+HKLM, "System\CurrentControlSet\Services\Ping1\Parameters",\
+	"BreakOnEntry", 0x00010001, 0
+
+
+; --------- Files (common) -------------
+
+[Ping_Files_Driver]
+Ping1.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware NuMega"
+MfgName="Compuware NuMega"
+DeviceDesc="DriverNetworks Ping Sample"
+DeviceClassName="DriverNetworks Ping Samples"
+SvcDesc="DriverNetworks Ping Driver"

@@ -1,0 +1,485 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Simple1394_files/filelist.xml">
+<title>Simple1394 Sample Driver</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Sarah Prevost</o:Author>
+  <o:Template>K1394LowerDevice.dot</o:Template>
+  <o:LastAuthor>Sarah Prevost</o:LastAuthor>
+  <o:Revision>9</o:Revision>
+  <o:TotalTime>396</o:TotalTime>
+  <o:Created>2001-08-06T15:20:00Z</o:Created>
+  <o:LastSaved>2001-08-06T17:55:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>387</o:Words>
+  <o:Characters>2210</o:Characters>
+  <o:Company>Compuware/NuMega Lab, Inc.</o:Company>
+  <o:Lines>18</o:Lines>
+  <o:Paragraphs>4</o:Paragraphs>
+  <o:CharactersWithSpaces>2714</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:UpdateStylesOnOpen/>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:navy;
+	mso-font-kerning:0pt;
+	font-weight:bold;}
+h2
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:navy;
+	font-weight:bold;}
+h3
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+h5
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	tab-stops:.5in;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:#3366FF;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+h6
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:6;
+	tab-stops:.5in;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:#993300;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	text-indent:-27.0pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoBodyTextIndent3, li.MsoBodyTextIndent3, div.MsoBodyTextIndent3
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	text-indent:-.75in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+p.Heading2Web, li.Heading2Web, div.Heading2Web
+	{mso-style-name:"Heading 2 \(Web\)";
+	mso-style-parent:"Normal \(Web\)";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Tahoma;
+	color:navy;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	mso-bidi-font-style:italic;}
+p.Code, li.Code, div.Code
+	{mso-style-name:Code;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.Heading1Web, li.Heading1Web, div.Heading1Web
+	{mso-style-name:"Heading 1 \(Web\)";
+	mso-style-parent:"Heading 2";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:navy;
+	font-weight:bold;}
+p.Heading3Web, li.Heading3Web, div.Heading3Web
+	{mso-style-name:"Heading 3 \(Web\)";
+	mso-style-parent:"Heading 2 \(Web\)";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:4.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Tahoma;
+	color:#003366;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	font-style:italic;}
+p.SeeAlso, li.SeeAlso, div.SeeAlso
+	{mso-style-name:"See Also";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.BullLeft, li.BullLeft, div.BullLeft
+	{mso-style-name:Bull_Left;
+	mso-style-parent:"Normal \(Web\)";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	mso-list:l0 level1 lfo2;
+	tab-stops:list .5in;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.Note, li.Note, div.Note
+	{mso-style-name:Note;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1893537897;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1418517188 -378531976 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-style-link:Bull_Left;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1>Simple1394 Sample</h1>
+
+<h2>SUMMARY</h2>
+
+<p><span style='font-family:Tahoma'>The <b>simple1394</b> sample illustrates
+how to write the simplest 1394 driver. The driver performs asynchronous read
+and write operations to the device’s address space.<span style="mso-spacerun:
+yes">  </span>It also maintains a copy of the bus reset generation count and
+overrides <b>KPnpDevice::OnBusReset</b> to update the generation count when a
+bus reset occurs.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>The sample includes the driver <b>smpl1394.sys</b>,
+and a test application, <b>test_simple1394.exe</b>, that sends read and write
+requests to the driver.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>This sample may be tested with any 1394
+device.<span style="mso-spacerun: yes">  </span>It will be necessary to put the
+device’s hardware ID in the INF file, and to set the offset in the device’s
+address space to which the driver reads and writes<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Note><b>Note:</b><span style="mso-spacerun: yes">  </span>The <b>simple1394</b>
+driver cannot be run on each of two PCs connected with a 1394 cable. <span
+style="mso-spacerun: yes"> </span>In order to read and write to another PC, the
+driver on the other PC must allocate an address range in order to grant <b>smpl1394.sys</b>
+access.</p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>BUILDING THE SAMPLE</h2>
+
+<p><span style='font-family:Tahoma'>The driver, <b>smpl1394.sys</b>, and
+application, <b>test_simple1394.exe</b>, may be built from the command line or
+from within the Visual C++ IDE.<span style="mso-spacerun: yes">    </span>To
+build from the Visual Studio IDE, open the workspace file, simple1394.dsw.<span
+style="mso-spacerun: yes">  </span>From the build menu, select the
+configuration to build, and then select “Build” or “Rebuild All” to build that
+configuration.<span style="mso-spacerun: yes">  </span>Both free and checked
+builds are available.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>To build from the command line, start a
+command prompt with the DDK checked or free build configuration.<span
+style="mso-spacerun: yes">  </span>Navigate to the Simple1394 directory and
+type “build”.<span style="mso-spacerun: yes">  </span>The environment variable
+DRIVERWORKS must be set to the DriverWorks directory.</span> </p>
+
+<p class=Note><b>Note:</b> The <b>DriverWorks</b> library, <b>vdw_wdm.lib</b>,
+must be built before <b>smpl1394.sys</b> may be built. <span style='mso-bidi-font-size:
+10.0pt'><o:p></o:p></span></p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>RUNNING THE SAMPLE</h2>
+
+<p><span style='font-family:Tahoma'>The driver, <b>smpl1394.sys</b>, must be
+loaded through the device manager.<span style="mso-spacerun: yes">  </span>If
+the 1394 device is already listed in the device manager, double click on the
+device, and, when the properties dialog comes up, select <b>Update driver</b>
+from the driver tab.<span style="mso-spacerun: yes">  </span>Choose to specify
+the location of the driver file, and browse to the folder containing <b>simple1394.inf</b>.<span
+style="mso-spacerun: yes">  </span>The device manager should then load the
+driver.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>If the device is not in the device manager,
+the driver may be loaded by using the <b>Add New Hardware</b> option in the
+control panel.</span><o:p></o:p></p>
+
+<p><span style='font-family:Tahoma'>On Windows 2000 and XP, it is also possible
+to load the driver using the <b>EZDriverInstaller</b> available in the start
+menu under NuMega DriverStudio | Tools.<o:p></o:p></span></p>
+
+<p class=Note><b>Note:</b> To install <b>smpl1394.sys</b> on Windows XP, the <b>EZDriverInstaller</b>
+must be used.<span style="mso-spacerun: yes">  </span>Windows XP automatically
+loads a network driver when another PC is connected through 1394.<span
+style="mso-spacerun: yes">  </span>Because the <b>smpl1394</b> driver is not in
+the same device class as the network driver, Windows will not allow the driver
+to be installed through the device manager in the normal way.<o:p></o:p></p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>File Manifest</h2>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><b><span
+style='font-family:Tahoma'>Simple1394.htm</span></b><span style='font-family:
+Tahoma'><span style='mso-tab-count:3'>                                    </span>The documentation for this sample (this file).<o:p></o:p></span></pre><pre><b><span
+style='font-family:Tahoma'>Simple1394DeviceInterface.h</span></b><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>              </span>The device’s GUID shared by the application and driver<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in;tab-stops:27.0pt'>Driver Files:</h5>
+
+<pre><b><span style='font-family:Tahoma'>Simple1394.h</span></b><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>         </span> <span
+style='mso-tab-count:2'>                              </span>Header for the Simple1394 driver class<o:p></o:p></span></pre><pre><b><span
+style='font-family:Tahoma'>Simple1394.cpp</span></b><span style='font-family:
+Tahoma'><span style="mso-spacerun: yes">  </span><span style='mso-tab-count:
+2'>                   </span><span style='mso-tab-count:1'>               </span>Simple1394 driver class<o:p></o:p></span></pre><pre><b><span
+style='font-family:Tahoma'>Simple1394Device.h<span style='mso-tab-count:1'>              </span></span></b><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>               </span>Header for the simple1394device class<o:p></o:p></span></pre><pre><b><span
+style='font-family:Tahoma'>Simple1394device.cpp</span></b><span
+style='font-family:Tahoma'> <span style='mso-tab-count:2'>                         </span>Simple1394Device class<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in;tab-stops:.5in'>Example Files</h5>
+
+<pre><b><span style='font-family:Tahoma'>Test_simple1394.cpp</span></b><span
+style='font-family:Tahoma'><span style='mso-tab-count:2'>                           </span>Main file – allows read and write access to the device<o:p></o:p></span></pre><pre><b><span
+style='font-family:Tahoma'>Openbyintf.cpp</span></b><span style='font-family:
+Tahoma'><span style='mso-tab-count:3'>                                     </span>Opens a handle to the smpl1394 device<o:p></o:p></span></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin-top:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-fareast-font-family:"Courier New";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin-top:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-fareast-font-family:"Courier New";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

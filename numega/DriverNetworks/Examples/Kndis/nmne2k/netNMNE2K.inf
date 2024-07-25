@@ -1,0 +1,169 @@
+; netNMNE2K.INF
+;
+; Dual .INF file for NMNE2K Network Adapter
+;
+; Copyright (c) 2000
+
+[version]
+Signature   = "$CHICAGO$"
+Class       = Net
+ClassGUID   = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider    = %NuMega%
+Compatible	= 1
+DriverVer   = 01/01/2000, 1.0.0.0
+; Millenium exclusive suffix
+MillenniumPreferred = .me
+;CatalogFile = ... add for WHQL ...
+
+[Manufacturer]
+%Mfg%   = Models
+
+[ControlFlags]
+; ExcludeFromSelect     = NuMega_NMNE2K_001
+
+[Models]
+; Note 1. Replace the bogus hw-id with a real one
+; Note 2. Optionally, add more NIC models supported by this file
+;
+%*NMNE2K.devicedesc% = *NMNE2K.ndi, ISA\NuMega_NMNE2K_001
+
+;-------------------------------------------------------------------------------
+; Win2K NMNE2K NIC install section
+;
+[*NMNE2K.ndi.NT]
+AddReg          = nmne2k.w2k.reg, nmne2k.params.reg
+CopyFiles       = nmne2k.w2k.CopyFiles
+; Note: remove the next line and related section for PnP cards. It references
+;       h/w config option section for nonPNP devices.
+LogConfig       = *NMNE2K.LogConfig
+Characteristics = 0x84			; NCF_HAS_UI & NCF_PHYSICAL
+BusType	        = 1				; ISA
+
+[*NMNE2K.ndi.NT.Services]
+AddService      = NMNE2K, 2, nmne2k.Service, nmne2k.EventLog
+
+
+;-------------------------------------------------------------------------------
+; W9X NMNE2K NIC install section
+;
+[*NMNE2K.ndi]
+AddReg          = *NMNE2K.ndi.reg, NMNE2K.ndi.reg, nmne2k.params.reg
+LogConfig       = *NMNE2K.LogConfig
+
+;-------------------------------------------------------------------------------
+; PnP ID section for W9X
+[*NMNE2K.ndi.reg]
+HKR,Ndi,DeviceID,,"*NMNE2K"	
+
+[NMNE2K.ndi.reg]
+; Forced W9X install section
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,nmne2k.sys
+HKR,,EnumPropPages,,"netdi.dll,EnumPropPages"
+; NDIS Info
+HKR,NDIS,LogDriverName,,"nmne2k"
+HKR,NDIS,MajorNdisVersion,1,05
+HKR,NDIS,MinorNdisVersion,1,00
+
+; Interfaces
+HKR,Ndi\Interfaces,DefUpper,,"ndis3,ndis4,ndis5"
+HKR,Ndi\Interfaces,UpperRange,,"ndis3,ndis4,ndis5"
+HKR, Ndi\Interfaces, LowerRange,,"ethernet"
+HKR, Ndi\Interfaces, DefLower,,"ethernet"
+
+; Install sectioins
+HKR,Ndi\Install,ndis5,,"nmne2k.ndis5"
+
+
+[*NMNE2K.LogConfig]
+IRQConfig       = 3,4,5,7,9,10,11,12
+IOConfig        = 10@200-39F%FFF0(3FF::)
+ConfigPriority  = HARDRECONFIG	; jumpers
+
+
+; Install NDIS
+[nmne2k.ndis5]
+CopyFiles=nmne2k.w9x.CopyFiles
+
+[nmne2k.w9x.CopyFiles]
+nmne2k.sys
+
+[nmne2k.w2k.CopyFiles]
+nmne2k.sys,,,2
+
+;-----------------------------------------------------------
+; Sources
+[SourceDisksNames]
+99=%nmne2k_disk%,"",0
+
+[SourceDisksFiles]
+nmne2k.sys = 99
+
+;-------------------------------------------------------------------------------
+; DestinationDirs
+;
+[DestinationDirs]
+DefaultDestDir       = 11 ; system dir
+nmne2k.w9x.CopyFiles = 11 ; 9X:  windows\system
+nmne2k.w2k.CopyFiles = 12 ; W2K: system32\drivers
+
+;-------------------------------------------------------------------------------
+; nmne2k Common
+;
+[nmne2k.w2k.reg]
+; Binding Interfaces
+HKR, Ndi,                         Service,    0, "NMNE2K"
+HKR, Ndi\Interfaces,              UpperRange, 0, "ndis5"
+HKR, Ndi\Interfaces,              LowerRange, 0, "ethernet"
+
+[nmne2k.params.reg]
+; Optional parameters obtained from the Registry.
+; Note: Add more parameters as needed using the format below. This way
+;       the parameters will be accessible via the "Advanced" tab of the Dev Mngr GUI
+;
+HKR, Ndi\params\CardType,                ParamDesc,       0, %CardType%
+HKR, Ndi\params\CardType,                type,            0, "enum"
+HKR, Ndi\params\CardType,                default,         0, "Default"
+HKR, Ndi\params\CardType\enum,           Default, 0, %CardType_basic%
+HKR, Ndi\params\CardType\enum,           Cool,    0, %CardType_cool%
+
+HKR, NDI\params\NetworkAddress,           ParamDesc,      0, %NetworkAddress%
+HKR, NDI\params\NetworkAddress,           type,           0, "edit"
+HKR, NDI\params\NetworkAddress,           LimitText,      0, "12"
+HKR, NDI\params\NetworkAddress,           UpperCase,      0, "1"
+HKR, NDI\params\NetworkAddress,           default,        0, " "
+HKR, NDI\params\NetworkAddress,           optional,       0, "1"
+
+;-------------------------------------------------------------------------------
+; W2K Service entry, log, etc.
+[nmne2k.Service]
+DisplayName     = %nmne2k.Service.DispName%
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_DEMAND_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %12%\nmne2k.sys
+LoadOrderGroup  = NDIS
+
+[nmne2k.EventLog]
+AddReg = nmne2k.AddEventLog.reg
+
+[nmne2k.AddEventLog.reg]
+HKR, , EventMessageFile, 0x00020000, "%%SystemRoot%%\System32\netevent.dll"
+HKR, , TypesSupported,   0x00010001, 7
+
+
+;-------------------------------------------------------------------------------
+; Localizable Strings
+;
+[Strings]
+NuMega = "Compuware NuMega"      
+Mfg    = "NMNE2K Company"          
+*NMNE2K.devicedesc   = "NMNE2K Network Adapter"
+nmne2k.Service.DispName = "NMNE2K Network Adapter"
+NetworkAddress = "Network Address (MAC)"
+CardType = "Operating Mode"
+CardType_basic = "Basic"
+CardType_cool = "Cool"
+nmne2k_disk = "nmne2k Driver Install Disk"
+.
+ 

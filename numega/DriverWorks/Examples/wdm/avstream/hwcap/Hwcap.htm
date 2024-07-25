@@ -1,0 +1,619 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Hwcap_files/filelist.xml">
+<title>AVSHwS: AVStream Simulated Hardware Sample Driver</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>vvatnikov</o:Author>
+  <o:LastAuthor>Vladimir Shubin</o:LastAuthor>
+  <o:Revision>6</o:Revision>
+  <o:TotalTime>24</o:TotalTime>
+  <o:Created>2002-10-14T20:40:00Z</o:Created>
+  <o:LastSaved>2003-01-07T11:53:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>926</o:Words>
+  <o:Characters>5279</o:Characters>
+  <o:Company> Compuware/NuMega Labs, Inc.</o:Company>
+  <o:Lines>43</o:Lines>
+  <o:Paragraphs>10</o:Paragraphs>
+  <o:CharactersWithSpaces>6482</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=blue style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h2><span style='font-family:Verdana'>Hwcap: DriverWorks
+AVStream&nbsp;Pin-Centric Sample Driver <o:p></o:p></span></h2>
+
+<h3><span style='font-family:Verdana'>SUMMARY<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Hwcap&nbsp;is a <em>pin-centric</em>
+AVStream video capture driver written using the DriverWorks AVStream C++
+Framework. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The driver&nbsp;simulates
+a video capture source generating&nbsp;320x240 images in either RGB24 or YUV422
+format via direct DMA into capture buffers.&nbsp; <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Functionally, the Hwcap
+driver is similar to and based on the AVSHWS sample driver provided with
+Microsoft® Windows®&nbsp;XP DDK. <o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>PROGRAMMING TOUR<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Hwcap driver class, <strong>HwcapDriver</strong>,
+derives from <em><b>KsMiniDriver</b></em> and implements DriverEntry() method,
+which performs driver's initialization and registration with the&nbsp;kernel
+AVStream subsystem (KS.SYS). <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The <strong>HwcapDevice</strong>
+class derives from <strong><i>KsDevice</i></strong> and implements OnStart()
+and and OnStop() methods simulating hardware initialization&nbsp;for a PNP
+device. <strong>HwcapFilter</strong> class derives from <em><b>KsFilter</b></em>
+and implements both static AVStream properties of the filter (sm_Xxx public
+data members) and optional event handlers, such as OnCreate(). <strong>HwcapPin</strong>
+class derives from <em><b>KsPin</b></em>&nbsp;and implements both static
+AVStream properties of the&nbsp;pin (sm_Xxx public data members) and&nbsp;event
+handlers, such as OnCreate() and OnProcess(). HwcapPin class implements the
+bulk of functionality provided by this sample. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>On driver initialization,
+<strong>HwcapDriver::DriverEntry()</strong> method instantiates the descriptors
+of Device, Filter and Pin properties based on the compile-time properties
+(static data propetrties and handler signatuires) of the classes <strong>HwcapDevice</strong>,
+<strong>HwcapFilter</strong> and <strong>HwcapPin</strong> accordingly. For
+instance, declaration of HwcapPin::OnProcess()&nbsp;handler in HwcapPin class
+declaration&nbsp;signifies&nbsp;Hwcap is a pin-centric driver.&nbsp;The
+descriptors are then assembled (using &quot;&lt;&lt;&quot; operator) into a
+single KS device descriptor, which gets registered with the AVStream subsystem
+through a call to <em><b>KsInitializeDriver</b></em><strong>. </strong>This
+registration defines all the properties required by the AVStream object
+factories for consecutive instantiation of the filter and pin objects on the
+Hwcap driver. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The run-time behavior of
+the driver is managed by the <strong>HwcapPin::OnSetDeviceState()</strong>
+handler. On the state transition into KSSTATE_ACQUIRE state, the driver
+allocates &quot;hardware resources&quot; simulated by a class-collection <strong>HwcapHardwareResources</strong>.
+This results in&nbsp;the&nbsp;instantiation of <strong>HwcapSimulator </strong>class
+instance, which sumulates an interrupt-driven video capture device with
+scatter/gather DMA capability. <strong>HwcapSimulator </strong>class
+encapsulates an instance of <strong>HwcapDmaEngine</strong>, which simulates
+the&nbsp;programming logic of<strong> </strong>translating KS mappings into
+hardware-specific descriptors for the DMA capture buffers. <strong>HwcapSimulator
+</strong>also incorporates and instance of an image generator class, <strong>HwcapImage</strong>,
+which generates color bars based on the configuration parameters specified on
+the pin's instantiation. On the state transition into KSSTATE_RUN state, the
+driver starts the hardware simulation.<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The DMA logic is
+implemented in 2 methods: <strong>HwcapPin::OnProcess()</strong> and <strong>HwcapPin::DPC().</strong>
+The former is called by the AVStream subsystem whenever there is a new (empty)
+buffer to be filled in the driver; thus, it adds new mapping to the list of
+queued mappings maintained by <strong>HwcapDmaEngine. </strong>The latter is
+called periodically (imitating a &quot;DMA-complete&quot; interrupt) to
+complete some mappings and, thus, advancing the stream pointers. The DPC
+processing completes by calling <strong>KsPinAttemptProcessing</strong>, which
+prompts AVStream to invoke the OnProcess() handler to process new
+frames.&nbsp;DPC() and OnProcess() methods demonstrate how to manipulate KS
+stream pointers and clones using framework classes <em><b>KStreamLeadingPointer</b></em>
+and <em><b>KStreamPointer</b></em> . <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>See comments in
+all&nbsp;the source&nbsp;files. Also see complete AVStream documentation in the
+DDK documentation and DriverWorks help AVStream chapter.<o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>&nbsp;<o:p></o:p></span></h3>
+
+<h3><span style='font-family:Verdana'>BUILDING and INSTALLING THE SAMPLE<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The sample requires
+Windows XP DDK. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Start
+Microsoft&nbsp;Visual Studio 6.0 IDE&nbsp;using&nbsp;DriverStudio SetDDKgo
+utility.&nbsp;Open driver project file, <strong>Hwcap.dsw</strong>, and build
+the driver either using the standard IDE build button or DriverStudio DDK Build
+button.</span> </p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Alternatively, one can
+build the sample by typing <b>build -zc</b> in either the standard XP DDK
+checked or free build environment.</span> </p>
+
+<p><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>A
+successful build produces <i>hwcap.sys.</i> To install the driver, right click
+on <i>hwcap.inf</i> and select Install. When prompted for <i>hwcap.sys</i>,
+select the built binary. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>&nbsp;<o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>RUNNING THE SAMPLE</span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Once installation is
+complete, the driver can be exercised using<em>&nbsp;</em><strong><i>
+Graphedt.exe</i></strong><em> </em>tool shipped with Windows XP DDK. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Using Graphedt.exe, one
+can build a graph with Hwcap sample acting a video source (the sample appears
+under &quot;WDM Streaming Capture Devices&quot;) and a DirectShow Video
+Renderer or the VMR default video renderer acting as a sink. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Alternatively, one can
+locate a graph description file, <strong>Hwcap.xgr</strong>, located in the
+Hwcap project directory and&nbsp;drag it into open Graphedt.exe application window.
+This would result in the graph being ready to play. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Click the
+&quot;play&quot; button.&nbsp; The output produced by the sample is a 320x240
+image&nbsp;standard EIA-189-A color bars. By default, Hwcap modulates the
+luminance component&nbsp;(YUV mode) and green component (RGB mode) to
+&quot;animate&quot; the image. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The sample runs on
+Windows 2000 and Windows XP only. <o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>TOOLS<o:p></o:p></span></h3>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Verdana'>Use
+Compuware SoftICE debugger and DriverMonitor trace viewer tool to further
+exploit the implementation details of the sample. <o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>CODE TOUR</span><u><o:p></o:p></u></h3>
+
+<table border=1 cellspacing=3 cellpadding=0 width=720 style='width:7.5in;
+ mso-cellspacing:2.0pt;margin-left:2.75pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'
+ id=Table2>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'>File
+  <u1:p></u1:p></span></b></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'>Description
+  <u1:p></u1:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'><pre
+  style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;margin-left:
+  0in'><span style='mso-bidi-font-size:12.0pt;font-family:Verdana;mso-fareast-font-family:
+  "Times New Roman";mso-bidi-font-family:"Times New Roman"'>Visual Studio 6.0 Project File<o:p></o:p></span></pre></td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.dsw<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Visual
+  Studio 6.0 Workspace File<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.h<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Driver
+  class HwcapDriver declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Driver
+  class HwcapDriver implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapDevice.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Device
+  class HwcapDevice declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapDevice.h<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Device
+  class HwcapDevice implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapDmaEngine.h<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>DMA
+  Engine class Declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapDmaEngine.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>DMA
+  Engine class implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.htm<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>This
+  file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.inf<o:p></o:p></span></p>
+  </td>
+  <td width=552 valign=top style='width:413.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Installation
+  file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapFilter.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Filter
+  class HwcapFilter </span><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Verdana'>declaration</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapFilter.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Filter
+  class HwcapFilter </span><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Verdana'>implementation</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapImage.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Image
+  generator declarations<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapImage.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Image
+  generator </span><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Verdana'>implementations</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapFormats.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Video
+  format definitions<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapPin.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Pin
+  class HwcapPin declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapPin.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Pin
+  class HwcapPin </span><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Verdana'>implementation</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapSim.h<o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Hardware
+  simulation class declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>HwcapSim.cpp<o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Hardware
+  simulation class </span><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Verdana'>implementation</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.rc</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Resource
+  file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Hwcap.xgr</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Graph
+  definition file (XML)<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>makefile</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>DDK
+  makefile<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=160 valign=top style='width:120.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>sources</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma'> <u1:p></u1:p></span><span style='font-size:
+  10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Build
+  information for the DDK utility BUILD.EXE.</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-fareast-font-family:"Courier New";mso-bidi-font-family:
+  Tahoma'> <u1:p></u1:p></span><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Verdana'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<table border=0 cellspacing=0 cellpadding=0 width=624 style='width:6.5in;
+ mso-cellspacing:0in;mso-padding-alt:0in 0in 0in 0in' id=Table1>
+ <tr style='height:1.5pt'>
+  <td style='background:aqua;padding:.75pt .75pt .75pt .75pt;height:1.5pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:2.0pt;mso-bidi-font-size:12.0pt'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© 2002 Compuware Corporation</span><span
+style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:"Courier New"'> <o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre></div>
+
+</body>
+
+</html>

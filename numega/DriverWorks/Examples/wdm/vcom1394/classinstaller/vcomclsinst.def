@@ -1,0 +1,5 @@
+LIBRARY  VCOMCLSINST
+
+EXPORTS   
+   VCom1394ClsInst
+   

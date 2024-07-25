@@ -1,0 +1,102 @@
+; Isoc1394.Inf - install information file for simple WDM example
+; Copyright (c) 1998 Compuware Corporation
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%Compuware%
+
+; If device fits one of the standard classes, use the
+; name and GUID here, otherwise create your own as
+; this example shows.
+
+Class=Unknown
+;ClassGUID={312b5210-8a24-11d2-9448-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;smpl1394.sys=1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X style
+;[ClassInstall]
+;Addreg=Class_AddReg
+
+; NT style
+;[ClassInstall32]
+;Addreg=Class_AddReg
+
+;[Class_AddReg]
+;HKR,,,,%CompuwareClassName%
+;HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+DefaultDestDir=10,System32
+smpl1394_Files_Driver=10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName% = Compuware_Mfg
+
+[Compuware_Mfg]
+%smpl1394Device%=smpl1394_DDI, 1394\Microsoft&1394_PC
+%smpl1394Device%=smpl1394_DDI, 1394\Microsoft&Numega
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 98 -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[smpl1394_DDI]
+CopyFiles=smpl1394_Files_Driver
+AddReg=smpl1394_9X_AddReg
+
+[smpl1394_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,smpl1394.sys
+HKR,,Description,,%smpl1394_DeviceDesc%
+
+; --------- Windows NT -----------------
+
+[smpl1394_DDI.NT]
+CopyFiles=smpl1394_Files_Driver
+
+[smpl1394_DDI.NT.Services]
+Addservice = smpl1394, 0x00000002, smpl1394_Service
+
+[smpl1394_Service]
+DisplayName    = %smpl1394_SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\smpl1394.sys
+
+; --------- Files ----------------------
+
+[smpl1394_Files_Driver]
+smpl1394.sys,,,2
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+Compuware="Compuware Corporation"
+MfgName="Compuware Corporation"
+smpl1394Device="Simple 1394 device"
+smpl1394_DeviceDesc="Simple 1394 Device"
+smpl1394_SvcDesc="Driver for Simple 1394 Sample"
+CompuwareClassName="Compuware Other Devices"

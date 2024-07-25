@@ -1,0 +1,989 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40"
+xmlns:ns0="urn:schemas-microsoft-com:office:smarttags">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="E100bex_files/filelist.xml">
+<title>E100bex NDIS Miniport Driver</title>
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:RemovePersonalInformation/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-alt:SimSun;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:238;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:1627421319 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:238;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:238;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:1627421663 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:"\@SimSun";
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+@font-face
+	{font-family:"MS Sans Serif";
+	mso-font-alt:"Times New Roman";
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:auto;
+	mso-font-signature:0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;}
+h2
+	{margin-top:14.0pt;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Tahoma;
+	color:navy;}
+h3
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-style:italic;}
+h4
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 235.15pt right 470.3pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 235.15pt right 470.3pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+ /* Page Definitions */
+ @page
+	{mso-footnote-separator:url("E100bex_files/header.htm") fs;
+	mso-footnote-continuation-separator:url("E100bex_files/header.htm") fcs;
+	mso-endnote-separator:url("E100bex_files/header.htm") es;
+	mso-endnote-continuation-separator:url("E100bex_files/header.htm") ecs;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-even-header:url("E100bex_files/header.htm") eh1;
+	mso-header:url("E100bex_files/header.htm") h1;
+	mso-even-footer:url("E100bex_files/header.htm") ef1;
+	mso-footer:url("E100bex_files/header.htm") f1;
+	mso-first-header:url("E100bex_files/header.htm") fh1;
+	mso-first-footer:url("E100bex_files/header.htm") ff1;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:160971019;
+	mso-list-template-ids:271904622;}
+@list l0:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1
+	{mso-list-id:416370666;
+	mso-list-template-ids:186038764;}
+@list l1:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="5122"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1>E100bex NDIS Miniport Driver</h1>
+
+<h2><o:p>&nbsp;</o:p></h2>
+
+<h2>Summary</h2>
+
+<p class=MsoBodyText>This directory contains the NDIS Miniport Driver project
+files for the Intel EtherExpress PRO PCI Ethernet Adapter network card. This
+sample demonstrates the basic structure of an NDIS 5 deserialized NDIS miniport
+driver written using the DriverNetworks C++ framework. This is a fully
+functional NDIS miniport driver tested on both the Windows 2000 and Windows XP
+systems. The driver is functionally similar to the E100Bex sample driver found
+in the Windows XP DDK.</p>
+
+<p class=MsoBodyText><span style='color:windowtext'>The driver demonstrates
+usage of the following classes:<o:p></o:p></span></p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisMiniAdapter</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisIoRange</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisMemoryRange</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisInterrupt</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisPacketList</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisSharedReceiveArea</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisSharedMemory</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisStats</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisPacket</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisBuffer</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>KNdisPciInformation</p>
+
+<p class=bullet style='margin-left:.5in;text-indent:-.25in;tab-stops:list .5in'>Power
+Management </p>
+
+<p class=bullet>&nbsp;</p>
+
+<h2>Building the Driver</h2>
+
+<p class=MsoBodyText>Open E100bex.dsp in MSVC 6.0 IDE, select the <i>Win32 NDIS
+5 Checked</i> configuration and build it. It creates files <b>E100bex.sys</b>
+and <b>E100bex.nms</b>. You will need DriverNetworks and the Microsoft Windows
+DDK installed to successfully build the driver.</p>
+
+<h2>Tools</h2>
+
+<p class=MsoBodyText>BoundsChecker for Drivers and SoftICE can be used to test
+some of the features of this driver. </p>
+
+<b><span style='font-size:13.5pt;mso-bidi-font-size:18.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman";color:navy;mso-ansi-language:EN-US;
+mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br clear=all
+style='page-break-before:always'>
+</span></b>
+
+<h2>Code Tour</h2>
+
+<table class=MsoNormalTable border=1 cellspacing=3 cellpadding=0 width=599
+ style='width:449.15pt;mso-cellspacing:2.0pt;margin-left:4.1pt;mso-padding-alt:
+ 0in 5.4pt 0in 5.4pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>File<o:p></o:p></span></b></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Characteristics.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Defines a set of NDIS handlers and basic constants of the
+  driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexAdap.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares NDIS miniport adapter (KNdisMiniAdapterBase-derived)
+  class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexDrv.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares NDIS miniport driver (KNdisMiniDriver-derived)
+  class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt right 110.85pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexCard.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares E100bexCard class which models the NIC.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt right 110.85pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexPhy.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares E100bexPhy class which models the Phy component of
+  the NIC.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexPci.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares E100bexPciInformation class which abstracts PCI
+  config space.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexDbg.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares debug flags, constants, and macros.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexHw.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares symbolic constants and data structures modeling
+  the hardware.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexRegVals.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares constants for default, min, and max of registry
+  variables.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexSw.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares software symbolic constants and data structures.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:11;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexInc.h<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Includes all headers of this driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:12;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexAdap.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements NDIS miniport adapter class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:13;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexDrv.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements NDIS miniport driver class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:14;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexOids.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements NDIS OID map and handlers.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:15;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexCard.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements E100bexCard class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:16;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexPci.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements E100bexPciInformation class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:17;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bexPhy.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements E100bexPhy class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:18;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bex.htm<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>This file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:19;height:9.75pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bex.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:9.75pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Visual Studio 6.0 project file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:20;height:5.25pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:5.25pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:5.25pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bex.rc<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:5.25pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:5.25pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Resource File.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:21;height:4.5pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bex.inf<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>Setup file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:22;height:4.5pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>E100bex</span><span style='font-size:10.0pt;font-family:
+  Tahoma;color:windowtext'>OidBrowser.h</span><span style='font-size:10.0pt;
+  font-family:Tahoma;mso-fareast-font-family:"Courier New";color:windowtext'> <o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>A helper file to
+  navigate NDIS OID handlers in the MSDev IDE.</span><span style='font-size:
+  10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";color:windowtext'>
+  <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:23;height:4.5pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>makefile<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>Used for the DDK utility BUILD.EXE.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:24;height:4.5pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>OID Handlers.dsp</span><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>A helper subproject to navigate NDIS OID
+  handlers in the MSDev IDE.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:25;mso-yfti-lastrow:yes;height:4.5pt'>
+  <td width=142 valign=top style='width:106.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>sources<o:p></o:p></span></p>
+  </td>
+  <td width=449 valign=top style='width:336.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.5pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+  3.0pt;margin-left:0in;mso-line-height-alt:4.5pt'><span style='font-size:10.0pt;
+  font-family:Tahoma;color:windowtext'>Build information for the DDK utility
+  BUILD.EXE.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><span style='font-family:Tahoma'><o:p>&nbsp;</o:p></span></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New";color:windowtext'><o:p>&nbsp;</o:p></span></p>
+
+<h2><span style='mso-fareast-font-family:"Courier New"'>ProgrammingTour<o:p></o:p></span></h2>
+
+<ol start=1 type=1>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 4: <b>SendPacketsHandler</b><span
+     style='mso-bidi-font-weight:bold'>;</span> multiple packets per send
+     request are handled (E100bexAdapter::SendPackets() in E100bexAdap.cpp).</span>
+     </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 4: <b>NdisMIndicateReceivePacket()</b><span
+     style='mso-bidi-font-weight:bold'>;</span> multiple packets per receive
+     indication (E100bexAdapter::ProcessRXInterrupt() in E100bexAdap.cpp). <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 4: Receive buffer gro</span><span
+     style='font-size:10.0pt;font-family:Verdana;color:windowtext'><ns0:personname><span
+      style='color:black'>w</span><span style='font-size:12.0pt;font-family:
+      "Times New Roman";color:black'> </span><span style='font-size:12.0pt;
+      font-family:"Times New Roman"'></ns0:personname></span></span><span
+     style='font-size:10.0pt;font-family:Verdana'>and shrink; When the adapter
+     driver begins to run out of receive memory,
+     KNdisSharedReceiveArea::Complete() calls _RxAreaAsyncMgr <strong><span
+     style='font-family:Verdana'>NdisMAllocateSharedMemoryAsyn()</span></strong>&nbsp;to
+     allocate more shared memory for receive buffers
+     (E100bexAdapter::ProcessRXInterrupt() in E100bexAdap.cpp). When the
+     traffic slows down, the driver calls KNdisSharedReceiveArea::Reclaim() to
+     frees the memory (E100bexAdapter::ReturnPacket() in E100Adap.cpp) <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 4: NdisMRegisterAdapterShutdo</span><span
+     style='font-size:10.0pt;font-family:Verdana;color:windowtext'><ns0:PersonName><span
+      style='color:black'>w</span></ns0:PersonName></span><span
+     style='font-size:10.0pt;font-family:Verdana'>nHandler() is called by
+     DriverNetworks library at initialization time to make sure the adapter has
+     a function that stops generating interrupts and receiving packets into
+     main memory (E100bexAdapter::Initiliaze() and E100bexAdapter::Shutdo</span><span
+     style='font-size:10.0pt;font-family:Verdana;color:windowtext'><ns0:PersonName><span
+      style='color:black'>w</span></ns0:PersonName></span><span
+     style='font-size:10.0pt;font-family:Verdana'>n() in E100bexAdap.cpp). <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 4: Media disconnect/connect indications are
+     supported. This allows the driver to tell NDIS </span><span
+     style='font-size:10.0pt;font-family:Verdana;color:windowtext'><ns0:PersonName><span
+      style='color:black'>w</span></ns0:PersonName></span><span
+     style='font-size:10.0pt;font-family:Verdana'>hen the adapter has lost or
+     regained link (E100bexAdapter::CheckForHang() in E100bexAdap.cpp). <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo3;tab-stops:list .5in;
+     mso-layout-grid-align:none'><span style='font-size:10.0pt;font-family:
+     Verdana'>NDIS 5: </span><span style='font-size:10.0pt;font-family:Verdana;
+     mso-fareast-font-family:SimSun;mso-bidi-font-family:Verdana;color:windowtext'>This
+     driver is a de-serialized miniport, therefore it protects its resources
+     using its own spinlock</span><span style='font-size:10.0pt;font-family:
+     Verdana;mso-fareast-font-family:SimSun;mso-bidi-font-family:Verdana'>s
+     rather than relying on Ndis to serialize the calls to the driver.</span><span
+     style='font-size:10.0pt;font-family:Verdana'> This driver only implements
+     a simple method of using spin lock: it has a <b>KNdisSpinLock::Lock()<strong><span
+     style='font-family:Verdana'> </span></strong></b>at every entry point and
+     a <strong><span style='font-family:Verdana'>KNdisSpinLock</span></strong> <strong><span
+     style='font-family:Verdana'>::Unlock()</span></strong>&nbsp; at the return
+     from those entry points. The locks could be done more efficiently in a
+     production driver by moving the locking closer to the resources in the
+     driver that need to be accessed with atomic operations. <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 5: <b>NdisMInitializeScatterGatherDma</b><span
+     style='mso-bidi-font-weight:bold'>;<b> </b></span>this driver always
+     attempts to use scatter gather which is available in NDIS 5 and later. </span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 5.1: Send packet cancellation. The <b>CancelSendPacketsHandler
+     </b>allo</span><span style='font-size:10.0pt;font-family:Verdana;
+     color:windowtext'><ns0:PersonName><span style='color:black'>w</span></ns0:PersonName></span><span
+     style='font-size:10.0pt;font-family:Verdana'>s protocols to cancel pending
+     send packets which are queued in the miniport send queue
+     (E100bexAdapter::CancelSendPackets() in E100bexAdap.cpp). <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 5.1: PNP event notification handler. The miniport
+     drivers can have a <b>PnPEventNotifyHandler </b>to process anything
+     necessary when a PNP event happens (E100bexAdapter::PnPEventNotify() in
+     E100bexAdap.cpp). <o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Verdana'>NDIS 5.1: AdapterShutdo</span><span style='font-size:
+     10.0pt;font-family:Verdana;color:windowtext'><ns0:PersonName><span
+      style='color:black'>w</span></ns0:PersonName></span><span
+     style='font-size:10.0pt;font-family:Verdana'>nHandler is no</span><span
+     style='font-size:10.0pt;font-family:Verdana;color:windowtext'><ns0:PersonName><span
+      style='color:black'>w</span><span style='font-size:12.0pt;font-family:
+      "Times New Roman";color:black'> </span><span style='font-size:12.0pt;
+      font-family:"Times New Roman"'></ns0:PersonName></span></span><span
+     style='font-size:10.0pt;font-family:Verdana'>a standard miniport handler
+     starting NDIS 5.1. It eliminates the need to call
+     NdisMRegisterAdapterShutdownhandler (E100bexAdapter::Shutdown() in
+     E100bexAdap.cpp)</span>.</li>
+</ol>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+tab-stops:list .5in'>&nbsp;&nbsp;<span style='font-size:10.0pt;font-family:
+Verdana'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><a
+href="#top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><o:p>&nbsp;</o:p></span></pre>
+
+<p class=EndBar style='tab-stops:.5in'>&nbsp;</p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><o:p>&nbsp;</o:p></span></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2004 Compuware Corporation<o:p></o:p></span></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><o:p>&nbsp;</o:p></span></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-fareast-font-family:"Courier New"'>&nbsp;<o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

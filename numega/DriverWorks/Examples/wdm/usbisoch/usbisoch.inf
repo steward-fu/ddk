@@ -1,0 +1,102 @@
+;; UsbIsoc.inf - INF file for USB Bulk driver
+;; Copyright (c) 1998, Compuware Corporation
+
+;; This driver was taken from a test USB Device,
+;; as indicated by the VID and PID codes. These IDs must be
+;; set for the device you intend to support. Similarly, you
+;; will need to set Class to the appropriate string for your
+;; device class.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%Compuware%
+
+; If device fits one of the standard classes, use the
+; name and GUID here, otherwise create your own as
+; this example shows.
+
+Class=CompuwareUsbDevice
+ClassGUID={dd56b6f0-8e06-11d2-9449-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;UsbIsoch.sys=1
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-20"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+DefaultDestDir = 11
+UsbBulk_Files_Driver =  10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%Compuware%=Mfg0
+
+[Mfg0]
+%USB\VID_03E8&PID_0020.DeviceDesc%=UsbIsocDDI, USB\VID_03E8&PID_0020
+;;       Your Vendor and Device IDs go here ----->        xxxx     yyyy
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[UsbIsocDDI]
+CopyFiles=UsbIsoc_Files_Driver
+AddReg=UsbIsoc_9X_AddReg
+
+[UsbIsoc_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,UsbIsoch.sys
+
+; --------- Windows NT -----------------
+
+[UsbIsocDDI.NT]
+CopyFiles=UsbIsoc_Files_Driver
+
+[UsbIsocDDI.NT.Services]
+Addservice = UsbIsoc, 0x00000002, UsbIsoc_AddService
+
+[UsbIsoc_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\UsbIsoch.sys
+
+; --------- Files (common) -------------
+[UsbIsoc_Files_Driver]
+UsbIsoch.sys
+
+[Strings]
+Vireo="Compuware Corporation"
+USB\VID_03E8&PID_0020.DeviceDesc="Compuware USB Isoc Sample Driver"
+DeviceClassName="Compuware USB Devices"
+SvcDesc="Compuware USB Isoc Driver"

@@ -1,0 +1,96 @@
+; -- NETNMINT.INF --
+;
+; NmInt Intermediate Protocol INF file
+;
+; This file is used to install a generic IM driver (non-filter).
+;
+; Copyright (c) 2000
+
+[Version]
+signature  = "$Windows NT$"
+Class      = NetTrans
+ClassGUID  = {4d36e975-e325-11ce-bfc1-08002be10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+[ControlFlags]
+
+[Manufacturer]
+%NuMega% = Models
+
+[Models]
+%NMINT_Desc% = NMINT.ndi, Nm_IntIM
+
+[SourceDisksNames]
+1=%DiskDescription%,"",,
+
+[SourceDisksFiles]
+NmIntNotify.dll=1
+NmInt.sys=1
+netNmIntMP.inf=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+nmint.CopyFiles.Init  = 11   ; %windir%\System32
+nmint.CopyFiles.Sys   = 12   ; %windir%\System32\drivers
+nmint.CopyFiles.Inf   = 17   ; %windir%\inf
+
+; Copying of sfilter.dll is required only if the filter has a Notify object
+[nmint.CopyFiles.Init]
+NmIntNotify.dll,,,2
+
+[nmint.CopyFiles.Sys]
+NmInt.sys,,,2
+
+[nmint.CopyFiles.Inf]
+netNmIntMP.inf,,,2
+
+[NMINT.ndi]
+Characteristics = 0x80 ; NCF_HAS_UI
+CopyFiles = nmint.CopyFiles.Init, nmint.CopyFiles.Sys, nmint.CopyFiles.Inf
+AddReg = NETNMINT.ndi.AddReg
+
+[NETNMINT.ndi.AddReg]
+; Binding Interfaces
+;
+; 'Service': should match to ServiceName parameter used in Register method
+;		of KNDIS_FILTERDRIVER_CHARACTERISTICS<> class in DriverEntry();
+; 
+HKR, Ndi,            Service,      0, "NmInt"
+HKR, Ndi,            ClsID,        0, {0bfdf1c4-d2ca-11d4-b047-00c04f6a5da9}
+HKR, Ndi,            ComponentDll, 0, NmIntNotify.dll
+HKR, Ndi,            HelpText,     0, %NMINT_HELP%
+HKR, Ndi\Interfaces, UpperRange,   0, "noupper"
+HKR, Ndi\Interfaces, LowerRange,   0, "ndis5"
+
+[NMINT.ndi.Services]
+AddService = NMINT, , NMINT.AddService, NMINT.AddEventLog
+
+[NMINT.AddService]
+DisplayName     = %NMINT_Desc%
+ServiceType     = 1 ;SERVICE_KERNEL_DRIVER
+StartType       = 3 ;SERVICE_DEMAND_START
+ErrorControl    = 1 ;SERVICE_ERROR_NORMAL
+ServiceBinary   = %12%\NMINT.sys
+LoadOrderGroup  = PNP_TDI
+Description     = %NMINT_Desc%
+
+[NMINT.AddEventLog]
+AddReg = NMINT.AddEventLog.AddReg
+
+[NMINT.AddEventLog.AddReg]
+HKR, , EventMessageFile, 0x20000, "%%SystemRoot%%\System32\netevent.dll"
+HKR, , TypesSupported,   0x10001, 7
+
+[NMINT.ndi.Remove.Services]
+DelService = NmInt
+
+[NMINT.ndi.Remove]
+DelFiles = nmint.CopyFiles.Init, nmint.CopyFiles.Sys
+
+[Strings]
+NuMega = "NuMega"
+NMINT_Desc = "NmInt NDIS Intermediate Driver (Protocol)"
+MaxPoolSize = "Maximum number of packet descriptors for repackaging"
+DiskDescription = "Sample NDIS Intermediate driver Disk"
+NMINT_HELP = "NmInt NDIS Intermediate Driver (nmint.sys)"

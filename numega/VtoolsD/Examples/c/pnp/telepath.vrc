@@ -1,0 +1,8 @@
+CompanyName = "Walter Oney Software"
+FileDescription = "Telepathic Device Driver"
+FileVersion = "Version 1.01"
+InternalName = "TELEPATH"
+LegalCopyright = "Copyright (C) 1995 Walter Oney Software"
+OriginalFilename = "TELEPATH.VXD"
+ProductName = "School Bus Sample Program\0"
+ProductVersion = "Version 1.01"

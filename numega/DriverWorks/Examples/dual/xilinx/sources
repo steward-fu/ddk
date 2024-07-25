@@ -1,0 +1,39 @@
+# SOURCES file for HotII driver
+# Copyright (c) 1998 Compuware Corporation
+
+# This sources file is setup to build the WDM version of the driver
+
+TARGETNAME=HotPCI
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+
+# -- assuming WDM build -- change TARGETLIBS for NT build
+TARGETLIBS= $(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib
+#  NT library
+#TARGETLIBS= $(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw.lib
+
+
+TARGETLIBS= $(TARGETLIBS) $(DDK_LIB_PATH)\ntoskrnl.lib $(DDK_LIB_PATH)\hal.lib
+
+# -- assuming WDM build -- set NTVERSION=400 for NT build
+C_DEFINES=-DNTVERSION='WDM'
+BROWSER_INFO=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(DRIVERWORKS)\include;$(DRIVERWORKS)\source;\
+		 $(BASEDIR)\src\input\inc;$(BASEDIR)\inc;$(BASEDIR)\inc\ddk;\
+		 $(BASEDIR)\inc\ddk\wdm;$(DRIVERWORKS)\include\dep_vxd
+
+SOURCES=HotPci.rc HotPcidrv.cpp HotPcidev.cpp
+
+NTTARGETFILE0=HotPcilog.h
+

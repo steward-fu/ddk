@@ -1,0 +1,105 @@
+;; VDEV1394.inf
+
+;; *********  PLEASE READ ***********
+;; The wizard cannot create exact INF files for all buses and device types.
+;; You may have to make changes to this file in order to get your device to
+;; install. In particular, hardware IDs and logical configurations require
+;; intervention.
+;;
+;; The Windows DDK documentation contains an excellent INF reference.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%ProviderName%
+
+; If device fits one of the standard classes, use the name and GUID here,
+; otherwise create your own device class and GUID as this example shows.
+
+Class=Unknown
+;ClassGUID={ff646f80-8def-11d2-9449-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;VDEV1394.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+VDEV1394_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=VDEV1394_DDI, V1394\NumegaV1394
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[VDEV1394_DDI]
+CopyFiles=VDEV1394_Files_Driver
+AddReg=VDEV1394_9X_AddReg
+
+[VDEV1394_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,VDEV1394.sys
+
+; --------- Windows NT -----------------
+
+[VDEV1394_DDI.NT]
+CopyFiles=VDEV1394_Files_Driver
+
+[VDEV1394_DDI.NT.Services]
+Addservice = VDEV1394, 0x00000002, VDEV1394_AddService
+
+[VDEV1394_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\VDEV1394.sys
+
+
+; --------- Files (common) -------------
+
+[VDEV1394_Files_Driver]
+VDEV1394.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Numega Lab"
+MfgName="Compuware Numega Lab"
+DeviceDesc="1394 Virtual Device"
+DeviceClassName="1394 Virtual Device"
+SvcDesc="1394 Virtual Device"

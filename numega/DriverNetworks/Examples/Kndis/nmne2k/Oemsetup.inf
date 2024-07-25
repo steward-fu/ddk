@@ -1,0 +1,730 @@
+;***********************************************************************
+; KNDIS Sample Driversf
+;
+; OEMSETUP.INF
+;       NMNE2K Miniport Adapter for NT 4.0 install script
+;		Cloned from ne2000 .inf file.
+;
+;*******************************************************************************
+
+[Identification]
+    OptionType = NetAdapter
+
+[PlatformsSupported]
+    ISA
+
+[Options]
+    NMNE2K
+
+[OptionsTextENG]
+    NMNE2K	   = "NMNE2K NDIS Miniport Driver"
+
+[FileConstants]
+UtilityInf      = "UTILITY.INF"
+ParamInf        = "NCPARAM.INF"
+subroutineinf   = "SUBROUTN.INF"
+SoftwareType    = "driver"
+Exit_Code       = 0
+NetEventDLL     = "%SystemRoot%\System32\netevent.dll"
+IoLogMsgDLL     = "%SystemRoot%\System32\IoLogMsg.dll"
+Manufacturer    = "Microsoft"
+ProductMajorVersion     = "4"
+ProductMinorVersion     = "00"
+ProductVersion  = $(ProductMajorVersion)"."$(ProductMinorVersion)
+ProductSoftwareName     = "NMNE2K"
+ProductSoftwareImagePath = "\SystemRoot\System32\drivers\nmne2k.sys"
+NetRuleSoftwareType     = "nmne2kSys ndisDriver nmne2kDriver"
+NetRuleSoftwareUse      = $(SoftwareType)
+NetRuleSoftwareBindForm = """NMNE2KSys"" yes no container"
+NetRuleSoftwareClass    = {"nmne2kDriver basic"}
+NetRuleSoftwareBindable = {"nmne2kDriver nmne2kAdapter non exclusive 100"} 
+ProductHardwareName     = "NMNE2K"
+NetRuleHardwareType     = "nmne2k nmne2kAdapter"
+NetRuleHardwareBindForm = " yes yes container"
+NetRuleHardwareClass    = {"nmne2kAdapter basic"}
+ProductKeyName  = $(!NTN_SoftwareBase)"\"$(Manufacturer)"\"$(ProductSoftwareName)"\CurrentVersion"
+ParamKeyName    = $(!NTN_ServiceBase)"\"$(ProductHardwareName)"\Parameters"
+ 
+[FileConstantsENG]
+ProCaption   = "Windows NT Setup"
+ProCancel    = "Cancel"
+ProCancelMsg = "Windows NT Networking is not correctly installed.  "+
+               "Are you sure you want to cancel copying files?"
+ProCancelCap = "Network Setup Message"
+ProText1     = "Copying:"
+ProText2     = "To:"
+FunctionTitle   = "KNDIS NMNE2K Driver Setup"
+ProductSoftwareDescription      = "NMNE2K NDIS Miniport Driver"
+ProductSoftwareTitle            = "NMNE2K NDIS Miniport Driver"
+ProductHardwareNMNE2KDescription  = "NMNE2K NDIS Miniport Driver"
+ProductHardwareNMNE2KTitle  = "NMNE2K NDIS Miniport Driver"
+ShellCodeErrorTitle     = "Error: "$(FunctionTitle)
+ShellCodeErrorText      = "Shell Code Error."
+IRQList  = ^(NMNE2KIRQChoices, 1)
+IRQValues = ^(NMNE2KIRQChoices, 2)
+IOBaseAddrList = ^(NMNE2KIOBaseAddrChoices, 1)
+IOBaseAddrValues = ^(NMNE2KIOBaseAddrChoices, 2)
+NMNE2KIRQDefault = 3
+NMNE2KIOBaseAddrDefault = 9
+
+[GeneralConstants]
+from      = ""
+to        = ""
+ExitCodeOk     = 0
+ExitCodeCancel = 1
+ExitCodeFatal  = 2
+KeyNull         = ""
+MAXIMUM_ALLOWED   = 33554432
+RegistryErrorIndex = NO_ERROR
+KeyProduct      = ""
+KeyParameters   = ""
+TRUE            = 1
+FALSE           = 0
+NoTitle            = 0
+ExitState   = "Active"
+OldVersionExisted = $(FALSE)
+DriverPath      = $(!STF_NTPATH)\drivers
+
+[date]
+    Now = {} ? $(!LIBHANDLE) GetSystemDate
+
+[Identify]
+    set !DebugOutputControl = 1
+    read-syms Identification
+    set Status     = STATUS_SUCCESSFUL
+    set Identifier = $(OptionType)
+    set Media      = #("Source Media Descriptions", 1, 1)
+    Return $(Status) $(Identifier) $(Media)
+
+[ReturnOptions]
+    set !DebugOutputControl = 1
+    set Status        = STATUS_FAILED
+    set OptionList     = {}
+    set OptionTextList = {}
+    set LanguageList = ^(LanguagesSupported, 1)
+    Ifcontains(i) $($0) in $(LanguageList)
+        ifstr(i) $($1) == ""
+           goto returnoptions
+        endif
+        set PlatformList = ^(PlatformsSupported, 1)
+        Ifcontains(i) $($1) in $(PlatformList)
+           goto returnoptions
+        else
+           set Status = STATUS_NOTSUPPORTED
+           goto finish_ReturnOptions
+        endif
+    else
+        set Status = STATUS_NOLANGUAGE
+        goto finish_ReturnOptions
+    endif
+returnoptions = +
+    set OptionList     = ^(Options, 1)
+    set OptionTextList = ^(OptionsText$($0), 1)
+    set Status         = STATUS_SUCCESSFUL
+finish_ReturnOptions = +
+    Return $(Status) $(OptionList) $(OptionTextList)
+
+[InstallOption]
+;;  set !G:DebugOutputControl = 1
+    set !DebugOutputControl = 1
+    set Option   = $($1)
+    set SrcDir   = $($2)
+    set AddCopy  = $($3)
+    set DoCopy   = $($4)
+    set DoConfig = $($5)
+    set LanguageList = ^(LanguagesSupported, 1)
+    Ifcontains(i) $($0) NOT-IN $(LanguageList)
+        Return STATUS_NOLANGUAGE
+    endif
+    set-subst LF = "\n"
+    read-syms GeneralConstants
+    read-syms FileConstants
+    read-syms DialogConstants$(!STF_LANGUAGE)
+    ifstr(i) $(!NTN_Origination) == "NCPA"
+        set Continue = $(OK)
+    endif
+    read-syms FileConstants$(!STF_LANGUAGE)
+    detect date
+    set-title  $(FunctionTitle)
+    set to   = Begin
+    set from = Begin
+    set CommonStatus = STATUS_SUCCESSFUL
+    EndWait
+
+
+Begin = +
+    Ifstr(i) $(!NTN_InstallMode) == deinstall
+        set StartLabel = removeadapter
+    else-Ifstr(i) $(!NTN_InstallMode) == Update
+        set StartLabel = UpgradeSoftware
+    else-Ifstr(i) $(!NTN_InstallMode) == bind
+        set StartLabel = bindingadapter
+    else-Ifstr(i) $(!NTN_InstallMode) == configure
+        set StartLabel = configureadapter
+        set CommonStatus = STATUS_REBOOT
+                Ifstr(i) $(ProductKeyName) == $(!NTN_RegBase)
+                        Debug-Output "Cannot configure NMNE2K Driver"
+                        Shell $(UtilityInf),RegistryErrorString,CANNOT_CONFIGURE_SOFTWARE
+                        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                                Debug-Output "ShellCode error: cannot get an error string."
+                                goto ShellCodeError
+                        endif
+                        set Error = $($R0)
+                        set from = end
+                        set to = end
+                        goto nonfatalinfo
+                endif
+    else
+                set StartLabel = installadapter
+                set OEM_ABANDON_OPTIONS = {}
+                set OEM_ABANDON_SOFTWARE = FALSE
+                set OEM_ABANDON_ON = TRUE
+    endif
+
+    set from = $(fatal)
+    set to = $(fatal)
+    goto $(StartLabel)
+
+installadapter = +
+    OpenRegKey $(!REG_H_LOCAL) "" $(ProductKeyName) $(MAXIMUM_ALLOWED) KeyProduct
+    Ifstr $(KeyProduct) != $(KeyNull)
+        CloseRegKey $(KeyProduct)
+        ifstr(i) !(NTN_RegBase) == $(ProductKeyName)
+           Shell $(UtilityInf), VerExistedDlg, $(ProductSoftwareTitle),+
+               $(ProductVersion)
+           ifint $($ShellCode) != $(!SHELL_CODE_OK)
+               Debug-Output "ShellCode error: cannot get an error string."
+               goto ShellCodeError
+           endif
+           goto end
+        else
+           Shell $(UtilityInf), CardExistedDlg
+           ifint $($ShellCode) != $(!SHELL_CODE_OK)
+               Debug-Output "ShellCode error: cannot get an error string."
+               goto ShellCodeError
+           endif
+           ifstr(i) $($R1) != "OK"
+               set CommonStatus = STATUS_USERCANCEL
+               goto end
+           endif
+           set OldVersionExisted = $(TRUE)
+        endif
+    endif
+    Install "Install-Help"
+    set IRQValue = *($(IRQList), $(NMNE2KIRQDefault))
+    set IOBaseAddrValue = *($(IOBaseAddrList), $(NMNE2KIOBaseAddrDefault))
+    goto adapteroptions
+configureadapter = +
+    Ifstr $(KeyProduct) == $(KeyNull)
+        OpenRegKey $(!REG_H_LOCAL) "" $(!NTN_RegBase) $(MAXIMUM_ALLOWED) KeyProduct
+        Ifstr $(KeyProduct) == $(KeyNull)
+            set RegistryErrorIndex = CANNOT_FIND_COMPONENT_SERVICE
+            Debug-Output "Cannot find component product key"
+            goto fatalregistry
+        Endif
+    Endif
+    Debug-Output "INF: Shelling to FindService"
+    Shell $(UtilityInf) FindService, $(KeyProduct)
+    Ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        Debug-Output "INF: FindService shell failure"
+        Goto ShellCodeError
+    Endif
+    Ifstr(i) $($R0) != NO_ERROR
+        Debug-Output "INF: FindService Shell error: "$($R0)
+        Goto fatalregistry
+    endif
+    set KeyParameters = $($R2)
+    CloseRegKey $($R1)
+    Ifstr $(KeyParameters) == $(KeyNull)
+        set RegistryErrorIndex = CANNOT_FIND_COMPONENT_SERVICE
+        Debug-Output "Cannot find component service"
+        goto fatalregistry
+    endif
+    set OldVersionExisted = $(TRUE)
+    set ValueName = ""
+    set ValueData = ""
+    set ValueStr  = ""
+    set ValueList = {}
+    EnumRegValue $(KeyParameters) ValueList
+
+    ForListDo $(ValueList)
+        set ValueItem = $($)
+        set ValueName = *($(ValueItem),1)
+        set ValueData = *($(ValueItem),4)
+        Ifstr(i) $(ValueName) == "InterruptNumber"
+            set IRQValueIndex = $(ValueData)
+        else-ifstr(i) $(ValueName) == "IoBasePortAddress"
+            set IOBaseAddrIndex = $(ValueData)
+        endif
+    EndForListDo
+
+    set IRQValue = *($(IRQList), ~($(IRQValues),$(IRQValueIndex)))
+    ifstr(i) $(IRQValue) == ""
+	set IRQValue = *($(IRQList), 2)
+    endif
+
+    set IOBaseAddrValue = *($(IOBaseAddrList), ~($(IOBaseAddrValues),$(IOBaseAddrIndex)))
+    ifstr(i) $(IOBaseAddrValue) == ""
+	set IOBaseAddrValue = *($(IOBaseAddrList), 1)
+    endif
+
+adapteroptions = +
+    set from = adapteroptions
+;;  sethelpfile "nmne2k.hlp" 100 100
+    read-syms FileDependentDlg$(!STF_LANGUAGE)
+    ui start "InputDlg"
+    ifstr(i) $(DLGEVENT) == "CONTINUE"
+                set IRQValueIndex = $(Combo1Out)
+                set IOBaseAddrIndex = $(Combo2Out)
+                ui pop 1
+    else-ifstr(i) $(DLGEVENT) == "BACK"
+                set CommonStatus = STATUS_USERCANCEL
+                Debug-Output "Action: exit. Bye."
+                ui pop 1
+                goto end
+    else
+                ui pop 1
+                Debug-Output "Action: unknown. Bye."
+                goto end
+    endif
+adapterverify =+
+        Goto skipoptions
+skipoptions =+
+    ifint $(OldVersionExisted) == $(TRUE)
+        ifstr(i) $(!NTN_InstallMode) == configure
+                goto writeparameters
+        endif
+    endif
+    StartWait
+    ifint $(OldVersionExisted) == $(FALSE)
+        ifstr(i) $(!NTN_InstallMode) == "install"
+                Ifstr(i) $(DoCopy) == "YES"
+                    Shell $(UtilityInf), DoAskSource, $(!STF_CWDDIR), $(SrcDir) YES
+                    Ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                        Goto ShellCodeError
+                    Else-Ifstr(i) $($R0) == STATUS_FAILED
+                        Shell $(UtilityInf) RegistryErrorString "ASK_SOURCE_FAIL"
+                        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                           goto ShellCodeError
+                        endif
+                        set Error = $($R0)
+                        Goto fatal
+                    Else-Ifstr(i) $($R0) == STATUS_USERCANCEL
+                        Goto successful
+                    Endif
+                    Set SrcDir = $($R1)
+                Endif
+                install "Install-Option"
+                ifstr(i) $(STF_INSTALL_OUTCOME) != STF_SUCCESS
+                    Shell $(UtilityInf) RegistryErrorString "UNABLE_COPY_FILE"
+                    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                        goto ShellCodeError
+                    endif
+                    set Error = $($R0)
+                    goto fatal
+                endif
+        endif
+       Shell $(UtilityInf), AddSoftwareComponent, $(Manufacturer), +
+                        $(ProductSoftwareName), +
+                        $(ProductSoftwareName), +
+                        $(ProductSoftwareTitle), $(STF_CONTEXTINFNAME), +
+                        $(ProductSoftwareImagePath), "kernel", "NDIS", {}, "",+
+                        $(NetEventDLL)
+       Set OEM_ABANDON_SOFTWARE = TRUE
+       ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        Debug-Output "ShellCode error"
+        goto ShellCodeError
+       endif
+       set RegistryErrorIndex = $($R0)
+       set KeyProduct      = $($R1)
+       Set SoftNetRulesKey = $($R2)
+       CloseRegKey $($R3)
+       CloseRegKey $($R4)
+       CloseRegKey $($R5)
+       Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+        EndWait
+        Debug-Output "Registry error: add software components"
+        CloseRegKey $(KeyProduct)
+        CloseRegKey $(SoftNetRulesKey)
+        goto fatalregistry
+       endif
+       set NewValueList = {{SoftwareType,$(NoTitle),$(!REG_VT_SZ),$(SoftwareType)},+
+                   {MajorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMajorVersion)},+
+                   {MinorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMinorVersion)},+
+                   {Title,$(NoTitle),$(!REG_VT_SZ),$(ProductSoftwareTitle)},+
+                   {Description,$(NoTitle),$(!REG_VT_SZ),$(ProductSoftwareDescription)},+
+                   {ServiceName,$(NoTitle),$(!REG_VT_SZ),$(ProductSoftwareName)},+
+                   {InstallDate,$(NoTitle),$(!REG_VT_DWORD),*($(Now),1)}}
+       Shell  $(UtilityInf), AddValueList, $(KeyProduct), $(NewValueList)
+       ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        Debug-Output "ShellCode error."
+        goto ShellCodeError
+       endif
+       set RegistryErrorIndex = $($R0)
+       Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+        EndWait
+        Debug-Output "Registry error: add value list."
+        CloseRegKey $(KeyProduct)
+        CloseRegKey $(SoftNetRulesKey)
+        goto fatalregistry
+       endif
+       set NewValueList = {{type,$(NoTitle),$(!REG_VT_SZ),$(NetRuleSoftwareType)},+
+                        {use,$(NoTitle),$(!REG_VT_SZ),$(NetRuleSoftwareUse)}, +
+                        {bindform,$(NoTitle),$(!REG_VT_SZ),$(NetRuleSoftwareBindForm)}, +
+                        {class,$(NoTitle),$(!REG_VT_MULTI_SZ),$(NetRuleSoftwareClass)}, +
+                        {bindable,$(NoTitle),$(!REG_VT_MULTI_SZ),$(NetRuleSoftwareBindable)}, +
+                        {InfOption,$(NoTitle),$(!REG_VT_SZ),$(Option)}}
+       Shell  $(UtilityInf), AddValueList, $(SoftNetRulesKey), $(NewValueList)
+       ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        Debug-Output "ShellCode error."
+        goto ShellCodeError
+       endif
+       set RegistryErrorIndex = $($R0)
+       CloseRegKey $(KeyProduct)
+       CloseRegKey $(SoftNetRulesKey)
+       Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+        EndWait
+        Debug-Output "Resgitry error: add value list."
+        goto fatalregistry
+       endif
+    endif
+    Shell $(UtilityInf), AddHardwareComponent, $(ProductHardwareName),$(STF_CONTEXTINFNAME),$(ProductKeyName)
+    ifint $($R4) != -1
+                Set OEM_ABANDON_OPTIONS = >($(OEM_ABANDON_OPTIONS), $(!NTN_SoftwareBase)"\Microsoft\Windows NT\CurrentVersion\NetworkCards\"$($R4))
+    endif
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                Debug-Output "Cannot add hardware component"
+                goto ShellCodeError
+    endif
+    set RegistryErrorIndex = $($R0)
+    Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+                EndWait
+                Debug-Output "Registry error: add hardware component"
+                CloseRegKey $($R1)
+                CloseRegKey $($R2)
+                CloseRegKey $($R3)
+                goto fatalregistry
+    endif
+    set KeyParameters = $($R3)
+    set KeyAdapterRules = $($R2)
+    set AdapterNumber = $($R4)
+    set NewValueList = {{Manufacturer,$(NoTitle),$(!REG_VT_SZ),$(Manufacturer)},+
+                       {Title,$(NoTitle),$(!REG_VT_SZ),"["$($R4)"] "$(ProductHardware$(Option)Title)},+
+                       {Description,$(NoTitle),$(!REG_VT_SZ),$(ProductHardware$(Option)Description)},+
+                       {ProductName,$(NoTitle),$(!REG_VT_SZ),$(ProductHardwareName)},+
+                       {ServiceName,$(NoTitle),$(!REG_VT_SZ),$($R5)},+
+                       {InstallDate,$(NoTitle),$(!REG_VT_DWORD),*($(Now),1)}}
+    Shell  $(UtilityInf), AddValueList, $($R1), $(NewValueList)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                Debug-Output "ShellCode error"
+                goto ShellCodeError
+    endif
+    CloseRegKey $($R1)
+    set TempProdName = """"$(ProductHardwareName)$(AdapterNumber)""""
+    set TempBindForm = $(TempProdName)$(NetRuleHardwareBindForm)
+    set NewValueList = {{type,$(NoTitle),$(!REG_VT_SZ),$(NetRuleHardwareType)},+
+                        {bindform,$(NoTitle),$(!REG_VT_SZ),$(TempBindForm)}, +
+                        {class,$(NoTitle),$(!REG_VT_MULTI_SZ),$(NetRuleHardwareClass)}, +
+                        {InfOption,$(NoTitle),$(!REG_VT_SZ),$(Option)}}
+    Shell  $(UtilityInf), AddValueList, $(KeyAdapterRules), $(NewValueList)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                Debug-Output "ShellCode error."
+                goto ShellCodeError
+    endif
+    set RegistryErrorIndex = $($R0)
+    Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+                EndWait
+                Debug-Output "Resgitry error: add value list."
+                CloseRegKey $(KeyParameters)
+                CloseRegKey $(KeyAdapterRules)
+                goto fatalregistry
+    endif
+    CloseRegKey $(KeyAdapterRules)
+    goto writeparameters
+writeparameters = +
+    set IRQValue = *($(IRQValues), ~($(IRQList),$(IRQValueIndex)))
+    set IOBaseAddrValue = *($(IOBaseAddrValues), ~($(IOBaseAddrList),$(IOBaseAddrIndex)))
+    set NewValueList = {{InterruptNumber,$(NoTitle),$(!REG_VT_DWORD),$(IRQValue)},+
+                       {BusType,$(NoTitle),$(!REG_VT_DWORD),1},+
+                       {BusNumber,$(NoTitle),$(!REG_VT_DWORD),0},+
+                       {MediaType,$(NoTitle),$(!REG_VT_DWORD),1},+
+                       {NetworkAddress,$(NoTitle),$(!REG_VT_SZ),"00-11-22-33-44-55"},+
+                       {IoBasePortAddress,$(NoTitle),$(!REG_VT_DWORD),$(IOBaseAddrValue)}}
+    Shell  $(UtilityInf), AddValueList, $(KeyParameters), $(NewValueList)
+    ifstr(i) $(!STF_GUI_UNATTENDED) == "YES"
+        Shell $(UtilityInf),AddDefaultNetCardParameters,$(KeyParameters)
+    endif
+    CloseRegKey $(KeyParameters)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                Debug-Output "ShellCode error."
+                goto ShellCodeError
+    endif
+    set RegistryErrorIndex = $($R0)
+    Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+                Debug-Output "Registry error: Add value list"
+                goto fatalregistry
+    endif
+    EndWait
+    goto successful
+bindingadapter =+
+    set Error = "Binding: Sorry, not yet implemented."
+    goto fatal
+removeadapter = +
+    Ifstr(i) $(ProductKeyName) == $(!NTN_RegBase)
+                Shell $(UtilityInf), RemoveSoftwareComponent, $(Manufacturer), +
+                                $(ProductSoftwareName)
+                ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                                Debug-Output "ShellCode error"
+                                goto ShellCodeError
+                endif
+                set RegistryErrorIndex = $($R0)
+                Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+                                goto fatalregistry
+                endif
+    else
+                Shell $(UtilityInf), RemoveHardwareComponent, $(Manufacturer), +
+                        $(ProductSoftwareName), $(!NTN_RegBase)
+                ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                                Debug-Output "ShellCode error"
+                                goto ShellCodeError
+                endif
+                set RegistryErrorIndex = $($R0)
+                Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+                                goto fatalregistry
+                endif
+    endif
+    goto end
+UpgradeSoftware = +
+    OpenRegKey $(!REG_H_LOCAL) "" $(ProductKeyName) $(MAXIMUM_ALLOWED) KeyProduct
+    Ifstr $(KeyProduct) != $(KeyNull)
+        install "Install-Update"
+        ifstr(i) $(STF_INSTALL_OUTCOME) != STF_SUCCESS
+            goto fatal
+        endif
+        SetRegValue $(KeyProduct) {MajorVersion,$(NoTitle),$(!REG_VT_SZ),$(ProductMajorVersion)}
+        SetRegValue $(KeyProduct) {MinorVersion,$(NoTitle),$(!REG_VT_SZ),$(ProductMinorVersion)}
+        CloseRegKey $(KeyProduct)
+    else
+        goto fatalregistry
+    endif
+    goto end
+successful = +
+    goto end
+abandon = +
+    ForListDo $(OEM_ABANDON_OPTIONS)
+        Shell $(UtilityInf), RemoveHardwareComponent, $(Manufacturer), +
+            $(ProductSoftwareName), $($)
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            Debug-Output "ShellCode error"
+            goto ShellCodeError
+        endif
+        set RegistryErrorIndex = $($R0)
+        Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+            goto fatalregistry
+        endif
+    EndForListDo
+    Ifstr(i) $(OEM_ABANDON_SOFTWARE) == TRUE
+        Shell $(UtilityInf), RemoveSoftwareComponent, $(Manufacturer), +
+            $(ProductSoftwareName), FALSE
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            Debug-Output "ShellCode error"
+            goto ShellCodeError
+        endif
+        set RegistryErrorIndex = $($R0)
+        Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+            goto fatalregistry
+        endif
+    endif
+    goto end
+warning = +
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), "WARNING", $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    ifstr(i) $($R1) == "OK"
+        goto $(to)
+    else-ifstr(i) $($R1) == "CANCEL"
+        goto $(from)
+    else
+        goto "end"
+    endif
+nonfatalinfo = +
+    Set CommonStatus = STATUS_USERCANCEL
+    Set Severity = STATUS
+    goto nonfatalmsg
+nonfatal = +
+    Set Severity = NONFATAL
+    goto nonfatalmsg
+nonfatalmsg = +
+    ifstr(i) $(Error) == ""
+        Set Severity = NONFATAL
+        Shell $(UtilityInf) RegistryErrorString "SETUP_FAIL"
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            goto ShellCodeError
+        endif
+        set Error = $($R0)
+    endif
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), $(Severity), $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    ifstr(i) $($R1) == "OK"
+        goto $(from)
+    else
+        goto "end"
+    endif
+fatalregistry = +
+    Shell $(UtilityInf) RegistryErrorString $(RegistryErrorIndex)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    set Error = $($R0)
+    goto fatal
+fataldetect = +
+    Shell $(UtilityInf),RegistryErrorString,CANNOT_DETECT
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        Debug-Output "ShellCode error: cannot get an error string."
+        goto ShellCodeError
+    endif
+    set Error = $($R0)
+    Goto fatal
+fatal = +
+    ifstr(i) $(Error) == ""
+        Shell $(UtilityInf) RegistryErrorString "SETUP_FAIL"
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            goto ShellCodeError
+        endif
+        set Error = $($R0)
+    endif
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), "FATAL", $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    goto setfailed
+ShellCodeError = +
+    set DlgType      = "MessageBox"
+    set STF_MB_TITLE = $(ShellCodeErrorTitle)
+    set STF_MB_TEXT  = $(ShellCodeErrorText)
+    set STF_MB_TYPE  = 1
+    set STF_MB_ICON  = 3
+    set STF_MB_DEF   = 1
+    ui start "Error Message"
+    goto setfailed
+setfailed = +
+    set CommonStatus = STATUS_FAILED
+    ifstr(i) $(OEM_ABANDON_ON) == TRUE
+        set OEM_ABANDON_ON = FALSE
+        goto abandon
+    endif
+    goto end
+end = +
+    goto term
+term = +
+    Return $(CommonStatus)
+
+[Install-Option]
+    set STF_VITAL = ""
+    ifstr(i) $(AddCopy) == "YES"
+        AddSectionFilesToCopyList Files-NMNE2K $(SrcDir) $(!STF_WINDOWSSYSPATH)\drivers
+    endif
+    ifstr(i) $(DoCopy) == "YES"
+       set !STF_NCPA_FLUSH_COPYLIST = TRUE
+       CopyFilesInCopyList
+    endif
+    ifstr(i) $(DoConfig) == "YES"
+    endif
+    Exit
+[Install-Update]
+   set STF_VITAL        = ""
+   set STF_OVERWRITE    = "VERIFYSOURCEOLDER"
+   AddSectionFilesToCopyList Files-NMNE2K $(SrcDir) $(!STF_WINDOWSSYSPATH)\drivers
+   exit
+[Install-Help]
+   set STF_VITAL        = ""
+   AddSectionFilesToCopyList Files-Help $(SrcDir) $(!STF_WINDOWSSYSPATH)
+   set !STF_NCPA_FLUSH_COPYLIST = TRUE
+   CopyFilesInCopyList
+   exit
+
+[Source Media Descriptions]
+    1 = "Windows NT Workstation DRVLIB"
+
+[Signature]
+    FileType = MICROSOFT_DRVLIB_FILE
+[GetSignature]
+    read-syms Signature
+    return $(FileType)
+
+[ProductType]
+STF_PRODUCT  = Winnt
+STF_PLATFORM = I386
+
+[Files-Inf]
+1,	oemsetup.inf,	 SIZE=1000,	RENAME=$(!UG_Filename)
+
+[Files-Help]
+1,      NMNE2K.HLP ,     SIZE=999
+
+[Files-NMNE2K]
+2,      NMNE2K.SYS ,     SIZE=999
+
+[LanguagesSupported]
+    ENG
+
+[DialogConstantsENG]
+Help        = "&Help"
+Exit        = "Cancel"
+OK          = "OK"
+HelpContext = ""
+Continue    = "Continue"
+Cancel      = "Cancel"
+
+[FileDependentDlgENG]
+Label1 = "&IRQ Level:"
+Label2 = "I/O &Port Address:"
+DlgType = "RadioCombination"
+; It appears DlgTemplate must be one of SetupDLL-"known"  types, e.g. "NE2000" (???).
+; Would fail otherwise...
+DlgTemplate = "NE2000"
+Caption = $(FunctionTitle)
+Combo1List = $(IRQList)
+Combo1Out  = $(IRQValue)
+Combo2List = $(IOBaseAddrList)
+Combo2Out  = $(IOBaseAddrValue)
+ComboListItemsIn  = {Combo1List, Combo2List}
+ComboListItemsOut = {Combo1Out, Combo2Out}
+EditTextIn = ""
+EditTextLim = ""
+CBOptionsGreyed = {}
+NotifyFields = {NO, NO}
+HelpContext = 100
+
+[NMNE2KIRQChoices]
+IRQ_1 = "3",3
+IRQ_2 = "4",4
+IRQ_3 = "5",5
+IRQ_4 = "6",6
+IRQ_5 = "7",7
+IRQ_6 = "9",9
+IRQ_7 = "10",10
+IRQ_8 = "11",11
+IRQ_9 = "12",12
+IRQ_10 = "15",15
+
+[NMNE2KIOBaseAddrChoices]
+IOBase_1  = "0x200",512
+IOBase_2  = "0x220",544
+IOBase_3  = "0x240",576
+IOBase_4  = "0x260",608
+IOBase_5  = "0x280",640
+IOBase_6  = "0x2A0",672
+IOBase_7  = "0x2C0",704
+IOBase_8  = "0x2E0",736
+IOBase_9  = "0x300",768
+IOBase_10  = "0x320",800
+IOBase_11  = "0x340",832
+IOBase_12  = "0x360",864
+IOBase_13  = "0x380",896
+IOBase_14  = "0x3A0",928
+IOBase_15  = "0x3C0",960
+IOBase_16  = "0x3E0",992 

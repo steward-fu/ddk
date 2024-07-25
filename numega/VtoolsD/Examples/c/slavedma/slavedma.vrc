@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation" 
+FileDescription =	"Slave DMA Example"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"SLAVEDMA"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation "
+OriginalFilename = 	"slavedma.vxd"
+ProductName	=	"VtoolsD for Windows 95"
+ProductVersion	= 	"Version 2.04"
+Translation	=	0x409, 0x4E4

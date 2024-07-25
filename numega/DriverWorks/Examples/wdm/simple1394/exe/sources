@@ -1,0 +1,21 @@
+# SOURCES - for Test_simple1394 application
+
+TARGETNAME=Test_simple1394
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+TARGETLIBS=	$(SDK_LIB_PATH)\setupapi.lib
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+386_STDCALL=0
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+
+SOURCES=Test_simple1394.cpp openbyintf.cpp

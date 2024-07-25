@@ -1,0 +1,99 @@
+; -- NETFILTER.INF --
+;
+; StlFilter Filter Service INF file
+;
+; Copyright (c) 2000
+;
+; NOTE
+; ====
+; A network filter component has the following two parts: filter service and filter device.
+; A network filter's service and device belong to the same filter driver. 
+; Installing a network filter requires INF files for both the filter service and
+; the filter device, netFilter.inf and netFilterMp.inf
+;
+
+[Version]
+Signature  = "$Windows NT$"
+Class      = NetService
+ClassGUID  = {4D36E974-E325-11CE-BFC1-08002BE10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+
+[Manufacturer]
+%NuMega% = Models
+
+[ControlFlags]
+
+[Models]
+%StlFilterFilter_Desc% = StlFilterFilter.ndi, Nm_StlFilterFilter
+
+[StlFilterFilter.ndi]
+AddReg = StlFilterFilter.ndi.AddReg, StlFilterFilter.AddReg
+Characteristics = 0x410 ; NCF_FILTER | NCF_NO_SERVICE 
+CopyFiles = StlFilterFilter.CopyFiles.Sys, StlFilterFilter.CopyFiles.Inf
+
+; ----------------------------------------------------------------------
+; File copy
+;
+[SourceDisksNames]
+1=%DiskDescription%,"",,
+
+[SourceDisksFiles]
+stlfilter.sys=1
+netFilterMp.inf=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+StlFilterFilter.CopyFiles.Sys   = 12   ; %windir%\System32\drivers
+StlFilterFilter.CopyFiles.Inf   = 17   ; %windir%\inf
+
+[StlFilterFilter.CopyFiles.Sys]
+stlfilter.sys,,,2
+
+[StlFilterFilter.CopyFiles.Inf]
+netFilterMp.inf,,,2
+
+; ----------------------------------------------------------------------
+; Filter Install
+;
+
+[StlFilterFilter.ndi.AddReg]
+;
+; Service NDI keys
+;
+; 'FilterClass': determines the filter's order in a stack of filters; 'failover' is
+;                the lowest. Could it be 'unknown' or something?
+; 'FilterDeviceInfFile' and 'FilterDeviceInfId' refer to the miniport portion of the filter
+; 'FilterMediaTypes': mediums the filter deals with. Should match to the array
+;                     returned by KNdisFilterBinding::Open()
+;
+HKR, Ndi,            Service,             , StlFilter
+HKR, Ndi,            FilterClass,         , failover
+HKR, Ndi,            FilterDeviceInfFile, , netFilterMp.inf
+HKR, Ndi,            FilterDeviceInfId,   , Nm_StlFilterFiltermp
+HKR, Ndi\Interfaces, UpperRange,          , noupper
+HKR, Ndi\Interfaces, LowerRange,          , nolower
+HKR, Ndi\Interfaces, FilterMediaTypes,    , "ethernet, tokenring, fddi"
+
+HKR, Ndi, HelpText, , %StlFilterFilter_HELP%
+
+[StlFilterFilter.AddReg]
+; TODO: Add protocol-specific params accessible from KNdisFilterBinding::Open()
+;
+HKR, Parameters, Mediums, 0, 31
+HKR, Parameters, DebugLevel, 0, 31
+
+[StlFilterFilter.Ndi.Remove.Services]
+DelService = StlFilterFilter
+
+; ----------------------------------------------------------------------
+[Strings]
+NuMega = "NuMega"
+DiskDescription = "StlFilter Filter Install Disk"
+
+StlFilterFilter_Desc = "StlFilter"
+StlFilterFilter_HELP = "Records HTTP GET requests"
+
+
+

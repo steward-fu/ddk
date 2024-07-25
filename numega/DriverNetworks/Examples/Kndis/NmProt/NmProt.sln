@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NmProt", "NmProt.vcproj", "{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Win32 Checked = Win32 Checked
+		Win32 Free = Win32 Free
+		AMD64 Checked = AMD64 Checked
+		AMD64 Free = AMD64 Free
+		IA64 Checked = IA64 Checked
+		IA64 Free = IA64 Free
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.Win32 Checked.ActiveCfg = Win32 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.Win32 Checked.Build.0 = Win32 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.Win32 Free.ActiveCfg = Win32 Free|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.Win32 Free.Build.0 = Win32 Free|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.AMD64 Checked.ActiveCfg = AMD64 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.AMD64 Checked.Build.0 = AMD64 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.AMD64 Free.ActiveCfg = AMD64 Free|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.AMD64 Free.Build.0 = AMD64 Free|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.IA64 Checked.ActiveCfg = IA64 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.IA64 Checked.Build.0 = IA64 Checked|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.IA64 Free.ActiveCfg = IA64 Free|Win32
+		{FF6DFE92-7527-4AF0-9C82-DF3E48F89583}.IA64 Free.Build.0 = IA64 Free|Win32
+	EndGlobalSection
+EndGlobal

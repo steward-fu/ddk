@@ -1,0 +1,56 @@
+; vhidmou.inf - INF for Virtual HID Mouse driver
+;=============================================================================
+;
+; Compuware Corporation
+; NuMega Lab
+; 9 Townsend West
+; Nashua, NH 03060  USA
+;
+; Copyright (c) 1998 Compuware Corporation. All Rights Reserved.
+; Unpublished - rights reserved under the Copyright laws of the
+; United States.
+;
+;=============================================================================
+
+[Version]
+signature="$CHICAGO$"
+Class=Mouse
+ClassGUID={4d36e96f-e325-11ce-bfc1-08002be10318}
+LayoutFile=layout.inf, layout1.inf
+Provider=%Provider%
+
+[Manufacturer]
+%Mfg%=Mfg
+
+[DestinationDirs]
+HID_DEVICE.CopyList = 11   ; LDID_SYS
+
+[Mfg]
+Virtual Keyboard Mouse=HID_DEVICE.Install,ROOT\NuMega_VIRTUAL_HID_MOUSE
+
+[HID_DEVICE.Install]
+CopyFiles=HID_DEVICE.CopyList
+AddReg=HID_DEVICE.AddReg
+
+[HID_DEVICE.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,"VHIDMOU.SYS,HIDCLASS.SYS,HIDPARSE.SYS,MOUHID.VXD,KBDMOUSE.VXD"
+
+[HID_DEVICE.CopyList]
+VHIDMOU.SYS,,
+KBDMOUSE.VXD,,
+hidclass.sys
+hidparse.sys
+mouhid.vxd
+
+[SourceDisksNames]
+1=InstallDisk, DISK1,
+
+[SourceDisksFiles]
+VHIDMOU.SYS=1
+KBDMOUSE.VXD=1
+
+[Strings]
+Provider="NuMega"
+Mfg="NuMega"
+DeviceDesc="NuMega Virtual HID Mouse Device"

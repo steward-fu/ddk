@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation" 
+FileDescription =	"VCOMM Port Driver Hooker"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"COMMHOOK"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation "
+OriginalFilename = 	"commhook.vxd"
+ProductName	=	"VtoolsD for Windows 95"
+ProductVersion	= 	"Version 2.03"
+Translation	=	0x409, 0x4E4

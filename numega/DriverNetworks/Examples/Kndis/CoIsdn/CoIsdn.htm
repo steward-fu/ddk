@@ -1,0 +1,223 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CoISDN NDIS Connection-Oriented Miniport Driver</TITLE>
+</HEAD>
+<BODY>
+
+<B><FONT SIZE=4><P>CoISDN NDIS Connection-Oriented Miniport Driver</P>
+</B></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><B><FONT SIZE=4><P>Summary</P>
+</B></FONT><FONT SIZE=2>
+<P>This directory contains the NDIS Connection-Oriented Miniport Driver files for a virtual ISDN device. The sample demonstrates the structure of an NDIS 5.0 connection-oriented miniport driver written using the DriverNetworks C++ framework. This is a fully functional NDIS miniport driver. The driver is functionally similar to the CoISDN sample found in the Windows XP DDK.</P>
+<P>The driver can be used to establish and tear down a PPP or multi-link PPP connection over an IDSN device. The driver operates a virtual ISDN device. Connections are emulated by redirecting outgoing calls on one channel of a virtual adapter to another incoming channel of the same adapter.</P>
+
+<P>The driver demonstrates usage of the following classes:</P>
+
+
+<UL>
+<LI>KNdisMiniAdapter</LI></UL>
+
+
+
+<UL>
+<LI>KNdisPacketList</LI></UL>
+
+
+
+<UL>
+<LI>KNdisCoWrapper</LI></UL>
+
+
+
+<UL>
+<LI>KNdisAdapterTraits</LI></UL>
+
+
+
+<UL>
+<LI>KNdisMiniportVcTraits</LI></UL>
+
+
+
+<UL>
+<LI>KNdisCallManagerVcTraits</LI></UL>
+
+
+
+<UL>
+<LI>KNdisCallManagerVc</LI></UL>
+
+
+
+<UL>
+<LI>KNdisInterlockedPacketList</LI></UL>
+
+
+
+<UL>
+<LI>KNdisMiniportVc</LI></UL>
+
+
+</FONT><B><FONT SIZE=4><P>Building the Driver</P>
+</B></FONT><FONT SIZE=2>
+<P>Open CoISDN.dsw in MSVC6.0 IDE. Set the CoISDN classes project as the active project. Select either one of the Ndis 5 Free or Ndis 5 Checked configuration and build it. Alternatively, open a console window and run BUILD.Exe from the sample’s installation directory. Either one of these build procedures will create a CoISDN.Sys file. You will need DriverNetworks and the Microsoft Windows DDK installed to successfully build the driver.</P>
+
+</FONT><B><FONT SIZE=4><P>Tools</P>
+</B></FONT><FONT SIZE=2>
+<P>BoundsChecker for Drivers and SoftICE can be used to test some of the features of this driver.</P>
+
+</FONT><B><FONT SIZE=4><P>Code Tour</P>
+</B></FONT><FONT SIZE=2>
+<P>CoIsdnDriver, the driver class, derives from <B>KNdisMiniDriver</B> and implements a DriverEntry() method, which performs the driver initialization and the registration of the driver with the NDIS library.</P>
+
+<P>CoIsdnAdapter, the sample’s adapter class, derives from <B>KndisMiniAdapter</B> and implements the handlers that enable the operation of the adapter. Among those handlers is Initialize, which registers the call management capabilities of the adapter with NDIS for the address family </FONT><FONT FACE="Times" SIZE=2>CO_ADDRESS_FAMILY_TAPI_PROXY. The adapter’s operation is supported by the CCard, CDChannel, CBChannel and CPort classes.</P>
+
+<P>The CCard class represents an abstraction of the device’s hardware. All hardware access performed by the driver is intended to. The sample driver implements the hardware simulation through this class.</P>
+
+<P>The CDChannel class abstracts the signaling channel of the ISDN device. The class is responsible for initiating the calls to create outgoing virtual connections and for answering incoming calls and creating incoming virtual connections connections for them.</P>
+
+<P>The CBChannel class represents a data channel of the ISDN device. The class also represents the abstraction of a virtual connection.  Data packets are sent and received on instances of CBChannel objects. The class derives from both <B>KNdisCallManagerVc</B> and <B>KNdisMiniportVc</B> as the driver is a miniport call manager.</P>
+
+</FONT><FONT SIZE=2><P>&nbsp;</P></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=642>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<B><FONT SIZE=2><P>File</B></FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<B><FONT SIZE=2><P>Description</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>CoISDNAdap.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the NDIS miniport adapter (KNdisMiniAdapter-derived) class.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>CoISDNAdap.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the NDIS miniport adapter class.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT FACE="Times" SIZE=2><P>CoISDNDrv.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the NDIS miniport driver (KNdisMiniDriver-derived) class.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>CoISDNDrv.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the NDIS miniport driver class.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>DChannel.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the logical DChannel of the ISDN device. The logical DChannel does not necessary map to a device’s physical DChannel. It’s a logical abstraction for signaling and answering calls.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>DChannel.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the logical DChannel of the ISDN device.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>BChannel.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the logical BChannel  of the ISDN device (KNdisMiniportVc and KNdisCalllManagerVc derived). The logical DChannel does not necessary map to a device’s physical Bchannel. It’s a logical abstraction for a point-to-point communication link.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>BChannel.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the logical BChannel of the ISDN device.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>Card.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the hardware access interface of the device.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>Card.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the hardware access interface of the device.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>Port.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Definition of the logical interface of an ISDN port.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>Port.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implementation of the logical port class.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>CoIsdnOids.cpp</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Implements NDIS OID map and handlers.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>CallManagerVcTraits.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Specialization of the KNdisCallManagerVcTraits template for the CoIsdnAdapter and BChannel classes.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P>MiniportVcTraits.h</FONT></TD>
+<TD WIDTH="71%" VALIGN="TOP">
+<FONT SIZE=2><P>Specialization of the KNdisMiniportVcTraits template for the CoIsdnAdapter and BChannel classes.</FONT></TD>
+</TR>
+<TR><TD WIDTH="29%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="71%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><B><FONT SIZE=4><P>Installation</P>
+</B></FONT><FONT SIZE=2>
+<P>This driver operates a virtual ISDN adapter and must be installed manually. To install the driver, follow these steps:</P>
+
+
+<UL>
+<LI>Start the Add Hardware Wizard. After the wizard has completed its search for new devices, confirm that you <B>have already connected the new hardware</B>, then <B>choose to add a new hardware device</B> and select to add a new <B>Network Adapter</B>.</LI></UL>
+
+
+<UL>
+<LI>Click on <B>Have Disk</B> on the network adapter selection step and point to the location of the CoISDN.Inf file.</LI>
+<LI>Select <B>Compuware – DriverNetworks Framework / DriverNetworks COISDN Adapter</B> and complete the installation of the driver.</LI></UL>
+
+
+<P>Setup network connections using the installed network adapter.</P>
+<P>First setup for incoming connections:</P>
+
+<UL>
+<LI>Start the <B>New Connection Wizard</B> from the Network Connections setup page.</LI>
+<LI>Setup an advanced connection to accept <B>incoming connections</B>.</LI>
+<LI>Check the option box selecting the <B>DriverNetworks COISDN Adapter</B> as the connection device.</LI>
+<LI>Do not setup for incoming VPN connections.</LI>
+<LI>Select the users you want to grant dial-in access permissions to.</LI>
+<LI>Configure TCP/IP to use fixed IP addresses from the range 192.168.111.1 – 192.168.111.99</LI></UL>
+
+
+<P>Then setup an outgoing dialup connection:</P>
+
+<UL>
+<LI>Start the <B>New Connection Wizard</B> from the Network Connections setup page.</LI></UL>
+
+
+<UL>
+<LI>Setup a new dialup connection using a modem and IDSN line.</LI>
+<LI>Check either one of the boxes identifying the channels of the <B>DriverNetworks COISDN Adapter</B>.</LI>
+<LI>Enter 0 as the phone number to dial, thereby selecting any unused channel to dial.</LI>
+<LI>Configure the connection settings to use only TCP/IP.</LI></UL>
+
+
+</FONT><B><FONT SIZE=4><P>Operation</P>
+</B></FONT><FONT SIZE=2><P>Once the connections have been created, the computer’s Remote Desktop settings need to be altered to remote access to the computer:</P>
+
+<UL>
+<LI>Open the <B>System Properties</B> page from the control panel.</LI>
+<LI>Select the <B>Remote</B> tab from that page and  check the option to <B>Allow users to connect remotely to this computer</B>.</LI>
+<LI>Grant permissions to the users that were given the permission to dial-in using the created incoming connection.</LI></UL>
+
+
+<P>Once remote access is permitted on the computer and users have been granted required permissions, calls can be place on the outgoing connection.</P>
+<P>To place a call, double-click the outgoing dial-up connection that was created. IP traffic can be created on the connection using ping or telnet for example.</P></FONT></BODY>
+</HTML>

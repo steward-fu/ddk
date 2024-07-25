@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation." 
+FileDescription =	"Overlapped I/O Example VxD"
+FileVersion	=	"1.00" 
+InternalName	=	"OVRLAPIO"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation "
+OriginalFilename= 	"ovrlapio.vxd"
+ProductName	=	"VtoolsD for Windows 95"
+ProductVersion	= 	"Version 2.02"
+Translation	=	0x409, 0x4E4

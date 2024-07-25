@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="NotifyObject"
+	ProjectGUID="{AA747315-6DC0-4199-8DEC-6F52CFB0676F}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Win32 Debug|Win32"
+			OutputDirectory="..\..\lib\i386\checked"
+			IntermediateDirectory="obj\i386\checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				MinimalRebuild="TRUE"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="Win32 Release|Win32"
+			OutputDirectory="..\..\lib\i386\free"
+			IntermediateDirectory="obj\i386\free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="WIN32;NDEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				CallingConvention="2"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="AMD64 Debug|Win32"
+			OutputDirectory="..\..\lib\amd64\checked"
+			IntermediateDirectory="obj\amd64\checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="_AMD64_;AMD64;_WIN64;_DEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				MinimalRebuild="TRUE"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="AMD64 Release|Win32"
+			OutputDirectory="..\..\lib\amd64\free"
+			IntermediateDirectory="obj\amd64\free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="_AMD64_;AMD64;_WIN64;NDEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="IA64 Debug|Win32"
+			OutputDirectory="..\..\lib\ia64\checked"
+			IntermediateDirectory="obj\ia64\checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="_IA64_;IA64;_WIN64;_DEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				MinimalRebuild="TRUE"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="IA64 Release|Win32"
+			OutputDirectory="..\..\lib\ia64\free"
+			IntermediateDirectory="obj\ia64\free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\..\Include\Notify,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\inc\atl30"
+				PreprocessorDefinitions="_IA64_;IA64;_WIN64;NDEBUG;_MBCS;_LIB;UNICODE;WIN32_LEAN_AND_MEAN"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="FALSE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/notify.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter=".c;.cpp">
+			<File
+				RelativePath=".\BindingPolicy.cpp">
+			</File>
+			<File
+				RelativePath=".\NetCfgComponent.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter=".h">
+			<File
+				RelativePath="..\..\include\Notify\BindingPolicy.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\NetCfg.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\NetCfgBindingInterface.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\NetCfgBindingPath.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\NetCfgComponent.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\Notify.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\NotifyObject.h">
+			</File>
+			<File
+				RelativePath="..\..\include\Notify\PropertyUi.h">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

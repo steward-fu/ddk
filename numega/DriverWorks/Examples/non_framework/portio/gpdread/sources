@@ -1,0 +1,16 @@
+
+TARGETNAME=gpdread
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+INCLUDES=..\
+
+SOURCES=gpdread.c
+
+UMTYPE=console
+UMBASE=0x400000
+

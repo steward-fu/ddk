@@ -1,0 +1,310 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Cam1394_files/filelist.xml">
+<title>Cam1394: DriverWorks 1394 Video Capture Sample Driver </title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Steve Smith</o:Author>
+  <o:LastAuthor>Steve Smith</o:LastAuthor>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>34</o:TotalTime>
+  <o:Created>2002-10-14T20:58:00Z</o:Created>
+  <o:LastSaved>2002-11-18T22:51:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>118</o:Words>
+  <o:Characters>673</o:Characters>
+  <o:Company> Compuware/NuMega Labs, Inc.</o:Company>
+  <o:Lines>5</o:Lines>
+  <o:Paragraphs>1</o:Paragraphs>
+  <o:CharactersWithSpaces>826</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>75</w:Zoom>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-update:auto;
+	mso-style-parent:"Heading 2";
+	mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	text-indent:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-list:l0 level2 lfo2;
+	tab-stops:list .25in .4in;
+	font-size:20.0pt;
+	mso-bidi-font-size:14.0pt;
+	font-family:Helvetica;
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	mso-bidi-font-style:italic;}
+h2
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	text-indent:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	mso-list:l0 level2 lfo2;
+	tab-stops:list .25in .4in;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;
+	font-style:italic;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoMacroText, li.MsoMacroText, div.MsoMacroText
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:24.0pt 48.0pt 1.0in 96.0pt 120.0pt 2.0in 168.0pt 192.0pt 3.0in;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";}
+p.CodeSnippet, li.CodeSnippet, div.CodeSnippet
+	{mso-style-name:"Code Snippet";
+	mso-style-update:auto;
+	mso-style-parent:"Macro Text";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:24.0pt 48.0pt 1.0in 96.0pt 120.0pt 2.0in 168.0pt 192.0pt 3.0in;
+	border:none;
+	mso-border-alt:solid windowtext .25pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Courier New";}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:360472704;
+	mso-list-template-ids:-1207014840;}
+@list l0:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:.3in;
+	mso-level-number-position:left;
+	margin-left:.3in;
+	text-indent:-.3in;}
+@list l0:level2
+	{mso-level-style-link:"Heading 2";
+	mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.4in;
+	mso-level-number-position:left;
+	margin-left:.4in;
+	text-indent:-.4in;}
+@list l0:level3
+	{mso-level-style-link:"Heading 3";
+	mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	margin-left:.5in;
+	text-indent:-.5in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1 style='margin-left:0in;text-indent:0in'><![if !supportLists]>1.1<span
+style='font:7.0pt "Times New Roman"'> </span><![endif]>Cam1394: DriverWorks
+1394 Digital Camera Sample Driver </h1>
+
+<h3><span style='font-family:Verdana'>SUMMARY<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Cam1394 sample has 2
+drivers for 1394 digital video camera hardware.<span style="mso-spacerun:
+yes">  </span>The sample was developed using the Orange Micro iBot Firewire
+Video Conferencing Web Cam.<span style="mso-spacerun: yes">  </span>There are
+actually 2 drivers.<span style="mso-spacerun: yes">  </span>One&nbsp;is an
+AVStream <em>filter-centric</em> video capture driver written using the
+DriverWorks AVStream C++ Framework.<span style="mso-spacerun: yes">  </span>The
+other driver is a Kernel Streaming video capture driver written using the
+DriverWorks KStream C++ Framework.<span style="mso-spacerun: yes">  </span>Both
+drivers make use of DriverWorks 1394 WDM C++ Framework.<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The samples are located
+in the avstream and kstream folders.<span style="mso-spacerun: yes"> 
+</span>Refer to AvCam1394.htm for information about the AVStream <em>filter-centric</em>
+video capture driver.<span style="mso-spacerun: yes">  </span>Refer to
+KsCam1394.htm for information about the KStream video capture driver.<span
+style="mso-spacerun: yes">  </span><o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<table border=0 cellspacing=0 cellpadding=0 width=624 style='width:6.5in;
+ mso-cellspacing:0in;mso-padding-alt:0in 0in 0in 0in'>
+ <tr style='height:1.5pt'>
+  <td style='background:aqua;padding:.75pt .75pt .75pt .75pt;height:1.5pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:2.0pt;mso-bidi-font-size:12.0pt'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© 2002 Compuware Corporation</span><span
+style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:"Courier New"'> <o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>VHidMini Sample</title>
+</head>
+
+<body>
+
+<div class="Section1">
+  <h1>VHidMini Sample</h1>
+  <h2>SUMMARY</h2>
+  <p><font face="Tahoma">The VHidMini sample is a HID minidriver which allows
+  the testing of a report descriptor without the need for a physical device. The
+  sample uses registry access functionality to retrieve the report descriptor
+  from the registry on initialization. <font size="3">The sample handles HID
+  specific <span style="mso-fareast-font-family: Times New Roman; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA">IOCTL’s
+  such as IOCTL_HID_GET_FEATURE, IOCTL_HID_SET_FEATURE and IOCTL_HID_READ_REPORT.</span></font></font></p>
+  <p><font face="Tahoma">The sample consists of a driver: <b>VHidMini.sys.</b>
+  The sample is based on the DDK sample vhidmini and the test application
+  included with the DDK example will run with the VHidMini driver. The test
+  application sends a control code HIDMINI_CONTROL_CODE_GET_ATTRIBUTES using <span class="SpellE">HidD_<span class="GramE">GetFeature</span></span><span class="GramE">(</span>)
+  and will print the returned device attributes to the command window.</font></p>
+  <p><font face="Tahoma">The sample will run on Windows 2000, Windows XP, and
+  Windows Server 2003.</font><span style="FONT-SIZE: 12pt; FONT-FAMILY: Tahoma; mso-bidi-font-size: 10.0pt"><o:p>
+  </o:p>
+  </span><o:p>
+  </o:p>
+  </p>
+  <h2>BUILDING THE SAMPLE</h2>
+  <p><span style="FONT-FAMILY: Tahoma">The driver, </span><font face="Tahoma"><b>VHidMini</b></font><span style="FONT-FAMILY: Tahoma"><b>.sys</b>,
+  may be built from the command line or from within the Visual C++ IDE.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;
+  </span>To build from the Visual Studio IDE, open the workspace file, </span><font face="Tahoma"><b>VHidMini</b></font><span style="FONT-FAMILY: Tahoma"><b>.dsw</b>.<span style="mso-spacerun: yes">&nbsp;
+  </span>Set the active configuration in the build menu, and then select <b>Build</b>
+  or <b>Rebuild all</b>.<span style="mso-spacerun: yes">&nbsp; </span>Both free
+  and checked builds are available.<o:p>
+  </o:p>
+  </span></p>
+  <p><span style="FONT-FAMILY: Tahoma">To build from the command line, start an
+  appropriate DDK build environment from the start menu shortcuts installed with
+  the DDK.<span style="mso-spacerun: yes">&nbsp; </span>Navigate to the </span><font face="Tahoma">VHidMini</font><span style="FONT-FAMILY: Tahoma">
+  directory and type “build”.<span style="mso-spacerun: yes">&nbsp; </span>The
+  environment variable <b>DRIVERWORKS</b> must be set to the <b>DriverWorks</b>
+  directory for the build to be successful.<o:p>
+  </o:p>
+  </span></p>
+  <p><span style="FONT-FAMILY: Tahoma">&nbsp;<o:p>
+  </o:p>
+  </span></p>
+  <p class="Note"><b>Note:</b> The <b>DriverWorks</b> library, <b>vdw_wdm.lib</b>,
+  must be built before <b>VHidMini.sys</b> may be built. <span style="mso-bidi-font-size: 10.0pt"><o:p>
+  </o:p>
+  </span></p>
+  <h2>&nbsp;<o:p>
+  </o:p>
+  </h2>
+  <h2>RUNNING THE SAMPLE</h2>
+  <pre><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman; mso-bidi-font-family: Times New Roman">Upon installation VHidMini will read the report descriptor from the registry, restarting the device will force a re-read of the descriptor. Use the testvhid.exe from </span></pre>
+  <pre><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman; mso-bidi-font-family: Times New Roman">the vhidmini example in the Windows Server 2003 DDK to send a </span><font face="Tahoma">HIDMINI_CONTROL_CODE_GET_ATTRIBUTES </font><font face="Tahoma">request and view the return</font><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman; mso-bidi-font-family: Times New Roman">.</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><o:p>
+</o:p>
+</span></pre>
+  <h2 style="tab-stops: .5in">File Manifest</h2>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">.htm</span></b><span style="FONT-FAMILY: Tahoma"><span style="mso-tab-count: 3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-tab-count: 3">	</span>The documentation for this sample (this file).</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">.inf			</span></b><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">File used for the installation of the VHidMini example</span><span style="FONT-FAMILY: Tahoma"><o:p>
+</o:p>
+<o:p>
+</o:p>
+</span></pre>
+  <pre><span style="FONT-FAMILY: Tahoma"><o:p>
+</o:p>
+</span></pre>
+  <h5 style="MARGIN-LEFT: 0in; tab-stops: 27.0pt .5in">Driver Files:</h5>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">.h</span></b><span style="FONT-FAMILY: Tahoma"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-tab-count: 2">  	</span>Header for the </span><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman"><i>VHidMini</i></span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"></span><span style="FONT-FAMILY: Tahoma"> driver class<o:p>
+</o:p>
+</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">.cpp</span></b><span style="FONT-FAMILY: Tahoma"><span style="mso-spacerun: yes">&nbsp; </span><span style="mso-tab-count: 3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   </span></span><span style="font-family: Tahoma; mso-tab-count: 3">	</span><i><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span></i><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"></span><span style="FONT-FAMILY: Tahoma"> driver class<o:p>
+</o:p>
+</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">Device.h</span></b><span style="FONT-FAMILY: Tahoma"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    	</span>Header for the </span><i><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"></span></i><span style="FONT-FAMILY: Tahoma"><i>Device</i> class<o:p>
+</o:p>
+</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">Device.cpp</span></b><span style="FONT-FAMILY: Tahoma"> <span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="font-family: Tahoma; mso-tab-count: 2">   </span><span style="font-family: Tahoma; mso-tab-count: 2">	</span><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman"><i>VHidMini</i></span><i><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"></span></i><span style="FONT-FAMILY: Tahoma"><i>Device</i> class</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">function</span></b><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"><b>.h			</b>Header that specifies the IRP types that </span><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">VHidMini</span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"></span><span style="FONT-FAMILY: Tahoma">Device </span><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'">processes</span></pre>
+  <pre><b><span style="font-family: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: Times New Roman">common</span></b><span style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'"><b>.h			</b>Header file which contains structures and definitions common to most HID drivers</span><span style="FONT-FAMILY: Tahoma"><o:p>
+</o:p>
+</span></pre>
+  <pre><o:p>
+</o:p>
+</pre>
+  <pre>&nbsp;<o:p>
+</o:p>
+</pre>
+  <pre>&nbsp;<o:p>
+</o:p>
+</pre>
+  <p style="MARGIN-TOP: 0in; tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt"><span style="mso-fareast-font-family: 'Courier New'; mso-bidi-font-family: 'Courier New'">&nbsp;<o:p>
+  </o:p>
+  </span></p>
+  <p class="MsoNormal" style="tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt">&nbsp;<o:p>
+  </o:p>
+  </p>
+</div>
+
+</body>
+
+</html>

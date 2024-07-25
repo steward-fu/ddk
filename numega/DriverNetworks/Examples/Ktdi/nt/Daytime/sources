@@ -1,0 +1,33 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=Daytime
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS= $(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw.lib \
+	$(DRIVERNETWORKS)\lib\*\$(BUILDTYPE)\tdint5.lib \
+	$(DDK_LIB_PATH)\ndis.lib
+
+C_DEFINES=-DNTVERSION='400' -DTDI_WINDOWS_NT
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(DRIVERNETWORKS)\include\tdiclient;\
+	$(DRIVERNETWORKS)\include;\
+	$(DRIVERWORKS)\include;\
+	$(DRIVERWORKS)\source;\
+	$(BASEDIR)\inc;\
+	$(BASEDIR)\inc\ddk;\
+	$(BASEDIR)\src\network\inc;\
+	$(BASEDIR)\src\network\wshsmple
+
+SOURCES=Daytime.cpp Daytime.rc
+

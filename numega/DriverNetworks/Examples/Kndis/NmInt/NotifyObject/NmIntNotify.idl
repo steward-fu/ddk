@@ -1,0 +1,28 @@
+// NmIntNotify.idl : IDL source for NmIntNotify.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (NmIntNotify.tlb) and marshalling code.
+
+#include <netcfgn.idl>
+
+[
+	uuid(27B0B403-D29F-11D4-B047-00C04F6A5DA9),
+	version(1.0),
+	helpstring("NmIntNotify 1.0 Type Library")
+]
+library NmIntNotifyLib
+{
+	[
+		uuid(0BFDF1C4-D2CA-11D4-B047-00C04F6A5DA9),
+		helpstring("NotifyObject Class")
+	]
+	coclass NotifyObject
+	{
+		[restricted] interface INetCfgComponentControl;
+		[restricted] interface INetCfgComponentSetup;
+		[restricted] interface INetCfgComponentNotifyBinding;
+		[restricted] interface INetCfgComponentNotifyGlobal;
+		[restricted] interface INetCfgComponentPropertyUi;
+	};
+};

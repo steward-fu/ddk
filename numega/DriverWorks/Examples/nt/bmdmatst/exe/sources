@@ -1,0 +1,18 @@
+# SOURCES - for Test_BMDmaTst application
+
+TARGETNAME=Test_BMDmaTst
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+SOURCES=Test_BMDmaTst.cpp
+

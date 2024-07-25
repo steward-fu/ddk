@@ -1,0 +1,23 @@
+# SOURCES - for HelloApp application
+
+TARGETNAME=HelloApp
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+TARGETLIBS=$(SDK_LIB_PATH)\libci.lib $(SDK_LIB_PATH)\setupapi.lib
+USER_INCLUDES=$(MSVCDIR)\include
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+386_STDCALL=0
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+
+SOURCES=openbyintf.cpp helloapp.cpp
+

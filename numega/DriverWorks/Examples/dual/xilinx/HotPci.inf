@@ -1,0 +1,57 @@
+; HotPci.Inf - install information file for VCC HotII Board
+; Copyright (c) 1998 Compuware Numega, Inc.
+
+[Version]
+Signature="$Windows 95$"
+Class=Unknown
+Provider=%Compuware%
+
+[Manufacturer]
+%VirtualComputer% = VCC.Mfg
+
+[VCC.Mfg]
+%HotIIBoard%=HotII.Install, PCI\VEN_133E&DEV_4000
+
+[DestinationDirs]
+HotII.Files.Driver=10,System32\Drivers ; this didn't work with w2k rc2
+HotII.Files.NT.Driver=12 ; DIRID_DRIVERS 
+
+; --------- Windows 98 --------- 
+
+[HotII.Install]
+CopyFiles=HotII.Files.Driver
+AddReg=HotII.AddReg
+
+[HotII.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,HotPci.sys
+
+[HotII.Files.Driver]
+HotPci.sys
+
+; --------- Windows NT --------- 
+
+[HotII.Install.NT]
+CopyFiles=HotII.Files.NT.Driver
+
+[HotII.Files.NT.Driver]
+HotPci.sys,,,2
+
+[HotII.Install.NT.Services]
+Addservice = HotII, 0x00000002, HotII.Service
+
+[HotII.Service]
+DisplayName    = %HotII.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\HotPci.sys
+LoadOrderGroup = Base
+
+; --------- Strings --------- 
+
+[Strings]
+VirtualComputer="Virtual Computer Corporation"
+Compuware="Compuware Numega"
+HotIIBoard="HotII PCI Development board"
+HotII.SvcDesc="Driver for VCC HotII PCI Development Board"

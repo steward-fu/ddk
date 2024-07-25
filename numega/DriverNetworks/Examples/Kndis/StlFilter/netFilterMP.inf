@@ -1,0 +1,80 @@
+; -- NETSTLFILTERMP.INF --
+;
+; StlFilter Miniport INF file
+;
+; For intermediate filters, this file is a supplement to netFilter.inf 
+; and is used to install a miniport part of the intermediate filter. 
+;
+; Copyright (c) 2001
+
+[Version]
+signature  = "$Windows NT$"
+Class      = Net
+ClassGUID  = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+[ControlFlags]
+ExcludeFromSelect = Nm_StlFilterFiltermp
+
+[DestinationDirs]
+DefaultDestDir=12
+; No files to copy 
+
+[Manufacturer]
+%NuMega% = Models
+
+[Models]
+%StlFilterFilterMP_Desc% = StlFilterFilterMP.ndi, Nm_StlFilterFiltermp
+
+[StlFilterFilterMP.ndi]
+Characteristics = 0x01 ;NCF_VIRTUAL. Consider: NCF_NOT_USER_REMOVABLE | NCF_HIDDEN 
+CopyFiles = 
+
+[StlFilterFilterMP.ndi.Services]
+AddService = StlFilter,0x2, StlFilterFilterMP.AddService
+
+
+[StlFilterFilterMP.AddService]
+DisplayName    = %StlFilterFilterMP_Desc%
+ServiceType    = 1 ;SERVICE_KERNEL_DRIVER
+StartType      = 3 ;SERVICE_DEMAND_START
+ErrorControl   = 1 ;SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\stlfilter.sys
+LoadOrderGroup = PNP_TDI
+AddReg         = StlFilterFilterMP.AddService.AddReg
+
+
+[StlFilterFilterMP.AddService.AddReg]
+; ----------------------------------------------------------------------
+; Add any miniport-specific parameters here. Those are accessed
+; from KNdisFilterAdapter::Initialize() and StlFilterAdapter::OnInitialize()
+;
+HKR, NDI\params\MaxPoolSize,           ParamDesc,      0, %MaxPoolSize%
+HKR, NDI\params\MaxPoolSize,           type,           0, "dword"
+HKR, NDI\params\MaxPoolSize,           default,        0, 1024
+HKR, NDI\params\MaxPoolSize,           optional,       0, "1"
+HKR, NDI\params\MaxPoolSize,           max,		       0, 65535
+HKR, NDI\params\DebugLevel,           ParamDesc,      0, %DebugLevel%
+HKR, NDI\params\DebugLevel,           type,           0, "enum"
+HKR, NDI\params\DebugLevel,           default,        0, "0"
+HKR, NDI\params\DebugLevel,           optional,       0, "1"
+HKR, NDI\params\DebugLevel\enum,      "0",		      0, "TraceAlways"
+HKR, NDI\params\DebugLevel\enum,      "1",		      0, "TraceInfo"
+HKR, NDI\params\DebugLevel\enum,      "2",		      0, "TraceWarning"
+HKR, NDI\params\DebugLevel\enum,      "3",		      0, "TraceError"
+HKR, NDI\params\DebugLevel\enum,      "4",		      0, "TraceFatal"
+HKR, NDI\params\DebugLevel\enum,      "5",		      0, "TraceNever"
+
+
+[SourceDisksNames]
+;None 
+
+[SourceDisksFiles]
+;None
+
+[Strings]
+NuMega = "NuMega"
+StlFilterFilterMP_Desc = "StlFilter Filter Miniport"
+MaxPoolSize = "Maximum number of packet descriptors for repackaging"
+DebugLevel = "Debug Trace Level used by KNdisTrace"

@@ -1,0 +1,60 @@
+;; server.inf
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows NT$"
+Provider=%ProviderName%
+
+Class=Unknown
+ClassGUID={4D36E97E-E325-11CE-BFC1-08002BE10318}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+[SourceDisksNames]
+1 = "Install Disk",Disk1,,
+
+[SourceDisksFiles]
+iserver.sys = 1,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+Server_Files_Driver = 12
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=Server_DDI, *iServer
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows NT -----------------
+
+[Server_DDI.NT]
+CopyFiles=Server_Files_Driver
+
+[Server_DDI.NT.Services]
+Addservice = Server, 0x00000002, Server_AddService
+
+[Server_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\iserver.sys
+
+
+; --------- Files (common) -------------
+
+[Server_Files_Driver]
+iserver.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Corporation"
+MfgName="Numega"
+DeviceDesc="iServer Driver"
+SvcDesc="Sample iServer Driver"

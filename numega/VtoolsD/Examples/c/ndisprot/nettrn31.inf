@@ -1,0 +1,158 @@
+; NETTRN31.INF
+;
+; Install File For VtoolsD TRANS31 Example NDIS 3.1 Network Transport
+;
+; Copyright (c) 1995, Printing Communications Associates, Inc.
+;
+; This is a minimal network installer file for the VtoolsD TRANS31
+; example NDIS 3.1 transport (PROTOCOL) driver.
+;
+; Copy the NETTRN31.INF file and the TRANS31.VXD files to a floppy
+; installation disk. This is the Sample Protocol Install Disk.
+;
+; This isn't an installer example - so bear with me. Before using this
+; installer, install some Windows Network protocol - such as NETBEUI. Make
+; sure that this baseline installation operates correctly and that an
+; Ethernet adapter is installed and working.
+;
+; I would advise saving the Windows 95 registry before attempting to
+; use this installer. Read up on this yourself - but saving the registry
+; basically involves saving the \WINDOWS\SYSTEM.DAT and \WINDOWS\USER.DAT
+; files. Although the TRANS31 PROTOCOL can be removed by using the
+; Control Panel, the Windows 95 Registry won't necessarily be exactly
+; the way it was before the protocol was installed.
+;
+; From the Windows 95 Start button, go to Settings and then Control Panel.
+; Select the Network Control Panel, and then press Add. This brings up the
+; Select Network Componenet Type dialog.
+;
+; Select Protocol, which brings up the Select Network Protocol dialog. Press
+; Have Disk. At this point the NDI will put up a Install From Disk dialog,
+; which you steer to your Sample Protocol Install Disk (the floppy containing
+; the two files), and press OK.
+;
+; Pressing OK brings up another Select Network Protocol dialog showing the
+; Sample Protocol. Press OK to install Sample Protocol.
+;
+; Since this is a minimal installer (specifically, there is no higher-level
+; network client or service), the installer will get confused and put up
+; yet another Select Network Component dialog. Press Cancel to dispose
+; of it. Then you'll be left with the original Select Network Component
+; which you also want to cancel.
+;
+; The installer may ask or some disks during the completion of the
+; installation. Just press Skip File, and things should be OK.
+; 
+
+[version]
+signature="$Windows95$"
+Class=NetTrans
+provider=%V_VIREO%
+
+[Manufacturer]
+%V_VIREO%=VIREO
+
+[VIREO]
+%TRANS31.DeviceDesc%=   TRANS31.ndi, TRANS31    ;Sample
+
+;[ControlFlags]
+; TRANS31 should not appear in select device
+;ExcludeFromSelect=TRANS31
+
+
+;****************************************************************************
+; TRANS31
+;****************************************************************************
+[TRANS31.ndi]
+AddReg=TRANS31.ndi.reg
+
+;Unique PnP ID, entry need to be present so that setup can back track
+;the device name from the driver
+DeviceID=TRANS31
+
+;Specify if the device can be installed more than once
+;if not specify, default is MaxInstance=1
+MaxInstance=8
+
+[TRANS31.ndi.reg]
+HKR,Ndi,DeviceID,,TRANS31
+HKR,Ndi,MaxInstance,,0
+
+; NDIS Info
+HKR,NDIS,LogDriverName,,TRANS31
+HKR,NDIS,MajorNdisVersion,1,03
+HKR,NDIS,MinorNdisVersion,1,0A
+;HKR,NDIS\NDIS2,DriverName,,"TRANS31$"
+;HKR,NDIS\NDIS2,FileName,,"*netbeui"
+
+; Interfaces
+;HKR,Ndi\Interfaces,DefUpper,,"nothing"
+HKR,Ndi\Interfaces,DefLower,,"ndis3"
+
+;HKR,Ndi\Interfaces,UpperRange,,"nothing"
+HKR,Ndi\Interfaces,LowerRange,,"ndis3"
+
+; Install sections
+HKR,Ndi\Install,,,"TRANS31.Install"
+HKR,Ndi\Remove,,,"TRANS31.Remove"
+
+; Context help
+HKR,Ndi,HelpText,,%TRANS31_HELP%
+
+[TRANS31.Install]
+AddReg=TRANS31.AddReg
+CopyFiles=TRANS31.CopyFilesSystem,TRANS31.CopyFilesInf
+
+[TRANS31.AddReg]
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,TRANS31.vxd
+
+[TRANS31.CopyFilesSystem]
+TRANS31.vxd
+
+[TRANS31.CopyFilesInf]
+nettrn31.inf
+
+[TRANS31.Remove]
+AddReg=TRANS31.Rmv.AddReg
+
+[TRANS31.Rmv.AddReg]
+
+;****************************************************************************
+; Destination Directories
+;****************************************************************************
+[DestinationDirs]
+CopyFilesSystem=11 ; LDID for the System directory
+CopyFilesInf=17    ; LDID for the INF directory
+
+[SourceDisksNames]
+;NOTE: USE ONLY DISK NUMBERS 45-54:
+;45=%DSK_DEC%,      "", 0001
+;46=%DSK_NFS%,      "", 0001
+47=%DSK_VIREO%,      "", 0001
+
+[SourceDisksFiles]
+;pathwrks.drv    =45,,1024
+;decpw.386       =45,,1024
+TRANS31.vxd	= 47,,1024
+NETTRN31.INF	= 47,,1024
+
+;****************************************************************************
+; Localizable Strings
+;****************************************************************************
+[strings]
+
+; Manufacturers
+V_VIREO="Printing Communications Associates, Inc."
+
+; Source Disks
+DSK_VIREO=                "TRANS31 Sample for Windows 95 driver disk"
+
+; Devices
+TRANS31.DeviceDesc="Sample Protocol"
+
+; Parameters
+
+; Context help
+TRANS31_HELP="TRANS31 is a sample protocol you can't use for anything..."
+

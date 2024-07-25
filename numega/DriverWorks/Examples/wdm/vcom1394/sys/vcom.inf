@@ -1,0 +1,84 @@
+;; VCOM.inf
+; Copyright (c) 2003, Compuware Corporation
+;
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$WINDOWS NT$"
+Provider=%ProviderName%
+Class=Ports
+ClassGuid={4d36e978-e325-11ce-bfc1-08002be10318}
+DriverVer=01/22/2003,1.0.0
+CatalogFile=VCom.cat
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; This section identifies source disks and files for installation
+
+[SourceDisksNames]
+1 = %DiskName%,Disk1,,
+
+[SourceDisksFiles]
+VComCoInst.dll=1
+      
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%VCOMMfg%=VCOM
+
+[ClassInstall32]
+Addreg=ClassReg     
+
+[ClassReg]
+; We use the Microsoft port class installer to 
+; handle acquiring and releasing the COM name. 
+; Otherwise the name is not let go, and each time
+; the device is enumerated it will get a new name:
+; COM3, then COM4, then COM5 etc. and the names are 
+; never released.
+HKR,,,0,%ClassName%
+HKR,,Installer32,,"MsPorts.Dll,PortsClassInstaller"
+
+[VCOM]
+%DeviceDesc% = VCOM_DDI, VCOM1394\PORT ; Virtual COM Port
+
+[VCOM_DDI.NT]
+AddReg=VCOM_DDI.NT.AddReg
+CopyFiles=Icon_CopyFiles
+
+[VCOM_DDI.NT.AddReg]
+; We use the Microsoft DLL again to give us the 
+; "Port Settings" custom property page that is
+; common to all serial ports.
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[VCOM_DDI.NT.Services]
+AddService = ,0x00000002 ; no value for the service
+
+;-------------- Coinstaller installation
+
+[VCOM_DDI.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+VComCoInst.dll
+
+[CoInstaller_AddReg]
+; We use our own custom device coinstaller DLL to supply
+; our "Port Connection" custom property page.
+HKR,,CoInstallers32,0x00010000,"VComCoInst.dll,VCom1394CoInstaller"
+
+[DestinationDirs]
+DefaultDestDir = 12
+CoInstaller_CopyFiles = 11 ; System Dir( system32 on NT )
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Corporation"
+VCOMMfg="Compuware Corporation"
+DeviceDesc="Virtual Serial Port"
+DiskName="Install Disk"
+ClassName="Ports (COM & LPT)"

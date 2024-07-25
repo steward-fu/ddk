@@ -1,0 +1,35 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=E100bex
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS= $(DRIVERNETWORKS)\lib\*\$(BUILDTYPE)\kndis5mp.lib $(DDK_LIB_PATH)\ndis.lib
+
+C_DEFINES= -DNDIS_MINIPORT_DRIVER -DNDIS50_MINIPORT -DBINARY_COMPATIBLE=1 
+BROWSER_INFO=1
+RCNOFONTMAP=1
+
+LINK_LIB_IGNORE=4210
+MSC_OPTIMIZATION = /Oxs /Oi
+
+INCLUDES=$(DRIVERNETWORKS)\include;\
+	$(BASEDIR)\inc;\
+	$(BASEDIR)\inc\ddk;\
+	$(BASEDIR)\src\network\inc;\
+	$(DRIVERWORKS)\include
+
+SOURCES=E100bexAdap.cpp \
+		E100bexCard.cpp \
+		E100bexDrv.cpp \
+		E100bexOids.cpp \
+		E100bexPci.cpp \
+		E100bexPhy.cpp \
+		E100bex.rc

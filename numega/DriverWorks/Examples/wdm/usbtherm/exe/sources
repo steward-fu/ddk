@@ -1,0 +1,17 @@
+# SOURCES - for Thermometerapp application
+
+TARGETNAME=ThermometerApp
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+SOURCES=Thermometerapp.cpp
+

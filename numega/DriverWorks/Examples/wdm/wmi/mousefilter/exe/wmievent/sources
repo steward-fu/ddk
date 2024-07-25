@@ -1,0 +1,32 @@
+# SOURCES - for WMIEvent application
+
+TARGETNAME=WMIEvent
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+TARGETLIBS=$(SDK_LIB_PATH)\oleaut32.lib \
+	$(SDK_LIB_PATH)\ole32.lib \
+	$(SDK_LIB_PATH)\wbemuuid.lib \
+	$(SDK_LIB_PATH)\uuid.lib \
+	$(SDK_LIB_PATH)\setupapi.lib
+
+!IF "$(LATEST_WIN32_WINNT_VERSION)" == "0x0500"
+LINKER_FLAGS=oldnames.lib
+!ELSE
+TARGETLIBS=$(TARGETLIBS) $(SDK_LIB_PATH)\oldnames.lib
+!ENDIF
+
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+386_STDCALL=0
+
+INCLUDES=$(DRIVERWORKS)\include
+
+SOURCES=stdafx.cpp wmievent.cpp

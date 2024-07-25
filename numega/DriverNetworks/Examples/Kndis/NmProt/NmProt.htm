@@ -1,0 +1,389 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"
+	xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+	<head>
+		<title>NmInt NDIS Intermediate Driver</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<meta name="ProgId" content="Word.Document">
+		<meta name="Generator" content="Microsoft Word 9">
+		<meta name="Originator" content="Microsoft Word 9">
+		<style> <!-- /* Font Definitions */ @font-face {font-family:"MS Sans Serif"; panose-1:0 0 0 0 0 0 0 0 0 0; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-format:other; mso-font-pitch:variable; mso-font-signature:3 0 0 0 1 0;}
+	@font-face {font-family:Tahoma; panose-1:2 11 6 4 3 5 4 4 2 4; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-pitch:variable; mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+	@font-face {font-family:Verdana; panose-1:2 11 6 4 3 5 4 4 2 4; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-pitch:variable; mso-font-signature:536871559 0 0 0 415 0;}
+	@font-face {font-family:"Microsoft Sans Serif"; panose-1:2 11 6 4 2 2 2 2 2 4; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-pitch:variable; mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+	/* Style Definitions */ p.MsoNormal, li.MsoNormal, div.MsoNormal {mso-style-parent:""; margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman"; color:black;}
+	h1 {mso-style-next:Normal; margin-top:12.0pt; margin-right:0in; margin-bottom:3.0pt; margin-left:0in; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:1; font-size:16.0pt; font-family:Tahoma; color:navy; mso-font-kerning:16.0pt;}
+	h2 {margin-right:0in; margin-top:14.0pt; mso-margin-bottom-alt:auto; margin-left:0in; mso-pagination:widow-orphan; mso-outline-level:2; font-size:13.5pt; mso-bidi-font-size:18.0pt; font-family:Tahoma; color:navy;}
+	h3 {margin-right:0in; mso-margin-top-alt:auto; mso-margin-bottom-alt:auto; margin-left:0in; mso-pagination:widow-orphan; mso-outline-level:3; font-size:11.0pt; mso-bidi-font-size:13.5pt; font-family:Tahoma; color:navy; font-style:italic;}
+	h4 {margin-right:0in; mso-margin-top-alt:auto; mso-margin-bottom-alt:auto; margin-left:0in; mso-pagination:widow-orphan; mso-outline-level:4; font-size:12.0pt; font-family:"Times New Roman"; color:black;}
+	p.MsoCaption, li.MsoCaption, div.MsoCaption {mso-style-next:Normal; margin-top:6.0pt; margin-right:0in; margin-bottom:6.0pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman"; color:black; font-weight:bold;}
+	p.MsoBodyText, li.MsoBodyText, div.MsoBodyText {margin-right:0in; mso-margin-top-alt:auto; mso-margin-bottom-alt:auto; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; color:black;}
+	a:link, span.MsoHyperlink {color:blue; text-decoration:underline; text-underline:single;}
+	a:visited, span.MsoHyperlinkFollowed {color:purple; text-decoration:underline; text-underline:single;}
+	pre {margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; font-family:"Courier New"; mso-fareast-font-family:"Courier New"; mso-bidi-font-family:"Times New Roman"; color:black;}
+	p.bullet, li.bullet, div.bullet {mso-style-name:bullet; margin-top:10.5pt; margin-right:0in; margin-bottom:10.5pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	p.code, li.code, div.code {mso-style-name:code; margin-top:10.5pt; margin-right:0in; margin-bottom:10.5pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; font-family:"Courier New"; mso-fareast-font-family:"Times New Roman";}
+	p.note, li.note, div.note {mso-style-name:note; margin-top:10.5pt; margin-right:0in; margin-bottom:10.5pt; margin-left:0in; mso-pagination:widow-orphan; background:#CCFFFF; border:none; mso-border-alt:solid #CCFFFF 3.0pt; padding:0in; mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt; font-size:10.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	p.EndBar, li.EndBar, div.EndBar {mso-style-name:EndBar; mso-style-parent:note; margin-top:10.5pt; margin-right:0in; margin-bottom:10.5pt; margin-left:0in; line-height:150%; mso-pagination:widow-orphan; background:aqua; border:none; mso-border-alt:solid #CCFFFF 3.0pt; padding:0in; mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt; font-size:10.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	p.step, li.step, div.step {mso-style-name:step; margin-top:10.5pt; margin-right:0in; margin-bottom:10.5pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	p.substep, li.substep, div.substep {mso-style-name:substep; margin-top:0in; margin-right:0in; margin-bottom:10.5pt; margin-left:17.25pt; mso-pagination:widow-orphan; font-size:10.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	@page Section1 {size:8.5in 11.0in; margin:1.0in 1.25in 1.0in 1.25in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-paper-source:0;}
+	div.Section1 {page:Section1;}
+	--></style>
+	</head>
+	<body lang="EN-US" link="blue" vlink="purple" style='tab-interval:.5in'>
+		<div class="Section1">
+			<h1><a name="_top"></a><a name="top"></a>NmProt NDIS Sample Protocol Driver<span style='COLOR:
+blue;FONT-FAMILY:
+Verdana'>   (5.1)<o:p></o:p></span>
+			</h1>
+			<h2>Summary</h2>
+			<p class="MsoBodyText">
+				This directory contains NM&nbsp;Protocol Driver project files for the protocol 
+				sample driver called <b>NmProt</b>. This sample provides the same functionality 
+				as the ndisuio&nbsp;sample driver in&nbsp;Windows XP DDK, and ndisprot sample 
+				driver in Windows Server 2003 DDK. A test application provided with the Windows 
+				XP/2003 DDK, named <b>uiotest.exe</b> must be built in order to exercise the 
+				driver.
+			</p>
+			<div style='BORDER-RIGHT:#ccffff 3pt solid; PADDING-RIGHT:4pt; BORDER-TOP:#ccffff 3pt solid; PADDING-LEFT:4pt; BACKGROUND:#ccffff; PADDING-BOTTOM:1pt; BORDER-LEFT:#ccffff 3pt solid; PADDING-TOP:1pt; BORDER-BOTTOM:#ccffff 3pt solid'>
+				<p class="note"><b>Note:</b><span style="mso-spacerun: yes">&nbsp; </span>
+					This NmProt will NOT&nbsp;work with Windows 2000 DDK packapp.exe. For 
+					Windows&nbsp;2000 DDK, see NmPacket sample.
+				</p>
+			</div>
+			<h2>Operation</h2>
+			<p class="MsoBodyText">
+				First, the driver dynamically binds to the selected real and virtual 
+				adapters.&nbsp;NmProtBinding::Open() creates a OpenContext&nbsp;for each 
+				adapter. The uiotest.exe&nbsp;application uses CreateFile() to access the 
+				driver by&nbsp;device name&nbsp;"ndisprot".
+			</p>
+			<p class="MsoBodyText"><span style='mso-bidi-font-size:10.0pt'>The NmProtDevice&nbsp;is 
+a KDevice object that allows the driver to properly handle Irps. The 
+functionality is provided in the NmProtDevice files.&nbsp;I</span><span style='mso-bidi-font-size:10.0pt'>t uses an NDIS interface 
+to communicate with any one of the NIC drivers.</span></p>
+			<P class="MsoBodyText"><SPAN style="mso-bidi-font-size: 10.0pt">When 
+<STRONG>uiotest.exe</STRONG> starts,&nbsp;it issues a IOCTL_NDISPROT_OPEN_DEVICE 
+with specified binding name to get OpenContext saved in&nbsp;IRP FileObject. 
+With a successful return, sequent read/write IRP&nbsp;use the same OpenContext 
+to talk to NDIS adapter. This uiotest.exe also shows how to request/send OID 
+requests to the adapter via DeviceIoControl.</SPAN></P>
+			<P class="MsoBodyText"><SPAN style="mso-bidi-font-size: 10.0pt">When this sample 
+is up and running, the singleton NmProtDevice should have N instance of 
+NmProtBinding where each instance represents each binding to miniport adapter. 
+NmOpenContext has 1:1 relationship with NmProtBinding for each user mode 
+app.</SPAN></P>
+			<p class="MsoBodyText"><span style='mso-bidi-font-size:10.0pt'>The driver also
+demonstrates how to handle dynamic binding and unbinding of adapters (NDIS 5.0
+and later). The <b>NmBindingPnp</b> file illustrates how to manage PnP and how
+Power Management queries are handled. When built for NDIS 5.1, the driver also
+demonstrates send packet cancel techniques.<o:p></o:p></span></p>
+			<div style='BORDER-RIGHT:#ccffff 3pt solid; PADDING-RIGHT:4pt; BORDER-TOP:#ccffff 3pt solid; PADDING-LEFT:4pt; BACKGROUND:#ccffff; PADDING-BOTTOM:1pt; BORDER-LEFT:#ccffff 3pt solid; PADDING-TOP:1pt; BORDER-BOTTOM:#ccffff 3pt solid'>
+				<p class="note"><b>Note:</b><span style="mso-spacerun: yes">&nbsp; </span>The NM 
+					Packet Protocol Driver is compliant with&nbsp;5.0 and 5.1, both 32-bit and 
+					64-bit platforms. Only the Ethernet adapter is supported.
+				</p>
+			</div>
+			<h2>Building the Driver</h2>
+			<p class="MsoBodyText">NmProt driver project (<b>NmProt.sln)</b> has&nbsp;3 
+				configurations for each of the target NDIS versions:</p>
+			<table border="1" cellspacing="0" cellpadding="0" style='BORDER-RIGHT:medium none; BORDER-TOP:medium none; BORDER-LEFT:medium none; BORDER-BOTTOM:medium none; BORDER-COLLAPSE:collapse; mso-border-alt:solid windowtext .5pt; mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+				<tr>
+					<td width="197" valign="top">
+						<p class="MsoBodyText"><b>Configuration<o:p></o:p></b></p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'><b>NDIS Version<o:p></o:p></b></p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'><b>Target Windows OS<o:p></o:p></b></p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'><b>DDK<o:p></o:p></b></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="197" valign="top">
+						<p class="MsoBodyText">
+							Win32&nbsp;Checked/Free</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>5.1</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>XP/2003</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>Windows XP/2003 DDK</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="197" valign="top">
+						<p class="MsoBodyText">AMD64 Checked/Free</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>5.1</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>
+							2003</p>
+					</td>
+					<td width="197" valign="top">
+						<p class="MsoBodyText" align="center" style='TEXT-ALIGN:center'>Windows Server 2003 
+							DDK</p>
+					</td>
+				</tr>
+				<TR>
+					<TD vAlign="top" width="197">
+						<P class="MsoBodyText">IA64 Checked/Free</P>
+					</TD>
+					<TD vAlign="top" width="197">
+						<P class="MsoBodyText" style="TEXT-ALIGN: center" align="center">5.1</P>
+					</TD>
+					<TD vAlign="top" width="197">
+						<P class="MsoBodyText" style="TEXT-ALIGN: center" align="center">2003</P>
+					</TD>
+					<TD vAlign="top" width="197">
+						<P class="MsoBodyText" style="TEXT-ALIGN: center" align="center">Windows Server 
+							2003 DDK</P>
+					</TD>
+				</TR>
+			</table>
+			<p class="MsoBodyText">Before building the driver you should be DriverWorks and 
+				DriverNetworks libraries as described in the help files elsewhere.
+			</p>
+			<p class="MsoBodyText">Then select the desired NmProt configuration and build it in 
+				Visual Studio IDE. The drivers will be placed in the appropriate subfolder 
+				under …\NmProt\objchk\i386\.</p>
+			<h2>Installing the Driver</h2>
+			<p class="MsoBodyText">On <b>Windows XP </b>and<b> Windows Server 2003</b>, the 
+				driver is installed as a Network Protocol Component Type. From the Local Area 
+				Connection Properties dialog, select the <b>Install…</b> button. Select the <b>Protocol</b>
+				type of network component to install and click the <b>Add…</b> button. This 
+				launches the Select Network Protocol dialog. Click the <b>Have Disk…</b> button 
+				and browse to the <b>
+					<span style="COLOR:windowtext;mso-fareast-font-family:'Courier New';mso-bidi-font-size:10.0pt">NmProt</span>.inf</b>
+				file, which is the .inf file for NmProt driver. Select <b>"DriverNetworks Protocol 
+					Driver Sample"</b>.</p>
+			<p class="MsoBodyText">At this point the NmProt protocol driver should be 
+				installed.</p>
+			<p class="MsoBodyText">NOTE that the driver does not start automatically. To start 
+				the driver either issue &gt;<i>net start ndisprot</i> from command prompt, or 
+				reboot the system.</p>
+			<p class="MsoBodyText">NOTE that for compatibility with the DDK test application, <b>uiotest.exe</b>, 
+				the driver’s registered name is <i>“ndisprot”</i>, which is different from its 
+				file name, <i>nmprot.sys</i>.</p>
+			<h2>Tools</h2>
+			<p class="MsoBodyText">BoundsChecker for Drivers and SoftICE can be used to test 
+				some of the features of this driver. Specifically, the SoftICE “packet” command 
+				is useful for displaying and decoding NDIS packet buffers.</p>
+			<h2>Code Tour<span style='FONT-SIZE:10pt;mso-bidi-font-size:18.0pt'><o:p></o:p>
+				</span></h2>
+			<table border="1" cellspacing="3" cellpadding="0" width="668" style='MARGIN-LEFT:2.75pt;
+ WIDTH:500.85pt;
+ mso-padding-alt:0in 5.4pt 0in 5.4pt;
+ mso-cellspacing:2.0pt'>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Driver File<o:p></o:p></span></b></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; TEXT-INDENT:84.45pt; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Description<o:p></o:p></span></b></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Characteristics.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Defines a set of NDIS handlers and basic constants of the
+  driver.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Function.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">This file contains the Control definitions for the
+  NmProtDevice.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt right 108.45pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmBindingPnp.cpp<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Implementation for PNP and Power management handlers.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<TR>
+					<TD vAlign="top" width="234">
+						<P class="MsoNormal" style="MARGIN: 2pt 0in; tab-stops: 45.8pt right 108.45pt"><SPAN style="FONT-SIZE: 10pt; COLOR: windowtext; FONT-FAMILY: Tahoma; mso-fareast-font-family: 'Courier New'">NmOpenContext.cpp
+<o:p></o:p></SPAN></P>
+					</TD>
+					<TD vAlign="top" width="426">
+						<P class="MsoNormal" style="MARGIN: 2pt 0in; tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt"><SPAN style="FONT-SIZE: 10pt; COLOR: windowtext; FONT-FAMILY: Tahoma; mso-fareast-font-family: 'Courier New'">Implementation&nbsp;of 
+      OpenContext representing a protocol binding.
+<o:p></o:p></SPAN></P>
+					</TD>
+				</TR>
+				<TR>
+					<TD vAlign="top" width="234">
+						<P class="MsoNormal" style="MARGIN: 2pt 0in; tab-stops: 45.8pt right 108.45pt"><SPAN style="FONT-SIZE: 10pt; COLOR: windowtext; FONT-FAMILY: Tahoma; mso-fareast-font-family: 'Courier New'">NmOpenContext.h</SPAN></P>
+					</TD>
+					<TD vAlign="top" width="426">
+						<P class="MsoNormal" style="MARGIN: 2pt 0in; tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt"><SPAN style="FONT-SIZE: 10pt; COLOR: windowtext; FONT-FAMILY: Tahoma; mso-fareast-font-family: 'Courier New'">Definition 
+      of the OpenContext representing a protocol 
+    binding.
+<o:p></o:p></SPAN></P>
+					</TD>
+				</TR>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.cpp<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Implementation for DriverEntry and Unload of the Driver
+  Object.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.vcproj</span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Visual Studio&nbsp;2003 project file for the “NmProt” driver.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.sln</span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Visual Studio 2003 solution&nbsp;file.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt right 108.45pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Definition of the Driver object.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.inf<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Setup Information File.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.rc<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Driver resource file.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProtBinding.cpp<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NDIS binding class implementation.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProtBinding.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NDIS binding class definitions.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProtDevice.cpp<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Implementation of Upper-Edge elements.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProtDevice.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Definitions of Upper-Edge elements.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmProt.htm<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">This file.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">NmPacketIoctl.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Definitions of the needed control code for NmPacket.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Resource.h<o:p></o:p></span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'">Resource file.<o:p></o:p></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style='FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma'>makefile</span><span style='FONT-FAMILY:Tahoma;mso-bidi-font-size:10.0pt'></span><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'"><o:p></o:p>
+							</span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in'><span style='FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma'>Used for the DDK utility BUILD.EXE.</span><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'"><o:p></o:p>
+							</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="234" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style='FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma'>sources</span><span style='FONT-FAMILY:Tahoma;mso-bidi-font-size:10.0pt'></span><span style="FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'"><o:p></o:p>
+							</span></p>
+					</td>
+					<td width="426" valign="top">
+						<p class="MsoNormal" style='MARGIN:2pt 0in; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style='FONT-SIZE:10pt;COLOR:windowtext;FONT-FAMILY:Tahoma'>Build
+  information for the DDK utility BUILD.EXE.</span><span style="FONT-SIZE:10pt;
+  COLOR:windowtext;
+  FONT-FAMILY:Tahoma;
+  mso-fareast-font-family:'Courier New'"><o:p></o:p>
+							</span></p>
+					</td>
+				</tr>
+			</table>
+			<pre><span style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+			<p class="MsoNormal" style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'"><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></span></p>
+			<p class="MsoNormal" align="center" style='TEXT-ALIGN:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:10pt;FONT-FAMILY:Tahoma;mso-fareast-font-family:'Courier New'"><a href="#top">Return 
+						to Top of Page</a>
+					<o:p></o:p>
+				</span></p>
+			<p class="MsoNormal"><span style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></span></p>
+			<div style='BORDER-RIGHT:#ccffff 3pt solid; PADDING-RIGHT:4pt; BORDER-TOP:#ccffff 3pt solid; PADDING-LEFT:4pt; BACKGROUND:aqua; PADDING-BOTTOM:1pt; BORDER-LEFT:#ccffff 3pt solid; PADDING-TOP:1pt; BORDER-BOTTOM:#ccffff 3pt solid'>
+				<p class="EndBar"><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></p>
+			</div>
+			<p class="MsoNormal"><span style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></span></p>
+			<p class="MsoNormal" style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="FONT-SIZE:7.5pt;FONT-FAMILY:'MS Sans Serif';mso-fareast-font-family:'Courier New';mso-bidi-font-family:'Courier New'">© </span><span style="FONT-SIZE:8pt;FONT-FAMILY:'Microsoft Sans Serif';mso-bidi-font-size:12.0pt">Copyright
+2004 Compuware Corporation<o:p></o:p></span></p>
+			<p class="MsoNormal" style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]><![endif]></span><![if 
+				!supportEmptyParas]><![endif]><![if !supportEmptyParas]><![endif]></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,145 @@
+# vtoolsd.mak
+#
+# Master makefile for VtoolsD examples
+#=============================================================================
+#
+# Compuware Corporation
+# NuMega Lab
+# 9 Townsend West
+# Nashua, NH 03060  USA
+#
+# Copyright (c) 1998 Compuware Corporation. All Rights Reserved.
+# Unpublished - rights reserved under the Copyright laws of the
+# United States.
+#
+#=============================================================================
+
+#########################################################################
+# NMAKE Symbols and Environment Variables
+#
+#   VtoolsD is set up to automate building VxDs based on the values
+#   of a small set of environment variables and NMAKE symbols. You must 
+#   set these values to conform to your particular configuration of tools.
+#
+#   The symbols required for building VxDs are:
+#
+#     VTOOLSD	Directory where VtoolsD is installed
+#     DDK 	Directory where Chicago DDK is installed
+#     SDK 	Directory where Chicago SDK is installed
+#
+#   For building the libraries and some of the auxilliary programs used in
+#   examples, the following symbols are also required:
+#
+#     MASM	Directory for MASM 6.1 (where MLX.EXE is found)
+#     MSC16	Directory where 16-bit Microsoft C compiler is installed
+# 
+#   Because NMAKE can extract symbol values from the DOS environment, you
+#   have the choice of defining any of the symbols either in the environment
+#   or in this file.
+#
+# Recommended Procedure
+#
+#   Set up VTOOLSD as an environment variable in your AUTOEXEC.BAT file, and 
+#   define the remaining symbols below.  By  doing so, you enable NMAKE to 
+#   locate this and other VtoolsD files via the environment, with a minimal 
+#   impact on environment size.  
+#
+#   Modify the right side of the following assignments:
+
+!ifndef DDK
+DDK		=	C:\DDK
+!endif
+
+!ifndef SDK
+SDK		=	C:\SDK
+!endif
+
+!ifndef MSC16
+MSC16		=	C:\MSVC
+!endif
+
+!ifndef MASM
+MASM		=	C:\MASM
+!endif
+
+# If NMAKE is unable to locate your tools after defining these symbols, 
+# check the Tool Definitions section below.
+#
+############################################################################
+#
+# Compuware Numega recommends that you define VTOOLSD as an environment variable.
+# However, if you construct your makefiles to include this file by an 
+# explicit path name, or you use the INCLUDE environment variable to enable
+# NMAKE to locate this file, then you can define symbol VTOOLSD in this
+# file.
+
+!ifndef	VTOOLSD
+VTOOLSD		=	C:\VTOOLSD
+!endif
+
+!if ! EXIST($(VTOOLSD)\INCLUDE\VTOOLSD.H)
+!ERROR Set environment variable VTOOLSD to the path where VtoolsD is installed.
+!endif
+
+#########################################################################
+#
+# Tool Definitions
+
+# Microsoft 32-bit C
+CL32	=	$(SDK)\c832\bin\cl
+
+# Microsoft 16-bit C
+CL16	=	$(MSC16)\bin\cl
+
+# LINK386 (OMF) linker
+LINK386 = 	$(DDK)\bin\link386
+
+# Microsoft 16-bit OMF librarian
+LIB16	=	$(MSC16)\bin\lib
+
+# Microsoft 32-bit symbol table generator
+MAPSYM	= 	$(SDK)\bin\mapsym
+
+# Microsoft MASM version 6.1 or later
+MLX	=	$(MASM)\mlx
+
+# Nu-Mega 32-bit symbol table generator
+MSYM	=	$(DDK)\tools\softice\msym
+
+#########################################################################
+#
+# Options and switches
+
+WIN40	   =	1
+
+INCLUDE    =	$(VTOOLSD)\include;$(DDK)\inc32;$(SDK)\inc32;$(SDK)\c832\include
+
+INCLUDE16  =	$(MSC16)\include
+CFLAGS     =	-Zdp -Gs -c -d2omf -bzalign -Zl  -DDEBUG -Ogaisb1 -D_X86_
+MASMFLAGS  =	-Zd -DMASM6 -c -W2 -Cx
+
+CFLAGS     =	$(CFLAGS) -DWIN40
+MASMFLAGS  =	$(MASMFLAGS) -DWIN40
+LIBSUFFIX  =	40
+
+
+#############################################################################
+
+#
+# Rules
+
+.SUFFIXES: .c .cpp .asm .obj 
+
+.c.obj:
+	set INCLUDE=$(INCLUDE)
+	set CL= $(CFLAGS)
+	$(CL32) $<
+
+.cpp.obj:
+	set INCLUDE=$(INCLUDE)
+	set CL= $(CFLAGS)
+	$(CL32) $<
+
+.asm.obj:
+	set INCLUDE=$(INCLUDE)
+	$(MLX) $(MASMFLAGS) $<

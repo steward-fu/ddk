@@ -1,0 +1,30 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=vcap
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DDK_LIB_PATH)\ks.lib \
+           $(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib
+
+C_DEFINES=$(C_DEFINES) -DUNICODE -D_UNICODE -DNTVERSION='WDM'
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\include\avstream;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\..\common\include\stl;\
+		 $(DRIVERWORKS)\include\dep_vxd
+
+SOURCES=Vcap.rc Vcap.cpp VcapDevice.cpp VcapFilter.cpp VcapPin.cpp VcapTimer.cpp
+

@@ -1,0 +1,9 @@
+CompanyName		=	"Compuware Corporation" 
+FileDescription =	"VCOMM client example"
+FileVersion		=	"Version 1.00" 
+InternalName	=	"COMMCLNT"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation "
+OriginalFilename = 	"commclnt.vxd"
+ProductName		=	"VtoolsD"
+ProductVersion	= 	"Version 2.03"
+Translation		=	0x409, 0x4E4

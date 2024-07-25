@@ -1,0 +1,691 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./KsCam1394_files/filelist.xml">
+<title>KsCam1394: DriverWorks KStream 1394 Video Capture Sample Driver </title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Steve Smith</o:Author>
+  <o:LastAuthor>Steve Smith</o:LastAuthor>
+  <o:Revision>5</o:Revision>
+  <o:TotalTime>47</o:TotalTime>
+  <o:Created>2002-11-18T22:21:00Z</o:Created>
+  <o:LastSaved>2003-04-21T16:42:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>563</o:Words>
+  <o:Characters>3213</o:Characters>
+  <o:Company> Compuware/NuMega Labs, Inc.</o:Company>
+  <o:Lines>26</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>3945</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>75</w:Zoom>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-update:auto;
+	mso-style-parent:"Heading 2";
+	mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	text-indent:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-list:l0 level2 lfo2;
+	tab-stops:list .25in .4in;
+	font-size:20.0pt;
+	mso-bidi-font-size:14.0pt;
+	font-family:Helvetica;
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	mso-bidi-font-style:italic;}
+h2
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	text-indent:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	mso-list:l0 level2 lfo2;
+	tab-stops:list .25in .4in;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;
+	font-style:italic;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoMacroText, li.MsoMacroText, div.MsoMacroText
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:24.0pt 48.0pt 1.0in 96.0pt 120.0pt 2.0in 168.0pt 192.0pt 3.0in;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";}
+p.CodeSnippet, li.CodeSnippet, div.CodeSnippet
+	{mso-style-name:"Code Snippet";
+	mso-style-update:auto;
+	mso-style-parent:"Macro Text";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:24.0pt 48.0pt 1.0in 96.0pt 120.0pt 2.0in 168.0pt 192.0pt 3.0in;
+	border:none;
+	mso-border-alt:solid windowtext .25pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Courier New";}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:360472704;
+	mso-list-template-ids:-1207014840;}
+@list l0:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:.3in;
+	mso-level-number-position:left;
+	margin-left:.3in;
+	text-indent:-.3in;}
+@list l0:level2
+	{mso-level-style-link:"Heading 2";
+	mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.4in;
+	mso-level-number-position:left;
+	margin-left:.4in;
+	text-indent:-.4in;}
+@list l0:level3
+	{mso-level-style-link:"Heading 3";
+	mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	margin-left:.5in;
+	text-indent:-.5in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1 style='margin-left:0in;text-indent:0in'><![if !supportLists]>1.1<span
+style='font:7.0pt "Times New Roman"'> </span><![endif]><span
+style="mso-spacerun: yes"> </span>KsCam1394: DriverWorks 1394 Digital Camera
+Sample Driver </h1>
+
+<h3><span style='font-family:Verdana'>SUMMARY<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>KsCam1394 sample is a
+driver for 1394 digital video camera hardware.<span style="mso-spacerun: yes"> 
+</span>The sample was developed using the Orange Micro iBot Firewire Video
+Conferencing Web Cam.<span style="mso-spacerun: yes">  </span>The driver is a
+Kernel Streaming video capture driver written using the DriverWorks KStream C++
+Framework.<span style="mso-spacerun: yes">  </span>The driver makes use of
+DriverWorks 1394 WDM C++ Framework.<span style="mso-spacerun: yes"> 
+</span>KStream drivers are legacy.<span style="mso-spacerun: yes">  </span>For
+new drivers as of Windows XP, Microsoft has provided the new AVStream architecture.<span
+style="mso-spacerun: yes">  </span>See the AvCam1394 sample for an AVStream
+implementation.<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Functionally, the Cam1394
+driver is similar to and based on the 1394DCAM sample driver provided with
+Microsoft® Windows®&nbsp;XP DDK. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>PROGRAMMING TOUR<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>KStream video capture
+driver:<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>KsCam1394 driver class, <strong>Stream1394Minidriver</strong>,
+derives from <em><b>KStreamMinidriver</b></em> and implements DriverEntry() and
+OnCreateAdapter() methods, which performs driver's initialization and
+registration with the&nbsp;kernel KStream subsystem (stream.sys). <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The <strong>Stream1394Adapter</strong>
+class derives from <strong><i>KStreamAdapter</i></strong> and adds 1394
+functionality to the base class.<span style="mso-spacerun: yes">  </span>The
+class delegates 1394 I/O to <b>CamLowerDevice</b> class which derives from </span><strong><i><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>K1394LowerDevice</span></i></strong><span
+style='font-size:10.0pt;font-family:Verdana'>. <strong>VideoStream</strong>
+class derives from <em><b>KStream</b></em> and implements both KStream
+properties of the driver and event handlers. <strong><o:p></o:p></strong></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>See comments in
+all&nbsp;the source&nbsp;files. Also see complete AVStream documentation in the
+DDK documentation and DriverWorks help AVStream chapter.<span
+style="mso-spacerun: yes">  </span>Also, it is useful to read the DirectShow
+documentation.<span style="mso-spacerun: yes">  </span>This provides useful
+background for user mode portion of video capture.<o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>&nbsp;<o:p></o:p></span></h3>
+
+<h3><span style='font-family:Verdana'>BUILDING and INSTALLING THE SAMPLE<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The sample requires
+Windows XP DDK. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Start
+Microsoft&nbsp;Visual Studio IDE.&nbsp;Open driver project file, <strong>Cam1394.dsw</strong>,
+and build the driver either using the standard IDE build button or DriverStudio
+DDK Build button.<span style="mso-spacerun: yes">  </span>Be sure to select a
+DDK to build with usign the DDK Build Settings dialog from the DriverStudio
+menu.</span> <span style="mso-spacerun: yes"> </span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Alternatively, one can
+build the sample by typing <b>build -zc</b> in either the standard XP DDK
+checked or free build environment.</span> </p>
+
+<p><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>A
+successful build produces <i>KsCam1394.sys.</i> To install the driver, right
+click on <i>KsCam1394.inf</i> and select Install. When prompted for <i>KsCam1394.sys</i>,
+select the built binary. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>&nbsp;<o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>RUNNING THE SAMPLE</span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Once installation is
+complete, the driver can be exercised using<em>&nbsp;</em><strong><i>
+Graphedt.exe</i></strong><em> </em>tool shipped with Windows XP DDK. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Using Graphedt.exe, one
+can build a graph with Cam1394 sample acting a video source (the sample appears
+under &quot;WDM Streaming Capture Devices&quot;) and a DirectShow Video
+Renderer or the VMR default video renderer acting as a sink. <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>Click the
+&quot;play&quot; button.&nbsp; <o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The sample runs on
+Windows 2000 and Windows XP only. <o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>TOOLS<o:p></o:p></span></h3>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Verdana'>Use
+Compuware SoftICE debugger and DriverMonitor trace viewer tool to further
+exploit the implementation details of the sample. <o:p></o:p></span></p>
+
+<h3><span style='font-family:Verdana'>CODE TOUR</span><u><o:p></o:p></u></h3>
+
+<table border=1 cellpadding=0 width=720 style='width:7.5in;mso-cellspacing:
+ 2.0pt;margin-left:2.75pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'>File
+  </span></b></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'>Description
+  </span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>KStream.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'><pre
+  style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;margin-left:
+  0in'><span style='mso-bidi-font-size:12.0pt;font-family:Verdana;mso-fareast-font-family:
+  "Times New Roman";mso-bidi-font-family:"Times New Roman"'>Visual Studio 6.0 Project File<o:p></o:p></span></pre></td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Cam1394.dsw<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Visual
+  Studio 6.0 Workspace File<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Minidriver.h<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Driver
+  class Stream1394Minidriver declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Minidriver.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Driver
+  class Stream1394Minidriver implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Adapter.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Device
+  class Stream1394Adapter declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Adapter.h<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Device
+  class Stream1394Adapter implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>KsCam1394.htm<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>This
+  file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>KsCam1394.inf<o:p></o:p></span></p>
+  </td>
+  <td width=541 valign=top style='width:405.7pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>Installation
+  file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>VideoStream.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Stream
+  class </span><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Verdana'>VideoStream declaration</span><span style='font-size:
+  10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>VideoStream.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Stream
+  class </span><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Verdana'>VideoStream implementation</span><span style='font-size:
+  10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>StreamFormat.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Video
+  format declarations<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>StreamFormat.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Video
+  format definitions<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>CamLowerDevice.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>1394
+  class CamLowerDevice declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>CamLowerDevice.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>1394
+  class CamLowerDevice </span><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Verdana'>implementation</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>CameraControl.h</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Properties
+  class CameraControl declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>CameraControl.cpp</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Properties
+  class CameraControl implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>VideoProcAmp.h<o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Properties
+  class VideoProcAmp declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>VideoProcAmp.cpp<o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Properties
+  class VideoProcAmp implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana'>makefile</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>DDK
+  makefile<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=171 valign=top style='width:128.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>sources</span><span
+  style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma'> </span><span style='font-size:10.0pt;
+  mso-bidi-font-size:12.0pt;font-family:Verdana'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:Tahoma'>Build
+  information for the DDK utility BUILD.EXE.</span><span style='font-size:10.0pt;
+  font-family:Verdana;mso-fareast-font-family:"Courier New";mso-bidi-font-family:
+  Tahoma'> </span><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Verdana'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<table border=0 cellspacing=0 cellpadding=0 width=624 style='width:6.5in;
+ mso-cellspacing:0in;mso-padding-alt:0in 0in 0in 0in'>
+ <tr style='height:1.5pt'>
+  <td style='background:aqua;padding:.75pt .75pt .75pt .75pt;height:1.5pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:2.0pt;mso-bidi-font-size:12.0pt'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© 2002 Compuware Corporation</span><span
+style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:"Courier New"'> <o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

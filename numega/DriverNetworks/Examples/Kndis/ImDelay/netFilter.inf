@@ -1,0 +1,113 @@
+; -- NETFILTER.INF --
+;
+; ImDelay Filter Service INF file
+;
+; Copyright (c) 2000
+;
+; NOTE
+; ====
+; A network filter component has the following two parts: filter service and filter device.
+; A network filter's service and device belong to the same filter driver. 
+; Installing a network filter requires INF files for both the filter service and
+; the filter device, netFilter.inf and netFilterMp.inf
+;
+
+[Version]
+Signature  = "$Windows NT$"
+Class      = NetService
+ClassGUID  = {4D36E974-E325-11CE-BFC1-08002BE10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+
+[Manufacturer]
+%NuMega% = Models
+
+[ControlFlags]
+
+[Models]
+%ImDelayFilter_Desc% = ImDelayFilter.ndi, numega_ImDelayFilter
+
+[ImDelayFilter.ndi]
+AddReg = ImDelayFilter.ndi.AddReg, ImDelayFilter.AddReg
+Characteristics = 0x490 ; NCF_HAS_UI | NCF_FILTER | NCF_NO_SERVICE 
+CopyFiles = ImDelayFilter.CopyFiles.Init, ImDelayFilter.CopyFiles.Sys, ImDelayFilter.CopyFiles.Inf
+
+; ----------------------------------------------------------------------
+; File copy
+;
+[SourceDisksNames]
+1=%DiskDescription%,"",,
+
+[SourceDisksFiles]
+;ImDelay.dll=1
+ImDelay.sys=1
+netFilterMp.inf=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+ImDelayFilter.CopyFiles.Init  = 11   ; %windir%\System32
+ImDelayFilter.CopyFiles.Sys   = 12   ; %windir%\System32\drivers
+ImDelayFilter.CopyFiles.Inf   = 17   ; %windir%\inf
+
+; Copying of ImDelay.dll is required only if the filter has a Notify object
+[ImDelayFilter.CopyFiles.Init]
+;ImDelay.dll,,,2
+
+[ImDelayFilter.CopyFiles.Sys]
+ImDelay.sys,,,2
+
+[ImDelayFilter.CopyFiles.Inf]
+netFilterMp.inf,,,2
+
+; ----------------------------------------------------------------------
+; Filter Install
+;
+
+[ImDelayFilter.ndi.AddReg]
+;
+; Service NDI keys
+;
+; 'FilterClass': determines the filter's order in a stack of filters; 'failover' is
+;                the lowest. Could it be 'unknown' or something?
+; 'FilterDeviceInfFile' and 'FilterDeviceInfId' refer to the miniport portion of the filter
+; 'FilterMediaTypes': mediums the filter deals with. Should match to the array
+;                     returned by KNdisFilterBinding::Open()
+;
+HKR, Ndi,            Service,             , ImDelay
+HKR, Ndi,            FilterClass,         , failover
+HKR, Ndi,            FilterDeviceInfFile, , netFilterMp.inf
+HKR, Ndi,            FilterDeviceInfId,   , numega_ImDelayFiltermp
+HKR, Ndi\Interfaces, UpperRange,          , noupper
+HKR, Ndi\Interfaces, LowerRange,          , nolower
+HKR, Ndi\Interfaces, FilterMediaTypes,    , "ethernet, tokenring, fddi"
+
+HKR, Ndi, HelpText, , %ImDelayFilter_HELP%
+
+; ----------------------------------------------------------------------
+; Keys required if a Notify object is present
+; These keys should be omitted if the Filter does not have any Notify object
+;
+;HKR, Ndi, ClsID,        , {df2e4f67-e93a-11d1-bb14-0000f8779051}
+;HKR, Ndi, ComponentDll, , ImDelay.dll
+
+
+[ImDelayFilter.AddReg]
+; TODO: Add protocol-specific params accessible from KNdisFilterBinding::Open()
+;
+HKR, Parameters, Mediums, 0, 31
+
+[ImDelayFilter.Ndi.Remove.Services]
+DelService = ImDelayFilter
+
+; ----------------------------------------------------------------------
+[Strings]
+NuMega = "NuMega"
+DiskDescription = "ImDelay Filter Install Disk"
+
+ImDelayFilter_Desc = "ImDelay Filter"
+ImDelayFilter_HELP = "This driver internally delays network packets travelling between protocols and miniports"
+
+
+
+ 

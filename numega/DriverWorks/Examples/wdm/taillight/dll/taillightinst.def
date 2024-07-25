@@ -1,0 +1,6 @@
+LIBRARY TailLightInst
+
+EXPORTS
+	Install
+	Uninstall
+

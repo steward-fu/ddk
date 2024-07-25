@@ -1,0 +1,104 @@
+;; pciwdm.inf - INF file for PCI/WDM example
+;; Copyright (c) 1997-1999 Compuware Corporation, Inc.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%ProviderName%
+
+; If device fits one of the standard classes, use the
+; name and GUID here, otherwise create your own as
+; this example shows.
+
+Class=NewDeviceClass
+ClassGUID={ff646f80-8def-11d2-9449-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;Pciwdm.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+Pciwdm_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+
+; PCI hardware IDs use the form
+;   PCI\VEN_aaaa&DEV_bbbb&SUBSYS_cccccccc&REV_dd
+;
+%DeviceDesc%=Pciwdm_DDI, PCI\VEN_FFFF&DEV_FFFF&SUBSYS_00000000&REV_00
+;                  Your IDs here ^^^^     ^^^^        ^^^^^^^^     ^^
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[Pciwdm_DDI]
+CopyFiles=Pciwdm_Files_Driver
+AddReg=Pciwdm_9X_AddReg
+
+[Pciwdm_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,Pciwdm.sys
+
+; --------- Windows NT -----------------
+
+[Pciwdm_DDI.NT]
+CopyFiles=Pciwdm_Files_Driver
+
+[Pciwdm_DDI.NT.Services]
+Addservice = Pciwdm, 0x00000002, Pciwdm_AddService
+
+[Pciwdm_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\Pciwdm.sys
+
+; --------- Files (common) -------------
+
+[Pciwdm_Files_Driver]
+Pciwdm.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Your Company Name here"
+MfgName="Name of HW Manufacturer here"
+DeviceDesc="Compuware PCI/WDM Example Device"
+DeviceClassName="Description of Device class here"
+SvcDesc="Description of NT service here"
+

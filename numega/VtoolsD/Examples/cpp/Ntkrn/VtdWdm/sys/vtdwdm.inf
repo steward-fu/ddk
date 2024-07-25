@@ -1,0 +1,65 @@
+;; VtdWdm.inf
+
+;; *********  PLEASE READ ***********
+;; The wizard cannot create exact INF files for all buses and device types. 
+;; You may have to make changes to this file in order to get your device to
+;; install. In particular, hardware IDs and logical configurations require
+;; intervention.
+
+[Version]
+Signature="$CHICAGO$"
+Class=Unknown
+provider=%ProviderName%
+LayoutFile=layout.inf
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=VtdWdm.Device, *VtdWdmDevice
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+VtdWdm.Files.Ext = 10,System32\Drivers
+VtdWdm.Files.Inf = 10,INF
+
+[VtdWdm.Device]
+CopyFiles=VtdWdm.Files.Ext, VtdWdm.Files.Inf
+AddReg=VtdWdm.AddReg
+
+
+[VtdWdm.Device.NT]
+CopyFiles=VtdWdm.Files.Ext, VtdWdm.Files.Inf
+AddReg=VtdWdm.AddReg
+
+[VtdWdm.Dev.NT.Services]
+Addservice = VtdWdm, 0x00000002, VtdWdm.AddService
+
+[VtdWdm.AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\VtdWdm.sys
+LoadOrderGroup = Base
+
+[VtdWdm.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,VtdWdm.sys
+HKR, "Parameters", "BreakOnEntry", FLG_ADDREG_TYPE_DWORD, 1
+
+[VtdWdm.Files.Ext]
+VtdWdm.sys
+
+[VtdWdm.Files.Inf]
+VtdWdm.Inf
+
+;---------------------------------------------------------------;
+
+[Strings]
+ProviderName="Vireo Software"
+MfgName="Vireo Software"
+DeviceDesc="VToolsD to WDM Test Device"
+SvcDesc="Driver for VToolsD to WDM Test"

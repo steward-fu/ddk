@@ -1,0 +1,88 @@
+;; REGFSD.INF - INF to install Registry File System device
+;; Copyright (c) 1996, Compuware Numega, Inc. 
+
+[Version]
+Signature=$CHICAGO$
+Class=hdc
+provider=%Numega%
+
+;; The RFS is made to look like a hard drive. Consequently, the class
+;; is "hdc". The class install section points the section containing
+;; Registry entries for the class. On many machines, this is already
+;; present.
+
+[ClassInstall]
+AddReg=HDC_Class
+
+;; The Manufacturer section names the vendors whose hardware is 
+;; supported by this file. There is just one vendor in this INF.
+
+[Manufacturer]
+%Numega%=COMPUWARE_NUMEGA
+
+;; This is the section for devices provided by the single manufacturer,
+;; Compuware Numega. The left side of the entry is a string that names
+;; the device being installed. The right side of the entry is composed
+;; of the install section name for the device, followed by the device
+;; ID.
+
+[COMPUWARE_NUMEGA]
+%DeviceName%=NUMEGA_REGFSD,VREGFSD
+
+;; This is the install section section for the Registry File System
+;; device. 
+
+[NUMEGA_REGFSD]
+CopyFiles=REGFSD.CopyFiles
+AddReg=REGFSD.AddReg
+
+;; The CopyFiles section pointed to by the install section provides
+;; the name of the device driver file, which is to be copied from
+;; the distribution media to the system.
+
+[REGFSD.CopyFiles]
+regfsd.pdr
+
+;; This is the AddReg section pointed to by the install section.
+;; These entries specify the device driver, the device loader, and
+;; the device description.
+
+[REGFSD.AddReg]
+HKR,,DevLoader,0,*IOS
+HKR,,PortDriver,0,regfsd.pdr
+HKR,,DriverDesc,0,RegistryFileSystemDriver
+
+;; This is the AddReg section pointed to by the ClassInstall section.
+
+[HDC_Class]
+HKR,,,0,%HDCClassName%
+HKR,,Icon,0,-9
+
+;; The SourceDiskNames section specifies the names of the distribution
+;; disk(s). This INF has a single distribution disk.
+
+[SourceDisksNames]
+1=%DiskName%,,
+
+;; The SourceDiskFiles section associates files in the distribution
+;; with a particular distribution disk(ette). All files in CopyFiles
+;; sections must be named in a SourceDiskFiles section.
+
+[SourceDiskFiles]
+regfsd.pdr=1
+
+;; The DestinationDirs section provides a directory to which files
+;; will be copied. The left side of the item is the name of a CopyFiles
+;; section. The right side is a code that specifies a particular
+;; directory, in this case %WINROOT%\system\iosubsys.
+
+[DestinationDirs]
+REGFSD.CopyFiles	=12	
+
+;; The string section
+
+[Strings]
+Numega		="Compuware Numega, Inc."
+DeviceName	="Registry File System Device"
+HDCClassName="Hard disk controllers"
+DiskName	=Vireo Registry FSD

@@ -1,0 +1,19 @@
+# SOURCES - for Test_VCOM1394 application
+
+TARGETNAME=VirtualAddRemove
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+
+BROWSER_INFO=1
+USE_NATIVE_EH=1
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+INCLUDES=..\.;$(DRIVERWORKS)\include
+
+SOURCES=VirtualAddRemove.cpp

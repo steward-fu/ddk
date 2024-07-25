@@ -1,0 +1,19 @@
+DIRS=			\
+	basicpci	\
+	bmdmatst	\
+	busaddr		\
+	commfilt	\
+	controlr	\
+	file		\
+	hello		\
+	intrdemo	\
+	ipfilterhook \
+	kbdclass	\
+	kbfilter	\
+	mapmem		\
+	parport		\
+	pcienum		\
+	portio		\
+	ramdisk		\
+	serial		\
+	threads	

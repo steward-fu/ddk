@@ -1,0 +1,942 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="VCom1394%20Sample%20Driver_files/filelist.xml">
+<title>VCom1394 Sample Driver</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="place"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="PlaceType"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="PlaceName"/>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Sarah Prevost</o:Author>
+  <o:Template>K1394LowerDevice.dot</o:Template>
+  <o:LastAuthor> </o:LastAuthor>
+  <o:Revision>16</o:Revision>
+  <o:TotalTime>410</o:TotalTime>
+  <o:Created>2001-08-06T13:54:00Z</o:Created>
+  <o:LastSaved>2004-06-09T22:31:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>2027</o:Words>
+  <o:Characters>10622</o:Characters>
+  <o:Company>Compuware/NuMega Lab, Inc.</o:Company>
+  <o:Lines>221</o:Lines>
+  <o:Paragraphs>95</o:Paragraphs>
+  <o:CharactersWithSpaces>12554</o:CharactersWithSpaces>
+  <o:Version>11.5703</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>110</w:Zoom>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:UpdateStylesOnOpen/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:1627421319 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:navy;
+	mso-font-kerning:0pt;
+	font-weight:bold;}
+h2
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:navy;
+	font-weight:bold;}
+h3
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+h5
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-outline-level:5;
+	tab-stops:.5in;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:#3366FF;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+h6
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-outline-level:6;
+	tab-stops:.5in;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:#993300;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	text-indent:-27.0pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoBodyTextIndent3, li.MsoBodyTextIndent3, div.MsoBodyTextIndent3
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	text-indent:-.75in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+p.Heading2Web, li.Heading2Web, div.Heading2Web
+	{mso-style-name:"Heading 2 \(Web\)";
+	mso-style-parent:"Normal \(Web\)";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Tahoma;
+	color:navy;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	mso-bidi-font-style:italic;}
+p.Code, li.Code, div.Code
+	{mso-style-name:Code;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.Heading1Web, li.Heading1Web, div.Heading1Web
+	{mso-style-name:"Heading 1 \(Web\)";
+	mso-style-parent:"Heading 2";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:navy;
+	font-weight:bold;}
+p.Heading3Web, li.Heading3Web, div.Heading3Web
+	{mso-style-name:"Heading 3 \(Web\)";
+	mso-style-parent:"Heading 2 \(Web\)";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:4.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Tahoma;
+	color:#003366;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	font-style:italic;}
+p.SeeAlso, li.SeeAlso, div.SeeAlso
+	{mso-style-name:"See Also";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.BullLeft, li.BullLeft, div.BullLeft
+	{mso-style-name:Bull_Left;
+	mso-style-parent:"Normal \(Web\)";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	mso-list:l0 level1 lfo2;
+	tab-stops:list .5in;
+	font-size:10.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.Note, li.Note, div.Note
+	{mso-style-name:Note;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:807824247;
+	mso-list-template-ids:-1720027182;}
+@list l0:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1>VCom1394 Sample</h1>
+
+<h2>SUMMARY</h2>
+
+<p><span style='font-family:Tahoma'>The <b>VCom1394</b> sample illustrates how
+to set up <span class=GramE>an</span> virtual serial upper interface for WDM
+device driver.<span style='mso-spacerun:yes'>  </span>The driver must be run on
+each of two PCs connected through the 1394 bus.<span style='mso-spacerun:yes'> 
+</span><o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>The sample consists of a driver: <b>vcom1394.sys</b>,
+a console application: <b>virtualaddremove.exe</b>, a class installer DLL: <b>vcomclsinst.dll</b>,
+and a device co-installer DLL: <b>vcomcoinst.dll.</b><span
+style='mso-spacerun:yes'>  </span>The application creates/removes virtual 1394
+devices on XP and later platforms.<span style='mso-spacerun:yes'>  </span>These
+virtual devices are created persistent, meaning they will remain between boots of
+the machine until they are explicitly removed using the console
+application.<span style='mso-spacerun:yes'>  </span>The sample creates a bus
+driver which enumerates child devices.<span style='mso-spacerun:yes'> 
+</span>These child devices act as the virtual serial devices.<span
+style='mso-spacerun:yes'>  </span>The bus itself communicates over the 1394
+connection using direct node-to-node asynchronous communication to other
+similar vcom1394 bus devices.<span style='mso-spacerun:yes'>  </span>The class
+installer demonstrates how to load a custom icon in device manager for a WDM
+device, and also how to provide a custom property page for a class of devices.<span
+style='mso-spacerun:yes'>  </span>The custom icon is located in the <b>firewire.ico</b>
+file which is loaded for the vcom1394 bus device.<span
+style='mso-spacerun:yes'>  </span>The co-installer DLL is used to provide a
+custom property page for the virtual serial devices.<span
+style='mso-spacerun:yes'>  </span>The vcom1394 bus also demonstrates how to
+create PDO child objects in “raw-mode”.<span style='mso-spacerun:yes'> 
+</span>The vcom1394 driver thus acts as bus driver and function driver for
+these PDOs, and no other driver need be loaded for these devices.</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Tahoma'><o:p></o:p></span></p>
+
+<p>&nbsp;</p>
+
+<h2>BUILDING THE SAMPLE</h2>
+
+<p><span style='font-family:Tahoma'>The driver, co-installer DLLs, and
+application, may be built from the command line or from within the Visual C++
+IDE.<span style='mso-spacerun:yes'>    </span>To build from the Visual Studio
+IDE, open the workspace file, <b>vcom1394.dsw</b> for Visual Studio 6, or the
+solution file <b>vcom139402.sln</b> for Visual Studio .NET 2002, or the
+solution file <b>vcom1394.sln</b> for Visual Studio .NET 2003.<span
+style='mso-spacerun:yes'>  </span>Set the active configuration, and then select
+<b>Build</b> or <b>Rebuild all</b>.<span style='mso-spacerun:yes'>  </span>Both
+free and checked builds are available.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>To build from the command line, start an
+appropriate DDK build environment from the start menu shortcuts installed with
+the DDK. <span style='mso-spacerun:yes'> </span>Navigate to the vcom1394
+directory and type “build -ceZ”.<span style='mso-spacerun:yes'>  </span>The
+environment variable <b>DRIVERWORKS</b> must be set to the <b>DriverWorks</b>
+directory for the build to be successful.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></p>
+
+<p class=Note><b>Note:</b> The <b>DriverWorks</b> library, <b>vdw_wdm.lib</b>,
+must be built before <b>vcom1394.sys</b> may be built. <span style='mso-bidi-font-size:
+10.0pt'><o:p></o:p></span></p>
+
+<h2>&nbsp;</h2>
+
+<h2>INSTALLING THE SAMPLE</h2>
+
+<p><span style='font-family:Tahoma'>The driver, <b>vcom1394.sys</b>, must be
+loaded through the device manager on Windows 2000.<span
+style='mso-spacerun:yes'>  </span>Often, when two 1394 host controllers are
+first connected, the other computer will already be listed in the Device
+Manager under “Other Devices” with the name “Microsoft 1394 PC.”<span
+style='mso-spacerun:yes'>  </span>When the 1394 device is already listed,
+double click on the device, and, when the properties dialog comes up, select <b>Update
+driver</b> from the driver tab.<span style='mso-spacerun:yes'>  </span>Choose
+to specify the location of the driver file, and browse to the folder containing
+<b>vcom1394.inf</b>.<span style='mso-spacerun:yes'>  </span>The device manager
+should then load the driver.<span style='mso-spacerun:yes'>  </span>If the
+device is not in the device manager, the driver may be loaded by using the <b>Add
+New Hardware</b> option in the control panel.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>For Windows XP, the console application, <b>virtualaddremove.exe</b>,
+should used to create a virtual 1394 device.<span style='mso-spacerun:yes'> 
+</span>See the discussion on this application below.<span
+style='mso-spacerun:yes'>  </span>Once the virtual device is created, it should
+show up in Device Manager under “Other Devices” with the name
+“VCOM1394_BUS_DEVICE.”<span style='mso-spacerun:yes'>  </span>The “Found New
+Hardware” dialog should come up and prompt for an INF.<span
+style='mso-spacerun:yes'>  </span>If the dialog does not come up, double click
+on the device in Device Manager, and, when the properties dialog comes up,
+select <b>Update driver</b> from the driver tab.<span
+style='mso-spacerun:yes'>  </span>Choose to specify the location of the driver
+file, and browse to the folder containing <b>vcom1394.inf</b>.<span
+style='mso-spacerun:yes'>  </span>The device manager should then load the
+driver.<span style='mso-spacerun:yes'>  </span>If the device is not in the
+device manager, the driver may be loaded by using the <b>Add New Hardware</b>
+option in the control panel.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>Once the driver, <b>vcom1394.sys</b>, has
+loaded, the vcom1394 bus will create its child devices.<span
+style='mso-spacerun:yes'>  </span>Each of these child devices will be
+enumerated with an ID similar to “Compuware Virtual Serial Port XXXXXXXX”,
+where “XXXXXXXX” will actually be the global instance of the child device with
+respect to the bus driver.<span style='mso-spacerun:yes'>  </span>Again, the
+“Found New Hardware” dialog should come up and prompt for an INF for the new
+child device(s).<span style='mso-spacerun:yes'>  </span>If the dialog does not
+come up, double click on each device in Device Manager, and, when the properties
+dialog comes up, select <b>Update driver</b> from the driver tab.<span
+style='mso-spacerun:yes'>  </span>Choose to specify the location of the driver
+file, and browse to the folder containing <b>vcom.inf</b>.<span
+style='mso-spacerun:yes'>  </span>The device manager should then load the
+driver for the child device.<span style='mso-spacerun:yes'>  </span>If the
+device is not in the device manager, the driver may be loaded by using the <b>Add
+New Hardware</b> option in the control panel.<o:p></o:p></span></p>
+
+<p><span style='font-family:Tahoma'>On Windows 2000 and XP, it is also possible
+to load these drivers using the <b>EZDriverInstaller</b> available in the start
+menu under NuMega DriverStudio | Tools.<o:p></o:p></span></p>
+
+<h2 style='tab-stops:.5in'>USING VIRTUALADDREMOVE.EXE</h2>
+
+<p class=MsoNormal style='tab-stops:.5in'>The virtualaddremove application is a
+console application.<span style='mso-spacerun:yes'>  </span><span
+style='mso-bidi-font-family:Tahoma'>Each 1394 host controller on a Windows
+system is associated with a separate 1394 bus driver instance and the
+virtualaddremove application allows creation of virtual devices on any 1394
+host controller in the system.</span> To use, n<span style='mso-bidi-font-family:
+Tahoma'>avigate to the directory containing virtualaddremove.exe and type
+“virtualaddremove c 0” to create a virtual device on 1394 bus 0 (the first
+enumerated 1394 host controller).</span><span style='color:black'><o:p></o:p></span></p>
+
+<h3 style='tab-stops:.5in'><span style='font-family:Verdana'>&nbsp;<o:p></o:p></span></h3>
+
+<h2 style='tab-stops:.5in'>USING VCOMCLSINST.DLL</h2>
+
+<p class=MsoNormal style='tab-stops:.5in'>The vcomclsinst DLL is a class
+co-installer DLL.<span style='mso-spacerun:yes'>  </span><span
+style='mso-bidi-font-family:Tahoma'>This DLL is specified in the vcom1394.inf
+in an AddReg section called out in the ClassInstall32 section as shown here:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>[VCom1394ClassReg]<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>HKR,,<span class=GramE>,0</span>,%ClassName%<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>HKR,<span class=GramE>,Icon</span>,,102<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>HKR,<span class=GramE>,Installer32</span>,,&quot;VComClsInst.dll,VCom1394ClsInst&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>When the vcom1394 driver is loaded, the vcomclsinst DLL becomes the
+class installer DLL for the vcom1394 class.<span style='mso-spacerun:yes'> 
+</span>In addition, the vcomclsinst DLL has a custom icon as a resource, with a
+resource ID of 102.<span style='mso-spacerun:yes'>  </span>This icon is loaded
+in device manager for any device loaded for this class.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>In addition this class installer installs a custom property page.<span
+style='mso-spacerun:yes'>  </span>This page both shows how many virtual COM
+ports the bus has currently created that are in use, and it allows the user to
+specify how many virtual COM ports the bus should create on subsequent
+loads.<span style='mso-spacerun:yes'>  </span>The vcomclsinst DLL has to both
+access the registry and communicate with the device instance to get this
+information.<span style='mso-spacerun:yes'>  </span>The DLL is intended to
+demonstrate how these operations can be accomplished.<span
+style='mso-spacerun:yes'>  </span>To launch the custom property page from
+Device Manager, double click on a “DriverWorks Virtual COM Over 1394 – Bus
+Driver” device and select the <b style='mso-bidi-font-weight:normal'>Virtual
+COM Port Setup</b> tab.</span><span style='color:black'><o:p></o:p></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2 style='tab-stops:.5in'>USING VCOMCOINST.DLL</h2>
+
+<p class=MsoNormal style='tab-stops:.5in'>The vcomcoinst DLL is a device co-installer
+DLL.<span style='mso-spacerun:yes'>  </span><span style='mso-bidi-font-family:
+Tahoma'>This DLL is specified in the vcom.inf in a coinstaller section.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='mso-bidi-font-family:
+Tahoma'>When the vcom1394 driver is loaded, the vcomcoinst DLL becomes the
+device co-installer DLL for the device for which the driver is being
+connected.<span style='mso-spacerun:yes'>  </span>The vcomcoinst DLL installs a
+custom property page for each virtual COM port for which the vcom1394 driver
+controls.<span style='mso-spacerun:yes'>  </span>This custom property page
+lists all available vcom1394 virtual COM ports to which this virtual COM port
+can connect.<span style='mso-spacerun:yes'>  </span>To launch the custom
+property page from Device Manager, double click on a “<st1:place w:st="on"><st1:PlaceName
+ w:st="on">Virtual</st1:PlaceName> <st1:PlaceName w:st="on">Serial</st1:PlaceName>
+ <st1:PlaceType w:st="on">Port</st1:PlaceType></st1:place>” device and select
+the <b style='mso-bidi-font-weight:normal'>Port Connection</b> tab.</span><span
+style='color:black'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:.5in'><span style='color:black'>&nbsp;<o:p></o:p></span></p>
+
+<p class=Note><b>Note:</b> Until a connection is established for the virtual
+COM port using the <b style='mso-bidi-font-weight:normal'>Port Connection </b>custom
+property page, the virtual COM port will not be connected and all data sent to
+the “port” will be thrown out.<span style='mso-bidi-font-size:10.0pt'><o:p></o:p></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2 style='tab-stops:.5in'>HOW THE DRIVER OPERATES</h2>
+
+<p class=MsoNormal>The vcom1394 driver really consists of two parts, the bus
+FDO portion handled by the VCom1394Bus class, and the PDO portion handled by
+the VCom1394Pdo class.<span style='mso-spacerun:yes'>  </span>The VCom1394Bus class
+handles the communication with the 1394 bus.<span style='mso-spacerun:yes'> 
+</span>The VCom1394Pdo class is derived from KVirtualComPdo and thus exposes a
+virtual COM interface to user-mode.<span style='mso-spacerun:yes'> 
+</span>Because PDOs created by the vcom1394 driver are created in “raw-mode”,
+no function driver is ever loaded on top of the PDO.<span
+style='mso-spacerun:yes'>  </span>So, the VCom1394Pdo class handles all child
+FDO activities.<span style='mso-spacerun:yes'>  </span>Each virtual COM port
+created by the vcom1394 bus is represented by a PDO, and thus an instance of
+the VCom1394Pdo class.<span style='mso-spacerun:yes'>  </span>To connect two
+virtual COM ports together, the ports have to find each other.<span
+style='mso-spacerun:yes'>  </span>When the <b style='mso-bidi-font-weight:normal'>Port
+Connection </b>custom property page of the vcomcoinst co-installer DLL is
+invoked, the DLL calls down to the vcom1394 driver.<span
+style='mso-spacerun:yes'>  </span>The driver enumerates all virtual COM ports
+on the 1394 bus.<span style='mso-spacerun:yes'>  </span>Each instance of the
+VCom1394Bus class allocates an address range with information about each
+virtual COM port it creates.<span style='mso-spacerun:yes'>  </span>The layout
+of the address range maintained by VCom1394Bus class is shown below:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
+ mso-yfti-tbllook:480;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:
+ .5pt solid windowtext;mso-border-insidev:.5pt solid windowtext'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Key (ASCII “VCOM21394”)</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Machine Name</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Number Of Virtual COM
+  Ports</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Port 0 Name</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Port 0 <st1:place
+  w:st="on"><st1:PlaceName w:st="on">Address</st1:PlaceName> <st1:PlaceType
+   w:st="on">Range</st1:PlaceType></st1:place> Offset</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5;height:33.25pt'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:33.25pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Port X Name</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7;mso-yfti-lastrow:yes'>
+  <td width=192 valign=top style='width:143.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Port X <st1:place
+  w:st="on"><st1:PlaceName w:st="on">Address</st1:PlaceName> <st1:PlaceType
+   w:st="on">Range</st1:PlaceType></st1:place> Offset</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This address range is at a fixed address in 1394 address
+space.<span style='mso-spacerun:yes'>  </span>So, to find other ports the
+vcom1394 driver attempts to read from every node on the 1394 bus at this fixed
+address.<span style='mso-spacerun:yes'>   </span>First, just the Key register
+is read to verify that this node is indeed a vcom1394 node.<span
+style='mso-spacerun:yes'>  </span>If the Key checks out, the other port
+information is read.<span style='mso-spacerun:yes'>  </span>When the user
+selects a port to connect to from the <b style='mso-bidi-font-weight:normal'>Port
+Connection </b>custom property page, the vcom1394 driver uses the port
+information from the bus address range to access the particular virtual COM
+port’s address range.<span style='mso-spacerun:yes'>  </span>The port address
+range layout is shown below:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
+ mso-yfti-tbllook:480;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:
+ .5pt solid windowtext;mso-border-insidev:.5pt solid windowtext'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td width=240 valign=top style='width:179.7pt;border:solid windowtext 1.0pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Connected Node
+  Number</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width=240 valign=top style='width:179.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Connected Machine
+  Name</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width=240 valign=top style='width:179.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Connected Port Name</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width=240 valign=top style='width:179.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Connected <st1:place
+  w:st="on"><st1:PlaceType w:st="on">Port</st1:PlaceType> <st1:PlaceName w:st="on">Address</st1:PlaceName>
+   <st1:PlaceType w:st="on">Range</st1:PlaceType></st1:place> Offset</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4;mso-yfti-lastrow:yes;height:67.9pt'>
+  <td width=240 valign=top style='width:179.7pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:67.9pt'>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>Data Registers</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  <p class=MsoNormal><span style='mso-spacerun:yes'> </span>.</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To connect to a port, the vcom1394 driver writes the connecting
+port’s information into the desired port’s address range.<span
+style='mso-spacerun:yes'>  </span>This gives the port being connected to, all
+the information it needs to communicate back with the connecting port.<span
+style='mso-spacerun:yes'>  </span>Once connected, these virtual ports will stay
+connected until the user specifies another connection using the <b
+style='mso-bidi-font-weight:normal'>Port Connection</b> custom property page,
+or until one of the ports is removed.<span style='mso-spacerun:yes'>  </span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Two virtual COM ports created by the same instance of the
+vcom1394 driver are not allowed to connect to each other.<span
+style='mso-spacerun:yes'>  </span>This type of connection was not deemed useful
+for purposes of this sample.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2 style='tab-stops:.5in'>RUNNING THE SAMPLE</h2>
+
+<p class=MsoNormal>In order to run the sample two Windows controller 1394 host
+controllers need to be connected via 1394 cable.<span
+style='mso-spacerun:yes'>  </span>The vcom1394.sys driver should be installed and
+at least one virtual COM port created for each host controller.<span
+style='mso-spacerun:yes'>  </span>To install the vcom1394.sys driver, see <span
+class=GramE>the<span style='mso-spacerun:yes'>  </span>“</span>INSTALLING THE
+SAMPLE” section above.<span style='mso-spacerun:yes'>  </span>Once a COM port
+has been created for each end of the 1394 cable, select a connection using the
+Port Connection custom property page.<span style='mso-spacerun:yes'>  </span>To
+use the Port Connection custom property page, see the “USING VCOMCOINST.DLL”
+section above.<span style='mso-spacerun:yes'>  </span>Once a connection is
+established, the user can use serial communication software such as
+HyperTerminal, or a RAS connection between the two ports to transfer data.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2 style='tab-stops:.5in'>File Manifest</h2>
+
+<pre><span class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:
+Tahoma;mso-fareast-font-family:"Times New Roman"'>vcom1394.htm</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:3'>                                     </span>The documentation for this sample (this file).<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcom1394BusInterface.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:2'>                     </span>The device’s GUIDs and structures shared by the co-installer DLLs, application, and the bus driver<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcom1394PdoInterface.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:2'>                    </span>The device’s GUIDs and structures shared by the co-installer DLLs, application, and the PDO portion of the bus driver<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcom1394Common.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:2'>                           </span>The structures shared by the FDO and PDO portions of the bus driver<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in;tab-stops:27.0pt .5in'>Driver Files:</h5>
+
+<pre><span class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:
+Tahoma;mso-fareast-font-family:"Times New Roman"'>vcom1394bus.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>     </span> <span
+style='mso-tab-count:2'>                              </span>Header for the <i>VCom1394Bus</i> driver class<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcom1394driver.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'> </span> <span
+style='mso-tab-count:2'>                              </span>Header for the <i>VCom1394Driver</i> driver class<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcom1394pdo.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>     </span> <span
+style='mso-tab-count:2'>                              </span>Header for the <i>VCom1394Pdo</i> driver class<o:p></o:p></span></pre><pre><b><span
+style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'>vcom1394bus.cpp</span></b><span style='font-family:Tahoma'><span style='mso-spacerun:yes'>  </span><span
+style='mso-tab-count:2'>                              </span><i>VCom1394Bus</i> driver class<o:p></o:p></span></pre><pre><b><span
+style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'>vcom1394driver.cpp</span></b><span style='font-family:Tahoma'><span style='mso-spacerun:yes'>  </span><span
+style='mso-tab-count:2'>                          </span><i>VCom1394Driver</i> driver class<o:p></o:p></span></pre><pre><b><span
+style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'>vcom1394pdo.cpp</span></b><span style='font-family:Tahoma'><span style='mso-spacerun:yes'>  </span><span
+style='mso-tab-count:2'>                              </span><i>VCom1394Pdo</i> driver class<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>function.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:3'>                                             </span>Header for driver functions<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in'>Class Co-Installer Files:</h5>
+
+<pre><span class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:
+Tahoma;mso-fareast-font-family:"Times New Roman"'>vcomclsinst.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>        </span> <span
+style='mso-tab-count:2'>                              </span>Header for the <span
+style='mso-bidi-font-style:italic'>class installer</span> DLL<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>openbyintf.cpp</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>      </span> <span
+style='mso-tab-count:2'>                              </span>Setup API functions for opening handle to device<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcomclsinst.cpp</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>     </span> <span
+style='mso-tab-count:2'>                              </span>Implementation file for class installer DLL<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>firewire.ico</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>            </span> <span
+style='mso-tab-count:2'>                              </span>Custom icon for vcom1394bus class<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in'>Device Co-Installer Files:</h5>
+
+<pre><span class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:
+Tahoma;mso-fareast-font-family:"Times New Roman"'>resource.h</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>             </span> <span
+style='mso-tab-count:2'>                              </span>Header for the <span
+style='mso-bidi-font-style:italic'>co-installer</span> DLL resources<o:p></o:p></span></pre><pre><span
+class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;
+mso-fareast-font-family:"Times New Roman"'>vcomcoinst.cpp</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:1'>     </span> <span
+style='mso-tab-count:2'>                              </span>Implementation file for co-installer DLL<o:p></o:p></span></pre><pre><span
+style='font-family:Tahoma'>&nbsp;<o:p></o:p></span></pre>
+
+<h5 style='margin-left:0in'>Executable Files:</h5>
+
+<pre><span class=GramE><b><span style='mso-bidi-font-size:12.0pt;font-family:
+Tahoma;mso-fareast-font-family:"Times New Roman"'>virtualaddremove.cpp</span></b></span><span
+style='font-family:Tahoma'><span style='mso-tab-count:2'>                         </span>Creates virtual 1394 devices</span></pre><pre><o:p>&nbsp;</o:p></pre>
+
+<h5 style='margin-left:0in'>Diagnostic Registry Location:</h5>
+
+<pre><span style='font-size:8.0pt'>HKEY_LOCAL_MACHINE\SYSTEM\<span
+class=SpellE>CurrentControlSet</span>\Control\Class<span class=GramE>\{</span>EF5B7C50-6A01-11D2-B841-00C04FAD5171} (remove to reinstall <span
+class=SpellE>classinstaller</span>)<o:p></o:p></span></pre><pre><span
+style='font-size:8.0pt'>HKEY_LOCAL_MACHINE\SYSTEM\<span class=SpellE>CurrentControlSet</span>\Control\Class<span
+class=GramE>\{</span>4D36E978-E325-11CE-BFC1-08002BE10318}<o:p></o:p></span></pre><pre><span
+style='font-size:8.0pt'>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\V1394\VCOM1394_BUS_DEVICE<o:p></o:p></span></pre><pre><span
+style='font-size:8.0pt'>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\VCOM1394<o:p></o:p></span></pre><pre><span
+style='font-size:8.0pt'>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\<span
+class=SpellE>CurrentVersion</span>\Ports<o:p></o:p></span></pre><pre><span
+style='font-size:8.0pt'><o:p>&nbsp;</o:p></span></pre></div>
+
+</body>
+
+</html>

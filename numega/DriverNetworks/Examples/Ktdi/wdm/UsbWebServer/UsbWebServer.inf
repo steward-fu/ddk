@@ -1,0 +1,117 @@
+; UsbWebServer.Inf - install information file for Usb thermometer example
+; Originally supplied by Cypress Semiconductors, modified by Compuware Corporation
+;	for use in this example USB driver
+;
+; Modified to have an upper filter driver that acts as a web server for the temp.
+;
+
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%Cypress%
+Class=Thermometers									; Neither the Class or ClassGUID
+ClassGUID = {4a5eba30-8a23-11d2-9448-00105a075f6b}	; are standard, they were generated
+													; by Compuware for this example
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Cypress_Mfg
+
+[Cypress_Mfg]
+%USB\VID_04B4&PID_0002_DeviceDesc%=CyThermometer,USB\VID_04B4&PID_0002
+
+[DestinationDirs]
+CyThermometer_Files_Driver = 10,System32\Drivers
+CyThermometer_Files_Driver_9x = 10,System32\Drivers
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; 9x Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%ThermometerClassName%
+HKR,,Icon,,"-20"
+
+;---------- DDInstall Sections -----------------------------------------------
+
+; --------- Windows 9x -----------------
+
+[CyThermometer]
+CopyFiles=CyThermometer_Files_Driver_9x
+AddReg=CyThermometer_AddReg
+
+[CyThermometer.HW]
+AddReg=MyHWAddRegistrySection9x
+
+[CyThermometer_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,USBTherm.sys
+HKR,,Description,,%Thermometer_DeviceDesc%
+
+; --------- Windows NT -----------------
+
+[CyThermometer.NT]
+CopyFiles=CyThermometer_Files_Driver
+
+[CyThermometer.NT.HW]
+AddReg=MyHWAddRegistrySectionNT
+
+[CyThermometer.NT.Services]
+Addservice = CyThermometer, 0x00000002, CyThermometer_Service
+Addservice = usbfilt,, UsbFiltInst
+
+[CyThermometer_Service]
+DisplayName    = %CyThermometer_SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\USBTherm.sys
+
+
+[UsbFiltInst]
+DisplayName    = "UsbWebServer"
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_AUTO_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %10%\System32\Drivers\UsbWebServer.sys
+LoadOrderGroup = Extended Base
+
+; --------- Files ----------------------
+
+[CyThermometer_Files_Driver_9x]
+USBTherm.sys,,,
+UsbWebSv.sys
+Temp.htm
+
+[CyThermometer_Files_Driver]
+USBTherm.sys,,,
+UsbWebServer.sys
+Temp.htm
+
+; --------- Hardware Registry Keys ----------------------
+
+[MyHWAddRegistrySection9x]
+HKR,,"UpperFilters",0x00010000,"UsbWebSv.sys"
+
+[MyHWAddRegistrySectionNT]
+HKR,,"UpperFilters",0x00010000,"UsbFilt"
+
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+Cypress="Cypress Semiconductors"
+MfgName="Cypress"
+Thermometer_DeviceDesc="Thermometer"
+ThermometerClassName="Thermometers"
+USB\VID_04B4&PID_0002_DeviceDesc="Cypress USB Thermometer"
+CyThermometer_SvcDesc="Driver for Cypress USB Thermometer"

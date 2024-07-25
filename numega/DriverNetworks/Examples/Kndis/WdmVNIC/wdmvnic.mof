@@ -1,0 +1,78 @@
+[WMI, Dynamic, Provider("WMIProv"),
+ guid("{15B54EAF-81BF-4d01-A672-8CE891E4264E}"),
+ localeid(0x409),
+ WmiExpense(1),
+ Description("RW ULONG")]
+class WDMVNIC_RW_ULONG
+{
+   [key, read]
+   string   InstanceName;           // Instance name returned from WMI
+
+   [read]
+   boolean  Active;
+
+   [read, write,
+    Description("You can read and write this variable."),
+    WmiDataId(1)] uint32   m_ulong;
+};
+
+[WMI, Dynamic, Provider("WMIProv"),
+ guid("{CC3FCF2D-C629-47dc-B928-E75E6810B7C3}"),
+ localeid(0x409),
+ WmiExpense(1),
+ Description("RO ULONG")]
+class WDMVNIC_RO_ULONG
+{
+   [key, read]
+   string   InstanceName;           // Instance name returned from WMI
+
+   [read]
+   boolean  Active;
+
+   [read,
+    Description("You can only read this variable."),
+    WmiDataId(1)] uint32   m_ulong;
+};
+
+[WMI, Dynamic, Provider("WMIProv"),
+ guid("{839EAF90-F6A3-4641-8628-59EA99E939FE}"),
+ localeid(0x409),
+ WmiExpense(1),
+ Description("6 bytes structure")]
+class WDMVNIC_MACADDRESS
+{
+   [key, read]
+   string   InstanceName;           // Instance name returned from WMI
+
+   [read]
+   boolean  Active;
+
+   [read,
+      Description("Number of elements."),
+      WmiDataId(1)] uint32 m_nNumberElements;
+
+   [read,
+        Description("MAC Address."),
+      WmiDataId(2),
+      WmiSizeIs("m_nNumberElements")]    uint8 m_MacAddress[];
+
+};
+
+[WMI, Dynamic, Provider("WMIProv"),
+ guid("{02056771-973A-4de7-878A-1CC055452C02}"),
+ localeid(0x409),
+ WmiExpense(1),
+ Description("Sample string")]
+class WDMVNIC_STRING
+{
+   [key, read]
+   string   InstanceName;           // Instance name returned from WMI
+
+   [read]
+   boolean  Active;
+
+   [read,
+    Description("Just a sample string."),
+    WmiDataId(1)] string   m_string;
+};
+

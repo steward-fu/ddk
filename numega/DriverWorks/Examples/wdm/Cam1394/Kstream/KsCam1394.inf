@@ -1,0 +1,102 @@
+;
+; KsCam1394.inf -- This file contains installation information for Compuware  
+;	DriverWorks KStream sample driver for IEEE 1394 digital cameras.
+;           
+
+[Version]
+LayoutFile=Layout.inf, Layout1.inf, Layout2.inf
+signature="$CHICAGO$"
+Class=Image
+ClassGUID={6bdd1fc6-810f-11d0-bec7-08002be2092f}
+ 
+Provider=%CPWR%
+
+[ControlFlags]
+; All PnP devices should be excluded from manual AddDevice Applet list
+ExcludeFromSelect=*
+
+[Manufacturer]
+%Cpwr%=Compuware
+
+[DestinationDirs]
+DefaultDestDir=11               ; LDID_SYS
+
+; Delete old Win95 and "Detroit" update drivers
+KsCam1394.DelDrivers=10,system
+KsCam1394.CopyDrivers=10,system32\drivers
+KsCam1394.CopyCODEC=11
+
+
+[Compuware]
+%KsCam1394.DeviceDesc%=KsCam1394,1394\ORANGE_MICRO&IBOT
+%KsCam1394.DeviceDesc%=KsCam1394,1394\A02D&100
+
+[KsCam1394]
+Include=    ks.inf, kscaptur.inf, ksfilter.inf
+Needs=      KS.Registration,KSCAPTUR.Registration
+AddReg=     KsCam1394.AddReg
+UpdateInis= KsCam1394.UpdateIni
+DelFiles=   KsCam1394.DelDrivers
+CopyFiles=  KsCam1394.CopyDrivers, KsCam1394.CopyCODEC
+
+[KsCam1394.NT]
+Include=    ks.inf, kscaptur.inf, ksfilter.inf
+Needs=      KS.Registration,KSCAPTUR.Registration.NT
+AddReg=     KsCam1394.AddReg
+UpdateInis= KsCam1394.UpdateIni
+CopyFiles=  KsCam1394.CopyDrivers, KsCam1394.CopyCODEC
+
+[KsCam1394.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,KsCam1394.sys
+HKR, "Parameters", "TraceLevel", 0x00010001, 1
+
+[KsCam1394.UpdateIni]
+system.ini, drivers32,,"VIDC.UYVY=msyuv.dll"
+
+[KsCam1394.DelDrivers]
+ks.sys,,,1
+stream.sys,,,1
+KsCam1394.sys,,,1
+
+[KsCam1394.CopyDrivers]
+stream.sys
+KsCam1394.sys
+
+[KsCam1394.CopyCODEC]
+msyuv.dll
+
+[KsCam1394.Interfaces]
+AddInterface=%KSCATEGORY_CAPTURE%,GLOBAL,KsCam1394.Interface
+
+[KsCam1394.NT.Interfaces]
+AddInterface=%KSCATEGORY_CAPTURE%,GLOBAL,KsCam1394.Interface
+
+[KsCam1394.Interface]
+AddReg=KsCam1394.Intf.AddReg
+
+[KsCam1394.Intf.AddReg]
+HKR,,CLSID,,%ProxyVCap.CLSID%
+HKR,,FriendlyName,,%KsCam1394.DeviceDesc%
+
+[KsCam1394.NT.Services]
+AddService = KsCam1394,0x00000002,KsCam1394.ServiceInstall
+
+[KsCam1394.ServiceInstall]
+DisplayName   = %KsCam1394.DeviceDesc%
+ServiceType   = %SERVICE_KERNEL_DRIVER%
+StartType     = %SERVICE_DEMAND_START%
+ErrorControl  = %SERVICE_ERROR_NORMAL%
+ServiceBinary = %12%\KsCam1394.sys
+
+
+[Strings]
+ProxyVCap.CLSID="{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_CAPTURE="{65E8773D-8F56-11D0-A3B9-00A0C9223196}"
+SERVICE_KERNEL_DRIVER=1
+; PnP should use demand start
+SERVICE_DEMAND_START=3
+SERVICE_ERROR_NORMAL=1
+
+Cpwr="Compuware"
+KsCam1394.DeviceDesc="DriverWorks KStream IEEE 1394 Camera Sample"

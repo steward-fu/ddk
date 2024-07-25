@@ -1,0 +1,69 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VdwLibs", "VdwLibs2005.vcproj", "{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NdisWdm", "NdisWdm2005.vcproj", "{2986EACE-A82A-447E-89D4-999487B4587D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		NT4 Checked|Win32 = NT4 Checked|Win32
+		NT4 Checked|Win64 (AMD64) = NT4 Checked|Win64 (AMD64)
+		NT4 Checked|Win64 (Itanium) = NT4 Checked|Win64 (Itanium)
+		NT4 Free|Win32 = NT4 Free|Win32
+		NT4 Free|Win64 (AMD64) = NT4 Free|Win64 (AMD64)
+		NT4 Free|Win64 (Itanium) = NT4 Free|Win64 (Itanium)
+		WDM Checked|Win32 = WDM Checked|Win32
+		WDM Checked|Win64 (AMD64) = WDM Checked|Win64 (AMD64)
+		WDM Checked|Win64 (Itanium) = WDM Checked|Win64 (Itanium)
+		WDM Free|Win32 = WDM Free|Win32
+		WDM Free|Win64 (AMD64) = WDM Free|Win64 (AMD64)
+		WDM Free|Win64 (Itanium) = WDM Free|Win64 (Itanium)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win32.ActiveCfg = NT4 Checked|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win32.Build.0 = NT4 Checked|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win64 (AMD64).ActiveCfg = NT4 Checked|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win64 (AMD64).Build.0 = NT4 Checked|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win64 (Itanium).ActiveCfg = NT4 Checked|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Checked|Win64 (Itanium).Build.0 = NT4 Checked|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win32.ActiveCfg = NT4 Free|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win32.Build.0 = NT4 Free|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win64 (AMD64).ActiveCfg = NT4 Free|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win64 (AMD64).Build.0 = NT4 Free|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win64 (Itanium).ActiveCfg = NT4 Free|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.NT4 Free|Win64 (Itanium).Build.0 = NT4 Free|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win32.ActiveCfg = WDM Checked|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win32.Build.0 = WDM Checked|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win64 (AMD64).ActiveCfg = WDM Checked|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win64 (AMD64).Build.0 = WDM Checked|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win64 (Itanium).ActiveCfg = WDM Checked|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Checked|Win64 (Itanium).Build.0 = WDM Checked|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win32.ActiveCfg = WDM Free|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win32.Build.0 = WDM Free|Win32
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win64 (AMD64).ActiveCfg = WDM Free|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win64 (AMD64).Build.0 = WDM Free|Win64 (AMD64)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win64 (Itanium).ActiveCfg = WDM Free|Win64 (Itanium)
+		{A92EE9A5-7E73-4FF0-A5D5-6ECC18875F81}.WDM Free|Win64 (Itanium).Build.0 = WDM Free|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Checked|Win32.ActiveCfg = WDM Free|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Checked|Win64 (AMD64).ActiveCfg = WDM Free|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Checked|Win64 (Itanium).ActiveCfg = WDM Free|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Free|Win32.ActiveCfg = WDM Free|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Free|Win64 (AMD64).ActiveCfg = WDM Free|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.NT4 Free|Win64 (Itanium).ActiveCfg = WDM Free|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win32.ActiveCfg = WDM Checked|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win32.Build.0 = WDM Checked|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win64 (AMD64).ActiveCfg = WDM Checked|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win64 (AMD64).Build.0 = WDM Checked|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win64 (Itanium).ActiveCfg = WDM Checked|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Checked|Win64 (Itanium).Build.0 = WDM Checked|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win32.ActiveCfg = WDM Free|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win32.Build.0 = WDM Free|Win32
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win64 (AMD64).ActiveCfg = WDM Free|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win64 (AMD64).Build.0 = WDM Free|Win64 (AMD64)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win64 (Itanium).ActiveCfg = WDM Free|Win64 (Itanium)
+		{2986EACE-A82A-447E-89D4-999487B4587D}.WDM Free|Win64 (Itanium).Build.0 = WDM Free|Win64 (Itanium)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

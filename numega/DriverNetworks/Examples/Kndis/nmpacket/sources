@@ -1,0 +1,31 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=NMPacket
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS= $(DRIVERNETWORKS)\lib\*\$(BUILDTYPE)\kndis5pt.lib $(DDK_LIB_PATH)\ndis.lib\
+	$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw.lib
+
+C_DEFINES= -DNTVERSION=400 -DNDIS50=1 
+BROWSER_INFO=1
+RCNOFONTMAP=1
+
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(BASEDIR)\inc\ddk;\
+	$(BASEDIR)\inc;\
+	$(DRIVERWORKS)\include;\
+	.;\
+	$(DRIVERWORKS)\source;\
+	$(DRIVERNETWORKS)\include
+
+SOURCES= NMBindingPnp.cpp NMPacket.cpp NMPacketBinding.cpp NMPacketControlDevice.cpp NMPacketDevice.cpp NMPacket.rc
+

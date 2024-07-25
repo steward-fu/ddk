@@ -1,0 +1,23 @@
+HKCR
+{
+	NmIntNotify.NotifyObject.1 = s 'NotifyObject Class'
+	{
+		CLSID = s '{0BFDF1C4-D2CA-11D4-B047-00C04F6A5DA9}'
+	}
+	NmIntNotify.NotifyObject = s 'NotifyObject Class'
+	{
+		CLSID = s '{0BFDF1C4-D2CA-11D4-B047-00C04F6A5DA9}'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0BFDF1C4-D2CA-11D4-B047-00C04F6A5DA9} = s 'NotifyObject Class'
+		{
+			ProgID = s 'NmIntNotify.NotifyObject.1'
+			VersionIndependentProgID = s 'NmIntNotify.NotifyObject'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'both'
+			}
+		}
+	}
+}

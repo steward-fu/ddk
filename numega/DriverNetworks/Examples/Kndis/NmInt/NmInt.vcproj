@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="NmInt"
+	SccProjectName=""
+	SccLocalPath="">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="NT4 Free|Win32"
+			OutputDirectory=".\objfre\nt4"
+			IntermediateDirectory=".\objfre\nt4"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/FD /QIfdiv- /QIf /QIfdiv- /QIf "
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\..\common\include\stl,$(DRIVERNETWORKS)\include,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\src\network\inc"
+				PreprocessorDefinitions="FPO=0;WIN32=100;_WINDOWS;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;NDEBUG;_DLL=1;_X86_=1;$(CPU)=1;NDIS_MINIPORT_DRIVER;NDIS40_MINIPORT=1;NDIS40=1;KNDIS_W9X_COMPATIBLE=0;FPO=1;_IDWBUILD"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="FALSE"
+				ProgramDataBaseFileName="objchk/i386/NmInt.pdb"
+				BrowseInformation="1"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Building SoftICE symbol file"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /TRANS:SOURCE,PACKAGE &quot;$(TargetPath)&quot;
+"
+				Outputs="&quot;$(TargetDir)\$(TargetName).nms&quot;"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/driver /debug:FULL /IGNORE:4001,4037,4039,4065,4078,4087,4089,4096,4210 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /FORCE:MULTIPLE /align:0x20 /osversion:4.00 /subsystem:native /driver /debug:FULL /IGNORE:4001,4037,4039,4065,4070,4078,4087,4089,4096,4210 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /FORCE:MULTIPLE /align:0x20 /osversion:4.00 /subsystem:native"
+				AdditionalDependencies="ndis.lib int64.lib ntoskrnl.lib hal.lib kndis4mp.lib ndis.lib int64.lib ntoskrnl.lib hal.lib"
+				OutputFile=".\objfre\nt4\NmInt.sys"
+				Version="4.0"
+				AdditionalLibraryDirectories="$(DRIVERNETWORKS)\lib\i386\checked,$(TARGET_LIB_PATH),$(DRIVERNETWORKS)\lib\i386\free"
+				IgnoreAllDefaultLibraries="TRUE"
+				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
+				OptimizeReferences="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Under Environment:"
+				CommandLine="echo BASEDIR $(BASEDIR)
+echo DRIVERNETWORKS $(DRIVERNETWORKS)
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG,NDIS_MINIPORT_DRIVER,NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(DRIVERNETWORKS)\Include;$(CRT_INC_PATH)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="NT4 Checked|Win32"
+			OutputDirectory=".\objchk\nt4"
+			IntermediateDirectory=".\objchk\nt4"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/FD /QIfdiv- /QIf "
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\..\common\include\stl,$(DRIVERNETWORKS)\include,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\src\network\inc"
+				PreprocessorDefinitions="_DEBUG;DBG=1;FPO=0;WIN32=100;_WINDOWS;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;NDEBUG;_DLL=1;_X86_=1;$(CPU)=1;NDIS_MINIPORT_DRIVER;NDIS40_MINIPORT=1;NDIS40=1;KNDIS_W9X_COMPATIBLE=0"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="FALSE"
+				ProgramDataBaseFileName="objchk/i386/NmInt.pdb"
+				BrowseInformation="1"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Building SoftICE symbol file"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /TRANS:SOURCE,PACKAGE &quot;$(TargetPath)&quot;
+"
+				Outputs="&quot;$(TargetDir)\$(TargetName).nms&quot;"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/driver /debug:FULL /IGNORE:4001,4037,4039,4065,4078,4087,4089,4096,4210 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /FORCE:MULTIPLE /align:0x20 /osversion:4.00 /subsystem:native"
+				AdditionalDependencies="ndis.lib int64.lib ntoskrnl.lib hal.lib kndis4mp.lib"
+				OutputFile=".\objchk\nt4\nmint.sys"
+				Version="4.0"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(DRIVERNETWORKS)\lib\i386\checked,$(TARGET_LIB_PATH)"
+				IgnoreAllDefaultLibraries="TRUE"
+				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
+				OptimizeReferences="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Under Environment:"
+				CommandLine="echo BASEDIR $(BASEDIR)
+echo DRIVERNETWORKS $(DRIVERNETWORKS)
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG,NDIS_MINIPORT_DRIVER"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(DRIVERNETWORKS)\Include;$(CRT_INC_PATH)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="NDIS 5 Free|Win32"
+			OutputDirectory=".\objfre\i386"
+			IntermediateDirectory=".\objfre\i386"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/QIfdiv- /QIf "
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\..\common\include\stl,$(DRIVERNETWORKS)\include,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\src\network\inc"
+				PreprocessorDefinitions="FPO=1;_IDWBUILD;WIN32=100;_WINDOWS;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;NDEBUG;_DLL=1;_X86_=1;$(CPU)=1;NDIS_MINIPORT_DRIVER;NDIS50_MINIPORT=1;NDIS50=1;KNDIS_W9X_COMPATIBLE=0"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="FALSE"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Building SoftICE symbol file"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /TRANS:SOURCE,PACKAGE &quot;$(TargetPath)&quot;
+"
+				Outputs="&quot;$(TargetDir)\$(TargetName).nms&quot;"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/driver /debug:FULL /IGNORE:4001,4037,4039,4065,4070,4078,4087,4089,4096,4210 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /FORCE:MULTIPLE /align:0x20 /osversion:4.00 /subsystem:native"
+				AdditionalDependencies="ndis.lib int64.lib ntoskrnl.lib hal.lib kndis5mp.lib"
+				OutputFile=".\objfre\i386\NmInt.sys"
+				Version="4.0"
+				AdditionalLibraryDirectories="$(DRIVERNETWORKS)\lib\i386\free,$(TARGET_LIB_PATH)"
+				IgnoreAllDefaultLibraries="TRUE"
+				OptimizeReferences="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Under Environment:"
+				CommandLine="echo BASEDIR $(BASEDIR)
+echo DRIVERNETWORKS $(DRIVERNETWORKS)
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG,NDIS_MINIPORT_DRIVER"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(DRIVERNETWORKS)\Include;$(CRT_INC_PATH)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="NDIS 5 Checked|Win32"
+			OutputDirectory=".\objchk\i386"
+			IntermediateDirectory=".\objchk\i386"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/FD /QIfdiv- /QIf "
+				Optimization="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories="..\..\..\..\common\include\stl,$(DRIVERNETWORKS)\include,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(BASEDIR)\src\network\inc"
+				PreprocessorDefinitions="_DEBUG;DBG=1;FPO=0;WIN32=100;_WINDOWS;STD_CALL;CONDITION_HANDLING=1;NT_UP=1;NT_INST=0;_NT1X_=100;WINNT=1;_WIN32_WINNT=0x0400;WIN32_LEAN_AND_MEAN=1;DEVL=1;NDEBUG;_DLL=1;_X86_=1;$(CPU)=1;NDIS_MINIPORT_DRIVER;NDIS50_MINIPORT=1;NDIS50=1;KNDIS_W9X_COMPATIBLE=0"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="FALSE"
+				ProgramDataBaseFileName="objchk/i386/NmInt.pdb"
+				BrowseInformation="1"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Building SoftICE symbol file"
+				CommandLine="$(DRIVERWORKS)\bin\nmsym /TRANS:SOURCE,PACKAGE &quot;$(TargetPath)&quot;
+"
+				Outputs="&quot;$(TargetDir)\$(TargetName).nms&quot;"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/driver /debug:FULL /IGNORE:4001,4037,4039,4065,4078,4087,4089,4096,4210 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /FORCE:MULTIPLE /align:0x20 /osversion:4.00 /subsystem:native"
+				AdditionalDependencies="ndis.lib int64.lib ntoskrnl.lib hal.lib kndis5mp.lib"
+				OutputFile=".\objchk\i386\nmint.sys"
+				Version="4.0"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(DRIVERNETWORKS)\lib\i386\checked,$(TARGET_LIB_PATH)"
+				IgnoreAllDefaultLibraries="TRUE"
+				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
+				OptimizeReferences="2"
+				EntryPointSymbol="DriverEntry"
+				SetChecksum="TRUE"
+				BaseAddress="0x10000"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Under Environment:"
+				CommandLine="echo BASEDIR $(BASEDIR)
+echo DRIVERNETWORKS $(DRIVERNETWORKS)
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG,NDIS_MINIPORT_DRIVER"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(DRIVERNETWORKS)\Include;$(CRT_INC_PATH)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter=".c;.cpp">
+			<File
+				RelativePath=".\NmIntAdap.cpp">
+			</File>
+			<File
+				RelativePath=".\NmIntBind.cpp">
+			</File>
+			<File
+				RelativePath=".\NmIntDrv.cpp">
+			</File>
+			<File
+				RelativePath=".\NmIntOids.cpp">
+				<FileConfiguration
+					Name="NT4 Checked|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GlobalOptimizations="TRUE"
+						InlineFunctionExpansion="1"
+						EnableIntrinsicFunctions="TRUE"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="NDIS 5 Checked|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GlobalOptimizations="TRUE"
+						InlineFunctionExpansion="1"
+						EnableIntrinsicFunctions="TRUE"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter=".h">
+			<File
+				RelativePath=".\Characteristics.h">
+			</File>
+			<File
+				RelativePath=".\NmIntAdap.h">
+			</File>
+			<File
+				RelativePath=".\NmIntBind.h">
+			</File>
+			<File
+				RelativePath=".\NmIntDrv.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter=".rc">
+			<File
+				RelativePath=".\nmint.rc">
+			</File>
+		</Filter>
+		<File
+			RelativePath=".\netNmInt.inf">
+		</File>
+		<File
+			RelativePath=".\netNmIntMP.inf">
+		</File>
+		<File
+			RelativePath=".\OEMSETUP.INF">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

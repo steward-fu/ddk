@@ -1,0 +1,174 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"
+	xmlns="http://www.w3.org/TR/REC-html40">
+	<head>
+		<title>Sample 1394 Virtual Device Driver</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<meta name="ProgId" content="Word.Document">
+		<meta name="Generator" content="Microsoft Word 9">
+		<meta name="Originator" content="Microsoft Word 9">
+		<link rel="File-List" href="./vdev1394_files/filelist.xml"> <!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Sarah Prevost</o:Author>
+  <o:Template>K1394LowerDevice.dot</o:Template>
+  <o:LastAuthor>Vladimir Shubin</o:LastAuthor>
+  <o:Revision>14</o:Revision>
+  <o:TotalTime>225</o:TotalTime>
+  <o:Created>2001-08-06T13:54:00Z</o:Created>
+  <o:LastSaved>2003-01-07T11:47:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>289</o:Words>
+  <o:Characters>1650</o:Characters>
+  <o:Company>Compuware/NuMega Lab, Inc.</o:Company>
+  <o:Lines>13</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>2026</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->  <!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:UpdateStylesOnOpen/>
+ </w:WordDocument>
+</xml><![endif]-->
+			<style> <!-- /* Font Definitions */ @font-face {font-family:Tahoma; panose-1:2 11 6 4 3 5 4 4 2 4; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-pitch:variable; mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+	@font-face {font-family:Verdana; panose-1:2 11 6 4 3 5 4 4 2 4; mso-font-charset:0; mso-generic-font-family:swiss; mso-font-pitch:variable; mso-font-signature:536871559 0 0 0 415 0;}
+	/* Style Definitions */ p.MsoNormal, li.MsoNormal, div.MsoNormal {mso-style-parent:""; margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman";}
+	h1 {mso-style-next:Normal; margin-top:0in; margin-right:0in; margin-bottom:12.0pt; margin-left:0in; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:1; font-size:14.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; color:navy; mso-font-kerning:0pt; font-weight:bold;}
+	h2 {mso-style-next:Normal; margin-top:6.0pt; margin-right:0in; margin-bottom:6.0pt; margin-left:0in; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:2; font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; color:navy; font-weight:bold;}
+	h3 {mso-style-next:Normal; margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:3; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; font-weight:bold;}
+	h4 {margin-right:0in; mso-margin-top-alt:auto; mso-margin-bottom-alt:auto; margin-left:0in; mso-pagination:widow-orphan; mso-outline-level:4; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; font-weight:bold;}
+	h5 {mso-style-next:Normal; margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.5in; margin-bottom:.0001pt; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:5; tab-stops:.5in; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; color:#3366FF; font-weight:bold; mso-bidi-font-weight:normal;}
+	h6 {mso-style-next:Normal; margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.5in; margin-bottom:.0001pt; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:6; tab-stops:.5in; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-bidi-font-family:"Times New Roman"; color:#993300; font-weight:bold; mso-bidi-font-weight:normal;}
+	p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent {margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:1.0in; margin-bottom:.0001pt; text-indent:-27.0pt; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman";}
+	p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2 {margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.25in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman";}
+	p.MsoBodyTextIndent3, li.MsoBodyTextIndent3, div.MsoBodyTextIndent3 {margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:1.0in; margin-bottom:.0001pt; text-indent:-.75in; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman"; font-weight:bold;}
+	a:link, span.MsoHyperlink {color:blue; text-decoration:underline; text-underline:single;}
+	a:visited, span.MsoHyperlinkFollowed {color:purple; text-decoration:underline; text-underline:single;}
+	p {margin-top:6.0pt; margin-right:0in; margin-bottom:0in; margin-left:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; font-family:Verdana; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman";}
+	pre {margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt; font-size:10.0pt; font-family:"Courier New"; mso-fareast-font-family:"Courier New"; mso-bidi-font-family:"Times New Roman";}
+	p.Heading2Web, li.Heading2Web, div.Heading2Web {mso-style-name:"Heading 2 \(Web\)"; mso-style-parent:"Normal \(Web\)"; margin-top:6.0pt; margin-right:0in; margin-bottom:0in; margin-left:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:12.0pt; mso-bidi-font-size:10.0pt; font-family:Verdana; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:Tahoma; color:navy; font-weight:bold; mso-bidi-font-weight:normal; mso-bidi-font-style:italic;}
+	p.Code, li.Code, div.Code {mso-style-name:Code; margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.5in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:"Courier New"; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman"; font-weight:bold;}
+	p.Heading1Web, li.Heading1Web, div.Heading1Web {mso-style-name:"Heading 1 \(Web\)"; mso-style-parent:"Heading 2"; margin-top:6.0pt; margin-right:0in; margin-bottom:12.0pt; margin-left:0in; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:2; font-size:14.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; color:navy; font-weight:bold;}
+	p.Heading3Web, li.Heading3Web, div.Heading3Web {mso-style-name:"Heading 3 \(Web\)"; mso-style-parent:"Heading 2 \(Web\)"; margin-top:6.0pt; margin-right:0in; margin-bottom:4.0pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; font-family:Verdana; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:Tahoma; color:#003366; font-weight:bold; mso-bidi-font-weight:normal; font-style:italic;}
+	p.SeeAlso, li.SeeAlso, div.SeeAlso {mso-style-name:"See Also"; margin-top:12.0pt; margin-right:0in; margin-bottom:6.0pt; margin-left:0in; mso-pagination:widow-orphan; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman"; font-weight:bold; mso-bidi-font-weight:normal;}
+	p.BullLeft, li.BullLeft, div.BullLeft {mso-style-name:Bull_Left; mso-style-parent:"Normal \(Web\)"; margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.5in; margin-bottom:.0001pt; text-indent:-.25in; mso-pagination:widow-orphan; mso-list:l0 level1 lfo2; tab-stops:list .5in; font-size:10.0pt; font-family:Verdana; mso-fareast-font-family:"Times New Roman"; mso-bidi-font-family:"Times New Roman"; font-weight:bold;}
+	p.Note, li.Note, div.Note {mso-style-name:Note; margin-top:6.0pt; margin-right:0in; margin-bottom:6.0pt; margin-left:0in; mso-pagination:widow-orphan; background:#CCFFFF; font-size:10.0pt; mso-bidi-font-size:12.0pt; font-family:Tahoma; mso-fareast-font-family:"Times New Roman";}
+	@page Section1 {size:8.5in 11.0in; margin:1.0in 1.25in 1.0in 1.25in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-paper-source:0;}
+	div.Section1 {page:Section1;}
+	/* List Definitions */ @list l0 {mso-list-id:1893537897; mso-list-type:hybrid; mso-list-template-ids:1418517188 -378531976 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+	@list l0:level1 {mso-level-number-format:bullet; mso-level-style-link:Bull_Left; mso-level-text:\F0B7; mso-level-tab-stop:.5in; mso-level-number-position:left; text-indent:-.25in; font-family:Symbol;}
+	ol {margin-bottom:0in;}
+	ul {margin-bottom:0in;}
+	--></style>
+	</head>
+	<body lang="EN-US" link="blue" vlink="purple" style='tab-interval:.5in'>
+		<div class="Section1">
+			<h1>VDev1394 Sample</h1>
+			<h2>SUMMARY</h2>
+			<p><span style='FONT-FAMILY:Tahoma'>The <b>VDev1394</b> sample illustrates how
+to add/remove a 1394 virtual device from user mode and how to add/remove 1394
+configuration ROM entry from a driver. <o:p></o:p></span></p>
+			<p><span style='FONT-FAMILY:Tahoma'>The sample consists of a driver: <b>vdev1394.sys</b>,
+and an application: <b>vdev1394con.exe</b>.<span style="mso-spacerun: yes">&nbsp;
+</span>The application can be used to enumerate the devices created by 1394
+Host controller, add configuration ROM entry and issue a bus reset.<o:p></o:p></span></p>
+			<p><span style='FONT-FAMILY:Tahoma'>This sample requires Windows XP or later.</span><span style='FONT-SIZE:12pt;FONT-FAMILY:Tahoma;mso-bidi-font-size:10.0pt'><o:p></o:p>
+				</span></p>
+			<p><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></p>
+			<h2>BUILDING THE SAMPLE</h2>
+			<p><span style='FONT-FAMILY:Tahoma'>The driver, <b>vdev1394.sys</b>, and
+application, <b>vdev1394con.exe</b>, may be built from the command line or from
+within the Visual C++ IDE.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>To build
+from the Visual Studio IDE, open the workspace file, <b>vdev1394.dsw</b>.<span style="mso-spacerun: yes">&nbsp; </span>Set the active configuration in the build
+menu, and then select <b>Build</b> or <b>Rebuild all</b>.<span style="mso-spacerun: yes">&nbsp; </span>Both free and checked builds are available.<o:p></o:p></span></p>
+			<p><span style='FONT-FAMILY:Tahoma'>To build from the command line, start an
+appropriate DDK build environment from the start menu shortcuts installed with
+the DDK.<span style="mso-spacerun: yes">&nbsp; </span>Navigate to the vdev1394
+directory and type “build”.<span style="mso-spacerun: yes">&nbsp; </span>The
+environment variable <b>DRIVERWORKS</b> must be set to the <b>DriverWorks</b>
+directory for the build to be successful.<o:p></o:p></span></p>
+			<p><span style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></span></p>
+			<p class="Note"><b>Note:</b> The <b>DriverWorks</b> library, <b>vdw_wdm.lib</b>, 
+				must be built before <b>vdev1394.sys</b> may be built.
+				<span style='mso-bidi-font-size:
+10.0pt'>
+					<o:p></o:p>
+				</span></p>
+			<h2><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></h2>
+			<h2>RUNNING THE SAMPLE</h2>
+			<pre><span style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman';mso-bidi-font-family:'Times New Roman'">Use <STRONG>vdev1394con.exe</STRONG> to create one or more virtual 1394 device. Device Manager will detect a new device and will ask for a device driver. Point to vdev1394.inf file to install vdev1394.sys driver.</span></pre>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">You must not try to directly install the <STRONG>vdev1394.sys</STRONG> driver, either through EzDrvInstaller or through the "Add New Hardware" Control Panel function. Instead, run the <STRONG>vdev1394con.exe</STRONG> application</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">to create new virtual 1394 devices. To create a new virtual 1394 device, you should run vdev1394con.exe from a cmd.exe box as follows:</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<BLOCKQUOTE dir="ltr" style="MARGIN-RIGHT: 0px"><PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><STRONG>vdev1394con -p n</STRONG></SPAN></PRE>
+			</BLOCKQUOTE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">Where "n" is a number that establishes the virtual terminal id, such as, 1, 2, 3, 4... For example, if you enter "<STRONG>vdev1394con -p 4</STRONG>", you will create a virtual 1394 device with the hw id</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<BLOCKQUOTE dir="ltr" style="MARGIN-RIGHT: 0px"><PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><STRONG>V1394\NUMEGAV1394\00000004</STRONG></SPAN></PRE>
+			</BLOCKQUOTE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">If the device is created ok, the "Found New Hardware" Microsoft Wizard will immediately click in. If you have already installed other virtual 1394 devices, you can let the wizard install your hardware</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">automatically, otherwise you shoud choose the "Install from a list or specific location" pick and point the search to the directory where your <STRONG>vdev1394.inf</STRONG> file is located. Follow the wizard prompts, and</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">after you click "Finish" the device will have been installed and will be accessible by <STRONG>vdev1394con.exe</STRONG>. The new device will be found in the Device Manager pane of your Computer Manager, under the</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">category of "Other Devices" with the title "1394 Virtual Device". If you extricate the Driver Name from its property entry, you will see "<STRONG>vdev1394.sys</STRONG>". If now you type </SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<BLOCKQUOTE dir="ltr" style="MARGIN-RIGHT: 0px"><PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><STRONG>vdev1394con</STRONG></SPAN></PRE>
+			</BLOCKQUOTE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">without any call line parameters, you will get a list of all physical and virtual 1394 devices in your system. You can now uninstall a device by invoking vdev1394con.exe as follows:</SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<BLOCKQUOTE dir="ltr" style="MARGIN-RIGHT: 0px"><PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><STRONG>vdev1394con -u n</STRONG></SPAN></PRE>
+			</BLOCKQUOTE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">this will remove virtual device n from your system. If you enter </SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<BLOCKQUOTE dir="ltr" style="MARGIN-RIGHT: 0px"><PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"><STRONG>vdev1394con -u</STRONG></SPAN></PRE>
+			</BLOCKQUOTE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">then the app will uninstall all virtual 1394 devices from your system. </SPAN></PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'"></SPAN>&nbsp;</PRE>
+			<PRE><SPAN style="FONT-FAMILY: Tahoma; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'">                             <o:p></o:p></SPAN>&nbsp;</PRE>
+			<h2 style='tab-stops:.5in'>File Manifest</h2>
+			<pre><b><span style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">vdev1394.htm</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The documentation for this sample (this file).<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">VDev1394DeviceInterface.h.h</span></b><span
+style='FONT-FAMILY:Tahoma'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The device’s GUID shared by the application and driver<o:p></o:p></span></pre>
+			<pre><span
+style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+			<h5 style='MARGIN-LEFT:0in;tab-stops:27.0pt .5in'>Driver Files:</h5>
+			<pre><b><span style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">VDev1394.h</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Header for the <i>Vdev1394</i> driver class<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">VDev1394.cpp</span></b><span style='FONT-FAMILY:Tahoma'><span style="mso-spacerun: yes">&nbsp; </span><span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><i>VDev1394</i> driver class<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">VDev1394Device.h</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Header for the <i>VDev1394Device</i> class<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">VDev1394device.cpp</span></b><span style='FONT-FAMILY:Tahoma'> <span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><i>VDev394Device</i> class<o:p></o:p></span></pre>
+			<pre><span
+style='FONT-FAMILY:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+			<h5 style='MARGIN-LEFT:0in'>Example Files</h5>
+			<pre><b><span style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">vdev1394con.cpp</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Main file – implements command parsing<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">CBus1394.cpp</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Class <i>Cbus1394 – </i>implements 1394 Host Controller commands<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">CBus1394.h<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></b><span
+style='FONT-FAMILY:Tahoma'><span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Declaration of <i>Cbus1394 </i>class<o:p></o:p></span></pre>
+			<pre><b><span
+style="FONT-FAMILY:Tahoma;mso-bidi-font-size:12.0pt;mso-fareast-font-family:'Times New Roman'">Openbyintf.cpp</span></b><span style='FONT-FAMILY:Tahoma'><span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Opens a handle to the vdev1394 device</span></pre>
+			<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+			<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+			<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+			<p style='MARGIN-TOP:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span style="mso-fareast-font-family:'Courier New'; mso-bidi-font-family:'Courier New'"><![if !supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></span></p>
+			<p class="MsoNormal" style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><![if 
+				!supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></p>
+		</div>
+	</body>
+</html>

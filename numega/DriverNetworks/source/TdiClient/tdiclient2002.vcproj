@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="TdiClient"
+	ProjectGUID="{8C148C16-9347-4250-BB14-6675ED508188}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Win32 Debug|Win32"
+			OutputDirectory="..\..\lib\i386\checked"
+			IntermediateDirectory="obj\i386\nt5checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_X86_=1;i386=1;STD_CALL;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;DEVL=1;FPO=0;NDEBUG;_DLL=1;DBG=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				ProgramDataBaseFileName="$(IntDir)/tdint5.pdb"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="Win32 Release|Win32"
+			OutputDirectory="..\..\lib\i386\free"
+			IntermediateDirectory="obj\i386\nt5free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_X86_=1;i386=1;STD_CALL;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;DEVL=1;FPO=0;NDEBUG;_DLL=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				WarningLevel="3"
+				CallingConvention="2"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="AMD64 Debug|Win32"
+			OutputDirectory="..\..\lib\amd64\checked"
+			IntermediateDirectory="obj\amd64\nt5checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_WIN64;_AMD64_;AMD64;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;_AMD64_WORKAROUND_;DEVL=1;NDEBUG;_DLL=1;DBG=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				ProgramDataBaseFileName="$(IntDir)/tdint5.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="AMD64 Release|Win32"
+			OutputDirectory="..\..\lib\amd64\free"
+			IntermediateDirectory="obj\amd64\nt5free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_WIN64;_AMD64_;AMD64;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;_AMD64_WORKAROUND_;DEVL=1;NDEBUG;_DLL=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="IA64 Debug|Win32"
+			OutputDirectory="..\..\lib\ia64\checked"
+			IntermediateDirectory="obj\ia64\nt5checked"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_WIN64;_IA64_=1;IA64=1;NO_HW_DETECT;_MSC_EXTENSIONS;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;_MERCED_A0_=1;DEVL=1;FPO=0;NDEBUG;_DLL=1;DBG=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				ProgramDataBaseFileName="$(IntDir)/tdint5.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+		<Configuration
+			Name="IA64 Release|Win32"
+			OutputDirectory="..\..\lib\ia64\free"
+			IntermediateDirectory="obj\ia64\nt5free"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/U _MT"
+				Optimization="0"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories=".\..\..\include,.\..\..\include\tdiclient,$(TARGET_INC_PATH),$(CRT_INC_PATH),$(DDK_INC_PATH),$(WDM_INC_PATH),$(BASEDIR)\src\network\inc,$(BASEDIR)\src\network\wshsmple,.\..\..\include\stl,.\..\..\include\stl\ndis"
+				PreprocessorDefinitions="NDIS51=1;TDI_WINDOWS_NT;_WIN64;_IA64_=1;IA64=1;NO_HW_DETECT;_MSC_EXTENSIONS;CONDITION_HANDLING=1;NT_INST=0;WIN32=100;_NT1X_=100;WINNT=1;WIN32_LEAN_AND_MEAN=1;_MERCED_A0_=1;DEVL=1;FPO=0;NDEBUG;_DLL=1;_WIN32_WINNT=$(_WIN32_WINNT);WINVER=$(WINVER);_WIN32_IE=$(_WIN32_IE);NTDDI_VERSION=$(NTDDI_VERSION)"
+				ExceptionHandling="FALSE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				CompileAs="0"
+				ForcedIncludeFiles="warning.h"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/tdint5.lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Build Environment Variables:"
+				CommandLine="$(DRIVERWORKS)\bin\saveenv &quot;$(OutDir)&quot; &quot;$(TargetName)&quot;"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories=""/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="">
+			<File
+				RelativePath=".\KIPIntr.cpp">
+			</File>
+			<File
+				RelativePath=".\RouTable.cpp">
+			</File>
+			<File
+				RelativePath=".\tdi9xiface.cpp">
+				<FileConfiguration
+					Name="Win32 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Win32 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="AMD64 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="AMD64 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="IA64 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="IA64 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\tdiclient.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiconnobj.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiDtgSocket.cpp">
+			</File>
+			<File
+				RelativePath=".\tdinew.cpp">
+				<FileConfiguration
+					Name="Win32 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Win32 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="AMD64 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="AMD64 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="IA64 Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="IA64 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\tdintiface.cpp">
+			</File>
+			<File
+				RelativePath=".\TdiPnpCl.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiquery.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiRawSocket.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiSclient.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiSsession.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiStrSocket.cpp">
+			</File>
+			<File
+				RelativePath=".\tdiutil.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="">
+			<File
+				RelativePath="..\..\include\tdiclient\ipnumbers.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\KIpIntr.h">
+			</File>
+			<File
+				RelativePath="..\..\include\KIrpPool.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\KTdiIrp.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\RouTable.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdi9xiface.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdiclient.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdiconnobj.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdidef9x.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdintiface.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdiPartialReceive.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdipnpcl.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdiSclient.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdisocket.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdistatus.h">
+			</File>
+			<File
+				RelativePath="..\..\include\tdiclient\tdiStrServer.h">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

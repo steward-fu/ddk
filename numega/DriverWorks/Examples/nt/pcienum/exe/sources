@@ -1,0 +1,19 @@
+# SOURCES - for PCI enumerator application example
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=enumpci
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+SOURCES=enumpci.cpp
+

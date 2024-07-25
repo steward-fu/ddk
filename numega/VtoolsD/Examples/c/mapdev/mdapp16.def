@@ -1,0 +1,15 @@
+; Module-definition file for VxD/PostMessage example application
+; Copyright (c) 1995 Vireo Software, Inc.
+
+NAME	     MDAPP16
+
+DESCRIPTION  "VtoolsD/MapDevice Example Application"
+EXETYPE      WINDOWS	   
+STUB	     'WINSTUB.EXE' 
+
+CODE  PRELOAD MOVEABLE DISCARDABLE
+DATA  PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     1024
+
+

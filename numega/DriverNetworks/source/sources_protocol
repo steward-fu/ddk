@@ -1,0 +1,72 @@
+# sources -  Compuware Driver Networks Classes
+#=============================================================================
+#
+# Compuware Corporation
+# NuMega Lab
+# 9 Townsend West
+# Nashua, NH 03063  USA
+#
+# Copyright (c) 2004 Compuware Corporation. All Rights Reserved.
+# Unpublished - rights reserved under the Copyright laws of the
+# United States.
+#
+# U.S. GOVERNMENT RIGHTS-Use, duplication, or disclosure by the
+# U.S. Government is subject to restrictions as set forth in
+# Compuware Corporation license agreement and as provided in
+# DFARS 227.7202-1(a) and 227.7202-3(a) (1995),
+# DFARS 252.227-7013(c)(1)(ii)(OCT 1988), FAR 12.212(a) (1995),
+# FAR 52.227-19, or FAR 52.227-14 (ALT III), as applicable.
+# Compuware Corporation.
+#
+# This product contains confidential information and trade secrets
+# of Compuware Corporation. Use, disclosure, or reproduction is
+# prohibited without the prior express written permission of Compuware #
+# Corporation.
+#
+#=============================================================================
+
+
+!if "$(CONFIGURATION)" == "NDIS_5_PROTOCOL"
+TARGETNAME= Kndis5pt
+C_DEFINES= -DNDIS50=1 -DCONDITION_HANDLING=1 -DNTVERSION=400 -DKNDIS_LIB_BUILD
+!endif
+!if "$(CONFIGURATION)" == "NDIS_51_PROTOCOL"
+TARGETNAME= Kndis5pt
+C_DEFINES= -DNDIS51=1 -DCONDITION_HANDLING=1 -DNTVERSION=400 -DKNDIS_LIB_BUILD
+!endif
+
+!IF ("$(CPU)" == "ia64") || ("$(CPU)" == "IA64") || ("$(CPU)" == "amd64") || ("$(CPU)" == "AMD64")
+C_DEFINES = $(C_DEFINES) -DBINARY_COMPATIBLE=0
+!ELSE
+C_DEFINES = $(C_DEFINES) -DBINARY_COMPATIBLE=1
+!ENDIF
+
+TARGETPATH=$(DRIVERNETWORKS)\lib
+TARGETTYPE=DRIVER_LIBRARY
+
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+INCLUDES=.\..\include;\
+	.;\
+	.\include;\
+	$(BASEDIR)\inc;\
+	$(BASEDIR)\inc\ddk;\
+	$(BASEDIR)\src\network\inc;\
+	.\..\include\stl;\
+	.\..\include\stl\ndis;\
+	$(DRIVERWORKS)\include;\
+	$(DRIVERNETWORKS)\..\Common\include
+
+
+SOURCES=kndiscpp.cpp		\
+	stcinit.cpp				\
+	kndislist.cpp			\
+	kndisoiddebug.cpp		\
+	kndispacket.cpp			\
+	kndisprotocolbinding.cpp\
+	kndisrequest.cpp		\
+	kndistrace.cpp			\
+	kndisbufferheap.cpp		\
+	kTransportPnp.cpp

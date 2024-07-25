@@ -1,0 +1,264 @@
+// MouseFilter.mof
+//=============================================================================
+//
+// Compuware Corporation
+// NuMega Lab
+// 9 Townsend West
+// Nashua, NH 03060  USA
+//
+// Copyright (c) 1998 Compuware Corporation. All Rights Reserved.
+// Unpublished - rights reserved under the Copyright laws of the
+// United States.
+//
+//=============================================================================
+//
+
+/////////////////////////////////////////////////////////////////
+// class DriverWorksMouseFilterSample
+//
+// This is an abstract base class to avoid namespace collisions.
+// 
+[abstract]
+class DriverWorksMouseFilterSample
+{
+};
+
+/////////////////////////////////////////////////////////////////
+// class DriverWorksMouseFilterSampleEvent
+//
+// This is base class to isolate the namespace for event type blocks
+
+class DriverWorksMouseFilterSampleEvent : WmiEvent
+{
+};
+
+/////////////////////////////////////////////////////////////////
+// class MouseActivity
+//
+// This class tracks the number of clicks for each button and
+// the total x and y movement of the mouse.
+//
+// It also has two methods: one to reset statistics, and one to
+// query the mouse attributes.
+//
+[
+	WMI,
+	Provider("WMIProv"),
+	Dynamic, 
+	Description("Accumulated mouse activity"),
+	guid("{770C1CE0-5A49-11d3-876C-00C0D157497D}"),
+	GuidName1("DRIVERWORKS_MOUSE_ACTIVITY_DATA_GUID"),
+	HeaderName("DRIVERWORKS_MOUSE_ACTIVITY"),
+	locale("MS\\0x409")
+]
+
+class MouseActivity : DriverWorksMouseFilterSample
+{
+    [	
+		key, 
+		read
+	]
+     string InstanceName;
+
+    [	
+		read
+	] 
+	boolean Active;
+
+    [	WmiDataId(1),
+		read,
+		Description("Number of Right Clicks since mouse started")
+	]
+    uint32 RightClickCount;
+
+    [
+		WmiDataId(2),
+		read,
+		Description("Number of Middle Clicks since mouse started")
+	]
+    uint32 MiddleClickCount;
+
+    [
+		WmiDataId(3),
+		read,
+		Description("Number of Left Clicks since mouse started")
+	]
+    uint32 LeftClickCount;
+
+    [
+		WmiDataId(4),
+		read,
+		Description("Total absolute X mickeys")
+	]
+    uint32 TotalAbsoluteXMickeys;
+
+    [
+		WmiDataId(5),
+		read,
+		Description("Total absolute Y mickeys")
+	]
+    uint32 TotalAbsoluteYMickeys;
+
+    [
+		WmiMethodId(1), 
+		Implemented,
+		Description("Resets all counters to zero")
+	]
+    void ResetStatistics();
+
+    [
+		WmiMethodId(2), 
+		Implemented,
+		Description("Gets mouse attributes")
+	]
+    void QueryAttributes(
+		[out, Description("Length of read ahead buffer")]	uint32 InputDataQueueLength,
+		[out, Description("Mouse type ID value")]			uint16 MouseIdentifier,
+		[out, Description("Number of buttons on mouse")]	uint16 NumberOfButtons,
+		[out, Description("Hardware sample rate")]			uint16 SampleRate
+		);
+};
+
+/////////////////////////////////////////////////////////////////
+// class MouseControl
+//
+// This class controls the behavior of the filter. Setting items in
+// this class will change the way the mouse moves.
+
+[
+	WMI,
+	Dynamic, 
+	Provider("WMIProv"),
+	Description("Mouse Filter Control"),
+	guid("{A1C05CC0-5A4C-11d3-876C-00C0D157497D}"),
+	GuidName1("DRIVERWORKS_MOUSE_CONTROL_GUID"),
+	HeaderName("DRIVERWORKS_MOUSE_CONTROL"),
+	locale("MS\\0x409")
+]
+class MouseControl : DriverWorksMouseFilterSample
+{
+    [
+		key, 
+		read
+	]
+	string InstanceName;
+
+    [
+		read
+	] 
+	boolean Active;
+
+    [
+		WmiDataId(1),
+		read,
+		write,
+		Description("Signed integral multiple by which to scale X movements")
+	]
+	sint32 XScale;
+
+    [
+		WmiDataId(2),
+		read, 
+		write, 
+		Description("Signed integral multiple by which to scale Y movements")
+	]
+	sint32 YScale;
+
+    [
+		WmiDataId(3),
+		read,
+		write,
+		Description("If TRUE, filter swaps left/right movement")
+	]
+    boolean ReverseXY;
+};
+
+
+/////////////////////////////////////////////////////////////////
+// class MouseDeviceEvent
+//
+// This class provides a demonstration of events. It is fired
+// when the mouse is moved very quickly.
+// 
+[
+	WMI,
+	Dynamic, 
+	Provider("WMIProv"),
+	Description("Mouse Filter Event"),
+	guid("{A6A23FB0-6089-11d3-876F-00C0D157497D}"),
+	GuidName1("DRIVERWORKS_MOUSE_EVENT_GUID"),
+	HeaderName("DRIVERWORKS_MOUSE_EVENT"),
+	locale("MS\\0x409")
+]
+class MouseDeviceEvent : DriverWorksMouseFilterSampleEvent
+{
+    [
+		key, 
+		read
+	]
+	string InstanceName;
+
+    [
+		read
+	] 
+	boolean Active;
+
+	[
+		WmiDataId(1),
+		Description("x movement"),
+		read
+	]
+	uint32 deltax;
+
+	[
+		WmiDataId(2),
+		Description("y movement"),
+		read
+	]
+	uint32 deltay;
+};
+
+
+/////////////////////////////////////////////////////////////////
+// class Mouse PDO Information 
+//
+// This class provides information about the PDO. It is presented
+// to demonstrate how to handle strings and variable length data.
+[
+	WMI,
+	Dynamic, 
+	Provider("WMIProv"),
+	Description("Mouse PDO Information"),
+	guid("{C86C0370-6A13-11d3-8771-00C0D157497D}"),
+	GuidName1("DRIVERWORKS_MOUSE_PDO_INFORMATION"),
+	HeaderName("DRIVERWORKS_MOUSE_PDO_INFORMATION"),
+	locale("MS\\0x409")
+]
+class MousePdoInformation : DriverWorksMouseFilterSample
+{
+    [
+		key, 
+		read
+	]
+	string InstanceName;
+
+    [
+		read
+	] 
+	boolean Active;
+
+    [
+		WmiDataId(1),
+		read,
+		Description("Device name of mouse physical device object")
+	]
+	string PdoDeviceName;
+
+    [
+		WmiDataId(2),
+		read,
+		Description("Registry path of mouse PDO driver")
+	]
+	string PdoRegistryPath;
+};
+

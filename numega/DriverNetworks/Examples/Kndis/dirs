@@ -1,0 +1,12 @@
+DIRS= \
+	CoIsdn \
+	e100bex	\
+	i1394p2p	\
+	imdelay	\
+	nmint		\
+	nmne2k	\
+	nmpacket	\
+	usbnic	\
+	vdev		\
+	stlfilter 	\
+	wdmvnic

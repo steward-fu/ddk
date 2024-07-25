@@ -1,0 +1,27 @@
+TARGETNAME=kbfiltr
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib $(DDK_LIB_PATH)\wdm.lib $(DDK_LIB_PATH)\wmilib.lib \
+		   $(DRIVERWORKS)\..\common\lib\CppExcpt.lib
+
+INCLUDES=	$(DRIVERWORKS)\include;\
+		$(DRIVERWORKS)\source;\
+		$(DRIVERWORKS)\..\common\include\stl;\
+		$(BASEDIR)\src\input\inc
+		
+
+C_DEFINES=-DNTVERSION='WDM'
+LINK_LIB_IGNORE=4210
+USER_C_FLAGS=/EHa
+
+SOURCES=kbfiltr.cpp \
+	process.cpp \
+        kbfiltr.rc

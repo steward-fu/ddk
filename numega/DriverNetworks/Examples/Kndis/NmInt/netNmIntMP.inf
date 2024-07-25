@@ -1,0 +1,79 @@
+; -- NETNMINTMP.INF --
+;
+; NmInt Miniport INF file
+;
+; This file is a suppliment to netNmInt.inf and is used to install
+; a miniport part of the intermediate driver.
+;
+; Copyright (c) 2000
+
+[Version]
+signature  = "$Windows NT$"
+Class      = Net
+ClassGUID  = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider   = %NuMega%
+DriverVer  = 1.0
+
+[ControlFlags]
+ExcludeFromSelect = Nm_IntIMmp
+
+[DestinationDirs]
+DefaultDestDir=12
+; No files to copy 
+
+[Manufacturer]
+%NuMega% = Models
+
+[Models]
+%NmIntMP_Desc% = NmIntMP.ndi, Nm_IntIMmp
+
+[NmIntMP.ndi]
+Characteristics = 0x29 ; NCF_VIRTUAL (0x1) 
+					   ; NCF_HIDDEN  (0x8)
+					   ; NCF_NOT_USER_REMOVABLE (0x20)
+AddReg = NmIntMP.ndi.AddReg 
+
+[NmIntMP.ndi.Services]
+AddService = NmIntMP,0x2, NmIntMP.AddService
+
+[NmIntMP.AddService]
+DisplayName    = %NmIntMP_Desc%
+ServiceType    = 1 ;SERVICE_KERNEL_DRIVER
+StartType      = 3 ;SERVICE_DEMAND_START
+ErrorControl   = 1 ;SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\nmint.sys
+LoadOrderGroup = PNP_TDI
+;AddReg         = NmIntMP.AddService.AddReg
+
+
+[NmIntMP.ndi.AddReg]
+; ----------------------------------------------------------------------
+; Add any miniport-specific parameters here. Those are accessed
+; from KNdisFilterAdapter::Initialize() and NmIntAdapter::OnInitialize()
+;
+HKR, NDI,            Service,          0, "NmInt"
+HKR, NDI\Interfaces, UpperRange,       0, "ndis5"
+HKR, NDI\Interfaces, LowerRange,       0, "nolower"
+HKR, , MaxPoolSize, 0, "1024"
+HKR, NDI\params\MaxPoolSize,           ParamDesc,      0, %MaxPoolSize%
+HKR, NDI\params\MaxPoolSize,           type,           0, "dword"
+HKR, NDI\params\MaxPoolSize,           default,        0, 1024
+HKR, NDI\params\MaxPoolSize,           optional,       0, "1"
+HKR, NDI\params\MaxPoolSize,           max,		       0, 65535
+
+[NmIntMP.ndi.Remove.Services]
+DelService = NmIntMP
+
+;[NmIntMP.ndi.Remove]
+;DelFiles = NmIntMP.CopyFiles.Init, NmIntMP.CopyFiles.Sys
+
+[SourceDisksNames]
+;None 
+
+[SourceDisksFiles]
+;None
+
+[Strings]
+NuMega = "NuMega"
+NmIntMP_Desc = "NmInt NDIS Intermediate Miniport"
+MaxPoolSize = "Maximum number of packet descriptors for repackaging"

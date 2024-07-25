@@ -1,0 +1,60 @@
+; VSCSI.INF
+
+[Version]
+signature="$Windows NT$"
+Class=SCSIAdapter
+ClassGUID={4D36E97B-E325-11CE-BFC1-08002BE10318}
+Provider=%INF_PROVIDER%
+DriverVer=07/01/2002
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+[SourceDisksNames]
+1 = "Install Disk",Disk1,,
+
+[SourceDisksFiles]
+vscsi.sys = 1,,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+VScsi_Files_Driver = 12
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%VSCSI.DeviceDesc%= VSCSI,*NUMEGA_VSCSI
+
+;********************************Numega Driver Installation Sections
+;
+[VSCSI]
+CopyFiles=VScsi_Files_Driver
+
+[VSCSI.Services]
+AddService = VSCSI, 2, VSCSI_Service_Inst
+
+[VSCSI_Service_Inst]
+ServiceType    = 1      ; SERVICE_KERNEL_DRIVER
+StartType      = 0      ; SERVICE_BOOT_START
+ErrorControl   = 1      ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\vscsi.sys
+LoadOrderGroup = SCSI Miniport
+
+; --------- Files (common) -------------
+
+[VScsi_Files_Driver]
+vscsi.sys
+
+[Strings]
+INF_PROVIDER="Compuware/Numega Lab"
+FLOPPY_DESCRIPTION="Compuware Drivers Disk"
+VSCSI.DeviceDesc="Compuware Virtual SCSI Host Adapter"
+MfgName="Compuware/Numega Lab"
+
+

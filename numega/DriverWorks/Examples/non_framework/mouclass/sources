@@ -1,0 +1,23 @@
+TARGETNAME=mouclass
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib
+
+INCLUDES=$(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\source;
+
+C_DEFINES=-DNTVERSION=400
+LINK_LIB_IGNORE=4210
+
+SOURCES=moulog.mc   \
+        mouclass.rc \
+        mouclass.cpp
+

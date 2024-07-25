@@ -1,0 +1,20 @@
+# SOURCES - for keyboard filter test application
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=testfltr
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+
+SOURCES=testfltr.cpp
+

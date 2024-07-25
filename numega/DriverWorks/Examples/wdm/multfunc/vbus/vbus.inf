@@ -1,0 +1,66 @@
+;; Vbus.inf
+
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%ProviderName%
+
+; If device fits one of the standard classes, use the name and GUID here,
+; otherwise create your own device class and GUID as this example shows.
+
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+[SourceDisksNames]
+1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;Vbus.sys = 1,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+Vbus_Files_Driver = 12
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=Vbus_DDI, root\Vbus
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows NT -----------------
+
+[Vbus_DDI.NT]
+CopyFiles=Vbus_Files_Driver
+
+[Vbus_DDI.NT.Services]
+Addservice = Vbus, 0x00000002, Vbus_AddService
+
+[Vbus_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\Vbus.sys
+
+
+; --------- Files (common) -------------
+
+[Vbus_Files_Driver]
+Vbus.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Corporation"
+MfgName="Compuware Corporation"
+DeviceDesc="Virtual Bus Driver"
+SvcDesc="Sample virtual bus enumerator"

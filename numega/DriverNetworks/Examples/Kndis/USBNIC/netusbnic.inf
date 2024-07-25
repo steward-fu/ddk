@@ -1,0 +1,151 @@
+; netUSBNIC.INF
+;
+; Dual .INF file for USBNIC Network Adapter
+;
+; Copyright (c) 2000
+
+[version]
+signature="$CHICAGO$"
+Class=Net
+ClassGUID = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider=%Mfg%
+Compatible  = 1
+DriverVer   = 01/01/2000, 1.0.0.0
+; Millenium exclusive suffix
+MillenniumPreferred = .me
+;CatalogFile = ... add for WHQL ...
+
+[Manufacturer]
+%Mfg%=Models
+
+[ControlFlags]
+// Note: Uncomment next line if your NIC is not to be installed manually
+;ExcludeFromSelect = *NM_USBNIC 	
+
+[Models]
+; Note 1. Replace the bogus *NM_USBNIC  "hw-id" with a real hardware PnP ID 
+; Note 2. Optionally, add more NIC models supported by this file
+;
+; DisplayName        Section           hw-id
+; -----------        -------           ------
+%*USBNIC.devicedesc%=*USBNIC.ndi, *NM_USBNIC  
+
+;-------------------------------------------------------------
+; Win2K
+[*USBNIC.ndi.NT]
+AddReg = USBNIC.w2k.reg, USBNIC.params.reg
+CopyFiles = USBNIC.w2k.CopyFiles
+;
+Characteristics = 0x81 ; NCF_ flags
+
+
+;-------------------------------------------------------------
+; Win2K
+[*USBNIC.ndi.NT.Services]
+AddService = USBNIC, 2, USBNIC.Service, USBNIC.EventLog
+
+;-------------------------------------------------------------
+; Win2K
+[USBNIC.w2k.reg]
+HKR, Ndi, Service, 0,"USBNIC"
+HKR, Ndi\Interfaces, UpperRange, 0, "ndis5"
+HKR, Ndi\Interfaces, LowerRange, 0, "ethernet"
+
+
+;-------------------------------------------------------------------------------
+; W9X Install Section
+;
+[*USBNIC.ndi]
+AddReg=*USBNIC.ndi.reg, USBNIC.ndi.reg, USBNIC.params.reg
+;
+
+;-------------------------------------------------------------------------------
+; PnP ID section for W9X
+[*USBNIC.ndi.reg]
+HKR,Ndi,DeviceID,,"*USBNIC"	
+
+[USBNIC.ndi.reg]
+; Forced W9X install section
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,USBNIC.sys
+HKR,,EnumPropPages,,"netdi.dll,EnumPropPages"
+; NDIS Info
+HKR,NDIS,LogDriverName,,"USBNIC"
+HKR,NDIS,MajorNdisVersion,1,05
+HKR,NDIS,MinorNdisVersion,1,00
+
+; Interfaces
+HKR,Ndi\Interfaces,DefUpper,,"ndis3,ndis4,ndis5"
+HKR,Ndi\Interfaces,UpperRange,,"ndis3,ndis4,ndis5"
+HKR, Ndi\Interfaces, LowerRange,,"ethernet"
+HKR, Ndi\Interfaces, DefLower,,"ethernet"
+
+
+; Install sectioins
+HKR,Ndi\Install,ndis5,,"USBNIC.ndis5"
+
+; Install NDIS
+[USBNIC.ndis5]
+CopyFiles=USBNIC.w9x.CopyFiles
+
+[USBNIC.w9x.CopyFiles]
+USBNIC.sys
+
+[USBNIC.w2k.CopyFiles]
+USBNIC.sys
+
+;-----------------------------------------------------------
+; Sources
+[SourceDisksNames]
+99=%USBNIC_disk%,"",0
+
+[SourceDisksFiles]
+USBNIC.sys = 99
+
+;-----------------------------------------------------------
+; Destination Dir
+[DestinationDirs]
+DefaultDestDir          =11 ; system dir
+USBNIC.w9x.CopyFiles    =11 ; 9X:  windows\system
+USBNIC.w2k.CopyFiles    =12 ; W2K: system32\drivers
+
+;-------------------------------------------------------------------------------
+; Optional Custom Parameters in the Registry ("Advanced" menu).
+[USBNIC.params.reg]
+; For example:
+HKR, Ndi\params\Mode,				ParamDesc,0, %Mode%
+HKR, Ndi\params\Mode,				type,    0, "enum"
+HKR, Ndi\params\Mode,				default, 0, "Default"
+HKR, Ndi\params\Mode\enum,			Default, 0, %Mode_basic%
+HKR, Ndi\params\Mode\enum,			Cool,    0, %Mode_cool%
+
+;------------------------------------------------------------
+; W2K Service entry, log, etc.
+[USBNIC.Service]
+DisplayName     = %USBNIC.Service.DispName%
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_DEMAND_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %12%\USBNIC.sys
+LoadOrderGroup  = NDIS
+
+[USBNIC.EventLog]
+AddReg = USBNIC.AddEventLog.reg
+
+[USBNIC.AddEventLog.reg]
+HKR, , EventMessageFile, 0x00020000, "%%SystemRoot%%\System32\netevent.dll"
+HKR, , TypesSupported,   0x00010001, 7
+
+;-------------------------------------------------------------------------------
+; Localizable Strings
+;
+[strings]
+Mfg="Compuware Corporation"
+*USBNIC.DeviceDesc="USBNIC Network Adapter"
+DriverNetworks = "Compuware Corp. NuMega Lab V1.0"      
+USBNIC.devicedesc   = "USBNIC Network Adapter"
+USBNIC.Service.DispName = "USBNIC Network Adapter"
+Mode = "Sample Parameter"
+Mode_basic = "Basic"
+Mode_cool = "Cool"
+USBNIC_disk = "USBNIC Driver Install Disk"

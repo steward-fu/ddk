@@ -1,0 +1,16 @@
+# SOURCES - for Test_drvmngq application
+
+TARGETNAME=Test_drvmngq
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+UMTYPE=console
+UMBASE=0x01000000
+
+INCLUDES=..\.
+
+BROWSER_INFO=1
+!IF ("$(DDKBUILDENV)"=="fre") || ("$(DDKBUILDENV)"=="free")
+NTDEBUG=
+!ENDIF
+
+SOURCES=Test_drvmngq.cpp

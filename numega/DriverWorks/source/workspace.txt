@@ -1,0 +1,44 @@
+How to Build the DriverWorks Libraries
+
+This workspace has ten independent configurations:
+
+Platform      			C/F        Required DDK   Output Library       
+--------------------------------------------------------------
+NT4         			Checked     NT 4.0    $(DRIVERWORKS)\lib\i386\checked\vdw.lib
+NT4         			Free        NT 4.0    $(DRIVERWORKS)\lib\i386\free\vdw.lib
+Win98/Win2K/WinXP 32-bit	Checked     WDM       $(DRIVERWORKS)\lib\i386\checked\vdw_wdm.lib
+Win98/Win2K/WinXP 32-bit	Free        WDM       $(DRIVERWORKS)\lib\i386\free\vdw_wdm.lib
+WinXP 64-bit			Checked	    WinXP     $(DRIVERWORKS)\lib\ia64\checked\vdw_wdm.lib
+WinXP 64-bit			Free	    WinXP     $(DRIVERWORKS)\lib\ia64\free\vdw_wdm.lib	
+
+NDIS WDM Library (for DriverNetworks TDI clients)
+----------------------------------------------------
+Platform      			C/F        Required DDK   Output Library       
+--------------------------------------------------------------
+Win98/Win2K/WinXP 32-bit	Checked     WDM       $(DRIVERWORKS)\lib\i386\checked\kndiswdm.lib
+Win98/Win2K/WinXP 32-bit	Free        WDM       $(DRIVERWORKS)\lib\i386\free\kndiswdm.lib
+WinXP 64-bit			Checked	    WinXP     $(DRIVERWORKS)\lib\ia64\checked\kndiswdm.lib
+WinXP 64-bit			Free	    WinXP     $(DRIVERWORKS)\lib\ia64\free\kndiswdm.lib	
+
+
+Important note: 
+
+BASEDIR names the root of the DDK.  It may be adjusted in the DriverStudio menu of Visual Studio 
+under "Driver Build Settings"  In a single batch build, only libraries requiring the selected DDK 
+may be built at one time.
+
+CPU names the target platform, I386 or IA64.  
+
+The Windows XP DDK 64-bit compiler must be used to build for 64-bit platforms. It is strongly recommended
+that the Windows XP 32-bit compiler be used to build drivers intended to run on 32-bit Windows XP. The 
+Visual Studio IDE may be set to use the DDK compiler rather than the one installed with Visual Studio.
+
+The compiler to use may be changed manually by adding the appropriate directories to the search path 
+for executable files.  This option is located under Options in the Tools menu on the directory tab. 
+The compiler to use is set automatically if Visual Studio is started with SetDDKGo, located in the start 
+menu under DriverStudio\Tools\"Setup DDK and Start MSVC".  SetDDKGo takes command line parameters specifying the
+current DDK and platform to use.  If it is given the Windows XP DDK, it will automatically set Visual Studio 
+to use the current 32 or 64-bit compiler included in the DDK.  
+
+Older DDKs may use the compiler that comes with Visual Studio.
+

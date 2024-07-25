@@ -1,0 +1,101 @@
+; HelloWdm.Inf - install information file for simple WDM example
+; Copyright (c) 1998 Compuware Corporation
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%Compuware%
+
+; If device fits one of the standard classes, use the
+; name and GUID here, otherwise create your own as
+; this example shows.
+
+Class=CompuwareUnknown
+ClassGUID={312b5210-8a24-11d2-9448-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;HelloWdm.sys=1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%CompuwareClassName%
+HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+DefaultDestDir=10,System32
+SimpleWdm_Files_Driver=10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName% = Compuware_Mfg
+
+[Compuware_Mfg]
+%SimpleWdmDevice%=SimpleWdm_DDI, *SimpleWdmDevice
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 98 -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[SimpleWdm_DDI]
+CopyFiles=SimpleWdm_Files_Driver
+AddReg=SimpleWdm_9X_AddReg
+
+[SimpleWdm_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,HelloWdm.sys
+HKR,,Description,,%HelloWdm_DeviceDesc%
+
+; --------- Windows NT -----------------
+
+[SimpleWdm_DDI.NT]
+CopyFiles=SimpleWdm_Files_Driver
+
+[SimpleWdm_DDI.NT.Services]
+Addservice = HelloWdm, 0x00000002, SimpleWdm_Service
+
+[SimpleWdm_Service]
+DisplayName    = %HelloWdm_SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\HelloWdm.sys
+
+; --------- Files ----------------------
+
+[SimpleWdm_Files_Driver]
+HelloWdm.sys,,,2
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+Compuware="Compuware Corporation"
+MfgName="Compuware Corporation"
+SimpleWdmDevice="Simple WDM Device"
+HelloWdm_DeviceDesc="HelloWdm Device"
+HelloWdm_SvcDesc="Driver for Simple WDM Sample"
+CompuwareClassName="Compuware Other Devices"

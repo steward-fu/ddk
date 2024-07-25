@@ -1,0 +1,43 @@
+;; TELEPATH.INF - INF to install Telepathic Input Device
+;; Copyright (c) 1998, Compuware Corporation
+;; Adapted from code written by Walter Oney for
+;; Microsoft Systems Journal January 1996.
+;; Reprinted with permission.
+
+;; Use Add New Hardware (other devices) from the Control Panel
+
+[Version]
+Signature=$CHICAGO$
+Class=Unknown
+Provider=%WaltOney%
+
+[DestinationDirs]
+DefaultDestDir=11
+
+[Manufacturer]
+%WaltOney%=SECTION_0
+
+[SECTION_0]
+%TeleInput%=dev.install,WCO1234
+
+[dev.install]
+CopyFiles=dev.copy
+AddReg=dev.registry
+
+[dev.copy]
+telepath.vxd
+
+[dev.registry]
+HKR,,DevLoader,0,telepath.vxd
+
+[ControlFlags]
+
+[SourceDisksNames]
+1=TelepathInstallDisk, DISK1,
+
+[SourceDisksFiles]
+telepath.vxd=1
+
+[Strings]
+WaltOney="Walter Oney Software"
+TeleInput="Telepathic Input Device, Model 42";; TELEPATH.INF - INF to install Telepathic Input Device

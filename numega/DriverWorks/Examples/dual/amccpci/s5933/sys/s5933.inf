@@ -1,0 +1,124 @@
+;; S5933.inf
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%ProviderName%
+
+; If device fits one of the standard classes, use the
+; name and GUID here, otherwise create your own as
+; this example shows.
+
+Class=NewDeviceClass
+ClassGUID={ff646f80-8def-11d2-9449-00105a075f6b}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;S5933.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-18"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+S5933_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+
+; PCI hardware IDs use the form
+;   PCI\VEN_aaaa&DEV_bbbb&SUBSYS_cccccccc&REV_dd
+%DeviceDesc%=S5933_DDI, PCI\VEN_1234&DEV_5678&SUBSYS_00000000&REV_00
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[S5933_DDI]
+CopyFiles=S5933_Files_Driver
+AddReg=S5933_9X_AddReg
+
+[S5933_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,S5933.sys
+HKR, "Parameters", "BreakOnEntry", 0x00010001, 0
+HKR, "Parameters", "MaxDmaReadLength", 0x00010001, 0x2000
+HKR, "Parameters", "MaxDmaWriteLength", 0x00010001, 0x2000
+HKR, "Parameters", "VendorID", 0x00010001, 0x1234
+HKR, "Parameters", "DeviceID", 0x00010001, 0x5678
+HKR, "Parameters", "NvramIsSerial", 0x00010001, 0x0
+HKR, "Parameters", "NvramPageSize", 0x00010001, 0x80
+
+; --------- Windows NT -----------------
+
+[S5933_DDI.NT]
+CopyFiles=S5933_Files_Driver
+AddReg=S5933_NT_AddReg
+
+[S5933_DDI.NT.Services]
+Addservice = S5933, 0x00000002, S5933_AddService
+
+[S5933_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\S5933.sys
+
+[S5933_NT_AddReg]
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"BreakOnEntry", 0x00010001, 0
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"MaxDmaReadLength", 0x00010001, 0x2000
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"MaxDmaWriteLength", 0x00010001, 0x2000
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"VendorID", 0x00010001, 0x1234
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"DeviceID", 0x00010001, 0x5678
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"NvramIsSerial", 0x00010001, 0x0
+HKLM, "System\CurrentControlSet\Services\S5933\Parameters",\
+	"NvramPageSize", 0x00010001, 0x80
+
+; --------- Files (common) -------------
+
+[S5933_Files_Driver]
+S5933.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware"
+MfgName="AMCC"
+DeviceDesc="S5933 Evaluation Board"
+DeviceClassName="Compuware Device"
+SvcDesc="AMCC S5933 Evaluation Board Driver"

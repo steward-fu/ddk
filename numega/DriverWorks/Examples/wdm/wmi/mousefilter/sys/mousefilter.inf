@@ -1,0 +1,107 @@
+;; mousefilter.inf - INF file for WDM mouse filter example
+;; Copyright (c) 1997-2001 Compuware Corporation, Inc.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows NT$"
+SignOS=Windows 2000
+Provider=%ProviderName%
+Class=Mouse
+ClassGUID={4D36E96F-E325-11CE-BFC1-08002BE10318}
+DriverVer=4/13/2001,1.0.0.0
+
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;moufilt.sys = 1,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%*PNP0BAAD.DeviceDesc%				=PS2_mousefilter_DDI, *PNP0BAAD
+%HID\SimpleMouseFilter.DeviceDesc%	=HID_mousefilter_DDI, HID\SimpleMouseFilter
+
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 2000 -----------------
+; --------- PS2
+[PS2_mousefilter_DDI.NT]
+; Get the standard stuff from MsMouse.inf
+Include=msmouse.inf
+Needs=PS2_Inst
+CopyFiles=mousefilter_Files_Driver
+
+[PS2_mousefilter_DDI.NT.Services]
+; this will add i8042prt as the service and make sure that mouclass is installed
+Include=msmouse.inf
+Needs=PS2_Inst.Services
+AddService = mousefilter, 0x00000002, mousefilter_AddService
+
+[PS2_mousefilter_DDI.NT.HW]
+; Add in the standard stuff provided by MS
+Include=msmouse.inf
+Needs=PS2_Inst.HW
+; Add our filter driver
+AddReg = mousefilter_DDI_HW_AddReg
+
+; --------- USB
+[HID_mousefilter_DDI.NT]
+; Get the standard stuff from MsMouse.inf
+Include=msmouse.inf
+Needs=HID_Mouse_Inst.NT
+CopyFiles=mousefilter_Files_Driver
+
+[HID_mousefilter_DDI.NT.Services]
+; this will add MouHID as the service and make sure that mouclass is installed
+Include=msmouse.inf
+Needs=HID_Mouse_Inst.NT.Services
+AddService = mousefilter, 0x00000002, mousefilter_AddService
+
+[HID_mousefilter_DDI.NT.HW]
+; Add in the standard stuff provided by MS
+Include=msmouse.inf
+Needs=HID_Mouse_Inst.NT.HW
+; Add our filter driver
+AddReg = mousefilter_DDI_HW_AddReg
+
+[mousefilter_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+LoadOrderGroup = Pointer Port
+ServiceBinary  = %12%\moufilt.sys
+
+; --------- Files (common) -------------
+
+[mousefilter_Files_Driver]
+moufilt.sys
+
+[mousefilter_DDI_HW_AddReg]
+HKR,,"UpperFilters",0x00010000,"mousefilter"
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware NuMega"
+MfgName="Compuware NuMega"
+SvcDesc="Compuware Mouse Filter Example"
+
+*PNP0BAAD.DeviceDesc			="Compuware PS/2 Mouse Filter Driver"
+HID\SimpleMouseFilter.DeviceDesc="Compuware USB Mouse Filter Driver"

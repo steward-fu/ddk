@@ -1,0 +1,608 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./UsbWebServer_files/filelist.xml">
+<title>UsbWebServer DriverNetworks KTdi sample</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>rcrouse</o:Author>
+  <o:LastAuthor>rcrouse</o:LastAuthor>
+  <o:Revision>5</o:Revision>
+  <o:TotalTime>28</o:TotalTime>
+  <o:Created>2001-11-02T03:02:00Z</o:Created>
+  <o:LastSaved>2001-11-07T03:27:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>542</o:Words>
+  <o:Characters>3095</o:Characters>
+  <o:Company>Compuware/NuMega Lab, Inc.</o:Company>
+  <o:Lines>25</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>3800</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;}
+h2
+	{margin-right:0in;
+	margin-top:14.0pt;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Tahoma;
+	color:navy;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-style:italic;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name=top></a>UsbWebServer.sys:<span style="mso-spacerun: yes"> 
+</span>Sample Kernel Mode Web Server</h1>
+
+<p class=MsoNormal><span style='font-family:Verdana;color:white'>[This is
+preliminary documentation and subject to change.] </span><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Verdana;
+color:white'><o:p></o:p></span></p>
+
+<h2>Summary</h2>
+
+<p class=MsoBodyText>This directory contains project files for <b>UsbWebServer.sys</b>.
+This sample demonstrates a simple TDI client written using the DriverNetworks framework.
+The UsbWebServer driver listens on the Http port (TCP Port 80), accepts
+connection requests from remote IP clients, and responds to HTTP GET requests
+by sending an HTML page to the client. The driver is also performs I/O with the
+Cypress Semiconductor USB Thermometer to get the current temperature. This is
+displayed on the HTML page. In addition, the driver opens a Temp.htm file as a
+'template' for the response. This file can be edited to display any HTML. The
+driver processes XML tags &lt;TEMPERATURE&gt; and &lt;WEB_SERVER&gt; located in
+the Temp.htm file by filling in the Host name and current temperature obtained
+from the USB thermometer. </p>
+
+<h2>Building the Driver</h2>
+
+<p class=MsoBodyText>Open <b>UsbWebServer.dsp</b> in MSVC 6.0 IDE, select the
+“Win32 Windows 2000 Checked” configuration and build it. The build creates
+files <b>UsbWebServer.sys</b> and <b>UsbWebServer.nms</b>. You will need
+DriverWorks, DriverNetworks, and the Microsoft Windows DDK installed to
+successfully build the driver. You must also build the <b>UsbTherm</b> sample
+from DriverWorks. <b>UsbWebServer.sys</b> is implemented as a <b>USB WDM upper
+filter driver</b> for the USB Thermometer. </p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:#CCFFFF'>
+
+<p class=note><b>Note:</b><span style="mso-spacerun: yes">  </span>The driver
+will not be binary compatible with Windows 9x systems due to differences in the
+TDI implementation among platforms, but the driver is source-code compatible
+across WDM platforms. </p>
+
+</div>
+
+<h2>Installing and Running the Sample</h2>
+
+<p class=MsoBodyText>Use the <b>UsbWebServer.inf</b> file included with the
+sample to install the driver on the 'server' machine. The driver is designed to
+work with the Cypress Semiconductor USB Thermometer Starter Kit. If there is
+already a driver installed for the USB Thermometer, first uninstall the driver.
+Then, plug in the USB Thermometer. Browse to the <b>.inf</b> included with this
+sample. Browse to <b>UsbTherm.sys</b> and <b>UsbWebServer.sys</b> drivers so
+they will be loaded by the system. </p>
+
+<p class=MsoBodyText>On some other IP-enabled machine, start the <i>Internet
+Explorer</i> browser application and connect to the IP address of the server
+machine. The server returns the HTML page containing the temperature at the web
+server machine. </p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:#CCFFFF'>
+
+<p class=note><b>Note:</b><span style="mso-spacerun: yes">  </span>On Windows
+98/Me platforms, the driver attempts to create a listening socket when the
+device is started (during processing of IRP_MJ_PNP/IRP_MN_START_DEVICE). If the
+underlying TCP/IP driver has not yet loaded, this listening socket request will
+fail and the <b>UsbWebServer</b> driver will not be loaded. If the socket is
+successfully created, the driver will successfully start. </p>
+
+</div>
+
+<p class=MsoBodyText>On Windows 2000/XP, <b>UsbWebServer</b> uses the TDI PnP
+framework to receive notification when the underlying TCP/IP driver loads. The
+driver will not try to initialize its socket before the network is ready. </p>
+
+<h2>Code Tour<span style='font-size:10.0pt;mso-bidi-font-size:18.0pt'><o:p></o:p></span></h2>
+
+<table border=1 cellspacing=3 cellpadding=0 width=550 style='width:412.65pt;
+ mso-cellspacing:2.0pt;margin-left:9.95pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>File<o:p></o:p></span></b></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>KHttpServerSession.h<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declaration of KHttpServerSession class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>KHttpServerSession.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implementation of KHttpServerSession class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:2.4pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt right 133.45pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>eThermoDriver.h<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declaration of eThermoDriver class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:2.4pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt right 133.45pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>eThermoDriver.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implementation of eThermoDriver class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:2.4pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>eUsbTherm.h<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declaration of eUsbTherm class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:4.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>eUsbTherm.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implementation of eUsbTherm class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:4.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Function.h<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declaration of IRP handlers for this driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:4.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>UsbWebServer.dsw<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:4.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Workspace File, Ver 6.0.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:2.4pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>UsbWebServer.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:2.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Project File, Ver 6.0.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>UsbWebServer.rc<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Resource file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>UsbWebServer.inf<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Install file for the driver (also installs UsbTherm.sys driver).<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:6.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Temp.htm<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Web page returned by this driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:6.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>UsbWebServer.htm<o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>This file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:6.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma'>makefile </span><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:0in;tab-stops:45.8pt 137.4pt'>Used for the DDK utility BUILD.EXE.<span
+  style='mso-fareast-font-family:"Courier New"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='height:6.0pt'>
+  <td width=152 valign=top style='width:114.3pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma'>sources </span><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=390 valign=top style='width:292.35pt;padding:0in 5.4pt 0in 5.4pt;
+  height:6.0pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:0in;tab-stops:45.8pt 137.4pt'>Build information for the DDK
+  utility BUILD.EXE.<span style='mso-fareast-font-family:"Courier New"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><a
+href="#top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:aqua'>
+
+<p class=EndBar style='tab-stops:.5in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2001 Compuware Corporation<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:"Times New Roman";
+mso-fareast-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre></div>
+
+</body>
+
+</html>

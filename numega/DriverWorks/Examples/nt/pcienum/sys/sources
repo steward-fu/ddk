@@ -1,0 +1,26 @@
+# SOURCES - for PCI enumerator example
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=pcienum
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw.lib
+
+C_DEFINES=-DNTVERSION=400
+BROWSER_INFO=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\include\dep_vxd;\
+		 $(DRIVERWORKS)\include\dep_wdm
+
+SOURCES=pcienum.cpp enumdev.cpp pcienum.rc

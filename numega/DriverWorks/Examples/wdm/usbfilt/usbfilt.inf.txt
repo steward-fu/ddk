@@ -1,0 +1,106 @@
+; UsbFilt.inf.txt - Install information file for the UsbFilt example.  
+; Copyright (c) 1999 Compuware Corporation
+;
+;	It is not a complete .inf file.  It lists sections of a .inf file that need to be
+;	added to a USB function driver's .inf file to have a filter driver loaded
+;	for the USB device for Windows 98 and Windows 2000.  It can be used as an upper 
+;	or lower filter.
+;
+
+[Manufacturer]
+; 	This should already exist in the USB function driver's .inf file
+;"TheVendor"=MANUF
+
+[MANUF]
+; 	This should already exist in the USB function driver's .inf file
+;"DeviceDescription"=InstallSectionName, PLUG_AND_PLAY_HARDWARE_ID
+
+[InstallSectionName]
+; 	This should already exist in the USB function driver's .inf file
+;CopyFiles=MyFileListSection
+;AddReg=MyAddRegistrySection
+
+[InstallSectionName.HW]
+AddReg=MyHWAddRegistrySection
+
+[InstallSectionName.NT]
+; 	This should already exist in the USB function driver's .inf file
+;CopyFiles=MyFileListSection
+;AddReg=MyAddRegistrySection
+
+[InstallSectionName.NT.HW]
+AddReg=MyHWAddRegistrySectionNT
+
+[InstallSectionName.NT.Services]
+; 	There should exist an AddService directive for the USB function driver that
+; 	is similar to the following line
+;
+;Addservice = TheUsbFunctionDriver, 0x00000002, TheService
+;
+; 	Add another directive for the USB filter driver
+;
+Addservice = usbfilt,, UsbFiltInst
+
+[UsbFiltInst]
+DisplayName    = "UsbFilt"
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_AUTO_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %10%\System32\Drivers\usbfilt.sys
+LoadOrderGroup = Extended Base
+
+[MyAddRegistrySection]
+; 	This should already exist in the USB function driver's .inf file
+;
+;
+
+[MyFileListSection]
+; 	This should already exist in the USB function driver's .inf file
+;
+; 	The USB function driver should already be listed.
+;TheUsbFunctionDriver.sys
+;
+; 	Add the USB filter driver to the list of files
+;
+usbfilt.sys
+
+[MyHWAddRegistrySection]
+;
+;	This section is for installing PnP filter drivers under Windows 98.  
+;	This will add values to the hardware registry key of the device located
+;	at HKLM\Enum\USB\PNP_ID\DeviceInstanceID
+;
+;	"LowerFilters" and "UpperFilters" are special values that indicate to
+; 	the operating system that filter drivers should be loaded along with the
+;	function driver and that control the load order of the drivers.  A driver specified
+;	with "LowerFilters" will be loaded before the function driver and its
+;	AddDevice routine will be called before the function driver's.  A driver
+;	specified with "UpperFilters" will be loaded after the function driver's
+;	and its AddDevice routine will be called after the function driver's.
+;
+;	This .inf file will use the usbfilt sample as a lower filter.  To use it as
+;	an upper filter, use the commented out directive.
+;
+HKR,,"LowerFilters",0x00010000,"usbfilt.sys"
+;HKR,,"UpperFilters",0x00010000,"usbfilt.sys"
+
+[MyHWAddRegistrySectionNT]
+;
+;	This section is for installing PnP filter drivers under Windows 2000.  
+;	This will add values to the hardware registry key of the device located
+;	at HKLM\System\CurrentControlSet\Enum\USB\PNP_ID\DeviceInstanceID
+;
+;	"LowerFilters" and "UpperFilters" are special values that indicate to
+; 	the operating system that filter drivers should be loaded along with the
+;	function driver and that control the load order of the drivers.  A driver specified
+;	with "LowerFilters" will be loaded before the function driver and its
+;	AddDevice routine will be called before the function driver's.  A driver
+;	specified with "UpperFilters" will be loaded after the function driver's
+;	and its AddDevice routine will be called after the function driver's.
+;
+;	This .inf file will use the usbfilt sample as a lower filter.  To use it as
+;	an upper filter, use the commented out directive.
+;
+HKR,,"LowerFilters",0x00010000,"usbfilt"
+;HKR,,"UpperFilters",0x00010000,"usbfilt"
+

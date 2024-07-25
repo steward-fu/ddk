@@ -1,0 +1,34 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=TailLightInst
+TARGETPATH=obj
+TARGETTYPE=DYNLINK
+DLLBASE=0x2000000
+DLLENTRY=_DllMainCRTStartup
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+C_DEFINES=-DNTVERSION='WDM' -DFILTERDLL_EXPORTS
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210,4197
+USE_NATIVE_EH=1
+
+INCLUDES=$(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\..\common\include\stl;\
+		 $(DRIVERWORKS)\include\dep_vxd
+
+TARGETLIBS= $(SDK_LIB_PATH)\setupapi.lib \
+            $(SDK_LIB_PATH)\kernel32.lib \
+            $(SDK_LIB_PATH)\advapi32.lib \
+            $(SDK_LIB_PATH)\user32.lib
+
+
+SOURCES=StdAfx.cpp TailLightDll.cpp TailLightInst.cpp    
+

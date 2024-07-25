@@ -1,0 +1,481 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./mouclass_files/filelist.xml">
+<title>MOUCLASS</title>
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h2
+	{color:black;}
+h3
+	{color:black;}
+h4
+	{color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	color:black;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:572204793;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-942750922 67698695 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F071;
+	mso-level-tab-stop:63.0pt;
+	mso-level-number-position:left;
+	margin-left:63.0pt;
+	text-indent:-.25in;
+	mso-ansi-font-size:8.0pt;
+	font-family:Wingdings;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+<meta name=Template content="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</head>
+
+<body bgcolor=white lang=EN-US link=blue vlink=purple style='tab-interval:.5in'
+leftmargin=8>
+
+<div class=Section1>
+
+<h2><a name=MYSAMPLE><span style='font-family:Verdana'>MOUCLASS</span></a><span
+style='font-family:Verdana'> <o:p></o:p></span></h2>
+
+<h3><span style='font-family:Verdana'>SUMMARY<o:p></o:p></span></h3>
+
+<p>This mouse class driver sample illustrates the use of DriverWorks
+synchronization constructs and work items in a DDK driver. It also illustrates
+the steps necessary to convert a DDK driver from C to C++ so that DriverWorks
+classes can be used. The sample was intended to run on Windows 2000.</p>
+
+<p>The following table shows the DriverWorks classes added to the example:</p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <h4>DriverWorks Class<o:p></o:p></h4>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <h4>Variable Name<o:p></o:p></h4>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <h4>Function Modified<o:p></o:p></h4>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KWorkItem<o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>TheWorkItem<o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouseToggleWaitWake<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KWorkItem<o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>TheWorkItem<o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouseClassWaitWakeComplete<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KWorkItem</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>TheWorkItem</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouseClassPoRequestComplete</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KSpinLock</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MyWaitWakeSpinlock</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouseClassCheckWaitWakeEnabled</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KSpinLock</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>NewSpinlock</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Device Extension</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>CancelSpinLock</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Global</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KMutex</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>TheMutex</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Global</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KMutex</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>TheCleanupMutex</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Device Extension</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KEvent</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MyEvent</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouSyncComplete</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=131 valign=top style='width:98.6pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>KEvent</p>
+  </td>
+  <td width=180 valign=top style='width:135.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MyEvent</p>
+  </td>
+  <td width=309 valign=top style='width:232.1pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>MouseSendIrpSynchronously</p>
+  </td>
+ </tr>
+</table>
+
+<h3><span style='font-family:Verdana'>BUILDING THE SAMPLE<o:p></o:p></span></h3>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The files necessary to
+build this sample include Mouclass.cpp, Mouclass.h, Mouclass.rc, Moulog.rc, the
+makefile, and the sources. Once built, it produces one binary: a mouse-class
+driver (Mouclass.sys). Free and checked builds are both available.<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'>The sample can be built
+from either the command line or from the Visual C++ IDE.<span
+style="mso-spacerun: yes">  </span><o:p></o:p></span></p>
+
+<p style='margin-left:.75in;text-indent:-27.0pt;mso-list:l0 level1 lfo1;
+tab-stops:list .75in'><![if !supportLists]><span style='font-size:8.0pt;
+mso-bidi-font-size:10.0pt;font-family:Wingdings'>q<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='font-size:10.0pt;font-family:Verdana'>To
+build from the Visual C++ IDE, open the project, mouclass.dsw, and select build
+to build the sample.<o:p></o:p></span></p>
+
+<p style='margin-left:.75in;text-indent:-27.0pt;mso-list:l0 level1 lfo1;
+tab-stops:list .75in'><![if !supportLists]><span style='font-size:8.0pt;
+mso-bidi-font-size:10.0pt;font-family:Wingdings'>q<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='font-size:10.0pt;font-family:Verdana'>To
+build from the command line, run setenv.bat from the Windows 2000 DDK directory.<span
+style="mso-spacerun: yes">  </span>Then type build in the project directory.<o:p></o:p></span></p>
+
+<p><span style='font-size:10.0pt;font-family:Verdana'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p>In order to run the sample driver, you must replace mouclass.sys in
+winnt\system32\drivers with the new file and then restart the computer to start
+the sample.<span style="mso-spacerun: yes">  </span>Because of Windows 2000 file
+protection you will need to boot into safe mode to copy the new driver over the
+old one.</p>
+
+<h3><span style='font-family:Verdana'>CODE TOUR<o:p></o:p></span></h3>
+
+<h4><span style='font-family:Verdana'>File Manifest<o:p></o:p></span></h4>
+
+<pre><u>File<span style='mso-tab-count:2'>           </span>Description<o:p></o:p></u></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre>Mouclass.htm<span
+style='mso-tab-count:1'>   </span>The documentation for this sample (this file).</pre><pre>Sources<span
+style='mso-tab-count:2'>        </span>The generic file for building this code sample.</pre><pre>Mouclass.cpp<span
+style='mso-tab-count:1'>   </span>The complete driver with DriverWorks modifications.</pre><pre>Mouclass.h<span
+style='mso-tab-count:1'>     </span>Prototypes and definitions</pre><pre>Mouclass.rc<span
+style='mso-tab-count:1'>    </span>Standard resource file (listing name and version number)</pre><pre>Moulog.mc<span
+style='mso-tab-count:1'>      </span>List of standard error-log messages for the mouse class driver</pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p align=center style='margin:0in;margin-bottom:.0001pt;text-align:center;
+tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-fareast-font-family:"Courier New"'><a
+href="#top"><span style='font-family:Verdana'>Top of page</span></a></span><span
+style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:"Courier New"'> <o:p></o:p></span></p>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<table border=0 cellspacing=0 cellpadding=0 width=624 style='width:6.5in;
+ mso-cellspacing:0in'>
+ <tr style='height:1.5pt'>
+  <td style='background:aqua;padding:.75pt .75pt .75pt .75pt;height:1.5pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+</table>
+
+<pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre>
+
+<p style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

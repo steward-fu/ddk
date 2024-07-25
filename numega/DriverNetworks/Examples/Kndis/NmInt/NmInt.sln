@@ -1,0 +1,65 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NmInt", "NmInt.vcproj", "{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OID Handlers", "OID Handlers.vcproj", "{13E7FBA1-CB88-4C0F-898B-2FE88F081240}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NmIntNotify", "NotifyObject\NmIntNotify.vcproj", "{B327E037-94E4-4BB8-819B-A898B893CEF9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Win32 NDIS 5 Checked = Win32 NDIS 5 Checked
+		Win32 NDIS 5 Free = Win32 NDIS 5 Free
+		Win32 NT4 Checked = Win32 NT4 Checked
+		Win32 NT4 Free = Win32 NT4 Free
+		Win32 Release = Win32 Release
+		Win32 Unicode Debug = Win32 Unicode Debug
+		Win32 Unicode Release MinDependency = Win32 Unicode Release MinDependency
+		Win32 Unicode Release MinSize = Win32 Unicode Release MinSize
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NDIS 5 Checked.ActiveCfg = NDIS 5 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NDIS 5 Checked.Build.0 = NDIS 5 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NDIS 5 Free.ActiveCfg = NDIS 5 Free|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NDIS 5 Free.Build.0 = NDIS 5 Free|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NT4 Checked.ActiveCfg = NT4 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NT4 Checked.Build.0 = NT4 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NT4 Free.ActiveCfg = NT4 Free|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 NT4 Free.Build.0 = NT4 Free|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 Release.ActiveCfg = NDIS 5 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 Unicode Debug.ActiveCfg = NDIS 5 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 Unicode Release MinDependency.ActiveCfg = NDIS 5 Checked|Win32
+		{E3485CCC-B296-4FDC-BC1A-AABC09C1EE3C}.Win32 Unicode Release MinSize.ActiveCfg = NDIS 5 Checked|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 NDIS 5 Checked.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 NDIS 5 Free.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 NT4 Checked.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 NT4 Free.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 Release.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 Release.Build.0 = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 Unicode Debug.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 Unicode Release MinDependency.ActiveCfg = Release|Win32
+		{13E7FBA1-CB88-4C0F-898B-2FE88F081240}.Win32 Unicode Release MinSize.ActiveCfg = Release|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 NDIS 5 Checked.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 NDIS 5 Free.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 NT4 Checked.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 NT4 Free.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Release.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Debug.ActiveCfg = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Debug.Build.0 = Win32 Unicode Debug|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Release MinDependency.ActiveCfg = Win32 Unicode Release MinDependency|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Release MinDependency.Build.0 = Win32 Unicode Release MinDependency|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Release MinSize.ActiveCfg = Win32 Unicode Release MinSize|Win32
+		{B327E037-94E4-4BB8-819B-A898B893CEF9}.Win32 Unicode Release MinSize.Build.0 = Win32 Unicode Release MinSize|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

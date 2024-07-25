@@ -1,0 +1,28 @@
+# SOURCES for RAMDISK example driver
+# Copyright (c) 1997 Compuware Corporation
+
+TARGETNAME=ramdisk
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw.lib
+
+C_DEFINES=-DNTVERSION=400
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(BASEDIR)\src\storage\inc;\
+		 $(DRIVERWORKS)\include;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\include\dep_vxd;\
+		 $(DRIVERWORKS)\include\dep_wdm
+
+SOURCES=ramdisk.rc ramdisk.cpp	rdcntrl.cpp	rddevice.cpp

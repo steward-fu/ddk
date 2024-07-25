@@ -1,0 +1,93 @@
+;/*++
+;
+;Copyright (c) Compuware Corporation.  All rights reserved.
+;
+;Module Name:
+;
+;    VREAD.INF
+;
+;Abstract:
+;    INF file for installing Numega Virtual Bus Reader Device
+;
+;--*/
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows NT$"
+Class=VBUS
+ClassGUID={F9D4C6A6-B870-443a-8614-20B582ECBE3C}
+Provider=%ProviderName%
+DriverVer=07/01/2002,1.00.0000
+CatalogFile=vread.cat
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+[SourceDisksNames]
+1 = "Install Disk",Disk1,,
+
+[SourceDisksFiles]
+vread.sys = 1,,
+vbusclass.sys = 1,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+VRead_Files_Driver = 12
+VBusClassCopyFiles = 11
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+; NT Style
+[ClassInstall32]
+Addreg=VBusClassAddReg
+CopyFiles=VBusClassCopyFiles
+
+[VBusClassAddReg]
+HKR,,,0,%DeviceClassName%
+HKR,,Icon,,101
+HKR,,Installer32,,"vbusclass.dll,VBusClassInstaller"
+
+[VBusClassCopyFiles]
+vbusclass.dll
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=VRead_DDI, VBUS\NumegaReader
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows NT -----------------
+
+[VRead_DDI.NT]
+CopyFiles=VRead_Files_Driver
+
+[VRead_DDI.NT.Services]
+Addservice = VRead, 0x00000002, VRead_AddService
+
+[VRead_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\VRead.sys
+
+
+; --------- Files (common) -------------
+
+[VRead_Files_Driver]
+VRead.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Corporation"
+MfgName="Compuware Corporation"
+DeviceDesc="Virtual Bus Reader"
+DeviceClassName="Numega Virtual Bus Devices"
+SvcDesc="Virtual Bus Reader"

@@ -1,0 +1,18 @@
+TARGETNAME=VComCoInst
+TARGETPATH=obj
+TARGETTYPE=DYNLINK
+
+DLLENTRY=_DllMainCRTStartup
+DLLDEF=VComCoInst.def
+
+
+SOURCES=VComCoInst.cpp \
+	VComCoInst.rc
+
+TARGETLIBS= $(SDK_LIB_PATH)\setupapi.lib \
+            $(SDK_LIB_PATH)\comctl32.lib \
+            $(SDK_LIB_PATH)\user32.lib   \
+            $(SDK_LIB_PATH)\kernel32.lib
+
+
+DLLBASE=0x2000000

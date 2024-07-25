@@ -1,0 +1,47 @@
+# SOURCES for use with BUILD command
+
+TARGETNAME=vscsi
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib \
+           $(DRIVERNETWORKS)\lib\*\$(BUILDTYPE)\kndis5pt.lib \
+		   $(DDK_LIB_PATH)\tdi.lib \
+		   $(DDK_LIB_PATH)\ndis.lib \
+		   $(DRIVERNETWORKS)\lib\*\$(BUILDTYPE)\tdint5.lib \
+		   $(DDK_LIB_PATH)\ntoskrnl.lib
+
+
+C_DEFINES=-DNTVERSION='WDM' -DTDI_WINDOWS_NT
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=$(BASEDIR)\inc\ddk\wdm;\
+		 $(BASEDIR)\inc\ddk;\
+		 $(DRIVERWORKS)\include;\
+		 $(BASEDIR)\inc;\
+		 $(DRIVERWORKS)\source;\
+		 $(DRIVERWORKS)\..\common\include\stl;\
+		 $(DRIVERWORKS)\include\dep_vxd;\
+		 $(DRIVERNETWORKS)\include;\
+		 $(DRIVERNETWORKS)\include\tdiclient;\
+		 $(BASEDIR)\src\network\inc;\
+		 $(BASEDIR)\src\network\wshsmple
+
+SOURCES=  vscsi.rc \
+          vscsi.cpp \
+          vscsidev.cpp  \
+		  debug.cpp \
+		  sockets.cpp \
+		  vbus.cpp \
+		  vdisk.cpp
+

@@ -1,0 +1,4 @@
+LIBRARY  VCOMCOINST
+
+EXPORTS   
+   VCom1394CoInstaller

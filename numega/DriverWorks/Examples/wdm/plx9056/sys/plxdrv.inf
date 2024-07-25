@@ -1,0 +1,67 @@
+;; plxdrv.inf
+
+; Compuware DriverStudio DriverWorks
+;
+; Sample Driver for Plx9056 Chip Device
+;
+; Copyright (c) 2002 Compuware Corporation
+;
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows NT$"
+Provider=%ProviderName%
+Class=Unknown
+ClassGUID={4D36E97E-E325-11CE-BFC1-08002BE10318}
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+[SourceDisksNames]
+1 = "Install Disk",Disk1,,
+
+[SourceDisksFiles]
+plx9056.sys = 1,,
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+PlxDriver_Files_Driver = 12
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=PlxDriver_DDI, PCI\VEN_10B5&DEV_5601
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows NT -----------------
+
+[PlxDriver_DDI.NT]
+CopyFiles=PlxDriver_Files_Driver
+
+[PlxDriver_DDI.NT.Services]
+Addservice = PlxDriver, 0x00000002, PlxDriver_AddService
+
+[PlxDriver_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\plx9056.sys
+
+
+; --------- Files (common) -------------
+
+[PlxDriver_Files_Driver]
+plx9056.sys
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="Compuware Corporation"
+MfgName="PLX Company"
+DeviceDesc="Sample Driver for PLX9056"
+SvcDesc="Sample Driver for PLX9056"

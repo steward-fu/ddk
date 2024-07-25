@@ -1,0 +1,827 @@
+;***********************************************************************
+; KNDIS Sample Drivers
+;
+; OEMSETUP.INF
+;       NmInt Intermediate driver for NT 4.0 install script
+;		Cloned from imsamp .inf file.
+;
+;*******************************************************************************
+
+[Identification]
+    OptionType = NetTransport
+
+[LanguagesSupported]
+    ENG
+
+[Options]
+    NmInt
+
+[OptionsTextENG]
+    NmInt     = "Ndis Intermediate Driver Sample"
+
+[FileConstants]
+UtilityInf      			= "UTILITY.INF"
+subroutineinf   			= "SUBROUTN.INF"
+TransportSoftwareType			= "transport"
+AdapterSoftwareType   			= "driver"
+Exit_Code       			= 0
+NetEventDLL     			= "%SystemRoot%\System32\netevent.dll"
+
+Manufacturer    			= "Microsoft"
+ProductMajorVersion     		= "1"
+ProductMinorVersion     		= "0"
+ProductVersion  			= $(ProductMajorVersion)"."$(ProductMinorVersion)
+
+TransportProductSoftwareName   		= "NmInt"
+AdapterProductSoftwareName		= "NmIntMP"
+AdapterProductHardwareName		= "NmIntMP"
+
+ProductSoftwareImagePath 		= "\SystemRoot\System32\drivers\NmInt.sys"
+
+TransportNetRuleSoftwareType    	= "NmInt NmInt"
+TransportNetRuleSoftwareClass   	= {"NmInt basic"}
+TransportNetRuleSoftwareUse     	= $(TransportSoftwareType)" none none"
+TransportNetRuleSoftwareBindForm	= """NmInt"" yes yes container"
+TransportNetRuleSoftwareBindable 	= {"NmInt ndisDriver non non 100"}
+
+AdapterNetRuleSoftwareType    		= "ImSys ndisDriver ImDriver"
+AdapterNetRuleSoftwareUse     		= $(AdapterSoftwareType)
+AdapterNetRuleSoftwareBindForm		= """ImSys"" yes no container"
+AdapterNetRuleSoftwareClass   		= {"ImDriver basic"}
+AdapterNetRuleSoftwareBindable 		= {"ImDriver ImAdapter non exclusive 100"}
+
+AdapterNetRuleHardwareType		= "Im ImAdapter"
+AdapterNetRuleHardwareBindForm 		= " yes yes container"
+AdapterNetRuleHardwareClass    		= {"ImAdapter basic"}
+
+TransportProductKeyName	= $(!NTN_SoftwareBase)"\"$(Manufacturer)"\"$(TransportProductSoftwareName)"\CurrentVersion"
+TransportParamKeyName	= $(!NTN_ServiceBase)"\"$(TransportProductSoftwareName)"\Parameters"
+TransportServiceKeyName	= $(!NTN_ServiceBase)"\"$(TransportProductSoftwareName)
+TransportLinkageKeyName	= $(!NTN_ServiceBase)"\"$(TransportProductSoftwareName)"\Linkage"
+
+AdapterProductKeyName	= $(!NTN_SoftwareBase)"\"$(Manufacturer)"\"$(AdapterProductSoftwareName)"\CurrentVersion"
+AdapterParamKeyName		= $(!NTN_ServiceBase)"\"$(AdapterProductSoftwareName)"\Parameters"
+AdapterServiceKeyName	= $(!NTN_ServiceBase)"\"$(AdapterProductSoftwareName)
+AdapterLinkageKeyName	= $(!NTN_ServiceBase)"\"$(AdapterProductSoftwareName)"\Linkage"
+
+[FileConstantsENG]
+ProCaption   				= "Windows NT Setup"
+ProCancel    				= "Cancel"
+ProCancelMsg 				= "Windows NT Networking is not correctly installed.  "+
+               				  "Are you sure you want to cancel copying files?"
+ProCancelCap 				= "Network Setup Message"
+ProText1     				= "Copying:"
+ProText2     				= "To:"
+FunctionTitle   			= "NmInt Intermediate Miniport Driver"
+TransportProductSoftwareDescription	= "NmInt Intermediate Sample Miniport Driver Transport"
+TransportProductSoftwareDisplayName	= "NmInt Intermediate Sample Miniport Driver Transport"
+TransportProductSoftwareTitle    	= "NmInt Intermediate Sample Miniport Driver Transport"
+AdapterProductSoftwareDescription	= "NmInt Intermediate Sample Miniport Driver Adapter"
+AdapterProductSoftwareDisplayName	= "NmInt Intermediate Sample Miniport Driver Adapter"
+AdapterProductSoftwareTitle    		= "NmInt Intermediate Sample Miniport Driver Adapter"
+ProductHardwareDescription		= "NmInt Intermediate Sample Miniport Driver Virtual Adapter"
+ProductHardwareDisplayName		= "NmInt Intermediate Sample Miniport Driver Virtual Adapter"
+ProductHardwareTitle			= "NmInt Intermediate Sample Miniport Driver Virtual Adapter"
+ShellCodeErrorTitle     		= "Error: "$(FunctionTitle)
+ShellCodeErrorText      		= "Shell Code Error."
+
+[GeneralConstants]
+from      = ""
+to        = ""
+ExitCodeOk     = 0
+ExitCodeCancel = 1
+ExitCodeFatal  = 2
+KeyNull         = ""
+MAXIMUM_ALLOWED   = 33554432
+RegistryErrorIndex = NO_ERROR
+KeyProduct      = ""
+KeyParameters   = ""
+TRUE            = 1
+FALSE           = 0
+NoTitle            = 0
+ExitState   = "Active"
+OldVersionExisted = $(FALSE)
+DriverPath      = $(!STF_NTPATH)\drivers
+
+[date]
+    Now = {} ? $(!LIBHANDLE) GetSystemDate
+
+[platform]
+    STF_PLATFORM = "" ? $(!LIBHANDLE) GetPlatform
+
+[Identify]
+    read-syms Identification
+    set Status     = STATUS_SUCCESSFUL
+    set Identifier = $(OptionType)
+    set Media      = #("Source Media Descriptions", 1, 1)
+    Return $(Status) $(Identifier) $(Media)
+
+[ReturnOptions]
+    set Status        = STATUS_FAILED
+    set OptionList     = {}
+    set OptionTextList = {}
+    set LanguageList = ^(LanguagesSupported, 1)
+    Ifcontains(i) $($0) in $(LanguageList)
+        goto returnoptions
+    else
+        set Status = STATUS_NOLANGUAGE
+        goto finish_ReturnOptions
+    endif
+returnoptions = +
+    set OptionList     = ^(Options, 1)
+    set OptionTextList = ^(OptionsText$($0), 1)
+    set Status         = STATUS_SUCCESSFUL
+finish_ReturnOptions = +
+    Return $(Status) $(OptionList) $(OptionTextList)
+
+[InstallOption]
+
+    set !DebugOutputControl = 1
+    
+    set Option   = $($1)
+    set SrcDir   = $($2)
+    set AddCopy  = $($3)
+    set DoCopy   = $($4)
+    set DoConfig = $($5)
+    set LanguageList = ^(LanguagesSupported, 1)
+    Ifcontains(i) $($0) NOT-IN $(LanguageList)
+        Return STATUS_NOLANGUAGE
+    endif
+    set-subst LF = "\n"
+    read-syms GeneralConstants
+    read-syms FileConstants
+    read-syms DialogConstants$(!STF_LANGUAGE)
+    ifstr(i) $(!NTN_Origination) == "NCPA"
+        set Continue = $(OK)
+    endif
+    read-syms FileConstants$(!STF_LANGUAGE)
+    detect date
+    detect platform
+    set-title  $(FunctionTitle)
+    set to   = Begin
+    set from = Begin
+    set CommonStatus = STATUS_SUCCESSFUL
+    EndWait
+    
+Begin = +
+    Ifstr(i) $(!NTN_InstallMode) == deinstall
+        set StartLabel = deinstall
+    else-Ifstr(i) $(!NTN_InstallMode) == update
+        set StartLabel = update
+    else-Ifstr(i) $(!NTN_InstallMode) == bind
+        set StartLabel = bind
+    else-Ifstr(i) $(!NTN_InstallMode) == configure
+        set StartLabel = configure
+    else
+        set StartLabel = install
+    endif
+    set RadioDefault = 2
+    set RadioIn = {$(RadioDefault)}
+    set from = $(fatal)
+    set to = $(fatal)
+    goto $(StartLabel)
+
+install = +
+    OpenRegKey $(!REG_H_LOCAL) "" $(TransportProductKeyName) $(MAXIMUM_ALLOWED) KeyProduct
+    Ifstr $(KeyProduct) != $(KeyNull)
+        CloseRegKey $(KeyProduct)
+        Shell $(UtilityInf), VerExistedDlg, $(TransportProductSoftwareTitle),+
+            $(ProductVersion)
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            goto ShellCodeError
+        endif
+        goto end
+    endif
+    CloseRegKey $(KeyProduct)
+    goto installproduct
+
+installproduct = +
+    StartWait
+    ifint $(OldVersionExisted) == $(FALSE)
+        Ifstr(i) $(DoCopy) == "YES"
+           Shell $(UtilityInf), DoAskSource, $(!STF_CWDDIR), $(SrcDir) YES
+           Ifint $($ShellCode) != $(!SHELL_CODE_OK)
+               Goto ShellCodeError
+           Else-Ifstr(i) $($R0) == STATUS_FAILED
+               Shell $(UtilityInf) RegistryErrorString "ASK_SOURCE_FAIL"
+               ifint $($ShellCode) != $(!SHELL_CODE_OK)
+                   goto ShellCodeError
+               endif
+               Goto fatal
+           Else-Ifstr(i) $($R0) == STATUS_USERCANCEL
+               Goto successful
+           Endif
+           Set SrcDir = $($R1)
+        Endif
+        Shell "" StripTrailSlash $(SrcDir)
+        set PlatformDir  = $($R0)"\"$(STF_PLATFORM)
+        set InfDir  = $($R0)"\"
+        install "Install-Option"
+        ifstr(i) $(STF_INSTALL_OUTCOME) != STF_SUCCESS
+           Shell $(UtilityInf) RegistryErrorString "UNABLE_COPY_FILE"
+           ifint $($ShellCode) != $(!SHELL_CODE_OK)
+               goto ShellCodeError
+           endif
+           set Error = $($R0)
+           goto fatal
+        endif
+        set OEM_ABANDON_ON = TRUE
+
+		Debug-Output "NmInt: Adding Transport Software Component to Registry"
+
+		Shell $(UtilityInf), AddSoftwareComponent, $(Manufacturer), +
+            $(TransportProductSoftwareName), +
+            $(TransportProductSoftwareName), +
+            $(TransportProductSoftwareDisplayName), $(STF_CONTEXTINFNAME), +
+            $(ProductSoftwareImagePath), "transport", "NDIS", {}, "",+
+            $(NetEventDLL)
+        set RegistryErrorIndex = $($R0)
+        Ifstr(i) $(RegistryErrorIndex) !=  NO_ERROR
+            EndWait
+            CloseRegKey $($R1)
+            CloseRegKey $($R2)
+            CloseRegKey $($R3)
+            CloseRegKey $($R4)
+            CloseRegKey $($R5)
+            goto fatalRegistry
+        endif
+        Set SoftProductKey      = $($R1)
+        Set SoftNetRuleKey      = $($R2)
+        Set SoftServiceKey      = $($R3)
+        Set SoftParameterKey    = $($R4)
+        Set SoftLinkageKey      = $($R5)
+        set NewValueList = {{SoftwareType,$(NoTitle),$(!REG_VT_SZ),$(TransportSoftwareType)},+
+                           {MajorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMajorVersion)},+
+                           {MinorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMinorVersion)},+
+                           {Title,$(NoTitle),$(!REG_VT_SZ),$(TransportProductSoftwareTitle)},+
+                           {Description,$(NoTitle),$(!REG_VT_SZ),$(TransportProductSoftwareDescription)},+
+                           {ServiceName,$(NoTitle),$(!REG_VT_SZ),$(TransportProductSoftwareName)},+
+                           {Review,$(NoTitle),$(!REG_VT_DWORD),1},+
+                           {InstallDate,$(NoTitle),$(!REG_VT_DWORD),*($(Now),1)}}
+        Shell  $(UtilityInf), AddValueList, $(SoftProductKey), $(NewValueList)
+        set RegistryErrorIndex = $($R0)
+        Ifstr $(RegistryErrorIndex) != NO_ERROR
+            CloseRegKey $(SoftProductKey)
+            CloseRegKey $(SoftNetRuleKey)
+            CloseRegKey $(SoftServiceKey)
+            CloseRegKey $(SoftParameterKey)
+            CloseRegKey $(SoftLinkageKey)
+            goto fatalRegistry
+        endif
+        set NewValueList = {{type,$(NoTitle),$(!REG_VT_SZ),$(TransportNetRuleSoftwareType)}, +
+                            {use,$(NoTitle),$(!REG_VT_SZ),$(TransportNetRuleSoftwareUse)}, +
+                            {class,$(NoTitle),$(!REG_VT_MULTI_SZ),$(TransportNetRuleSoftwareClass)}, +
+                            {bindform,$(NoTitle),$(!REG_VT_SZ),$(TransportNetRuleSoftwareBindForm)}, +
+                            {bindable,$(NoTitle),$(!REG_VT_MULTI_SZ),$(TransportNetRuleSoftwareBindable)}, +
+                            {InfOption,$(NoTitle),$(!REG_VT_SZ),$(Option)}}
+        Shell  $(UtilityInf), AddValueList, $(SoftNetRuleKey), $(NewValueList)
+        set RegistryErrorIndex = $($R0)
+        Ifstr $(RegistryErrorIndex) != NO_ERROR
+            CloseRegKey $(SoftProductKey)
+            CloseRegKey $(SoftNetRuleKey)
+            CloseRegKey $(SoftServiceKey)
+            CloseRegKey $(SoftParameterKey)
+            CloseRegKey $(SoftLinkageKey)
+            goto fatalRegistry
+        endif
+
+       
+
+
+        set NewValueList = {{DebugLevel,$(NoTitle),$(!REG_VT_DWORD),0}, +
+                            {DebugMask,$(NoTitle),$(!REG_VT_DWORD), 0}}
+        Shell  $(UtilityInf), AddValueList, $(SoftParameterKey), $(NewValueList)
+        set RegistryErrorIndex = $($R0)
+        Ifstr $(RegistryErrorIndex) != NO_ERROR
+            CloseRegKey $(SoftProductKey)
+            CloseRegKey $(SoftNetRuleKey)
+            CloseRegKey $(SoftServiceKey)
+            CloseRegKey $(SoftParameterKey)
+            CloseRegKey $(SoftLinkageKey)
+            goto fatalRegistry
+        endif
+
+	
+        CloseRegKey $(SoftProductKey)
+        CloseRegKey $(SoftNetRuleKey)
+        CloseRegKey $(SoftServiceKey)
+        CloseRegKey $(SoftParameterKey)
+        CloseRegKey $(SoftLinkageKey)
+
+		Debug-Output "NmInt: Adding Adapter Software Component to Registry"
+
+        Shell $(UtilityInf), AddSoftwareComponent, $(Manufacturer), +
+            $(AdapterProductSoftwareName), +
+            $(AdapterProductSoftwareName), +
+            $(AdapterProductSoftwareDisplayName), $(STF_CONTEXTINFNAME), +
+            $(ProductSoftwareImagePath), "kernel", "NDIS", {}, "",+
+            $(NetEventDLL)
+        set RegistryErrorIndex = $($R0)
+        Ifstr(i) $(RegistryErrorIndex) !=  NO_ERROR
+            EndWait
+            CloseRegKey $($R1)
+            CloseRegKey $($R2)
+            CloseRegKey $($R3)
+            CloseRegKey $($R4)
+            CloseRegKey $($R5)
+            goto fatalRegistry
+        endif
+        Set SoftProductKey      = $($R1)
+        Set SoftNetRuleKey      = $($R2)
+        Set SoftServiceKey      = $($R3)
+        Set SoftParameterKey    = $($R4)
+        Set SoftLinkageKey      = $($R5)
+
+        set NewValueList = {{SoftwareType,$(NoTitle),$(!REG_VT_SZ),$(AdapterSoftwareType)},+
+                           {MajorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMajorVersion)},+
+                           {MinorVersion,$(NoTitle),$(!REG_VT_DWORD),$(ProductMinorVersion)},+
+                           {Title,$(NoTitle),$(!REG_VT_SZ),$(AdapterProductSoftwareTitle)},+
+                           {Description,$(NoTitle),$(!REG_VT_SZ),$(AdapterProductSoftwareDescription)},+
+                           {ServiceName,$(NoTitle),$(!REG_VT_SZ),$(AdapterProductSoftwareName)},+
+                           {InstallDate,$(NoTitle),$(!REG_VT_DWORD),*($(Now),1)}}
+        Shell  $(UtilityInf), AddValueList, $(SoftProductKey), $(NewValueList)
+        set RegistryErrorIndex = $($R0)
+        Ifstr $(RegistryErrorIndex) != NO_ERROR
+            CloseRegKey $(SoftProductKey)
+            CloseRegKey $(SoftNetRuleKey)
+            CloseRegKey $(SoftServiceKey)
+            CloseRegKey $(SoftParameterKey)
+            CloseRegKey $(SoftLinkageKey)
+            goto fatalRegistry
+        endif
+        set NewValueList = {{type,$(NoTitle),$(!REG_VT_SZ),$(AdapterNetRuleSoftwareType)}, +
+                            {use,$(NoTitle),$(!REG_VT_SZ),$(AdapterNetRuleSoftwareUse)}, +
+                            {class,$(NoTitle),$(!REG_VT_MULTI_SZ),$(AdapterNetRuleSoftwareClass)}, +
+                            {bindform,$(NoTitle),$(!REG_VT_SZ),$(AdapterNetRuleSoftwareBindForm)}, +
+                            {bindable,$(NoTitle),$(!REG_VT_MULTI_SZ),$(AdapterNetRuleSoftwareBindable)}, +
+                            {InfOption,$(NoTitle),$(!REG_VT_SZ),$(Option)}}
+        Shell  $(UtilityInf), AddValueList, $(SoftNetRuleKey), $(NewValueList)
+        set RegistryErrorIndex = $($R0)
+        Ifstr $(RegistryErrorIndex) != NO_ERROR
+            CloseRegKey $(SoftProductKey)
+            CloseRegKey $(SoftNetRuleKey)
+            CloseRegKey $(SoftServiceKey)
+            CloseRegKey $(SoftParameterKey)
+            CloseRegKey $(SoftLinkageKey)
+            goto fatalRegistry
+        endif
+        
+        CloseRegKey $(SoftProductKey)
+        CloseRegKey $(SoftNetRuleKey)
+        CloseRegKey $(SoftServiceKey)
+        CloseRegKey $(SoftParameterKey)
+        CloseRegKey $(SoftLinkageKey)
+
+	endif
+
+    EndWait
+    goto successful
+
+bind =+
+
+	;
+	;	If this is the binding review for the Transport Driver...
+	;
+   	ifstr(i) $(!NTN_RegBase) == $(TransportProductKeyName)
+		;
+		;	Open the Linkage Key and get the Bind Value
+		;
+		Debug-Output "NmInt: Reviewing bindings in "$(TransportLinkageKeyName)
+		OpenRegKey $(!REG_H_LOCAL) "" $(TransportLinkageKeyName) $(MAXIMUM_ALLOWED) TransportLinkageKey
+		ifstr(i) $(TransportLinkageKey) != ""
+			GetRegValue $(TransportLinkageKey) "Bind" BindList
+			Debug-Output "NmInt: BindList: "$(BindList)
+			Set Binding = *($(BindList),4)
+			Debug-Output "NmInt: Binding:  "$(Binding)
+			CloseRegKey $(TransportLinkageKey)
+		else
+			Debug-Output "NmInt: failed to open Linkage Key for "$(TransportServiceKeyName)
+			goto fatalregistry
+		endif
+		;
+		;	Parse the Bindings to create a list of Adapter cards
+		;
+		set CardList = {}
+		set CreateCardList = {}
+		ForListDo $(Binding)
+			Split-String $($), "\", BindInfo
+			QueryListSize BindListSize $(BindInfo)
+			set CardName = *($(BindInfo),$(BindListSize))
+			Debug-Output "NmInt: Cardname: "$(CardName)
+			ifstr(i) $(CardList) == {}
+				set CardList = {$(CardName)}
+			else
+				set CardList = >($(CardList),$(CardName))
+			endif
+		EndForListDo
+	
+		Debug-Output "NmInt: Cardlist: "$(CardList)
+
+		;
+		;  For each real LAN adapter the transport is bound to...
+		;
+		Set AddedNewVirtualAdapter = "No"
+		ForListDo $(CardList)
+			Debug-Output "NmInt: Processing "$($)"..."
+			;
+			;	Check if this is a virtual adapter that WE created.
+			;
+			Set RegKey = $(!NTN_ServiceBase)"\"$($)"\Parameters\Signature"
+			Debug-Output "NmInt: pre-check: about to open "$(RegKey)
+			OpenRegKey $(!REG_H_LOCAL) "" $(RegKey) $(MAXIMUM_ALLOWED) NmIntKey
+			ifstr(i) $(NmIntKey) == ""
+				Debug-Output "NmInt: WILL bind to "$($)
+			else
+				Debug-Output "NmInt: Skipping bind to ourselves "$($)
+				goto continueCardList
+			endif
+
+			;
+			;	Open/Create the protocol specific key under the adapter's parameters key
+			;
+			Set RegKey = $(!NTN_ServiceBase)"\"$($)"\Parameters\"$(TransportProductSoftwareName)
+			Debug-Output "NmInt: about to open "$(RegKey)
+			OpenRegKey $(!REG_H_LOCAL) "" $(RegKey) $(MAXIMUM_ALLOWED) NmIntKey
+			ifstr(i) $(NmIntKey) == ""
+				Debug-Output "NmInt: creating "$(TransportProductSoftwareName)" key under the adapter"
+				CreateRegKey $(!REG_H_LOCAL) {$(RegKey),$(NoTitle),GenericClass} "" $(MAXIMUM_ALLOWED) "" NmIntParamsKey
+			else
+				Debug-Output "NmInt: Have processed "$($)" already"
+				CloseRegKey $(NmIntKey)
+				goto continueCardList
+			endif
+			ifstr(i) $(NmIntParamsKey) == ""
+				Debug-Output "NmInt: Failed to open/create the \Parameters\"$(TransportProductSoftwareName)" key under the adapter"
+				goto fatalRegistry
+			endif
+
+			;
+			;	Now add a virtual hardware component to represent the ELAN
+			;
+			Debug-Output "NmInt: Adding Adapter Hardware Component to Registry"
+			Shell $(UtilityInf), AddHardwareComponent, +
+				$(AdapterProductHardwareName), +
+				$(STF_CONTEXTINFNAME), +
+				$(AdapterProductKeyName)
+	    	ifint $($ShellCode) != $(!SHELL_CODE_OK)
+	        	Debug-Output "NmInt: ShellCode error."
+	        	goto ShellCodeError
+	    	endif
+			set RegistryErrorIndex = $($R0)
+			Ifstr(i) $(RegistryErrorIndex) !=  NO_ERROR
+				Debug-Output "NmInt: Failed to Add Hardware Component"
+        		CloseRegKey $($R1)
+        		CloseRegKey $($R2)
+        		CloseRegKey $($R3)
+				goto fatalRegistry
+			endif
+				
+	    	set KeyParameters = $($R3)
+    		set KeyAdapterRules = $($R2)
+   			set AdapterNumber = $($R4)
+	    	set NewValueList = {{Manufacturer,$(NoTitle),$(!REG_VT_SZ),$(Manufacturer)},+
+								{Title,$(NoTitle),$(!REG_VT_SZ),"["$($R4)"] "$(ProductHardwareTitle)},+
+								{Description,$(NoTitle),$(!REG_VT_SZ),$(ProductHardwareDescription)},+
+								{ProductName,$(NoTitle),$(!REG_VT_SZ),$(AdapterProductHardwareName)},+
+								{ServiceName,$(NoTitle),$(!REG_VT_SZ),$($R5)},+
+								{InstallDate,$(NoTitle),$(!REG_VT_DWORD),*($(Now),1)}}
+	    	Shell  $(UtilityInf), AddValueList, $($R1), $(NewValueList)
+    		ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        		Debug-Output "NmInt: ShellCode error"
+        		goto ShellCodeError
+	    	endif
+    		CloseRegKey $($R1)
+    		
+	    	set TempProdName = """"$(AdapterProductHardwareName)$(AdapterNumber)""""
+	    	set TempBindForm = $(TempProdName)$(AdapterNetRuleHardwareBindForm)
+	    	set NewValueList = {{type,$(NoTitle),$(!REG_VT_SZ),$(AdapterNetRuleHardwareType)},+
+								{bindform,$(NoTitle),$(!REG_VT_SZ),$(TempBindForm)}, +
+								{class,$(NoTitle),$(!REG_VT_MULTI_SZ),$(AdapterNetRuleHardwareClass)}, +
+								{InfOption,$(NoTitle),$(!REG_VT_SZ),$(Option)}}
+	    	Shell  $(UtilityInf), AddValueList, $(KeyAdapterRules), $(NewValueList)
+	    	ifint $($ShellCode) != $(!SHELL_CODE_OK)
+	        	Debug-Output "NmInt: ShellCode error."
+	        	goto ShellCodeError
+	    	endif
+	    	set RegistryErrorIndex = $($R0)
+	    	Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+	        	EndWait
+	        	Debug-Output "NmInt: Registry error: add value list."
+	        	CloseRegKey $(KeyParameters)
+	        	CloseRegKey $(KeyAdapterRules)
+	        	goto fatalregistry
+	    	endif
+    		CloseRegKey $(KeyAdapterRules)
+    		
+	    	Set NewValueList = {{MediaType,$(NoTitle),$(!REG_VT_DWORD),1},+
+	    	                    {InstanceNumber,$(NoTitle),$(!REG_VT_DWORD),$(AdapterNumber) }}
+    		Shell  $(UtilityInf), AddValueList, $(KeyParameters), $(NewValueList)
+
+    		; Create a key of the type
+    		;	NmIntMP2\Parameters\Signature\
+    		;
+    		Set SigRegKey = $(!NTN_ServiceBase)"\"$(AdapterProductHardwareName)$(AdapterNumber)"\Parameters\Signature"
+    		Debug-Output "SigRegKey is "$(SigRegKey)
+    		CreateRegKey $(!REG_H_LOCAL) {$(SigRegKey),$(NoTitle),GenericClass} "" $(MAXIMUM_ALLOWED) "" SigKey
+    		ifstr(i) $(SigKey) == ""
+    			Debug-Output "Failed to create "$(SigRegKey)
+   			endif
+
+
+	    	CloseRegKey $(KeyParameters)
+			ifint $($ShellCode) != $(!SHELL_CODE_OK)
+				Debug-Output "NmInt: ShellCode error."
+				goto ShellCodeError
+			endif
+			set RegistryErrorIndex = $($R0)
+			Ifstr(i) $(RegistryErrorIndex) != NO_ERROR
+				Debug-Output "NmInt: Registry error: Add value list"
+				goto fatalregistry
+			endif
+
+			;
+			; 	Note that a virtual adapter was added.
+			;
+			Set AddedNewVirtualAdapter = "Yes"
+
+			;
+			;
+			ifstr(i) $(NmIntParamsKey) != ""
+				set NewValueList = {{Device,$(NoTitle),$(!REG_VT_SZ),$(AdapterProductHardwareName)$(AdapterNumber)},+
+				                    {AdapterNumber,$(NoTitle),$(!REG_VT_SZ),$(AdapterNumber)}, +
+				                    {InstanceNumber,$(NoTitle),$(!REG_VT_DWORD), $(AdapterNumber) } }
+				Shell $(UtilityInf), AddValueList, $(NmIntParamsKey), $(NewValueList)
+				CloseRegKey $(NmIntParamsKey)
+			endif
+
+continueCardList = +
+			
+		EndForListDo
+
+		;
+		;	If we added a virtual adapter, tell NCPA to review bindings
+		;	again after this completes.
+		;
+		ifstr(i) $(AddedNewVirtualAdapter) == "Yes"
+			Set RegKey = $(!NTN_SoftwareBase)"\Microsoft\NCPA\CurrentVersion"
+			OpenRegKey $(!REG_H_LOCAL) "" $(RegKey) $(MAXIMUM_ALLOWED) NcpaKey
+			ifstr(i) $(NcpaKey) != ""
+				SetRegValue $(NcpaKey) {"BindRestart",$(NoTitle),$(!REG_VT_DWORD),1}
+				Debug-Output "NmInt: set BindRestart to 1 in "$(RegKey)
+				CloseRegKey $(NcpaKey)
+			else
+				Debug-Output "NmInt: failed to open "$(RegKey)
+			endif
+		endif
+
+	endif
+
+    goto successful
+
+deinstall = +
+
+
+   	ifstr(i) $(!NTN_RegBase) != $(TransportProductKeyName)
+		set Error = "To uninstall this adapter, remove '"$(TransportProductSoftwareDescription)"' from Protocols"
+		set from = end
+		goto nonfatalinfo
+   	endif
+
+	;
+	;	Build a list of real LAN adapters that the transport is bound to
+	;	
+	OpenRegKey $(!REG_H_LOCAL) "" $(TransportLinkageKeyName) $(MAXIMUM_ALLOWED) TransportLinkageKey
+	ifstr(i) $(TransportLinkageKey) != ""
+		GetRegValue $(TransportLinkageKey) "Bind" BindList
+		Debug-Output "NmInt: Remove: BindList: "$(BindList)
+		Set Binding = *($(BindList),4)
+		Debug-Output "NmInt: Remove: Binding:  "$(Binding)
+		CloseRegKey $(TransportLinkageKey)
+	else
+		Debug-Output "NmInt: failed to open key "$(TransportLinkageKeyName)
+		goto skipRemoveBindings
+	endif
+	set CardList = {}
+	set CreateCardList = {}
+	ForListDo $(Binding)
+		Split-String $($), "\", BindInfo
+		QueryListSize BindListSize $(BindInfo)
+		set CardName = *($(BindInfo),$(BindListSize))
+		Debug-Output "NmInt: Remove: Cardname: "$(CardName)
+		ifstr(i) $(CardList) == {}
+			set CardList = {$(CardName)}
+		else
+			set CardList = >($(CardList),$(CardName))
+		endif
+	EndForListDo
+	Debug-Output "NmInt: Cardlist: "$(CardList)
+
+	;
+	;	For each real LAN adapter in the list...
+	;
+	ForListDo $(CardList)
+		;
+		;	Open the params key
+		;
+		Set RegKey = $(!NTN_ServiceBase)"\"$($)"\Parameters\"$(TransportProductSoftwareName)
+		OpenRegKey $(!REG_H_LOCAL) "" $(RegKey) $(MAXIMUM_ALLOWED) ParamsKey
+		ifstr(i) $(ParamsKey) != ""
+			;
+			;	get the adapter number
+			;
+			GetRegValue $(ParamsKey) "AdapterNumber" AdapterNoValue
+			CloseRegKey $(ParamsKey)
+			Set AdapterNo = *($(AdapterNoValue),4)
+
+			;
+			;	Remove the virtual hardware component that represents the ELAN.
+			;	This will remove the adapter software component as well.
+			;
+			Set AdapterRegBase = "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkCards\"$(AdapterNo)
+			Debug-Output "NmInt: removing adapter number "$(AdapterNo)" RegBase "$(AdapterRegBase)
+			Shell $(UtilityInf), RemoveHardwareComponent, $(Manufacturer), +
+				$(AdapterProductSoftwareName), $(AdapterRegBase)
+			ifint $($ShellCode) != $(!SHELL_CODE_OK)
+				Debug-Output "NmInt: ShellCode error"
+				goto ShellCodeError
+			endif
+
+			;
+			;	delete the whole NmInt transport specific key from the real LAN adapter
+			;
+			Set RegKey = $(!NTN_ServiceBase)"\"$($)"\Parameters"
+			Debug-Output "NmInt: Deleting protocol specific key from LAN adapter"
+			Debug-Output "NmInt: Key is "$(RegKey)
+			OpenRegKey $(!REG_H_LOCAL) "" $(RegKey) $(MAXIMUM_ALLOWED) ParamsKey
+			ifstr(i) $(ParamsKey) != ""
+				DeleteRegTree $(ParamsKey) $(TransportProductSoftwareName)
+				CloseRegKey $(ParamsKey)
+			else
+				Debug-Output "NmInt: Failed to delete "$(RegKey)
+			endif
+
+		endif
+
+continueRemoveBindings =+
+	
+	EndForListDo
+
+skipRemoveBindings =+
+
+	Debug-Output "NmInt: Removing "$(TransportProductSoftwareName)" Software Component from Registry"
+
+	Shell $(UtilityInf), RemoveSoftwareComponent, $(Manufacturer), +
+		$(TransportProductSoftwareName)
+
+	; ignore errors for now
+
+	goto end
+
+configure =+
+
+	set Error = "Configuration Not Implemented"
+	set from = end
+	goto nonfatalinfo
+	
+update = +
+
+    set Error = "Update Not Implemented, Remove and Reinstall"
+	set from = end
+	goto nonfatalinfo
+
+successful = +
+    goto end
+warning = +
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), "WARNING", $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    ifstr(i) $($R1) == "OK"
+        goto $(to)
+    else-ifstr(i) $($R1) == "CANCEL"
+        goto $(from)
+    else
+        goto "end"
+    endif
+nonfatalinfo = +
+    Set CommonStatus = STATUS_USERCANCEL
+    Set Severity = STATUS
+    goto nonfatalmsg
+nonfatal = +
+    Set Severity = NONFATAL
+    goto nonfatalmsg
+nonfatalmsg = +
+    ifstr(i) $(Error) == ""
+        Shell $(UtilityInf) RegistryErrorString "SETUP_FAIL"
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            goto ShellCodeError
+        endif
+        set Error = $($R0)
+    endif
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), $(Severity), $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    ifstr(i) $($R1) == "OK"
+        goto $(from)
+    else
+        goto "end"
+    endif
+fatalregistry = +
+    Shell $(UtilityInf) RegistryErrorString $(RegistryErrorIndex)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    set Error = $($R0)
+    goto fatal
+fatal = +
+    ifstr(i) $(Error) == ""
+        Shell $(UtilityInf) RegistryErrorString "SETUP_FAIL"
+        ifint $($ShellCode) != $(!SHELL_CODE_OK)
+            goto ShellCodeError
+        endif
+        set Error = $($R0)
+    endif
+    Shell $(subroutineinf) SetupMessage, $(!STF_LANGUAGE), "FATAL", $(Error)
+    ifint $($ShellCode) != $(!SHELL_CODE_OK)
+        goto ShellCodeError
+    endif
+    goto setfailed
+ShellCodeError = +
+    set DlgType      = "MessageBox"
+    set STF_MB_TITLE = $(ShellCodeErrorTitle)
+    set STF_MB_TEXT  = $(ShellCodeErrorText)
+    set STF_MB_TYPE  = 1
+    set STF_MB_ICON  = 3
+    set STF_MB_DEF   = 1
+    ui start "Error Message"
+    goto setfailed
+setfailed = +
+    set CommonStatus = STATUS_FAILED
+    ifstr(i) $(OEM_ABANDON_ON) == TRUE
+        set OEM_ABANDON_ON = FALSE
+        goto deinstall
+    endif
+    goto end
+end = +
+    goto term
+term = +
+    Return $(CommonStatus)
+
+[StripTrailSlash]
+    Split-String $($0) "\" InList
+    QueryListSize InListSize, $(InList)
+    Ifint $(InListSize) <= 1
+        Return $($0)
+    Endif
+    Set NewString = ""
+    ForListDo $(InList)
+        ifint $(#) < $(InListSize)
+            Set NewString = $(NewString)$($)
+        else-ifstr $($) != "\"
+            Set NewString = $(NewString)$($)
+        endif
+    EndForListDo
+    Return $(NewString)
+
+[Install-Option]
+    set STF_VITAL = ""
+    ifstr(i) $(AddCopy) == "YES"
+        AddSectionFilesToCopyList Files-Platform-Drivers $(PlatformDir) $(!STF_WINDOWSSYSPATH)\drivers
+    endif
+    ifstr(i) $(DoCopy) == "YES"
+       set !STF_NCPA_FLUSH_COPYLIST = TRUE
+       CopyFilesInCopyList
+    endif
+    ifstr(i) $(DoConfig) == "YES"
+    endif
+    Exit
+
+[Install-Update]
+   set STF_VITAL        = ""
+   set STF_OVERWRITE    = "VERIFYSOURCEOLDER"
+   AddSectionFilesToCopyList Files-Platform-Drivers $(PlatformDir) $(!STF_WINDOWSSYSPATH)\drivers
+   AddSectionFilesToCopyList Files-Platform-Utility $(PlatformDir) $(!STF_WINDOWSSYSPATH)
+   AddSectionFilesToCopyList Files-Inf $(InfDir) $(!STF_WINDOWSSYSPATH)
+   exit
+
+[Source Media Descriptions]
+     1 = "NmInt Sample Miniport Driver Installation Disk"
+
+[ProductType]
+STF_PRODUCT  = Winnt
+
+[Files-Inf]
+1, OEMSETUP.INF, SIZE=999, RENAME=$(!UG_Filename)
+
+[Files-Platform-Drivers]
+1, NmInt.SYS , SIZE=999
+
+[DialogConstantsENG]
+Help        				= "&Help"
+Exit        				= "Cancel"
+OK          				= "OK"
+HelpContext 				= ""
+Continue    				= "Continue"
+Cancel      				= "Cancel"
+

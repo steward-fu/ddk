@@ -1,0 +1,167 @@
+; EzUsbFilt.Inf - install information file for Cypress EZ-USB example
+; Originally supplied by Cypress, modified by Compuware 
+; Corporation for use in this example USB driver.  
+
+; This .inf file uses the Compuware NuMega DriverWorks UsbFilt sample as
+; a lower filter.  It is necessary to build that driver before installing
+; this sample with this .inf file.
+
+[Version]
+Signature="$CHICAGO$"
+Class=USB
+provider=%HdwrVendor%
+LayoutFile=layout.inf
+
+[Manufacturer]
+%HdwrVendor%=HdwrVendor
+
+[HdwrVendor]
+;
+; This is the VID/PID for the EZ-USB development board.  This device
+; is bound to a version of the general purpose driver that will
+; automatically download the Keil 8051 monitor to external RAM.
+; Do not use this VID/PID for your own device or the monitor will
+; wipe out your firmware.
+;
+%USB\VID_0547&PID_0080.DeviceDesc%=EZUSBDEV.Dev, USB\VID_0547&PID_0080
+
+;
+; This VID/PID is used by several of the EZ-USB development kit
+; samples.  This device is bound to the general purpose driver.
+;
+%USB\VID_0547&PID_1002.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_1002
+
+;
+; The folowing PIDs are for all of the devices in the EZ-USB family.
+; These are the hardcoded PIDs that will be reported by an EZ-USB
+; device with no external EEPROM. Bound to the general purpose driver.
+;
+%USB\VID_0547&PID_2131.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2131
+%USB\VID_0547&PID_2126.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2126
+%USB\VID_0547&PID_2125.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2125
+%USB\VID_0547&PID_2136.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2136
+
+%USB\VID_0547&PID_2235.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2235
+%USB\VID_0547&PID_2236.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2236
+%USB\VID_0547&PID_2225.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2225
+%USB\VID_0547&PID_2226.DeviceDesc%=EZUSB.Dev, USB\VID_0547&PID_2226
+
+; EZ-USB FX2
+%USB\VID_04B4&PID_0081.DeviceDesc%=EZUSBDEV.Dev, USB\VID_04B4&PID_0081
+%USB\VID_04B4&PID_8613.DeviceDesc%=EZUSB.Dev, USB\VID_04B4&PID_8613
+%USB\VID_04B4&PID_1002.DeviceDesc%=EZUSB.Dev, USB\VID_04B4&PID_1002
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+EZUSB.Files.Ext = 10,System32\Drivers
+EZUSB.Files.Inf = 10,INF
+EZUSBDEV.Files.Ext = 10,System32\Drivers
+EZUSBDEV.Files.Inf = 10,INF
+
+[EZUSB.Dev]
+CopyFiles=EZUSB.Files.Ext, EZUSB.Files.Inf
+AddReg=EZUSB.AddReg
+
+[EZUSB.Dev.HW]
+AddReg=EZUSB.HW.AddReg
+
+[EZUSB.Dev.NT]
+CopyFiles=EZUSB.Files.Ext, EZUSB.Files.Inf
+AddReg=EZUSB.AddReg
+
+[EZUSB.Dev.NT.HW]
+AddReg=EZUSB.HW.NT.AddReg
+
+[EZUSB.Dev.NT.Services]
+Addservice = EZUSB, 0x00000002, EZUSB.AddService
+Addservice = usbfilt,, UsbFilt.AddService
+
+[EZUSB.AddService]
+DisplayName    = %EZUSB.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\EzUsb.sys
+LoadOrderGroup = Base
+
+[UsbFilt.AddService]
+DisplayName    = "UsbFilt"
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_AUTO_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %10%\System32\Drivers\usbfilt.sys
+LoadOrderGroup = Extended Base
+
+[EZUSB.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,EzUsb.sys
+
+[EZUSB.Files.Ext]
+EzUsb.sys
+usbfilt.sys
+
+[EZUSB.Files.Inf]
+EzUsbFilt.Inf
+
+[EZUSB.HW.AddReg]
+HKR,,"LowerFilters",0x00010000,"usbfilt.sys"
+;HKR,,"UpperFilters",0x00010000,"usbfilt.sys"
+
+[EZUSB.HW.NT.AddReg]
+HKR,,"LowerFilters",0x00010000,"usbfilt"
+;HKR,,"UpperFilters",0x00010000,"usbfilt"
+
+
+[EZUSBDEV.Dev]
+CopyFiles=EZUSBDEV.Files.Ext, EZUSBDEV.Files.Inf
+AddReg=EZUSBDEV.AddReg
+
+[EZUSBDEV.Dev.NT]
+CopyFiles=EZUSBDEV.Files.Ext, EZUSBDEV.Files.Inf
+AddReg=EZUSBDEV.AddReg
+
+[EZUSBDEV.Dev.NT.Services]
+Addservice = EZUSBDEV, 0x00000002, EZUSBDEV.AddService
+
+[EZUSBDEV.AddService]
+DisplayName    = %EZUSBDEV.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\EzUsb.sys
+LoadOrderGroup = Base
+
+[EZUSBDEV.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,EzUsb.sys
+
+[EZUSBDEV.Files.Ext]
+EzUsb.sys
+
+[EZUSBDEV.Files.Inf]
+EzUsb.Inf
+
+;---------------------------------------------------------------;
+
+[Strings]
+HdwrVendor="Cypress Semiconductor"
+USB\VID_0547&PID_0080.DeviceDesc="Compuware - Cypress EZ-USB Development Board"
+USB\VID_0547&PID_1002.DeviceDesc="Compuware - Cypress EZ-USB Sample Device"
+USB\VID_0547&PID_2131.DeviceDesc="Compuware - Cypress EZ-USB (2131Q/2131S/2135S) - EEPROM missing"
+USB\VID_0547&PID_2126.DeviceDesc="Compuware - Cypress EZ-USB (2126S) - EEPROM missing"
+USB\VID_0547&PID_2125.DeviceDesc="Compuware - Cypress EZ-USB (2121S/2125S) - EEPROM missing"
+USB\VID_0547&PID_2136.DeviceDesc="Compuware - Cypress EZ-USB (2136S) - EEPROM missing"
+
+USB\VID_0547&PID_2235.DeviceDesc="Compuware - Cypress EZ-USB (2235) - EEPROM missing"
+USB\VID_0547&PID_2236.DeviceDesc="Compuware - Cypress EZ-USB (2236) - EEPROM missing"
+USB\VID_0547&PID_2225.DeviceDesc="Compuware - Cypress EZ-USB (2225) - EEPROM missing"
+USB\VID_0547&PID_2226.DeviceDesc="Compuware - Cypress EZ-USB (2226) - EEPROM missing"
+
+USB\VID_04B4&PID_8613.DeviceDesc="Compuware - Cypress EZ-USB FX2 (68613) - EEPROM missing"
+USB\VID_04B4&PID_1002.DeviceDesc="Compuware - Cypress EZ-USB FX2 Sample Device"
+USB\VID_04B4&PID_0081.DeviceDesc="Compuware - Cypress EZ-USB FX2 Development Board"
+
+EZUSB.SvcDesc="Compuware General Purpose USB Driver (EzUsb.sys)"
+EZUSBDEV.SvcDesc="Compuware General Purpose USB Driver w/ Keil Monitor (EzUsb.sys)"

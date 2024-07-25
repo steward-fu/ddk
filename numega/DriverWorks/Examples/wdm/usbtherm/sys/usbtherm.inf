@@ -1,0 +1,80 @@
+; Usbtherm.Inf - install information file for Usb thermometer example
+; Originally supplied by Cypress Semiconductors, modified by Compuware Corporation
+;	for use in this example USB driver
+
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+Provider=%Cypress%
+Class=Thermometers									; Neither the Class or ClassGUID
+ClassGUID = {4a5eba30-8a23-11d2-9448-00105a075f6b}	; are standard, they were generated
+													; by Compuware for this example
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Cypress_Mfg
+
+[Cypress_Mfg]
+%USB\VID_04B4&PID_0002_DeviceDesc%=CyThermometer,USB\VID_04B4&PID_0002
+
+[DestinationDirs]
+CyThermometer_Files_Driver = 10,System32\Drivers
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%ThermometerClassName%
+HKR,,Icon,,"-20"
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 98 -----------------
+
+[CyThermometer]
+CopyFiles=CyThermometer_Files_Driver
+AddReg=CyThermometer_AddReg
+
+[CyThermometer_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,USBTherm.sys
+HKR,,Description,,%Thermometer_DeviceDesc%
+
+; --------- Windows NT -----------------
+
+[CyThermometer.NT]
+CopyFiles=CyThermometer_Files_Driver
+
+[CyThermometer.NT.Services]
+Addservice = CyThermometer, 0x00000002, CyThermometer_Service
+
+[CyThermometer_Service]
+DisplayName    = %CyThermometer_SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\USBTherm.sys
+
+; --------- Files ----------------------
+
+[CyThermometer_Files_Driver]
+USBTherm.sys,,,
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+Cypress="Cypress Semiconductors"
+MfgName="Cypress"
+Thermometer_DeviceDesc="Thermometer"
+ThermometerClassName="Thermometers"
+USB\VID_04B4&PID_0002_DeviceDesc="Cypress USB Thermometer"
+CyThermometer_SvcDesc="Driver for Cypress USB Thermometer"

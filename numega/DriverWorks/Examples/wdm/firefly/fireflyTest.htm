@@ -1,0 +1,374 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Firefly Device Information</title>
+
+<!--(Meta)==========================================================-->
+
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=1>
+<meta name=layout-height content=606>
+<meta name=layout-width content=676>
+<meta name=date content="06 24, 2003 11:15:40 AM">
+
+
+<!--(Scripts)=======================================================-->
+
+<script LANGUAGE=JavaScript>
+			var Locator;
+            var Service;
+            var InstanceCount = 0;
+            var CurrentInstance = 0;
+            var InstancePath = new Array;
+            var timerID = null;
+            var count = 0;
+
+            function Init()
+            {
+                try
+                {
+                    Locator = new ActiveXObject("WbemScripting.SWbemLocator");
+                    Service = Locator.ConnectServer("", "root\\wmi");
+                    
+                    Service.Security_.ImpersonationLevel = 3;
+
+                    var Collection = new Enumerator(Service.InstancesOf("FireflyDeviceInformation"));
+
+                    for (; !Collection.atEnd(); Collection.moveNext())
+                    {
+                        var Instance = Collection.item();
+
+                        InstancePath[InstanceCount] = Instance.Path_
+
+                        ++InstanceCount;
+                    }
+
+                    if ( InstanceCount != 0 )
+                    {
+                        Update();
+                    }
+                    else
+                    {
+                        alert("No instances of device found!");
+                    }
+                }
+                catch (e)
+                {
+                    alert(e.description);
+                }
+            }
+
+            function Update()
+            {
+                if (CurrentInstance < InstanceCount)
+                {
+                    var Instance = Service.Get(InstancePath[CurrentInstance]);
+
+                    Path.innerText = Instance.Path_;
+
+					if (Instance.TailLit == true)
+					{
+						TailLit.innerText = "ON";
+					}
+					
+					if (Instance.TailLit == false)
+					{
+						TailLit.innerText = "OFF";
+					}
+                }
+                else
+                {
+                    alert("No instance found");
+                }
+            }
+
+            function Prev()
+            {
+                if (InstanceCount == 0)
+                {
+                    CurrentInstance = 0;
+                }
+                else
+                {
+                    if (CurrentInstance == 0)
+                    {
+                        CurrentInstance = InstanceCount - 1;
+                    }
+                    else
+                    {
+                        --CurrentInstance;
+                    }
+                }
+
+                Update();
+            }
+
+            function Next()
+            {
+                if (InstanceCount == 0)
+                {
+                    CurrentInstance = 0;
+                }
+                else
+                {
+                    if (CurrentInstance == (InstanceCount - 1))
+                    {
+                        CurrentInstance = 0;
+                    }
+                    else
+                    {
+                        ++CurrentInstance;
+                    }
+                }
+
+                Update();
+                
+            }
+
+			function TailLightOn()
+			{
+                if (CurrentInstance < InstanceCount)
+                {
+                    var Instance = Service.Get(InstancePath[CurrentInstance]);
+
+                    Instance.TailLit = true;
+                    Instance.Put_();
+                }
+                else
+                {
+                    alert("No instance found");
+                }			
+			
+			}
+			
+			
+			function TailLightOff()
+			{
+                if (CurrentInstance < InstanceCount)
+                {
+                    var Instance = Service.Get(InstancePath[CurrentInstance]);
+
+                    Instance.TailLit = false;
+                    Instance.Put_();
+                }
+                else
+                {
+                    alert("No instance found");
+                }
+			
+			
+			}
+			function timer()
+			{
+				count++;
+				if (count%2)
+				{
+					TailLightOff();
+				}
+				else
+				{
+					TailLightOn();
+				}
+				
+				Update();
+			}
+ 
+			function starttimer()
+			{
+				if (timerID == null) 
+				{
+					count = 0;
+					timerID = setInterval("timer()", 1000);
+				}
+			}
+ 
+			function stoptimer()
+			{
+				if (timerID != null)
+				{
+					clearInterval(timerID);
+					timerID = null;
+				}
+			}
+			
+          </script>
+
+<script id=clientEventHandlersJS
+		language=javascript>
+		
+	        var state = 0;
+
+			function btnOn_onclick() 
+			{
+				TailLightOn();
+
+                Update();
+			}
+
+			function btnOff_onclick() 
+			{
+				TailLightOff();
+				
+                Update();
+			}
+
+			function btnFlicker_onclick() 
+			{
+				if (state == 0)
+				{
+					state = 1;
+					starttimer();
+				}
+			}
+			
+			function btnFlickerStop_onclick()
+			{
+				if (state == 1) 
+				{
+					state = 0;
+					stoptimer();
+				}
+			}
+
+</script>
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body onLoad="Init()">
+
+<!--(Generated Code)================================================-->
+<!--(WARNING: DO NOT EDIT OR DELETE THIS SECTION!)==================-->
+<!--begin!kadov{{===================================================-->
+<form>
+<!--}}end!kadov=====================================================-->
+
+<p style="text-align: center;
+			font-size: 18pt;
+			font-family: Verdana, sans-serif;
+			color: #0000ff;
+			font-weight: bold;"
+	align=center>DriverWorks Firefly Sample</p>
+
+
+<!--(HR)============================================================-->
+<hr style="/*begin!kadov{{*/ float: aligncenter; /*}}end!kadov*/ ">
+
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		style="width: 85%; x-cell-content-align: Center;"
+		width=85%>
+<col style="width: 25%;">
+<col style="width: 60%;">
+
+<tr style="height: 50px;"
+	valign=middle>
+<td style="border-left-style: none;"
+	width=25%>
+<p><span style="font-family: Verdana, sans-serif;">Instance Path:</span> 
+ </td>
+<td rowspan=3
+	colspan=1
+	width=60%>
+<p>&nbsp;<SPAN ID="Path" style="
+			font-size: 10pt;
+			font-family: Verdana, sans-serif;
+			color: #ff0000;">
+</SPAN></td></tr>
+
+<tr style="height: 28px;"
+	valign=top>
+<td colspan=1
+	rowspan=1
+	style="border-left-style: none;"
+	width=25%>
+<p style="margin-top: 0.5pt; margin-bottom: 0.5pt;"><input NAME=Next
+															type=button
+															value=Next
+															onClick="Next()"
+															style="width: 79px;"><input 
+ NAME=Prev
+	type=button
+	value=Previous
+	onClick="Prev()"></td>
+<td_null></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="/*begin!kadov{{*/ float: aligncenter; /*}}end!kadov*/ ">
+
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		style="width: 95.51%; x-cell-content-align: Center;"
+		width=95.51%>
+<col style="width: 33.393%;">
+<col style="width: 66.607%;">
+
+<tr style="height: 28px;"
+	valign=middle>
+<td width=33.393%>
+<p><span style="font-family: Verdana, sans-serif;">Current Tail Light State:</span> 
+ </td>
+<td width=66.607%>
+<p>&nbsp;<SPAN ID="TailLit" style="
+			font-size: 14pt;
+			font-family: Verdana, sans-serif;
+			color: #ff0000;
+			font-weight: bold;"></SPAN></td></tr>
+</table>
+
+<span style="font-family: Verdana, sans-serif;">Tail Light: </span>
+<input 
+ id=btnOn
+	type=button
+	value=ON
+	name=btnOn
+	onclick="return btnOn_onclick()"
+	style="width: 55px;">
+<input 
+  id=btnOff
+	type=button
+	value=OFF
+	name=btnOff
+	onclick="return btnOff_onclick()"
+	style="width: 55px;">
+<input 
+ id=btnFlicker
+	type=button
+	value=Flash
+	name=btnFlicker
+	onclick="return btnFlicker_onclick()">
+<input 
+  id=btnFlickerStop
+	type=button
+	value="Stop Flashing"
+	name=btnFlickerStop
+	onclick="return btnFlickerStop_onclick()">
+
+<!--begin!kadov{{--><br><!--}}end!kadov--><!--kadov_tag{{<implicit_p>}}-->&nbsp; 
+ 
+
+
+<!--(HR)============================================================-->
+<hr style="/*begin!kadov{{*/ float: aligncenter; /*}}end!kadov*/ ">
+
+
+</body>
+
+</html>

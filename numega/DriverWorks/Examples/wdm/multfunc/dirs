@@ -1,0 +1,6 @@
+DIRS= vbus        \
+      vclsinst    \
+      vread       \
+      vwrite      \
+      vbuscon
+      

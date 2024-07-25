@@ -1,0 +1,36 @@
+
+
+#include "resource.h"
+#include <windows.h>
+#include <ntverp.h>
+
+#define VER_FILETYPE				VFT_APP
+#define VER_FILESUBTYPE				VFT2_UNKNOWN
+#define VER_FILEDESCRIPTION_STR     "Class-Installer DLL for Numega Virtual Bus"
+#define VER_INTERNALNAME_STR        "vbusclass.dll"
+#define VER_ORIGINALFILENAME_STR    "vbusclass.dll"
+
+#include <common.ver>
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_VBUS_SETTINGS DIALOGEX 0, 0, 140, 40
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "VBus"
+FONT 8, "MS Shell Dlg"
+BEGIN
+	PUSHBUTTON "AddDevice",		IDC_ADD_DEVICE,		10,  10, 70, 20, WS_TABSTOP
+	PUSHBUTTON "RemoveDevice",	IDC_REMOVE_DEVICE,	10,	 30, 70, 20, WS_TABSTOP 
+	EDITTEXT					IDC_DEVICE_ID,		120, 25, 20, 10, WS_TABSTOP | WS_BORDER | ES_CENTER | ES_NUMBER
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+IDI_CLASS_ICON  ICON    DISCARDABLE     "vbus.ico"
+

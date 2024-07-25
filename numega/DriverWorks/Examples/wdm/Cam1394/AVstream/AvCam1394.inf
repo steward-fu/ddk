@@ -1,0 +1,81 @@
+;
+; AvCam1394.inf	- This file contains installation information for Compuware 
+;	DriverWorks AVStream Sample Driver for IEEE 1394 digital cameras.
+;
+
+[Version]
+signature="$CHICAGO$"
+Class=MEDIA
+ClassGUID={4d36e96c-e325-11ce-bfc1-08002be10318}
+Provider=%Cpwr%
+DriverVer=11/11/2002
+
+[ControlFlags]
+ExcludeFromSelect=*
+
+[DestinationDirs]
+DefaultDestDir=10,system32\drivers
+AvCam1394.inf.CopyFiles=17
+
+[Manufacturer]
+%Cpwr%=Compuware
+
+[Compuware]
+%AvCam1394.DeviceDesc%=AvCam1394,1394\ORANGE_MICRO&IBOT
+
+
+[AvCam1394.NT]
+Include=    ks.inf, kscaptur.inf, ksfilter.inf
+Needs=      KS.Registration,KSCAPTUR.Registration.NT
+CopyFiles=	AvCam1394.CopyFiles, AvCam1394.inf.CopyFiles
+
+[AvCam1394.CopyFiles]
+AvCam1394.sys
+
+[AvCam1394.inf.CopyFiles]
+AvCam1394.inf
+
+[AvCam1394.AddReg]
+HKR, "Parameters", "TraceLevel", 0x00010001, 1
+
+[AvCam1394.NT.Interfaces]
+AddInterface=%KSCATEGORY_CAPTURE%,%KSSTRING_Filter%,AvCam1394.Interface
+
+[AvCam1394.Interface]
+AddReg=AvCam1394.Intf.AddReg
+
+[AvCam1394.Intf.AddReg]
+HKR,,CLSID,,%ProxyVCap.CLSID%
+HKR,,FriendlyName,,%AvCam1394.DeviceDesc%
+
+[AvCam1394.NT.Services]
+AddService=AvCam1394, 0x00000002, AvCam1394.ServiceInstall
+
+[AvCam1394.ServiceInstall]
+DisplayName=%AvCam1394.DeviceDesc%
+ServiceType=%SERVICE_KERNEL_DRIVER%
+StartType=%SERVICE_DEMAND_START%
+ErrorControl=%SERVICE_ERROR_NORMAL%
+ServiceBinary=%10%\system32\drivers\AvCam1394.sys
+LoadOrderGroup=ExtendedBase
+AddReg=AvCam1394.AddReg
+
+[Strings]
+ProxyVCap.CLSID="{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_CAPTURE="{65E8773D-8F56-11D0-A3B9-00A0C9223196}"
+KSSTRING_Filter="{9B365890-165F-11D0-A195-0020AFD156E4}"
+
+SERVICE_KERNEL_DRIVER=1
+SERVICE_DEMAND_START=3
+SERVICE_ERROR_NORMAL=1
+REG_EXPAND_SZ=0x00020000
+REG_DWORD=0x00010001
+
+Cpwr="Compuware"
+AvCam1394.DeviceDesc="DriverWorks AVStream 1394 Camera Sample"
+AvCam1394.FriendlyName="DriverWorks AVStream 1394 Camera Sample (AvCam1394)"
+
+
+
+
+

@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation" 
+FileDescription =	"Hookvirq example"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"HOOKVIRQ"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation"
+OriginalFilename = 	"hookvirq.vxd"
+ProductName	=	"VtoolsD for Windows 95"
+ProductVersion	= 	"Version 2.04"
+Translation	=	0x409, 0x4E4

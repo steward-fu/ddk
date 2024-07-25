@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E100bex", "E100bex.vcproj", "{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		AMD64 Checked = AMD64 Checked
+		AMD64 Free = AMD64 Free
+		IA64 Checked = IA64 Checked
+		IA64 Free = IA64 Free
+		Win32 Checked = Win32 Checked
+		Win32 Free = Win32 Free
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.AMD64 Checked.ActiveCfg = AMD64 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.AMD64 Checked.Build.0 = AMD64 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.AMD64 Free.ActiveCfg = AMD64 Free|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.AMD64 Free.Build.0 = AMD64 Free|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.IA64 Checked.ActiveCfg = IA64 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.IA64 Checked.Build.0 = IA64 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.IA64 Free.ActiveCfg = IA64 Free|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.IA64 Free.Build.0 = IA64 Free|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.Win32 Checked.ActiveCfg = Win32 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.Win32 Checked.Build.0 = Win32 Checked|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.Win32 Free.ActiveCfg = Win32 Free|Win32
+		{14BDDF0A-10A8-4177-AB62-CE63AE1FC64E}.Win32 Free.Build.0 = Win32 Free|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

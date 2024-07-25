@@ -1,0 +1,35 @@
+# SOURCES - for MOUFILT example driver
+# Copyright (c) 1999, Compuware Corporation
+
+# This is the SOURCES file for the simple MOUFILT example. It names the
+# driver and its source files. 
+
+TARGETNAME=MOUFILT
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib
+
+NTTARGETFILE0=mofcomp
+
+C_DEFINES=-DNTVERSION='WDM' 
+BROWSER_INFO=TRUE
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+INCLUDES=\
+	..;\
+	$(DRIVERWORKS)\include; \
+	$(DRIVERWORKS)\source;	\
+	$(DRIVERWORKS)\include\dep_vxd
+
+SOURCES= MouseFilter.rc MouseFilter.cpp MouseFilterDevice.cpp MouseFilter.mof
+

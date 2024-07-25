@@ -1,0 +1,9 @@
+CompanyName	=	"Compuware Corporation" 
+FileDescription =	"Hook TDI Example"
+FileVersion	=	"Version 1.00" 
+InternalName	=	"HOOKTDI"
+LegalCopyright	= 	"Copyright \251 1999, Compuware Corporation "
+OriginalFilename = 	"hooktdi.vxd"
+ProductName	=	"VtoolsD for Windows 95"
+ProductVersion	= 	"Version 2.05"
+Translation	=	0x409, 0x4E4

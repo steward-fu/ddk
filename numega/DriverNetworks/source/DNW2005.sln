@@ -1,0 +1,103 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TdiClient", "tdiclient\tdiclient2005.vcproj", "{8C148C16-9347-4250-BB14-6675ED508188}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KNdisMp", "KNdisMp2005.vcproj", "{60C70DFD-48D2-4D42-8EE5-B98261FFD594}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KNdisPt", "KNdisPt2005.vcproj", "{2C4A51C2-BDE2-4234-9131-F1EF09553C30}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NotifyObject", "Notify\Notify2005.vcproj", "{AA747315-6DC0-4199-8DEC-6F52CFB0676F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|Win64 (AMD64) = Debug|Win64 (AMD64)
+		Debug|Win64 (Itanium) = Debug|Win64 (Itanium)
+		NDIS 5.1 Checked|Win32 = NDIS 5.1 Checked|Win32
+		NDIS 5.1 Checked|Win64 (AMD64) = NDIS 5.1 Checked|Win64 (AMD64)
+		NDIS 5.1 Checked|Win64 (Itanium) = NDIS 5.1 Checked|Win64 (Itanium)
+		NDIS 5.1 Free|Win32 = NDIS 5.1 Free|Win32
+		NDIS 5.1 Free|Win64 (AMD64) = NDIS 5.1 Free|Win64 (AMD64)
+		NDIS 5.1 Free|Win64 (Itanium) = NDIS 5.1 Free|Win64 (Itanium)
+		Release|Win32 = Release|Win32
+		Release|Win64 (AMD64) = Release|Win64 (AMD64)
+		Release|Win64 (Itanium) = Release|Win64 (Itanium)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win32.Build.0 = Debug|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win64 (AMD64).ActiveCfg = Debug|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win64 (AMD64).Build.0 = Debug|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win64 (Itanium).ActiveCfg = Debug|Win64 (Itanium)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Debug|Win64 (Itanium).Build.0 = Debug|Win64 (Itanium)
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Checked|Win32.ActiveCfg = Debug|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Checked|Win64 (AMD64).ActiveCfg = Debug|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Checked|Win64 (Itanium).ActiveCfg = Debug|Win64 (Itanium)
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Free|Win32.ActiveCfg = Release|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Free|Win64 (AMD64).ActiveCfg = Release|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.NDIS 5.1 Free|Win64 (Itanium).ActiveCfg = Release|Win64 (Itanium)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win32.ActiveCfg = Release|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win32.Build.0 = Release|Win32
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win64 (AMD64).ActiveCfg = Release|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win64 (AMD64).Build.0 = Release|Win64 (AMD64)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win64 (Itanium).ActiveCfg = Release|Win64 (Itanium)
+		{8C148C16-9347-4250-BB14-6675ED508188}.Release|Win64 (Itanium).Build.0 = Release|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Debug|Win32.ActiveCfg = NDIS 5.1 Checked|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Debug|Win64 (AMD64).ActiveCfg = NDIS 5.1 Checked|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Debug|Win64 (Itanium).ActiveCfg = NDIS 5.1 Checked|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win32.ActiveCfg = NDIS 5.1 Checked|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win32.Build.0 = NDIS 5.1 Checked|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win64 (AMD64).ActiveCfg = NDIS 5.1 Checked|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win64 (AMD64).Build.0 = NDIS 5.1 Checked|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win64 (Itanium).ActiveCfg = NDIS 5.1 Checked|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Checked|Win64 (Itanium).Build.0 = NDIS 5.1 Checked|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win32.ActiveCfg = NDIS 5.1 Free|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win32.Build.0 = NDIS 5.1 Free|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win64 (AMD64).ActiveCfg = NDIS 5.1 Free|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win64 (AMD64).Build.0 = NDIS 5.1 Free|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win64 (Itanium).ActiveCfg = NDIS 5.1 Free|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.NDIS 5.1 Free|Win64 (Itanium).Build.0 = NDIS 5.1 Free|Win64 (Itanium)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Release|Win32.ActiveCfg = NDIS 5.1 Free|Win32
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Release|Win64 (AMD64).ActiveCfg = NDIS 5.1 Free|Win64 (AMD64)
+		{60C70DFD-48D2-4D42-8EE5-B98261FFD594}.Release|Win64 (Itanium).ActiveCfg = NDIS 5.1 Free|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Debug|Win32.ActiveCfg = NDIS 5.1 Checked|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Debug|Win64 (AMD64).ActiveCfg = NDIS 5.1 Checked|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Debug|Win64 (Itanium).ActiveCfg = NDIS 5.1 Checked|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win32.ActiveCfg = NDIS 5.1 Checked|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win32.Build.0 = NDIS 5.1 Checked|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win64 (AMD64).ActiveCfg = NDIS 5.1 Checked|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win64 (AMD64).Build.0 = NDIS 5.1 Checked|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win64 (Itanium).ActiveCfg = NDIS 5.1 Checked|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Checked|Win64 (Itanium).Build.0 = NDIS 5.1 Checked|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win32.ActiveCfg = NDIS 5.1 Free|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win32.Build.0 = NDIS 5.1 Free|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win64 (AMD64).ActiveCfg = NDIS 5.1 Free|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win64 (AMD64).Build.0 = NDIS 5.1 Free|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win64 (Itanium).ActiveCfg = NDIS 5.1 Free|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.NDIS 5.1 Free|Win64 (Itanium).Build.0 = NDIS 5.1 Free|Win64 (Itanium)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Release|Win32.ActiveCfg = NDIS 5.1 Free|Win32
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Release|Win64 (AMD64).ActiveCfg = NDIS 5.1 Free|Win64 (AMD64)
+		{2C4A51C2-BDE2-4234-9131-F1EF09553C30}.Release|Win64 (Itanium).ActiveCfg = NDIS 5.1 Free|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win32.Build.0 = Debug|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win64 (AMD64).ActiveCfg = Debug|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win64 (AMD64).Build.0 = Debug|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win64 (Itanium).ActiveCfg = Debug|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Debug|Win64 (Itanium).Build.0 = Debug|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Checked|Win32.ActiveCfg = Debug|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Checked|Win64 (AMD64).ActiveCfg = Debug|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Checked|Win64 (Itanium).ActiveCfg = Debug|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Free|Win32.ActiveCfg = Release|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Free|Win64 (AMD64).ActiveCfg = Release|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.NDIS 5.1 Free|Win64 (Itanium).ActiveCfg = Release|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win32.ActiveCfg = Release|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win32.Build.0 = Release|Win32
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win64 (AMD64).ActiveCfg = Release|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win64 (AMD64).Build.0 = Release|Win64 (AMD64)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win64 (Itanium).ActiveCfg = Release|Win64 (Itanium)
+		{AA747315-6DC0-4199-8DEC-6F52CFB0676F}.Release|Win64 (Itanium).Build.0 = Release|Win64 (Itanium)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

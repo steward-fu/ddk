@@ -1,0 +1,792 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./vscsi_files/filelist.xml">
+<title>VScsi</title>
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;}
+h2
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Tahoma;
+	color:navy;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-style:italic;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+h5
+	{mso-style-next:Normal;
+	margin-top:2.0pt;
+	margin-right:0in;
+	margin-bottom:2.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Courier New";}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-indent:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+pre
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+<meta name=Template content="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</head>
+
+<body bgcolor=white lang=EN-US link=blue vlink=purple style='tab-interval:.5in'
+leftmargin=8>
+
+<div class=Section1>
+
+<h1>Virtual Scsi Port Driver</h1>
+
+<p class=MsoNormal><span style='font-family:Verdana;color:white'>[This is
+preliminary documentation and subject to change.] <o:p></o:p></span></p>
+
+<h2>Summary</h2>
+
+<p class=MsoNormal>The Virtual Scsi Port Driver sample demonstrates how to
+write a bus driver using DriverWorks framework. The sample includes a scsi port
+driver for a bus of network disk servers.<span style='mso-bidi-font-family:
+Tahoma'><o:p></o:p></span></p>
+
+<h2>Theory of Operation</h2>
+
+<p class=MsoNormal>On windows 2000/XP,.NET platform scsi port drivers serve as
+bus drivers for storage type of devices on a particular bus. For example,
+atapi.sys is a scsi port driver for IDE bus. It enumerates all IDE devices and
+translates SCSI commands into native IDE commands. Our sample virtual scsi port
+driver is the same kind of bus driver only for a different network based bus of
+disk servers. To enumerate all devices on that bus vscsi driver broadcasts special
+udp packets and collects the response packets. To communicate with a particular
+disk server vscsi opens a TCP connection and sends read/write commands over TCP
+protocol. </p>
+
+<p class=MsoNormal>A Disk server is implemented in iserver driver. A scsi port
+driver is implemented in vscsi.sys driver.<span style='mso-bidi-font-family:
+Tahoma'><o:p></o:p></span></p>
+
+<h2>Building the Driver</h2>
+
+<p class=MsoNormal><span style='mso-bidi-font-size:10.0pt;mso-bidi-font-family:
+Tahoma'>First, build the DriverWorks libraries. </span>Next build the vscsi and
+iserver projects using either MSVC or DDK build.exe.</p>
+
+<h2>Installing the Driver</h2>
+
+<p class=MsoNormal><span style='mso-bidi-font-size:10.0pt;mso-bidi-font-family:
+Tahoma'>First install a iserver driver using server.inf file and then install vscsi
+port driver using vscsi.inf file on another machine, which is connected over
+the network to the first one.</span></p>
+
+<h2>Code Tour</h2>
+
+<table border=1 cellspacing=3 cellpadding=0 width=666 style='width:499.5pt;
+ mso-cellspacing:2.0pt;margin-left:4.1pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='mso-fareast-font-family:"Courier New"'>File<o:p></o:p></span></b></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <h5>Description</h5>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>function.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Definitions or IRP handlers<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Debug.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Debug related routines<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sockets.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of TCP and UDP TDI
+  clients<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Sockets.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of TCP and UDP
+  TDI clients<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vbus.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of disk collection
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vbus.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of disk
+  collection class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vdisk.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of PDO class for a
+  disk device<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vdisk.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of PDO class for
+  a disk device<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of a vscsi driver
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of a vscsi
+  driver class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsidev.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of vscsi FDO class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsidev.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of vscsi FDO
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi driver project file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.dsw<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi driver workspace file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.inf<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Inf file for vscsi driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.htm<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>This file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi.rc<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Resource file for vscsi driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>vscsintf.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Vscsi guid declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\function.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Definitions or IRP handlers<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\iserver.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Project file for iserver driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\isession.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>TCP and UDP TDI client
+  implementation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\isession.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>TCP and UDP TDI client
+  declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\servdev.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of FDO device
+  class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\servdev.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of FDO device class<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\server.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Implementation of a driver
+  class for iserver driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\server.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Declaration of a driver class for
+  iserver driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\server.inf<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Inf file for iserver driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\server.rc<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Resource file for iserver
+  driver<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=140 valign=top style='width:105.3pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver\servintf.h<o:p></o:p></span></p>
+  </td>
+  <td width=518 valign=top style='width:388.2pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+  mso-bidi-font-family:Tahoma;color:windowtext'>Iserver guid declaration<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;mso-fareast-font-family:"Courier New";
+mso-bidi-font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='margin:0in;margin-bottom:.0001pt;
+text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'><a href="#top">Return to Top
+of Page</a><o:p></o:p></span></p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:aqua'>
+
+<p class=EndBar><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2002 Compuware Corporation<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Verdana;mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
+ 

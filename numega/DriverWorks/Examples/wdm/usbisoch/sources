@@ -1,0 +1,35 @@
+# SOURCES for USB Isoch Sample Driver
+# (c) Copyright 1998, Compuware Corporation
+
+TARGETNAME=usbisoch
+TARGETPATH=obj
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+!IF ("$(DDKBUILDENV)"=="chk") || ("$(DDKBUILDENV)"=="checked")
+BUILDTYPE = CHECKED
+!ELSE
+BUILDTYPE = FREE
+NTDEBUG=
+!ENDIF
+
+TARGETLIBS=$(DRIVERWORKS)\lib\*\$(BUILDTYPE)\vdw_wdm.lib 
+TARGETLIBS= $(TARGETLIBS) $(DDK_LIB_PATH)\usbd.lib
+
+C_DEFINES=-DNTVERSION='WDM' 
+BROWSER_INFO=1
+RCNOFONTMAP=1
+LINK_LIB_IGNORE=4210
+
+
+INCLUDES=$(DRIVERWORKS)\include;\
+         $(DRIVERWORKS)\source;\
+         $(DRIVERWORKS)\include\dep_vxd;\
+         $(BASEDIR)\src\usb\inc;\
+		 $(BASEDIR)\src\wdm\usb\inc
+
+SOURCES=usbisoch.rc\
+        usbisoch.cpp\
+        isochdev.cpp\
+		iread.cpp\
+		iwrite.cpp

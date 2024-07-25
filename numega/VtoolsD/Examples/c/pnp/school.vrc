@@ -1,0 +1,13 @@
+// VtoolsD resource file for School.VxD
+// Copyright (c) 1996 Walter Oney Software
+// Copyright (c) 1996 Compuware Numnega, Inc.
+
+CompanyName = "Walter Oney Software"
+FileDescription = "School Bus Driver"
+FileVersion = "Version 1.01"
+InternalName = "SCHOOL"
+LegalCopyright = "Copyright (C) 1995 Walter Oney Software"
+OriginalFilename = "SCHOOL.VXD"
+ProductName = "School Bus Sample Program"
+ProductVersion = "Version 1.01"
+

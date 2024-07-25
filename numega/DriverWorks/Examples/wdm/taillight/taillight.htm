@@ -1,0 +1,1001 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./TailLight_files/filelist.xml">
+<title>TailLight Driver for USB Mouse</title>
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Normal</w:View>
+  <w:Zoom>110</w:Zoom>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Garamond;
+	panose-1:2 2 4 4 3 3 1 1 8 3;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:variable;
+	mso-font-signature:647 0 0 0 159 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:20.0pt;
+	mso-bidi-font-size:16.0pt;
+	font-family:Garamond;
+	mso-bidi-font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;
+	font-weight:bold;}
+h2
+	{margin-right:0in;
+	margin-top:14.0pt;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	border:none;
+	mso-border-top-alt:solid windowtext 1.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 0in 0in 0in;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:Tahoma;
+	color:navy;
+	font-weight:bold;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-weight:bold;
+	font-style:italic;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Verdana;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Tahoma;
+	color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	border:none;
+	mso-border-alt:solid #CCFFFF 3.0pt;
+	padding:0in;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+<meta name=Template content="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</head>
+
+
+
+<body bgcolor=white lang=EN-US link=blue vlink=purple style='tab-interval:.5in'
+leftmargin=8>
+
+<div class=Section1>
+
+<div style='border:solid windowtext 2.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+mso-border-shadow:yes;background:blue'>
+
+<h1 style='border:none;mso-border-alt:solid windowtext 2.0pt;padding:0in;
+mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;mso-border-shadow:yes'><a name="_top"></a><span
+style='font-size:24.0pt;mso-bidi-font-size:16.0pt;color:#FF9900'>TailLight
+Driver for Microsoft USB Mouse<o:p></o:p></span></h1>
+
+</div>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a href="#_Summary">Summary</a></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="#_Building_the_Driver">Building the Driver and Installation Dll</a></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="#_Installing_the_Driver">Installing the Driver</a></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="#_How_It_Works">How It Works</a></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a href="#_Code_Tour">File
+Manifest</a></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="#_Driver_Code_Details">Code Tour</a></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2><a name="_Summary"></a>Summary</h2>
+
+</div>
+
+<p class=MsoBodyText>This driver demonstrates a WDM (Windows Driver Model)
+Filter driver using DriverWorks.<span style="mso-spacerun: yes">  </span>The
+driver is designed to filter the Microsoft USB Mouse that has a tail light LED.
+The driver was originally developed using the DriverWizard from
+DriverWorks.<span style="mso-spacerun: yes">  </span>The wizard generated a
+complete functional pass thru WDM filter for the USB mouse.<span
+style="mso-spacerun: yes">  </span>The wizard generated driver installs into
+the USB Mouse stack and correctly operates by passing all requests thru the
+driver without modifying any source code.<span style="mso-spacerun: yes"> 
+</span>The wizard also generated an installation dll to quickly install the WDM
+filter in the USB mouse stack.<span style="mso-spacerun: yes">  </span>Simply
+building the driver and dll and executing the dll at the command line results
+in successful installation of the driver.<span style="mso-spacerun: yes"> 
+</span>The wizard saves a tremendous amount of time generating the driver and
+installation dll.<span style="mso-spacerun: yes">  </span>All of the typical
+WDM filter details are handled automatically by the DriverWorks framework
+including plug and play and power management.<span style="mso-spacerun: yes"> 
+</span>Code was added to the driver to make the tail light LED blink.<span
+style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoBodyText align=center style='text-align:center'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2><a name="_Building_the_Driver"></a>Building the Driver and Installation Dll</h2>
+
+</div>
+
+<p class=MsoBodyText><b>Requirements</b>:Windows DDK, DriverStudio, and
+Microsoft Visual Studio (version 6 or .NET)</p>
+
+<p class=MsoBodyText>First, build the DriverWorks libraries. The Microsoft
+Visual Studio workspace is located in the “source” folder of the DriverWorks
+installation folder. Open <b>VdwLibs.dsw</b> in MSVC 6.0 IDE. Use the “<b>Batch
+Build</b>” command from the “<b>Build</b>” menu in MSVC.Select only to build
+the “<b>Win32 WDM Checked</b>” and “<b>Win32 WDM Free</b>” configurations of
+the VdwLibs project. Click “<b>Rebuild All</b>” to build Vdw_wdm.lib.<span
+style="mso-spacerun: yes">  </span>Alternatively, use bldlib.bat from the
+command line to build the library.<span style="mso-spacerun: yes">  </span>Open
+a command prompt, change folders to the Driverworks folder and type “<b>bldlib
+checked WDM</b>”.</p>
+
+<p class=MsoBodyText>Next, build the TailLight driver. Open <b>TailLight.dsw</b>
+in MSVC 6.0 IDE, select the “Win32 Checked” configuration of the TailLight
+project and build it. It creates files <b>TailLight.sys</b> and <b>TailLight.nms</b>.
+</p>
+
+<p class=MsoBodyText>Finally, build the TailLightInst DLL. Using the same
+Microsoft Visual Studio workspace (<b>TailLight.dsw</b>), select the “Debug”
+configuration of the “TailLightInst” project and build it. It creates files <b>TailLightInst.dll</b>.
+Make sure that TailLightInstaller::m_szDeviceDescXp or TailLightInstaller::m_szDeviceDesc2k
+in taillightinst.cpp matches your USB mouse description, for example "Microsoft
+USB Wheel Mouse Optical" or "Microsoft USB IntelliMouse Explorer". This is
+important for TailLightInst installer to find the device and install filter driver. 
+Currently this sample doesn't support new Microsoft USB IntelliMouse Explorer 4.0 with Tilt Wheel.</p>
+
+<p class=MsoBodyText align=center style='text-align:center'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2><a name="_Installing_the_Driver"></a>Installing the Driver</h2>
+
+</div>
+
+<p class=MsoBodyText>First, verify that the Microsoft USB Mouse is installed
+and functioning properly.<span style="mso-spacerun: yes">  </span>The Windows
+operating system has the device drivers required to operate the USB Mouse.<span
+style="mso-spacerun: yes">  </span>The driver has been tested on Windows 2000
+and Windows XP.<span style="mso-spacerun: yes">  </span>If using a single
+machine, it is suggested to start the SoftICE debugger and load the TailLight.nms
+file into the debugger using Symbol Loader.<span style="mso-spacerun: yes"> 
+</span>If using 2 machines, use the Visual SoftICE debugger.<span
+style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoBodyText>Next, copy <b>TailLight.sys</b> to the same folder as <b>TailLightInst.dll</b>.</p>
+
+<p class=MsoBodyText>Next, open a “<b>Command Prompt</b>” window
+(cmd.exe).<span style="mso-spacerun: yes">  </span>Change directories to the
+location of <b>TailLightInst.dll</b>.</p>
+
+<p class=MsoBodyText>Type “<b><span style='font-size:12.0pt;font-family:Courier'>RunDll32
+TailLightInst.dll Install</span></b>” to install the TailLight driver.</p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:#CCFFFF'>
+
+<p class=note>Note: the command is case-sensitive.<span style="mso-spacerun:
+yes">  </span>Type “<b>Install</b>” exactly as shown.</p>
+
+</div>
+
+<p class=MsoBodyText>If the driver installed correctly, the LED should blink
+continuously.</p>
+
+<p class=MsoBodyText>To uninstall the driver: type “<b><span style='font-size:
+12.0pt;font-family:Courier'>RunDll32 TailLightInst.dll Uninstall</span></b>” to
+install the TailLight driver.<span style="mso-spacerun: yes">  </span>This will
+completely uninstall the TailLight driver.</p>
+
+<p class=MsoBodyText align=center style='text-align:center'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2><a name="_How_It_Works"></a>How It Works</h2>
+
+</div>
+
+<p class=MsoBodyText>The driver installs as a WDM <i>Filter</i> driver to the
+WDM <i>Function</i> Driver controlling the USB Mouse.<span style="mso-spacerun:
+yes">  </span>The USB Mouse is controlled by a “<i>stack”</i> of drivers.<span
+style="mso-spacerun: yes">  </span>At the bottom of the stack is the USB Host
+Controller driver which issues the input and output (I/O) to the USB
+device.<span style="mso-spacerun: yes">  </span>This driver acts as the USB <i>Bus</i>
+Driver.<span style="mso-spacerun: yes">  </span>Above the USB Host Controller
+is the WDM <i>Function</i> driver <b>hidusb.sys</b> that issues requests to the
+USB Host Controller to perform I/O to the device.<span style="mso-spacerun:
+yes">  </span>The requests are sent using an I/O Request Packet (IRP) from the
+WDM Function driver to the WDM Bus driver.<span style="mso-spacerun: yes"> 
+</span>The IRP has major type <b>IRP_MJ_INTERNAL_DEVICE_CONTROL</b> and minor
+type <b>IOCTL_INTERNAL_USB_SUBMIT_URB</b>.<span style="mso-spacerun: yes"> 
+</span>Function drivers use this request to “<i>submit a URB to the bus driver</i>”.<span
+style="mso-spacerun: yes">  </span>The TailLight WDM <i>Filter</i> driver
+installs as a <i>lower-level</i> filter.<span style="mso-spacerun: yes"> 
+</span>The TailLight driver intercepts all of the IRPs sent from the WDM
+Function driver to the WDM bus driver.<span style="mso-spacerun: yes"> 
+</span>This is what is meant by <i>filtering</i>.</p>
+
+<p class=MsoBodyText>Packaged with the IRP, drivers use a <b>USB Request Block</b>
+structure (<b>URB</b>) to specify the USB I/O to perform.<span
+style="mso-spacerun: yes">  </span>The USB mouse has an LED which can be
+controlled by issuing USB I/O to the device.<span style="mso-spacerun: yes"> 
+</span>To control the LED, a driver must issue an URB of type
+URB_FUNCTION_CLASS_INTERFACE which Request equal to 9, Value equal to 0x300,
+and Index equal to 0.To turn on the LED, the URB is sent with a TransferBuffer
+containing the value of “1”.<span style="mso-spacerun: yes">  </span>To turn
+off the LED, the URB is sent with a TransferBuffer containing the value of “0”.</p>
+
+<p class=MsoBodyText>Once installed, the TailLight driver issues the URB
+requests to turn the LED on and off.</p>
+
+<p class=MsoBodyText align=center style='text-align:center'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2><a name="_Code_Tour"></a>File Manifest</h2>
+
+</div>
+
+<table border=1 cellspacing=3 cellpadding=0 width=684 style='width:513.0pt;
+ mso-cellspacing:2.0pt;margin-left:8.6pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Driver File<o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>function.h<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Defines a set of I/O Request Packets (IRP) that the driver
+  handles.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.h<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares TailLight class (KDriver-derived class.)<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightDevice.h<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares TailLightDevice class (KWdmFilterDevice-derived
+  class.)<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements TailLight class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightDevice.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements TailLightDevice class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt right 108.45pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.inf<span style='mso-tab-count:1'>              </span><o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Sample installation file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.inf.txt<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Sample installation file to show how to install this driver
+  with a function driver.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.htm<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>This file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>makefile</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>Used for the DDK
+  utility BUILD.EXE.</span><b><span style='font-size:10.0pt;font-family:Tahoma;
+  mso-fareast-font-family:"Courier New";color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>sources</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:Tahoma;
+  color:windowtext'>Build information for the DDK utility BUILD.EXE.</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.dsw<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Visual Studio 6.0 workspace file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Visual Studio 6.0 project file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.rc<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Resource File containing version information.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;background:silver;padding:
+  0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=532 style='width:398.65pt;background:silver;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Install DLL File<o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>StdAfx.h<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Pre-compiled header file for the project.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightDll.h<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares functions that the DLL exports.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt right 108.45pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightInst.h<span style='mso-tab-count:1'>          </span><o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Declares TailLightInstaller class
+  (CDeviceFilterInstaller-derived class.)<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>StdAfx.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>For precompiled header support.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>makefile</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>Used for the DDK
+  utility BUILD.EXE.</span><b><span style='font-size:10.0pt;font-family:Tahoma;
+  mso-fareast-font-family:"Courier New";color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>sources</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:Tahoma;
+  color:windowtext'>Build information for the DDK utility BUILD.EXE.</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightDll.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements functions that the DLL exports.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightInst.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Implements TailLightInstaller class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightInst.def<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Module definition file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLightInst.dsp<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>Visual Studio 6.0 project file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>TailLight.htm<o:p></o:p></span></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'>This file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=144 valign=top style='width:108.35pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma;color:windowtext'>dirs</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+  <td width=532 valign=top style='width:398.65pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:Tahoma;
+  color:windowtext'>Build information for the DDK utility BUILD.EXE.</span><b><span
+  style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New";
+  color:windowtext'> <o:p></o:p></span></b></p>
+  </td>
+ </tr>
+</table>
+
+<pre><span style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=MsoBodyText align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:none;border-top:solid windowtext 1.0pt;padding:1.0pt 0in 0in 0in'>
+
+<h2 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><a
+name="_Driver_Code_Details"></a>Code Tour</h2>
+
+</div>
+
+<p class=MsoBodyText style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>The
+TailLight driver is designed and implemented using the DriverWorks C++
+library.<span style="mso-spacerun: yes">  </span>The initial code was generated
+using the <b>DriverWizard</b>.<span style="mso-spacerun: yes">  </span>The code
+generated by the wizard was a complete WDM Filter driver which could build and
+install into the USB mouse stack and act as a pass-thru filter.<span
+style="mso-spacerun: yes">  </span>This driver correctly operated with no code
+modifications.<span style="mso-spacerun: yes">  </span>Using the DriverWorks
+C++ class library results in far less source code to develop. The initial
+wizard generated driver contained approximately 500 lines of source code.<span
+style="mso-spacerun: yes">  </span>By comparision, the usb filter sample from
+the Windows DDK contains approximately 1800 lines of source code.<span
+style="mso-spacerun: yes">  </span>Although, the usb filter sample would
+required significant source code modifications to get the driver to build and
+install in to the USB mouse stack correctly.<span style="mso-spacerun: yes"> 
+</span>Obviously, such a great reduction in source code makes development and
+maintenance easier and results in fewer bugs in the driver.<span
+style="mso-spacerun: yes">  </span>The driver reuses C++ code in the
+DriverWorks framework that is used by many drivers.<span style="mso-spacerun:
+yes">  </span>So the code has already been tested and debugged and can be
+relied upon to work properly.</p>
+
+<p class=MsoBodyText style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>The
+TailLight driver consists primarily of 2 C++ classes; <b>TailLight</b> and <b>TailLightDevice</b>.<span
+style="mso-spacerun: yes">  </span><b>TailLight</b> derives from DriverWorks
+class <b>KDriver</b> which provides the basic framework for a device
+driver.<span style="mso-spacerun: yes">  </span>It is the framework class
+responsible for initializing the driver and for directing I/O requests (IRPs)
+to the device objects to which they are targeted.<span style="mso-spacerun:
+yes">  </span>TailLight implements the <b>AddDevice</b> method which is
+responsible for constructing the <b>TailLightDevice</b> object which will
+handle the I/O requests (IRPs) for the driver.</p>
+
+<p class=MsoBodyText style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b>TailLightDevice</b>
+derives from DriverWorks class <b>KWdmFilterDevice</b> which implements all of
+the functionality to handle plug and play requests, power management requests,
+and requests that the driver simply wants to pass thru to the next driver. <b>TailLightDevice</b>
+only needs to implement I/O handlers for requests that it wants to add some
+special processing other than passing to the next driver.<span
+style="mso-spacerun: yes">  </span>TailLightDevice has method <b>InternalDeviceControl</b>
+which the framework will call for a request of type <b>IRP_MJ_INTERNAL_DEVICE_CONTROL</b>.<span
+style="mso-spacerun: yes">  </span>If the IRP is of minor function type <b>IOCTL_INTERNAL_USB_SUBMIT_URB</b>,
+the method inserts a completion routine (<b>IrpCompletionRoutine</b>) that will
+be called when a request is completed by the next driver.<span
+style="mso-spacerun: yes">  </span><b>IrpCompletionRoutine </b>determines if
+the USB mouse is becoming “active”.<span style="mso-spacerun: yes"> 
+</span>This means that an URB of type URB_FUNCTION_SELECT_CONFIGURATION was
+“submitted”.<span style="mso-spacerun: yes">  </span>When the device becomes
+active, the device can now respond to I/O requests to control the light.<span
+style="mso-spacerun: yes">  </span>When this happens, the code calls <b>StartThread</b>
+to create a thread of execution.<span style="mso-spacerun: yes">  </span><b>TailLightDevice</b>
+has the <b>ThreadRoutine </b>method as the main thread routine.<span
+style="mso-spacerun: yes">  </span>This method will create a Timer that expires
+periodically.<span style="mso-spacerun: yes">  </span>When the timer expires, <b>SetTailLight</b>
+is called to turn the LED on or off.<span style="mso-spacerun: yes">  </span><b>SetTailLight</b>
+creates and initializes a URB request and then submits the URB to the bus
+driver using the <b>SubmitUrb</b> method of <b>KUsbLowerDevice</b>.<span
+style="mso-spacerun: yes">  </span><b>KUsbLowerDevice</b> is a data member of
+the <b>TailLightDevice</b> class which represents the connection from the
+TailLight driver to the USB drivers.<span style="mso-spacerun: yes">  </span><b>KUsbLowerDevice</b>
+is used to send IRPs and URBs to the USB drivers.</p>
+
+<p class=MsoBodyText style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b>TailLightDevice</b>
+has method <b>OnRemoveDevice</b> which is called when the USB mouse is
+unplugged, or disabled in DeviceManager, or the driver is uninstalled.<span
+style="mso-spacerun: yes">  </span>This method calls StopThread to signal the
+thread to stop and wait for the thread to terminate.<span style='mso-bidi-font-size:
+10.0pt;font-family:"Courier New";color:windowtext'> <o:p></o:p></span></p>
+
+<p class=MsoBodyText align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-bidi-font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Courier New"'><a href="#_top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<div style='border:solid #CCFFFF 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
+background:aqua'>
+
+<p class=EndBar style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2003 Compuware Corporation<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

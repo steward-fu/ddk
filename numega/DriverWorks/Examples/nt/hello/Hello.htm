@@ -1,0 +1,128 @@
+<html>
+
+<head>
+<style>
+p 		{ margin-left:60px; }
+table 		{ margin-left: 60px; padding-right: 10px; }
+b		{ font-weight: bold; }
+table td b	{ font-style: italic; }
+td		{ margin-left: 25px; }
+</style>
+</head>
+
+
+<body>
+
+<h2>HELLO Sample Readme</h2>
+
+<p>
+This example implements a serious candidate to the simplest ever driver that uses Compuware's
+DriverWorks as its framework platform. The driver only supports opening and closing its Device Object,
+it has no other functionality. 
+</p>
+
+
+<p>
+This sample includes the "Hello" Driver and a Test Program. The driver is a legacy (non-WDM) driver which sets
+itself up at DriverEntry time and will only respond to user Open and Close requests. The test program merely
+opens the Device, issues a diagnostic message (success or failure), and closes the device. 
+</p>
+
+<p>
+The test program shows how to write a simple C++ test application, that is one that uses a ".cpp" extension. 
+Such an application doesn't need to use the full power of C++, but it has certain advantages over a plain
+vanilla .c program. 
+</p>
+
+<p>
+The Driver is located in the <b>sys</b> directory, while the Test Program can be found in the <b>exe</b> directory.
+</p>
+
+<h2>Building the Sample</h2>
+
+<p>
+If you use a Checked or Free Build Command Prompt, just change to the sample directory (it should have a
+<b>dirs</b> file in it) and run "build -cz". This will build both the driver and the test program, which will
+be available in the corresponding <b>i386</b> directories. Alternatively you can use the <b>hello.dsw</b> 
+Visual C++ 6 Workspace, from which you can build both the driver and the test program. 
+</p>
+
+ 
+<h2>Installation</h2>
+
+<p>
+This is a legacy driver, therefore all you need to install it is to copy its .sys file into your 
+<b>%WINDIR%\system32\drivers</b> directory, and to create the appropriate Registry keys for the driver. 
+The <b>sys</b> directory includes file <b>hello.ini</b>, which has the required Registry keys you must set up. 
+You can use the DDK utility <b>regini</b> to create those entries:
+</p>
+
+<p style="margin-left:120px">
+<b>regini hello.ini</b>
+</p>
+
+
+<p>
+You should reboot after you create the Registry keys, so that the Service Manager can set up the <b>Hello</b>
+driver as a kernel-side service. You can check that all is well by looking at registry key 
+</p>
+
+<p style="margin-left:120px">
+<b>HKLM\System\CurrentControlSet\Enum\Root</b>
+</p>
+
+<p>
+and if things are ok you should find a <b>LEGACY_HELLO</b> entry in there. 
+</p>
+
+<p>
+The location of the .sys file will depend on your DDK and on the kind of build. For example, if you are
+doing a free build for an x86 platform, and if you built the driver with a DDK Command box and used
+the <b>build</b> command, your driver's .sys file will be at the directory
+</p>
+
+<p style="margin-left:120px">
+<b>%DRIVERWORKS%\Examples\NT\Hello\sys\objfre_wxp_x86\i386\hello.sys</b>
+</p>
+
+<p>
+For a checked build, replace "objfre" with "objchk", and if you're building your driver for Windows Server 2003,
+replace "wxp" with "wnet". 
+</p>
+ 
+<h2>Testing</h2>
+
+<p>
+Once the driver is installed, you can start and stop the filter by using the <b>net</b> command from any cmd box,
+for example,
+</p>
+
+<p style="margin-left:120px">
+  <b>net start hello</b><br>
+  <b>net stop hello</b>
+</p>
+
+<p>
+If now you run the <b>hellotest</b> test program from the cmd box, you should see an "open succeeded" message
+come out. 
+</p>
+
+
+
+<h2>File Manifest</h2>
+
+<table>
+<tr>	<td><b>hello.h</b></td>		<td>Declaration of the <b>MostSimpleDriver</b> class</td>	</tr>
+<tr>	<td><b>hellodev.h</b></td>	<td>Declaration of the <b>MostSimpleDevice</b> class</td>	</tr>
+<tr>	<td><b>function.h</b></td>	<td>Definition of user functions</td>				</tr>
+<tr>	<td><b>hello.cpp</b></td>	<td>Definition of the <b>MostSimpleDriver</b> class</td>	</tr>
+<tr>	<td><b>hellodev.cpp</b></td>	<td>Definition of the <b>MostSimpleDevice</b> class</td>	</tr>
+<tr>	<td><b>testhello.cpp</b></td>	<td>Source code for the test application.</td>			</tr>
+<tr>	<td><b>hello.ini</b></td>	<td>Registry keys to be added to the Service subtree</td>	</tr>
+</table>
+
+
+
+</div>
+</body>
+</html>

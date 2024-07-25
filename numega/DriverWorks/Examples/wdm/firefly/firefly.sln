@@ -1,0 +1,51 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Firefly", "Firefly.vcproj", "{E56BF81F-57AF-4295-B01B-947DB11BCE97}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = IA64 NT4 Checked
+		ConfigName.2 = IA64 NT4 Free
+		ConfigName.3 = IA64 WDM Checked
+		ConfigName.4 = IA64 WDM Free
+		ConfigName.5 = Release
+		ConfigName.6 = Win32 Checked
+		ConfigName.7 = Win32 Free
+		ConfigName.8 = Win32 NT4 Checked
+		ConfigName.9 = Win32 NT4 Free
+		ConfigName.10 = Win32 WDM Checked
+		ConfigName.11 = Win32 WDM Free
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Debug.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Debug.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 NT4 Checked.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 NT4 Checked.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 NT4 Free.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 NT4 Free.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 WDM Checked.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 WDM Checked.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 WDM Free.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.IA64 WDM Free.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Release.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Release.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 Checked.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 Checked.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 Free.ActiveCfg = Win32 Free|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 Free.Build.0 = Win32 Free|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 NT4 Checked.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 NT4 Checked.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 NT4 Free.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 NT4 Free.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 WDM Checked.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 WDM Checked.Build.0 = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 WDM Free.ActiveCfg = Win32 Checked|Win32
+		{E56BF81F-57AF-4295-B01B-947DB11BCE97}.Win32 WDM Free.Build.0 = Win32 Checked|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

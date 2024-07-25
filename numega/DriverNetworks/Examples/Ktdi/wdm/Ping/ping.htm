@@ -1,0 +1,472 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Ping_files/filelist.xml">
+<title>Ping Sample Driver</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Sarah Prevost</o:Author>
+  <o:LastAuthor>rcrouse</o:LastAuthor>
+  <o:Revision>10</o:Revision>
+  <o:TotalTime>62</o:TotalTime>
+  <o:Created>2001-06-01T18:46:00Z</o:Created>
+  <o:LastSaved>2001-11-07T03:20:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>301</o:Words>
+  <o:Characters>1716</o:Characters>
+  <o:Company>Compuware Numega</o:Company>
+  <o:Lines>14</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>2107</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Sans Serif";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Tahoma;
+	color:navy;
+	mso-font-kerning:16.0pt;}
+h2
+	{margin-right:0in;
+	margin-top:14.0pt;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:13.5pt;
+	mso-bidi-font-size:18.0pt;
+	font-family:Tahoma;
+	color:navy;}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:11.0pt;
+	mso-bidi-font-size:13.5pt;
+	font-family:Tahoma;
+	color:navy;
+	font-style:italic;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:Normal;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+p.bullet, li.bullet, div.bullet
+	{mso-style-name:bullet;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	background:#CCFFFF;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.EndBar, li.EndBar, div.EndBar
+	{mso-style-name:EndBar;
+	mso-style-parent:note;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	background:aqua;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.step, li.step, div.step
+	{mso-style-name:step;
+	margin-top:10.5pt;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+p.substep, li.substep, div.substep
+	{mso-style-name:substep;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.5pt;
+	margin-left:17.25pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name=top></a>Ping Sample Driver</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>This directory contains project files for the ping sample
+driver. This driver is a WDM TDI client, and is being used to illustrate the
+classes <b>KRawSocket</b> and <b>KEnumIPInterface</b>. </p>
+
+<h2>Operation</h2>
+
+<p class=MsoBodyText>The driver sets up an ICMP socket using class <b>KRawSocket</b>
+so that it may receive any ping packets. It then broadcasts a ping packet using
+a broadcast address calculated from the local machine’s IP address and subnet
+mask. The local IP address is obtained with class <b>KEnumIPInterface</b>.<span
+style="mso-spacerun: yes">  </span>As it receives replies, the driver prints
+the replying IP addresses to the debugger. </p>
+
+<h2>Building the Driver</h2>
+
+<p class=MsoBodyText>You will need DriverWorks, DriverNetworks, and the
+Microsoft Windows DDK installed to successfully build the driver. Before
+building the sample, make certain that the DriverWorks and DriverNetworks
+libraries have been built. </p>
+
+<p class=MsoBodyText>Open the workspace <b>ping1.dsw</b> in Visual Studio, and
+select the build configuration based on the system where the driver will be
+loaded. The ping driver contains a Win 9x configuration (for Windows 98 and
+Millennium platforms), a Win2K/WinXP configuration, and an IA64 configuration.
+Select <b>Build | Rebuild All</b> to build the driver.</p>
+
+<h2>Installing the Driver</h2>
+
+<p class=MsoBodyText>The driver must be installed through the ‘Add New Hardware’
+wizard on the control panel. Select the option to choose a driver from a list,
+and browse to the folder containing <b>ping1.inf</b>. </p>
+
+<h2>Code Tour</h2>
+
+<table border=1 cellspacing=3 cellpadding=0 width=498 style='width:373.3pt;
+ mso-cellspacing:2.0pt;margin-left:4.3pt;mso-padding-alt:0in 7.9pt 0in 7.9pt'>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><b><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>File<o:p></o:p></span></b></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><b><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:4.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma'><span style="mso-spacerun:
+  yes"> </span>makefile </span><span style='font-size:10.0pt;font-family:Tahoma;
+  mso-fareast-font-family:"Courier New";color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:.1in;tab-stops:45.8pt 137.4pt'>Used for the DDK utility
+  BUILD.EXE.<span style='mso-fareast-font-family:"Courier New"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Ping.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:.1in;margin-bottom:2.0pt;
+  margin-left:.1in'><span style='mso-bidi-font-size:12.0pt'>Implementation of the
+  ping driver class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>PingDevice.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Implementation of the ping device
+  class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>PingSocket.cpp<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Implementation of the socket
+  class. The class is based on KRawSocket and uses KEnumIPInterface.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Ping.h<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Declarations for the driver class
+  .<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:.1in;margin-bottom:2.0pt;
+  margin-left:.1in'><span style='mso-bidi-font-size:12.0pt'>PingSocket.h<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Declaration for the socket class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>PingDevice.h<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Declaration for the device class.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Function.h<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>IRP handlers.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>PingDeviceInterface.h<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>IOCTL interface.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Ping.rc<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Resource file.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Ping1.inf<o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:.1in;margin-bottom:
+  2.0pt;margin-left:.1in'><span style='font-size:10.0pt;mso-bidi-font-size:
+  12.0pt;font-family:Tahoma;color:windowtext'>Inf file for installation.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=147 valign=top style='width:109.95pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='margin-top:2.0pt;margin-right:0in;margin-bottom:
+  2.0pt;margin-left:4.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+  style='font-size:10.0pt;font-family:Tahoma'><span style="mso-spacerun:
+  yes"> </span>sources </span><span style='font-size:10.0pt;font-family:Tahoma;
+  mso-fareast-font-family:"Courier New";color:windowtext'><o:p></o:p></span></p>
+  </td>
+  <td width=343 valign=top style='width:257.35pt;padding:.75pt .75pt .75pt .75pt'>
+  <p class=bullet style='margin-top:2.0pt;margin-right:0in;margin-bottom:2.0pt;
+  margin-left:.1in;tab-stops:45.8pt 137.4pt'>Build information for the DDK
+  utility BUILD.EXE.<span style='mso-fareast-font-family:"Courier New"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><a
+href="#top">Return to Top of Page</a> <o:p></o:p></span></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=EndBar style='tab-stops:.5in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<pre><span style='mso-bidi-font-size:12.0pt;font-family:Tahoma;mso-fareast-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:7.5pt;font-family:"MS Sans Serif";mso-fareast-font-family:
+"Courier New";mso-bidi-font-family:"Courier New"'>© </span><span
+style='font-size:8.0pt;mso-bidi-font-size:12.0pt;font-family:"Microsoft Sans Serif"'>Copyright
+2001 Compuware Corporation<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Tahoma'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Tahoma;mso-fareast-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

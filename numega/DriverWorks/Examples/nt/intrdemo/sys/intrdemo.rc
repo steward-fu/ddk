@@ -1,0 +1,57 @@
+/* 	intrdemo.rc - include file for INTRDEMO example version resource
+/=============================================================================
+/
+/ Compuware Corporation
+/ NuMega Lab
+/ 9 Townsend West
+/ Nashua, NH 03060  USA
+/
+/ Copyright (c) 1998 Compuware Corporation. All Rights Reserved.
+/ Unpublished - rights reserved under the Copyright laws of the
+/ United States.
+/
+/=============================================================================
+*/
+
+#include <windows.h>
+#include <DriverWorksSamples.h>
+
+#define VER_FILEDESCRIPTION_STR 	"Interrupt handling demo"
+#define VER_INTERNALNAME_STR		"intrdemo.sys"
+#define VER_ORIGINALFILENAME_STR	VER_INTERNALNAME_STR
+
+#ifdef RC_INVOKED
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
+FILEFLAGSMASK  VER_FILEFLAGSMASK
+FILEFLAGS      VER_FILEFLAGS
+FILEOS         VER_FILEOS
+FILETYPE       VER_FILETYPE
+FILESUBTYPE    VER_FILESUBTYPE
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"   /* LANG_ENGLISH/SUBLANG_ENGLISH_US, Unicode CP */
+        BEGIN
+            VALUE "CompanyName",     VER_COMPANYNAME_STR
+            VALUE "FileDescription", VER_FILEDESCRIPTION_STR 
+            VALUE "FileVersion",     VER_FILEVERSION_STR
+            VALUE "InternalName",    VER_INTERNALNAME_STR
+            VALUE "LegalCopyright",  VER_LEGALCOPYRIGHT_STR
+            VALUE "OriginalFilename",VER_ORIGINALFILENAME_STR
+            VALUE "ProductName",     VER_PRODUCTNAME_STR
+            VALUE "ProductVersion",  VER_PRODUCTVERSION_STR
+        END
+
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04B0
+    END
+END
+
+#endif
+
