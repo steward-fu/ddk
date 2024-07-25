@@ -1,0 +1,46 @@
+Building Demo05 project ...
+
+BuildInfo is processing Demo05_Shared.inc ...
+Inc2RC is converting Demo05_Shared.inc ...
+
+Compiling Demo05.rc resources ...
+Creating Demo05.res
+Using codepage 1252 as default
+
+Demo05.rc.
+Writing VERSION:1,	lang:0x409,	size 780.
+Writing 24:1,	lang:0x409,	size 1742.
+Writing ICON:1,	lang:0x0,	size 744
+Writing ICON:2,	lang:0x0,	size 296
+Writing ICON:3,	lang:0x0,	size 3752
+Writing ICON:4,	lang:0x0,	size 2216
+Writing ICON:5,	lang:0x0,	size 1384
+Writing ICON:6,	lang:0x0,	size 9640
+Writing ICON:7,	lang:0x0,	size 4264
+Writing ICON:8,	lang:0x0,	size 1128
+Writing GROUP_ICON:ICON_APP,	lang:0x0,	size 118
+
+Assembling Demo05.asm project ...
+c:\objasm\\Code\\OA_Setup64.inc(17) : Warning A4305: Stackbase automatically changed to RSP to support WIN64 options
+ c:\objasm\\Code\\OA_Setup64.inc(17): Included by
+  SysSetup(98)[Model.inc]: Macro called from
+   Demo05.asm(12): Main line code
+OOP Support:    ENABLED
+Platform:       WINDOWS
+User Interface: NONE
+Binary Format:  EXE
+Bitness:        64
+String Type:    WIDE (UNICODE)
+Mode:           DEBUG => WND, using rbp as stackframe pointer
+Inheritance path: OA_Primer
+Inheritance path: OA_Primer,OA_DesLUT
+Inheritance path: OA_Primer,OA_Stream
+Inheritance path: OA_Primer,OA_Streamable
+Inheritance path: OA_Primer,OA_Stream,OA_DiskStream
+Inheritance path: OA_Primer,OA_Streamable,OA_QWordVector
+Inheritance path: OA_Primer,OA_Streamable,OA_ByteVector
+Demo05.asm : 1 warnings, 0 errors
+
+Linking object modules to EXE-file ...
+
+Ready!

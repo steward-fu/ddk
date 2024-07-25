@@ -1,0 +1,61 @@
+Building Demo04 project ...
+
+BuildInfo is processing Demo04_Shared.inc ...
+Inc2RC is converting Demo04_Shared.inc ...
+
+Compiling Demo04.rc resources ...
+Creating Demo04.res
+Using codepage 1252 as default
+
+Demo04.rc.
+Writing VERSION:1,	lang:0x409,	size 704.
+Writing 24:1,	lang:0x409,	size 1742.
+Writing ICON:1,	lang:0x0,	size 744
+Writing ICON:2,	lang:0x0,	size 296
+Writing ICON:3,	lang:0x0,	size 3752
+Writing ICON:4,	lang:0x0,	size 2216
+Writing ICON:5,	lang:0x0,	size 1384
+Writing ICON:6,	lang:0x0,	size 9640
+Writing ICON:7,	lang:0x0,	size 4264
+Writing ICON:8,	lang:0x0,	size 1128
+Writing GROUP_ICON:ICON_APP,	lang:0x0,	size 118.
+Writing BITMAP:BMP_BACKGROUND,	lang:0x0,	size 6504.
+Writing DIALOG:DIALOGABOUT,	lang:0x0,	size 220.
+Writing MENU:MENU_APP,	lang:0x0,	size 156
+
+Assembling Demo04.asm project ...
+c:\objasm\\Code\\OA_Setup64.inc(17) : Warning A4305: Stackbase automatically changed to RSP to support WIN64 options
+ c:\objasm\\Code\\OA_Setup64.inc(17): Included by
+  SysSetup(98)[Model.inc]: Macro called from
+   Demo04.asm(12): Main line code
+OOP Support:    ENABLED
+Platform:       WINDOWS
+User Interface: GRAPHIC
+Binary Format:  EXE
+Bitness:        64
+String Type:    WIDE (UNICODE)
+Mode:           DEBUG => WND, using rbp as stackframe pointer
+Inheritance path: OA_Primer
+Inheritance path: OA_Primer,OA_DesLUT
+Inheritance path: OA_Primer,OA_Stream
+Inheritance path: OA_Primer,OA_Streamable
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Button
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Button,OA_Hyperlink
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_Dialog
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_Dialog,OA_DialogModal
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_Dialog,OA_DialogModal,OA_DialogAbout
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_WinApp
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_WinApp,OA_SdiApp
+Inheritance path: OA_Primer,OA_QContainer
+Inheritance path: OA_Primer,OA_DContainer
+Inheritance path: OA_Primer,OA_WContainer
+Inheritance path: OA_Primer,OA_BContainer
+Inheritance path: OA_Primer,OA_XContainer
+Inheritance path: OA_Primer,OA_Streamable,OA_WinPrimer,OA_Window,OA_WinApp,OA_SdiApp,OA_Application
+Demo04.asm : 1 warnings, 0 errors
+
+Linking object modules to EXE-file ...
+
+Ready!

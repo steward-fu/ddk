@@ -1,0 +1,26 @@
+; ==================================================================================================
+; Title:      StrRepChrA.asm
+; Author:     G. Friedrich
+; Version:    C.1.1
+; Notes:      Version C.1.1, May 2020
+;               - First release.
+; ==================================================================================================
+
+
+% include @Environ(OBJASM_PATH)\\Code\\OA_Setup64.inc
+TARGET_STR_TYPE = STR_TYPE_ANSI
+% include &ObjMemPath&ObjMemWin.cop
+
+ProcName equ <StrRepChrA>
+
+.code
+; ——————————————————————————————————————————————————————————————————————————————————————————————————
+; Procedure:  StrRepChrA
+; Purpose:    Create a new string filled with a given char.
+; Arguments:  Arg1: Used character.
+;             Arg2: Repetition count.
+; Return:     rax -> New string or NULL if failed.
+
+% include &ObjMemPath&Common\StrRepChr_TXP.inc
+
+end

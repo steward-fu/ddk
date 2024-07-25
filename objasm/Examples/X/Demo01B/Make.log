@@ -1,0 +1,43 @@
+Building Demo01B project ...
+
+BuildInfo is processing Demo01B_Shared.inc ...
+Inc2RC is converting Demo01B_Shared.inc ...
+
+Compiling Demo01B.rc resources ...
+Creating Demo01B.res
+Using codepage 1252 as default
+
+Demo01B.rc.
+Writing VERSION:1,	lang:0x409,	size 720.
+Writing 24:1,	lang:0x409,	size 1742.
+Writing ICON:1,	lang:0x0,	size 744
+Writing ICON:2,	lang:0x0,	size 296
+Writing ICON:3,	lang:0x0,	size 3752
+Writing ICON:4,	lang:0x0,	size 2216
+Writing ICON:5,	lang:0x0,	size 1384
+Writing ICON:6,	lang:0x0,	size 9640
+Writing ICON:7,	lang:0x0,	size 4264
+Writing ICON:8,	lang:0x0,	size 1128
+Writing GROUP_ICON:ICON_APP,	lang:0x0,	size 118
+
+Assembling Demo01B.asm project ...
+c:\objasm\\Code\\OA_Setup64.inc(17) : Warning A4305: Stackbase automatically changed to RSP to support WIN64 options
+ c:\objasm\\Code\\OA_Setup64.inc(17): Included by
+  SysSetup(98)[Model.inc]: Macro called from
+   Demo01B.asm(12): Main line code
+OOP Support:    ENABLED
+Platform:       WINDOWS
+User Interface: NONE
+Binary Format:  EXE
+Bitness:        64
+String Type:    ANSI
+Mode:           DEBUG => CON, using rbp as stackframe pointer
+Inheritance path: OA_Primer
+Inheritance path: OA_Primer,Shapes_Shape
+Inheritance path: OA_Primer,Shapes_Shape,Shapes_Triangle
+Inheritance path: OA_Primer,Shapes_Shape,Shapes_Rectangle
+Demo01B.asm : 1 warnings, 0 errors
+
+Linking object modules to EXE-file ...
+
+Ready!

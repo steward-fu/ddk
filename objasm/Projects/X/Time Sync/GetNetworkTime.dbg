@@ -1,0 +1,108 @@
+pool.ntp.org
+Delay = 16, [ms]
+ServerTime = 15.09.2022 21:04:02.515
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:02.551
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:02.583
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:02.612
+Delay = 16, [ms]
+ServerTime = 15.09.2022 21:04:02.633
+-------------------------------------------------------
+time.nist.gov
+Delay = 141, [ms]
+ServerTime = 15.09.2022 21:04:02.791
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:02.958
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:03.120
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:03.280
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:03.454
+-------------------------------------------------------
+time-c.nist.gov
+Delay = 141, [ms]
+ServerTime = 15.09.2022 21:04:03.636
+Delay = 266, [ms]
+ServerTime = 15.09.2022 21:04:03.884
+Delay = 313, [ms]
+ServerTime = 15.09.2022 21:04:04.184
+Delay = 141, [ms]
+ServerTime = 15.09.2022 21:04:04.414
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:04.593
+-------------------------------------------------------
+tick.usno.navy.mil
+WSA Error
+eax = 10060
+WSA Error
+eax = 10060
+WSA Error
+eax = 10060
+WSA Error
+eax = 10060
+WSA Error
+eax = 10060
+-------------------------------------------------------
+ut1-wwv.nist.gov
+Delay = 187, [ms]
+ServerTime = 15.09.2022 21:04:07.848
+Delay = 172, [ms]
+ServerTime = 15.09.2022 21:04:08.032
+WSA Error
+eax = 10060
+Delay = 188, [ms]
+ServerTime = 15.09.2022 21:04:08.742
+WSA Error
+eax = 10060
+-------------------------------------------------------
+ntp0.cornell.edu
+Delay = 141, [ms]
+ServerTime = 15.09.2022 21:04:09.428
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:09.581
+Delay = 156, [ms]
+ServerTime = 15.09.2022 21:04:09.737
+WSA Error
+eax = 10060
+WSA Error
+eax = 10060
+-------------------------------------------------------
+time.google.com
+Delay = 32, [ms]
+ServerTime = 15.09.2022 21:04:10.823
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:10.852
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:10.885
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:10.917
+Delay = 32, [ms]
+ServerTime = 15.09.2022 21:04:10.950
+-------------------------------------------------------
+time.windows.com
+Delay = 47, [ms]
+ServerTime = 15.09.2022 21:04:11.012
+Delay = 47, [ms]
+ServerTime = 15.09.2022 21:04:11.059
+Delay = 47, [ms]
+ServerTime = 15.09.2022 21:04:11.105
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:11.134
+Delay = 47, [ms]
+ServerTime = 15.09.2022 21:04:11.196
+-------------------------------------------------------
+time.euro.apple.com
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:11.240
+Delay = 32, [ms]
+ServerTime = 15.09.2022 21:04:11.269
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:11.297
+Delay = 16, [ms]
+ServerTime = 15.09.2022 21:04:11.318
+Delay = 31, [ms]
+ServerTime = 15.09.2022 21:04:11.356
+-------------------------------------------------------
