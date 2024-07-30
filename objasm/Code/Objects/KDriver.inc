@@ -15,6 +15,7 @@ m_TheDriver POINTER 0
 Object KDriver, KDriverID, Primer
     VirtualAbstract DriverEntry, PUNICODE_STRING
     VirtualAbstract AddDevice, PDEVICE_OBJECT
+    StaticMethod DriverObject
     StaticMethod DriverInit, PDRIVER_OBJECT, PUNICODE_STRING
     VirtualMethod SetUpDispatchCalls
 
@@ -22,6 +23,12 @@ Object KDriver, KDriverID, Primer
 ObjectEnd
 
     .code
+Method KDriver.DriverObject, uses esi
+    SetObject esi
+
+    mov eax, [esi].m_pDriverObject
+MethodEnd
+
 Method KDriver.SetUpDispatchCalls, uses esi
     SetObject esi
 
@@ -34,7 +41,7 @@ Method KDriver.SetUpDispatchCalls, uses esi
     mov (DRIVER_EXTENSION PTR [eax]).AddDevice, AddDeviceDispatch
 MethodEnd
 
-Method KDriver.DriverInit, uses esi, pMyDriver:PDRIVER_OBJECT, pMyRegistry:PUNICODE_STRING
+Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
     SetObject esi
 
     m2m [esi].m_pDriverObject, pMyDriver
@@ -44,7 +51,7 @@ Method KDriver.DriverInit, uses esi, pMyDriver:PDRIVER_OBJECT, pMyRegistry:PUNIC
     m2m [esi].m_pDriverObject, pMyDriver
 MethodEnd
 
-AddDeviceDispatch proc uses esi, pMyDriver:PDRIVER_OBJECT, pPhyDevice:PDEVICE_OBJECT
+AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVICE_OBJECT
     invoke DbgPrint, $OfsCStr("KDriver.AddDeviceDispatch")
 
     mov esi, m_TheDriver
@@ -52,7 +59,7 @@ AddDeviceDispatch proc uses esi, pMyDriver:PDRIVER_OBJECT, pPhyDevice:PDEVICE_OB
     ret
 AddDeviceDispatch endp
 
-DriverIrpDispatch proc uses esi, pMyDevice:PDEVICE_OBJECT, pIrp:PIRP
+DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pIrp : PIRP
     invoke DbgPrint, $OfsCStr("KDriver.DriverIrpDispatch")
     mov eax, -1
     ret
@@ -62,7 +69,7 @@ UnloadDispatch proc uses esi
     invoke DbgPrint, $OfsCStr("KDriver.UnloadDispatch")
 UnloadDispatch endp
 
-DriverEntry proc uses esi, pMyDriver:PDRIVER_OBJECT, pMyRegistry:PUNICODE_STRING
+DriverEntry proc uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
     invoke DbgPrint, $OfsCStr("DriverEntry")
 
     invoke __create_driver_class_instance
