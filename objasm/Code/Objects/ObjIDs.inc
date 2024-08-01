@@ -461,5 +461,6 @@ FFTID                             equ     0000012600
 
 ;Window Kernel
 KDriverID                         equ     0000020000
-KDeviceID                         equ     0000020001
-KPnpDeviceID                      equ     0000020002
+KDeviceBaseID                     equ     0000020001
+KDeviceID                         equ     0000020002
+KPnpDeviceID                      equ     0000020003

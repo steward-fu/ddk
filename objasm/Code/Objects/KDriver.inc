@@ -1,7 +1,6 @@
 ;;
 ;; Author:   Steward Fu
 ;; Created:  2024/07/24
-;; Updated:  2024/07/29
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
@@ -24,16 +23,16 @@ ObjectEnd
 
     .code
 Method KDriver.DriverObject, uses esi
-    SetObject esi
+    invoke DbgPrint, $OfsCStr("KDriver.DriverObject()")
 
+    SetObject esi
     mov eax, [esi].m_pDriverObject
 MethodEnd
 
 Method KDriver.SetUpDispatchCalls, uses esi
+    invoke DbgPrint, $OfsCStr("KDriver.SetUpDispatchCalls()")
+
     SetObject esi
-
-    invoke DbgPrint, $OfsCStr("KDriver.SetUpDispatchCalls")
-
     mov eax, [esi].m_pDriverObject
     mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_PNP * (sizeof PVOID)], offset DriverIrpDispatch
     mov (DRIVER_OBJECT PTR [eax]).DriverUnload, offset UnloadDispatch
@@ -42,35 +41,40 @@ Method KDriver.SetUpDispatchCalls, uses esi
 MethodEnd
 
 Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
-    SetObject esi
+    invoke DbgPrint, $OfsCStr("KDriver.DriverInit()")
 
+    SetObject esi
     m2m [esi].m_pDriverObject, pMyDriver
-    invoke DbgPrint, $OfsCStr("KDriver.DriverInit")
 
     SetObject esi, KDriver, m_TheDriver
     m2m [esi].m_pDriverObject, pMyDriver
 MethodEnd
 
 AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVICE_OBJECT
-    invoke DbgPrint, $OfsCStr("KDriver.AddDeviceDispatch")
+    invoke DbgPrint, $OfsCStr("KDriver.AddDeviceDispatch()")
 
     mov esi, m_TheDriver
     OCall esi::KDriver.AddDevice, pPhyDevice
+
+    SetObject esi, KDriver, m_TheDriver
+    mov eax, [esi].m_pDriverObject
+    mov eax, (DRIVER_OBJECT ptr [eax]).DeviceObject
+    and (DEVICE_OBJECT ptr [eax]).Flags, not DO_DEVICE_INITIALIZING
     ret
 AddDeviceDispatch endp
 
 DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pIrp : PIRP
-    invoke DbgPrint, $OfsCStr("KDriver.DriverIrpDispatch")
+    invoke DbgPrint, $OfsCStr("KDriver.DriverIrpDispatch()")
     mov eax, -1
     ret
 DriverIrpDispatch endp
 
 UnloadDispatch proc uses esi
-    invoke DbgPrint, $OfsCStr("KDriver.UnloadDispatch")
+    invoke DbgPrint, $OfsCStr("KDriver.UnloadDispatch()")
 UnloadDispatch endp
 
 DriverEntry proc uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
-    invoke DbgPrint, $OfsCStr("DriverEntry")
+    invoke DbgPrint, $OfsCStr("DriverEntry()")
 
     invoke __create_driver_class_instance
     OCall $ObjTmpl(KDriver)::KDriver.DriverInit, pMyDriver, pMyRegistry
@@ -78,7 +82,5 @@ DriverEntry proc uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_ST
 
     mov esi, m_TheDriver
     OCall esi::KDriver.DriverEntry, pMyRegistry
-
-    mov eax, STATUS_SUCCESS
     ret
 DriverEntry endp
