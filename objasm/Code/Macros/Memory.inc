@@ -170,7 +170,7 @@ MemAlloc macro MemSize:req, Flags:=<MEM_DEFAULT>
     endif
     invoke MemAlloc_UEFI, Flags, MemSize, PLATFORM_UEFI_MEMORY
   elseif TARGET_PLATFORM eq PLATFORM_DDK
-    invoke ExAllocatePool, MemSize, NonPagedPool
+    invoke ExAllocatePool, NonPagedPool, MemSize
   endif
   if DEBUGGING
     .if xax == NULL

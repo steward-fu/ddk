@@ -72,12 +72,9 @@ AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVIC
     T $OfsCStr("AddDeviceDispatch()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
-    SetObject esi, KDriver, eax
-    push pMyDriver
-    pop [esi].m_pMyDriver
-    OCall esi::KDriver.AddDevice, pPhyDevice
+    OCall eax::KDriver.AddDevice, pPhyDevice
 
-    mov eax, [esi].m_pMyDriver
+    mov eax, pMyDriver
     mov eax, (DRIVER_OBJECT ptr [eax]).DeviceObject
     and (DEVICE_OBJECT ptr [eax]).Flags, not DO_DEVICE_INITIALIZING
     mov eax, STATUS_SUCCESS
@@ -93,7 +90,8 @@ DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pMyIrp : PIRP
 DriverIrpDispatch endp
 
 UnloadDispatch proc
-    T $OfsCStr("UnloadDispatch()")
+    T $OfsCStr("UnloadDispatch()")  
+    ret
 UnloadDispatch endp
 
 DriverEntry proc pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
