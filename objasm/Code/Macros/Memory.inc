@@ -169,6 +169,8 @@ MemAlloc macro MemSize:req, Flags:=<MEM_DEFAULT>
       PLATFORM_UEFI_MEMORY = EFI_MEMORY_TYPE_EfiBootServicesData
     endif
     invoke MemAlloc_UEFI, Flags, MemSize, PLATFORM_UEFI_MEMORY
+  elseif TARGET_PLATFORM eq PLATFORM_DDK
+    invoke ExAllocatePool, MemSize, NonPagedPool
   endif
   if DEBUGGING
     .if xax == NULL
@@ -213,6 +215,8 @@ MemReAlloc macro MemPtr:req, MemSize:req, Flags:=<0>
       .endif
     endif
   elseif TARGET_PLATFORM eq PLATFORM_UEFI
+    ;Not implemented
+  elseif TARGET_PLATFORM eq PLATFORM_DDK
     ;Not implemented
   endif
 endm
@@ -270,6 +274,8 @@ MemFree macro MemPtr:req, Flags:=<0>
         .endif
       endif
     endif
+  elseif TARGET_PLATFORM eq PLATFORM_DDK
+    invoke ExFreePool, MemPtr
   endif
 endm
 

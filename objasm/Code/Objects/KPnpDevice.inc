@@ -1,6 +1,6 @@
 ;;
 ;; Author:   Steward Fu
-;; Created:  2024/07/29
+;; Updated:  2024/08/10
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
@@ -9,13 +9,21 @@
 
     .const
 Object KPnpDevice, KPnpDeviceID, KDevice
-    RedefineMethod Init, POINTER, DWORD
+    VirtualAbstract DefaultPnp, PIRP
+
+    RedefineMethod Init, POINTER, DWORD, POINTER, DWORD, DWORD
+    RedefineMethod DeviceIrpDispatch, PIRP
 ObjectEnd
 
     .code
-Method KPnpDevice.Init, uses esi, pszDevName:POINTER, dwDevType:DWORD
-    invoke DbgPrint, $OfsCStr("KPnpDevice.Init()")
+Method KPnpDevice.Init, uses esi, pszDevName:POINTER, dwDevType:DWORD, pszLinkName : POINTER, dwChar : DWORD, dwFlags : DWORD
+    T $OfsCStr("KPnpDevice.Init()")
 
-    SetObject esi
-    ACall esi.Init, pszDevName, dwDevType, NULL, 0, DO_BUFFERED_IO
+    ACall pSelf::KPnpDevice.Init, pszDevName, dwDevType, pszLinkName, dwChar, dwFlags
+MethodEnd
+
+Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
+    T $OfsCStr("KPnpDevice.DeviceIrpDispatch()")
+
+    ACall pSelf::KPnpDevice.DeviceIrpDispatch, pMyIrp
 MethodEnd

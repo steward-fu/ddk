@@ -174,6 +174,7 @@ PLATFORM_NONE           equ       1
 PLATFORM_UEFI           equ       2
 PLATFORM_WINDOWS        equ       3
 PLATFORM_OTHER          equ       4                     ;E.g. Linux distros
+PLATFORM_DDK            equ       5
 TARGET_PLATFORM         =         PLATFORM_WINDOWS
 
 MODE_RLS                equ       1
@@ -230,6 +231,11 @@ SysSetup macro Arguments:vararg
       TARGET_PLATFORM = PLATFORM_WINDOWS
       TARGET_USER_INTERFACE = USER_INTERFACE_GUI
       TARGET_BITNESS = 64
+    elseifidni <Argument>, <DDK32>
+      TARGET_PLATFORM = PLATFORM_DDK
+      TARGET_BIN_FORMAT = BIN_FORMAT_DLL
+      TARGET_USER_INTERFACE = USER_INTERFACE_NONE
+      TARGET_BITNESS = 32
 
     elseifidni <Argument>, <CON32>
       TARGET_PLATFORM = PLATFORM_WINDOWS
@@ -306,6 +312,13 @@ SysSetup macro Arguments:vararg
     % include &IncPath&ObjAsm\\ObjMem.inc
     % include &IncPath&UEFI\\UefiGUID.inc
     % include &IncPath&UEFI\\UefiUtil.inc
+  elseif TARGET_PLATFORM eq PLATFORM_DDK
+    % include &IncPath&Windows\\Windows.inc
+    % include &MacPath&System.inc
+    % include &MacPath&Memory.inc
+    % include &MacPath&Strings.inc
+    % include &MacPath&WinHelpers.inc
+    % include &IncPath&ObjAsm\\ObjMem.inc
   endif
   % include &MacPath&ConstDiv.inc
 

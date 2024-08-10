@@ -1,6 +1,6 @@
 ;;
 ;; Author:   Steward Fu
-;; Created:  2024/07/29
+;; Updated:  2024/08/10
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
@@ -10,28 +10,46 @@
     .const
 Object KDevice, KDeviceID, KDeviceBase
     RedefineMethod Init, POINTER, DWORD, POINTER, DWORD, DWORD
+
+    VirtualMethod DeviceIrpDispatch, PIRP
+
+    DefineVariable IrpDispatchTable, POINTER, IRP_MJ_MAXIMUM_FUNCTION dup(0)
 ObjectEnd
 
     .code
-Method KDevice.Init, uses esi, pszDevName : POINTER, dwDeviceType : DWORD, pszLinkName : POINTER, dwChar : DWORD, dwDevFlags : DWORD
+Method KDevice.Init, uses esi, pDevName : POINTER, dwType : DWORD, pLinkName : POINTER, dwChar : DWORD, dwDevFlags : DWORD
+    local pMyDriver : POINTER
     local pMyDevice : POINTER
-    local pDriverObject : POINTER
-    local szDevName : UNICODE_STRING
+    local DevName : UNICODE_STRING
 
-    invoke DbgPrint, $OfsCStr("KDevice.Init()")
-    invoke DbgPrint, $OfsCStr("    DevName:  %ws"),  pszDevName
-    invoke DbgPrint, $OfsCStr("    DevType:  0x%x"), dwDeviceType
-    invoke DbgPrint, $OfsCStr("    LinkName: %p"),   pszLinkName
-    invoke DbgPrint, $OfsCStr("    Char:     0x%x"), dwChar
-    invoke DbgPrint, $OfsCStr("    Flags:    0x%x"), dwDevFlags
-    ACall esi.Init
+    T $OfsCStr("KDevice.Init()")
+    T $OfsCStr("    DeviceName: %ws"),  pDevName
+    T $OfsCStr("    Type:       0x%x"), dwType
+    T $OfsCStr("    LinkName:   %p"),   pLinkName
+    T $OfsCStr("    Charact:    0x%x"), dwChar
+    T $OfsCStr("    Flags:      0x%x"), dwDevFlags
 
-    OCall $ObjTmpl(KDriver)::KDriver.DriverObject
-    mov pDriverObject, eax
+    ACall pSelf::KDevice.Init
+
+    OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
+    SetObject esi, KDriver, eax
+    push [esi].m_pMyDriver
+    pop pMyDriver
  
-    invoke RtlInitUnicodeString, addr szDevName, pszDevName
-    invoke IoCreateDevice, pDriverObject, 0, addr szDevName, dwDeviceType, 0, FALSE, addr pMyDevice
+    invoke RtlInitUnicodeString, addr DevName, pDevName
+    invoke IoCreateDevice, pMyDriver, 0, addr DevName, dwType, 0, FALSE, addr pMyDevice
 
     mov eax, pMyDevice
-    m2m (DEVICE_OBJECT ptr [eax]).Flags, dwDevFlags
+    push dwDevFlags
+    pop (DEVICE_OBJECT ptr [eax]).Flags
+    push pSelf
+    pop (DEVICE_OBJECT ptr [eax]).DeviceExtension
+
+    SetObject esi
+    push pMyDevice
+    pop [esi].m_pMyDevice
+MethodEnd
+
+Method KDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
+    T $OfsCStr("KDevice.DeviceIrpDispatch()")
 MethodEnd
