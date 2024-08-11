@@ -463,6 +463,7 @@ FFTID                             equ     0000012600
 KDriverID                         equ     0000020000
 KDeviceBaseID                     equ     0000020001
 KDeviceID                         equ     0000020002
-KLowerDeviceID                    equ     0000020003
-KPnpLowerDeviceID                 equ     0000020004
-KPnpDeviceID                      equ     0000020005
+KPnpDeviceID                      equ     0000020003
+KLowerDeviceID                    equ     0000020004
+KPnpLowerDeviceID                 equ     0000020005
+KIrpID                            equ     0000020006

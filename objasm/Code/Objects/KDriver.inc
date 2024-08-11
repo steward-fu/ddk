@@ -4,9 +4,6 @@
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ddk.inc
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ntstatus.inc
-
     .data
 g_pMyDriverInst POINTER NULL
 
@@ -29,7 +26,7 @@ ObjectEnd
 
     .code
 Method KDriver.Init, uses esi
-    T $OfsCStr("KDriver.Init()")
+    D $OfsCStr("KDriver.Init()")
 
     push pSelf
     pop g_pMyDriverInst
@@ -45,7 +42,7 @@ Method KDriver.DriverObject, uses esi
 MethodEnd
 
 Method KDriver.SetUpDispatchCalls, uses esi
-    T $OfsCStr("KDriver.SetUpDispatchCalls()")
+    D $OfsCStr("KDriver.SetUpDispatchCalls()")
 
     SetObject esi
     mov eax, [esi].m_pMyDriver
@@ -56,7 +53,7 @@ Method KDriver.SetUpDispatchCalls, uses esi
 MethodEnd
 
 Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
-    T $OfsCStr("KDriver.DriverInit()")
+    D $OfsCStr("KDriver.DriverInit()")
 
     invoke __create_driver_class_instance
 
@@ -69,7 +66,7 @@ Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : P
 MethodEnd
 
 AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVICE_OBJECT
-    T $OfsCStr("AddDeviceDispatch()")
+    D $OfsCStr("AddDeviceDispatch()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
     OCall eax::KDriver.AddDevice, pPhyDevice
@@ -82,7 +79,7 @@ AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVIC
 AddDeviceDispatch endp
 
 DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pMyIrp : PIRP
-    T $OfsCStr("DriverIrpDispatch()")
+    D $OfsCStr("DriverIrpDispatch()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
     OCall eax::KDriver.DriverIrpDispatch, pMyIrp
@@ -90,12 +87,12 @@ DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pMyIrp : PIRP
 DriverIrpDispatch endp
 
 UnloadDispatch proc
-    T $OfsCStr("UnloadDispatch()")  
+    D $OfsCStr("UnloadDispatch()")  
     ret
 UnloadDispatch endp
 
 DriverEntry proc pMyDriver : PDRIVER_OBJECT, pMyRegistry : PUNICODE_STRING
-    T $OfsCStr("DriverEntry()")
+    D $OfsCStr("DriverEntry()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInit, pMyDriver, pMyRegistry
     ret

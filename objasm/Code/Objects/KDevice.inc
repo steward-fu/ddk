@@ -4,9 +4,6 @@
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ddk.inc
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ntstatus.inc
-
     .const
 Object KDevice, KDeviceID, KDeviceBase
     RedefineMethod Init, POINTER, DWORD, POINTER, DWORD, DWORD
@@ -22,14 +19,14 @@ Method KDevice.Init, uses esi, pDevName : POINTER, dwType : DWORD, pLinkName : P
     local pMyDevice : POINTER
     local DevName : UNICODE_STRING
 
-    T $OfsCStr("KDevice.Init()")
-    T $OfsCStr("    DeviceName: %ws"),  pDevName
-    T $OfsCStr("    Type:       0x%x"), dwType
-    T $OfsCStr("    LinkName:   %p"),   pLinkName
-    T $OfsCStr("    Charact:    0x%x"), dwChar
-    T $OfsCStr("    Flags:      0x%x"), dwDevFlags
+    D $OfsCStr("KDevice.Init()")
+    D $OfsCStr("    DeviceName: %ws"),  pDevName
+    D $OfsCStr("    Type:       0x%x"), dwType
+    D $OfsCStr("    LinkName:   %p"),   pLinkName
+    D $OfsCStr("    Charact:    0x%x"), dwChar
+    D $OfsCStr("    Flags:      0x%x"), dwDevFlags
 
-    ACall pSelf::KDevice.Init
+    ACall Init
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
     SetObject esi, KDriver, eax
@@ -51,5 +48,5 @@ Method KDevice.Init, uses esi, pDevName : POINTER, dwType : DWORD, pLinkName : P
 MethodEnd
 
 Method KDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
-    T $OfsCStr("KDevice.DeviceIrpDispatch()")
+    D $OfsCStr("KDevice.DeviceIrpDispatch()")
 MethodEnd

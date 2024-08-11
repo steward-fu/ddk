@@ -4,12 +4,11 @@
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ddk.inc
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ntstatus.inc
+MakeObjects KIrp
 
     .const
 Object KPnpDevice, KPnpDeviceID, KDevice
-    VirtualAbstract DefaultPnp, PIRP
+    VirtualAbstract DefaultPnp, POINTER
 
     RedefineMethod Init, POINTER, DWORD, POINTER, DWORD, DWORD
     RedefineMethod DeviceIrpDispatch, PIRP
@@ -17,13 +16,21 @@ ObjectEnd
 
     .code
 Method KPnpDevice.Init, uses esi, pszDevName:POINTER, dwDevType:DWORD, pszLinkName : POINTER, dwChar : DWORD, dwFlags : DWORD
-    T $OfsCStr("KPnpDevice.Init()")
+    D $OfsCStr("KPnpDevice.Init()")
 
-    ACall pSelf::KPnpDevice.Init, pszDevName, dwDevType, pszLinkName, dwChar, dwFlags
+    ACall Init, pszDevName, dwDevType, pszLinkName, dwChar, dwFlags
 MethodEnd
 
 Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
-    T $OfsCStr("KPnpDevice.DeviceIrpDispatch()")
+    local I : POINTER
 
-    ACall pSelf::KPnpDevice.DeviceIrpDispatch, pMyIrp
+    D $OfsCStr("KPnpDevice.DeviceIrpDispatch()")
+
+    ACall DeviceIrpDispatch, pMyIrp
+
+    New KIrp
+    mov I, eax
+    OCall I::KIrp.Init, pMyIrp
+    OCall DefaultPnp, I
+    ;;;Destroy I
 MethodEnd

@@ -4,9 +4,6 @@
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ddk.inc
-%include @Environ(OBJASM_PATH)\Code\Inc\DDK\ntstatus.inc
-
     .const
 Object KDeviceBase, KDeviceBaseID, Primer
     RedefineMethod Init
@@ -16,5 +13,5 @@ ObjectEnd
 
     .code
 Method KDeviceBase.Init
-    T $OfsCStr("KDeviceBase.Init()")
+    D $OfsCStr("KDeviceBase.Init()")
 MethodEnd

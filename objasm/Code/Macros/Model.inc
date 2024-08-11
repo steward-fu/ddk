@@ -319,6 +319,8 @@ SysSetup macro Arguments:vararg
     % include &MacPath&Strings.inc
     % include &MacPath&WinHelpers.inc
     % include &IncPath&ObjAsm\\ObjMem.inc
+    % include &IncPath&DDK\\ddk.inc
+    % include &IncPath&DDK\\ntstatus.inc
   endif
   % include &MacPath&ConstDiv.inc
 

@@ -7,7 +7,7 @@
 IFNDEF DDK_INC
 DDK_INC equ <1>
 
-KERNEL_DEBUG_ON                 equ 1
+KERNEL_DEBUG_ON                 equ 0
 
 DO_VERIFY_VOLUME                equ 00000002h
 DO_BUFFERED_IO                  equ 00000004h
@@ -1362,6 +1362,8 @@ ExAllocatePoolWithQuota PROTO STDCALL :DWORD,:DWORD
 ExAllocatePoolWithQuotaTag PROTO STDCALL :DWORD,:DWORD,:DWORD
 ExAllocatePoolWithTag PROTO STDCALL :DWORD,:DWORD,:DWORD
 ExAllocatePoolWithTagPriority PROTO STDCALL :DWORD,:DWORD,:DWORD,:DWORD
+ExFreePool proto stdcall :DWORD
+ExFreePoolWithTag proto stdcall :DWORD, :DWORD
 
 DECLARE_DRIVER_CLASS macro class_name:req, driver_class_string:req
 __create_driver_class_instance proc
@@ -1371,10 +1373,46 @@ __create_driver_class_instance proc
 __create_driver_class_instance endp
 endm
 
-T macro args:VARARG
+D macro args:VARARG
     if KERNEL_DEBUG_ON eq 1
         invoke DbgPrint, args
     endif
 endm
+
+T macro args:VARARG
+    invoke DbgPrint, args
+endm
+
+;++
+;
+; VOID IoSkipCurrentIrpStackLocation ( IN PIRP Irp )
+;
+; Macro Description:
+;
+;     This routine is invoked to increment the current stack location of
+;     a given IRP.
+;
+;     If the caller wishes to call the next driver in a stack, and does not
+;     wish to change the arguments, nor does he wish to set a completion
+;     routine, then the caller first calls IoSkipCurrentIrpStackLocation
+;     and the calls IoCallDriver.
+;
+; Arguments:
+;
+;     Irp - Pointer to the I/O Request Packet.
+;
+; Return Value:
+;
+;     None
+;
+;--
+
+IoSkipCurrentIrpStackLocation MACRO pIrp:REQ
+	IFDIFI <pIrp>, <eax>	;; don't move eax onto itself
+		mov eax, pIrp
+	ENDIF
+	inc (_IRP PTR [eax]).CurrentLocation
+	add (_IRP PTR [eax]).Tail.Overlay.CurrentStackLocation, sizeof IO_STACK_LOCATION
+ENDM
 
 ENDIF
