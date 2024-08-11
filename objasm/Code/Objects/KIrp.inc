@@ -26,23 +26,31 @@ Method KIrp.Init, uses esi, pMyIrp : PIRP
 MethodEnd
 
 Method KIrp.MajorFunction, uses esi
+    D $OfsCStr("KIrp.MajorFunction()")
+
     SetObject esi
     IoGetCurrentIrpStackLocation [esi].m_pMyIrp
     movzx eax, (IO_STACK_LOCATION ptr [eax]).MajorFunction
 MethodEnd
 
 Method KIrp.MinorFunction, uses esi
+    D $OfsCStr("KIrp.MinorFunction()")
+
     SetObject esi
     IoGetCurrentIrpStackLocation [esi].m_pMyIrp
     movzx eax, (IO_STACK_LOCATION ptr [eax]).MinorFunction
 MethodEnd
 
 Method KIrp.ForceReuseOfCurrentStackLocationInCalldown, uses esi
+    D $OfsCStr("KIrp.ForceReuseOfCurrentStackLocationInCalldown()")
+
     SetObject esi
     IoSkipCurrentIrpStackLocation [esi].m_pMyIrp
 MethodEnd
 
 Method KIrp.PIRP, uses esi
+    D $OfsCStr("KIrp.PIRP()")
+
     SetObject esi
     mov eax, [esi].m_pMyIrp
 MethodEnd

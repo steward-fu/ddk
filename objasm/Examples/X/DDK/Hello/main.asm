@@ -46,6 +46,8 @@ Method MyDriver.AddDevice, uses esi, pPhyDevice : PDEVICE_OBJECT
 MethodEnd
 
 Method MyDriver.DriverIrpDispatch, uses esi, pMyIrp : PIRP
+    D $OfsCStr("MyDriver.DriverIrpDispatch()")
+
     SetObject esi
     mov eax, [esi].m_pMyDriver
     mov eax, (DRIVER_OBJECT ptr [eax]).DeviceObject
@@ -63,6 +65,8 @@ Method MyDevice.Init, uses esi, pPhyDevice : PDEVICE_OBJECT
 MethodEnd
 
 Method MyDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
+    D $OfsCStr("MyDevice.DeviceIrpDispatch()")
+
     ACall DeviceIrpDispatch, pMyIrp
 MethodEnd
 

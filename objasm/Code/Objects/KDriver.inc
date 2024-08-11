@@ -33,10 +33,14 @@ Method KDriver.Init, uses esi
 MethodEnd
 
 Method KDriver.DriverInstance, uses esi
+    D $OfsCStr("KDevice.DriverInstance()")
+
     mov eax, g_pMyDriverInst
 MethodEnd
 
 Method KDriver.DriverObject, uses esi
+    D $OfsCStr("KDevice.DriverObject()")
+
     SetObject esi
     mov eax, [esi].m_pMyDriver
 MethodEnd

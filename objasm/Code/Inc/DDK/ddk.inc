@@ -7,7 +7,7 @@
 IFNDEF DDK_INC
 DDK_INC equ <1>
 
-KERNEL_DEBUG_ON                 equ 0
+KERNEL_DEBUG_ON                 equ 1
 
 DO_VERIFY_VOLUME                equ 00000002h
 DO_BUFFERED_IO                  equ 00000004h
