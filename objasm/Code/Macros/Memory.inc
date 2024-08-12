@@ -172,7 +172,7 @@ MemAlloc macro MemSize:req, Flags:=<MEM_DEFAULT>
   elseif TARGET_PLATFORM eq PLATFORM_DDK
     invoke ExAllocatePool, NonPagedPool, MemSize
     push eax
-    D $OfsCStr("MemAlloc (ret:0x%x, size:%d)"), eax, MemSize
+    D $OfsCStr("Allocate Memory (MemPtr:0x%x, MemSize:%d)"), eax, MemSize
     pop eax
   endif
   if DEBUGGING
@@ -278,8 +278,8 @@ MemFree macro MemPtr:req, Flags:=<0>
       endif
     endif
   elseif TARGET_PLATFORM eq PLATFORM_DDK
-    D $OfsCStr("MemFree (ptr:%p)"), MemPtr
-    invoke ExFreePool, MemPtr
+    ;D $OfsCStr("Free Memory (MemPtr:0x%x)"), MemPtr
+    ;invoke ExFreePool, MemPtr
   endif
 endm
 

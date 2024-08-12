@@ -1,7 +1,7 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/10
-;; Purpose:  Try to implment the code found from NuMega's DriverWorks
+;; Updated:  2024/08/12
+;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
     .const
@@ -9,6 +9,7 @@ Object KIrp, KIrpID, Primer
     RedefineMethod Init, PIRP
 
     VirtualMethod PIRP
+    VirtualMethod Delete
     VirtualMethod MajorFunction
     VirtualMethod MinorFunction
     VirtualMethod ForceReuseOfCurrentStackLocationInCalldown
@@ -18,11 +19,17 @@ ObjectEnd
 
     .code
 Method KIrp.Init, uses esi, pMyIrp : PIRP
-    D $OfsCStr("KIrp.Init()")
+    D $OfsCStr("KIrp.Init(this:0x%x)"), pSelf
 
     SetObject esi
     push pMyIrp
     pop [esi].m_pMyIrp
+MethodEnd
+
+Method KIrp.Delete, uses esi
+    D $OfsCStr("KIrp.Delete(this:0x%x)"), pSelf
+
+    invoke ExFreePool, pSelf
 MethodEnd
 
 Method KIrp.MajorFunction, uses esi

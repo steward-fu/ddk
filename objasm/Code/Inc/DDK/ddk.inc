@@ -153,6 +153,14 @@ IRP_MN_DISABLE_COLLECTION           equ 07
 IRP_MN_REGINFO                      equ 08
 IRP_MN_EXECUTE_METHOD               equ 09
 
+PKDriver            typedef POINTER
+PKDeviceBase        typedef POINTER
+PKDevice            typedef POINTER
+PKPnpDevice         typedef POINTER
+PKIrp               typedef POINTER
+PKLowerDevice       typedef POINTER
+PKPnpLowerDevice    typedef POINTER
+
 UNICODE_STRING STRUCT
     _Length		WORD	?		; len of string in bytes (not chars)
     MaximumLength	WORD	?		; len of Buffer in bytes (not chars)

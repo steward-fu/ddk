@@ -1,7 +1,7 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/10
-;; Purpose:  Try to implment the code found from NuMega's DriverWorks
+;; Updated:  2024/08/12
+;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
     .data
@@ -15,6 +15,7 @@ Object KDriver, KDriverID, Primer
 
     RedefineMethod Init
 
+    VirtualAbstract Delete
     VirtualAbstract AddDevice, PDEVICE_OBJECT
     VirtualAbstract DriverEntry, PUNICODE_STRING
     VirtualAbstract DriverIrpDispatch, PIRP
@@ -65,8 +66,8 @@ Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : P
     SetObject esi, KDriver, eax
     push pMyDriver
     pop [esi].m_pMyDriver
-    OCall esi::KDriver.SetUpDispatchCalls
-    OCall esi::KDriver.DriverEntry, pMyRegistry
+    OCall esi.SetUpDispatchCalls
+    OCall esi.DriverEntry, pMyRegistry
 MethodEnd
 
 AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVICE_OBJECT
@@ -91,7 +92,10 @@ DriverIrpDispatch proc uses esi, pMyDevice : PDEVICE_OBJECT, pMyIrp : PIRP
 DriverIrpDispatch endp
 
 UnloadDispatch proc
-    D $OfsCStr("UnloadDispatch()")  
+    D $OfsCStr("UnloadDispatch()")
+
+    OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
+    Destroy eax::KDriver.Delete
     ret
 UnloadDispatch endp
 

@@ -1,7 +1,7 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/10
-;; Purpose:  Try to implment the code found from NuMega's DriverWorks
+;; Updated:  2024/08/12
+;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
     .const
@@ -16,4 +16,5 @@ Method KPnpLowerDevice.Initialize, uses esi, pMyDevice : PDEVICE_OBJECT, pPhyDev
     SetObject esi
     invoke IoAttachDeviceToDeviceStack, pMyDevice, pPhyDevice
     mov [esi].m_pNextDevice, eax
+    D $OfsCStr("    Next Device: 0x%x"), [esi].m_pNextDevice
 MethodEnd
