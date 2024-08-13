@@ -278,6 +278,10 @@ MemFree macro MemPtr:req, Flags:=<0>
       endif
     endif
   elseif TARGET_PLATFORM eq PLATFORM_DDK
+    ; Freeing memory in here causes crash
+    ; So, please free memory in your Delete method by the following form:
+    ; Destroy xxx.Delete
+
     ;D $OfsCStr("Free Memory (MemPtr:0x%x)"), MemPtr
     ;invoke ExFreePool, MemPtr
   endif

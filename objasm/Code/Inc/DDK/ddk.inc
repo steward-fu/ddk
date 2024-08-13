@@ -9,6 +9,11 @@ DDK_INC equ <1>
 
 KERNEL_DEBUG_ON                 equ 1
 
+; Priority increment when no I/O has been done.  This is used by device
+; and file system drivers when completing an IRP (IoCompleteRequest).
+
+IO_NO_INCREMENT			        equ 0
+
 DO_VERIFY_VOLUME                equ 00000002h
 DO_BUFFERED_IO                  equ 00000004h
 DO_EXCLUSIVE                    equ 00000008h
@@ -160,6 +165,7 @@ PKPnpDevice         typedef POINTER
 PKIrp               typedef POINTER
 PKLowerDevice       typedef POINTER
 PKPnpLowerDevice    typedef POINTER
+PMyDevice           typedef POINTER
 
 UNICODE_STRING STRUCT
     _Length		WORD	?		; len of string in bytes (not chars)

@@ -5,7 +5,7 @@
 ;;
 
     .data
-g_pMyDriverInst POINTER NULL
+pMyDriverInst PKDriver NULL
 
     .const
 Object KDriver, KDriverID, Primer
@@ -15,7 +15,8 @@ Object KDriver, KDriverID, Primer
 
     RedefineMethod Init
 
-    VirtualAbstract Delete
+    VirtualMethod Delete
+
     VirtualAbstract AddDevice, PDEVICE_OBJECT
     VirtualAbstract DriverEntry, PUNICODE_STRING
     VirtualAbstract DriverIrpDispatch, PIRP
@@ -30,13 +31,19 @@ Method KDriver.Init, uses esi
     D $OfsCStr("KDriver.Init()")
 
     push pSelf
-    pop g_pMyDriverInst
+    pop pMyDriverInst
+MethodEnd
+
+Method KDriver.Delete, uses esi
+    D $OfsCStr("KDriver.Delete()")
+
+    invoke ExFreePool, pMyDriverInst
 MethodEnd
 
 Method KDriver.DriverInstance, uses esi
     D $OfsCStr("KDevice.DriverInstance()")
 
-    mov eax, g_pMyDriverInst
+    mov eax, pMyDriverInst
 MethodEnd
 
 Method KDriver.DriverObject, uses esi
@@ -71,15 +78,18 @@ Method KDriver.DriverInit, uses esi, pMyDriver : PDRIVER_OBJECT, pMyRegistry : P
 MethodEnd
 
 AddDeviceDispatch proc uses esi, pMyDriver : PDRIVER_OBJECT, pPhyDevice : PDEVICE_OBJECT
+    local status : NTSTATUS
+
     D $OfsCStr("AddDeviceDispatch()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
     OCall eax::KDriver.AddDevice, pPhyDevice
+    mov status, eax
 
     mov eax, pMyDriver
     mov eax, (DRIVER_OBJECT ptr [eax]).DeviceObject
     and (DEVICE_OBJECT ptr [eax]).Flags, not DO_DEVICE_INITIALIZING
-    mov eax, STATUS_SUCCESS
+    mov eax, status
     ret
 AddDeviceDispatch endp
 

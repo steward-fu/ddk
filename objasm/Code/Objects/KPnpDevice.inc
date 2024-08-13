@@ -8,9 +8,9 @@ MakeObjects KDeviceBase, KDevice
 
     .const
 Object KPnpDevice, KPnpDeviceID, KDevice
-    VirtualAbstract DefaultPnp, POINTER
+    VirtualAbstract DefaultPnp, PKIrp
 
-    VirtualMethod Pnp, POINTER
+    VirtualMethod Pnp, PKIrp
     VirtualMethod SetLowerDevice, PKLowerDevice
 
     RedefineMethod Init, PWSTR, DWORD, PWSTR, DWORD, DWORD
@@ -32,7 +32,7 @@ MethodEnd
 
 Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
     local I : PKIrp
-    local Minor : DWORD
+    local status : NTSTATUS
 
     D $OfsCStr("KPnpDevice.DeviceIrpDispatch()")
 
@@ -41,17 +41,11 @@ Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
     New KIrp
     mov I, eax
     OCall I::KIrp.Init, pMyIrp
-    OCall I::KIrp.MinorFunction
-    mov Minor, eax
-
-    OCall DefaultPnp, I
+    OCall Pnp, I
+    mov status, eax
     Destroy I::KIrp.Delete
 
-    .if Minor == IRP_MN_REMOVE_DEVICE
-        ;SetObject esi
-        ;OCall Detach, [esi].m_pLowerDevice
-        ;ACall Delete
-    .endif
+    mov eax, status
 MethodEnd
 
 Method KPnpDevice.SetLowerDevice, uses esi, pLowerDevice : PKLowerDevice
@@ -63,5 +57,26 @@ Method KPnpDevice.SetLowerDevice, uses esi, pLowerDevice : PKLowerDevice
 MethodEnd
 
 Method KPnpDevice.Pnp, uses esi, I : PKIrp
+    local Minor : DWORD
+    local pMyIrp : PIRP
+
     D $OfsCStr("KPnpDevice.Pnp()")
+
+    OCall I::KIrp.MinorFunction
+    mov Minor, eax
+    OCall I::KIrp.PIRP
+    mov pMyIrp, eax
+
+    D $OfsCStr("    Minor Function 0x%x"), Minor
+    .if Minor == IRP_MN_REMOVE_DEVICE
+        D $OfsCStr("    IRP_MN_REMOVE_DEVICE")
+
+        SetObject esi
+        OCall Detach, [esi].m_pLowerDevice
+        OCall Delete
+        invoke IoCompleteRequest, pMyIrp, IO_NO_INCREMENT
+        mov eax, STATUS_SUCCESS
+    .else
+        OCall DefaultPnp, I
+    .endif
 MethodEnd

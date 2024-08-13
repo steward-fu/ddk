@@ -70,9 +70,9 @@ syn keyword masmType            WORD DWORD QWORD FWORD SWORD SDWORD
 syn keyword masmType            SQWORD OWORD MMWORD XMMWORD YMMWORD Pointer NULL False True
 syn keyword masmType            PDRIVER_OBJECT PDEVICE_OBJECT PUNICODE_STRING
 syn keyword masmType            DRIVER_OBJECT DEVICE_OBJECT DEVICE_EXTENSION PWSTR
-syn keyword masmType            DRIVER_EXTENSION PIRP KIrp PKIrp KDriver KDevice KDeviceBase
+syn keyword masmType            DRIVER_EXTENSION PIRP KIrp PKIrp KDriver PKDriver KDevice KDeviceBase
 syn keyword masmType            KPnpDevice KLowerDevice PKLowerDevice KPnpLowerDevice Primer
-syn keyword masmType            UNICODE_STRING addr
+syn keyword masmType            UNICODE_STRING addr PMyDevice PKDevice
 syn keyword masmOperator        AND NOT OR SHL SHR XOR MOD DUP
 syn keyword masmOperator        EQ GE GT LE LT NE
 syn keyword masmOperator        LROFFSET SEG LENGTH LENGTHOF SIZE SIZEOF
@@ -97,7 +97,7 @@ syn keyword masmDirective       IRPC LABEL LOCAL MACRO NAME OPTION ORG PAGE
 syn keyword masmDirective       POPCONTEXT PROC PROTO PUBLIC PURGE PUSHCONTEXT
 syn keyword masmDirective       RECORD REPEAT REPT SEGMENT SIZESTR STRUC
 syn keyword masmDirective       STRUCT SUBSTR SUBTITLE SUBTTL TEXTEQU TITLE
-syn keyword masmDirective       TYPEDEF UNION WHILE Method MethodEnd Uses VirtualMethod
+syn keyword masmDirective       TYPEDEF UNION WHILE ExitMethod Method MethodEnd Uses VirtualMethod
 syn keyword masmDirective       StaticMethod Object ObjectEnd VirtualAbstract RedefineMethod
 syn keyword masmDirective       $OfsCStr $OfsCStrW DefineVariable SetObject $ObjTmpl
 syn keyword masmDirective       New Embed OCall ACall ICall DCall ICall TCall MakeObjects

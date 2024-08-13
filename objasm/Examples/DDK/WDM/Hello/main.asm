@@ -2,7 +2,7 @@
 ;; Author: Steward Fu
 ;; Update: 2024/08/12
 ;;
-;; Hello example based on WDM model
+;; The example of hello based on WDM model
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
@@ -14,14 +14,14 @@ MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice
     .const
 Object MyDriver, , KDriver
     RedefineMethod Init
-    RedefineMethod Delete
     RedefineMethod AddDevice, PDEVICE_OBJECT
     RedefineMethod DriverEntry, PUNICODE_STRING
     RedefineMethod DriverIrpDispatch, PIRP
+
+    DefineVariable m_pMyDeviceInst, PMyDevice, NULL
 ObjectEnd
 
 Object MyDevice, , KPnpDevice
-    RedefineMethod Delete
     RedefineMethod Init, PDEVICE_OBJECT
     RedefineMethod DefaultPnp, PKIrp
     RedefineMethod DeviceIrpDispatch, PIRP
@@ -35,13 +35,7 @@ DECLARE_DRIVER_CLASS MyDriver, $OfsCStr("MyDriver")
 Method MyDriver.Init, uses esi
     D $OfsCStr("MyDriver.Init(this:0x%x)"), pSelf
 
-    ACall pSelf::MyDriver.Init
-MethodEnd
-
-Method MyDriver.Delete, uses esi
-    D $OfsCStr("MyDriver.Delete(this:0x%x)"), pSelf
-
-    invoke ExFreePool, pSelf
+    ACall Init
 MethodEnd
 
 Method MyDriver.DriverEntry, uses esi, pMyRegistry : PUNICODE_STRING
@@ -52,10 +46,13 @@ MethodEnd
 
 Method MyDriver.AddDevice, uses esi, pPhyDevice : PDEVICE_OBJECT
     D $OfsCStr("MyDriver.AddDevice()")
-    T $OfsCStr("Hello, world\!")
 
+    SetObject esi
     New MyDevice
+    mov [esi].m_pMyDeviceInst, eax
+
     OCall eax::MyDevice.Init, pPhyDevice
+    mov eax, STATUS_SUCCESS
 MethodEnd
 
 Method MyDriver.DriverIrpDispatch, uses esi, pMyIrp : PIRP
@@ -78,12 +75,6 @@ Method MyDevice.Init, uses esi, pPhyDevice : PDEVICE_OBJECT
     OCall SetLowerDevice, addr [esi].m_pMyLowerDevice
 MethodEnd
 
-Method MyDevice.Delete, uses esi
-    D $OfsCStr("MyDevice.Delete(this:0x%x)"), pSelf
-
-    invoke ExFreePool, pSelf
-MethodEnd
-
 Method MyDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
     D $OfsCStr("MyDevice.DeviceIrpDispatch()")
 
@@ -93,9 +84,8 @@ MethodEnd
 Method MyDevice.DefaultPnp, uses esi, I : PKIrp
     D $OfsCStr("MyDevice.DefaultPnp()")
 
-    OCall I::KIrp.ForceReuseOfCurrentStackLocationInCalldown
-
     SetObject esi
+    OCall I::KIrp.ForceReuseOfCurrentStackLocationInCalldown
     OCall [esi].m_pMyLowerDevice::KLowerDevice.PnpCall, I
 MethodEnd
 end

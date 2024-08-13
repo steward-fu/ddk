@@ -10,14 +10,14 @@ MakeObjects KIrp
 Object KLowerDevice, KLowerDeviceID, Primer
     VirtualMethod Initialize
     VirtualMethod DeviceObject
-    VirtualMethod PnpCall, POINTER
+    VirtualMethod PnpCall, PKIrp
 
     DefineVariable m_pNextDevice, PDEVICE_OBJECT, NULL
 ObjectEnd
 
     .code
 Method KLowerDevice.Initialize, uses esi
-    D $OfsCStr("KLowerDevice.Initialize()")
+    D $OfsCStr("KLowerDevice.Initialize(this:0x%x)"), pSelf
 MethodEnd
 
 Method KLowerDevice.DeviceObject, uses esi
@@ -28,7 +28,7 @@ Method KLowerDevice.DeviceObject, uses esi
     pop eax
 MethodEnd
 
-Method KLowerDevice.PnpCall, uses esi, I : POINTER
+Method KLowerDevice.PnpCall, uses esi, I : PKIrp
     local pMyIrp : PIRP
 
     D $OfsCStr("KLowerDevice.PnpCall()")

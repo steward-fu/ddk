@@ -38,12 +38,17 @@ Method KDevice.Init, uses esi, pDevName : PWSTR, dwType : DWORD, pLinkName : PWS
     pop pMyDriver
  
     invoke RtlInitUnicodeString, addr DevName, pDevName
-    invoke IoCreateDevice, pMyDriver, 0, addr DevName, dwType, 0, FALSE, addr pMyDevice
+    invoke IoCreateDevice, pMyDriver, 0, addr DevName, dwType, dwChar, FALSE, addr pMyDevice
     D $OfsCStr("    New Created Device: 0x%x"), pMyDevice
 
     mov eax, pMyDevice
-    push dwDevFlags
-    pop (DEVICE_OBJECT ptr [eax]).Flags
+    .if eax == NULL
+        mov eax, -1
+        ret
+    .endif
+
+    mov esi, dwDevFlags
+    or (DEVICE_OBJECT ptr [eax]).Flags, esi
     push pSelf
     pop (DEVICE_OBJECT ptr [eax]).DeviceExtension
 
@@ -63,17 +68,15 @@ Method KDevice.Detach, uses esi, pLowerDevice : PKLowerDevice
 
     OCall pLowerDevice::KLowerDevice.DeviceObject
     mov pNextDevice, eax
-    invoke IoDetachDevice, pNextDevice
 
-    D $OfsCStr("    Detach 0x%x"), pNextDevice
+    D $OfsCStr("    Detach (dev:0x%x)"), pNextDevice
+    invoke IoDetachDevice, pNextDevice
 MethodEnd
 
 Method KDevice.Delete, uses esi
     D $OfsCStr("KDevice.Delete()")
 
     SetObject esi
+    D $OfsCStr("    Delete (dev:0x%x)"), [esi].m_pMyDevice
     invoke IoDeleteDevice, [esi].m_pMyDevice
-    D $OfsCStr("    Delete 0x%x"), [esi].m_pMyDevice
-
-    invoke ExFreePool, pSelf
 MethodEnd
