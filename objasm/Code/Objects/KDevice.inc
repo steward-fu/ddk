@@ -1,13 +1,13 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/12
+;; Updated:  2024/08/13
 ;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
 MakeObjects KLowerDevice
 
-    .const
 Object KDevice, KDeviceID, KDeviceBase
+    RedefineMethod Done
     RedefineMethod Init, PWSTR, DWORD, PWSTR, DWORD, DWORD
 
     VirtualMethod Delete
@@ -17,11 +17,11 @@ Object KDevice, KDeviceID, KDeviceBase
     DefineVariable IrpDispatchTable, POINTER, IRP_MJ_MAXIMUM_FUNCTION dup(0)
 ObjectEnd
 
-    .code
 Method KDevice.Init, uses esi, pDevName : PWSTR, dwType : DWORD, pLinkName : PWSTR, dwChar : DWORD, dwDevFlags : DWORD
-    local pMyDriver : POINTER
-    local pMyDevice : POINTER
+    local status : NTSTATUS
     local DevName : UNICODE_STRING
+    local pMyDevice : PDEVICE_OBJECT
+    local pMyDriver : PDRIVER_OBJECT
 
     D $OfsCStr("KDevice.Init()")
     D $OfsCStr("    DevName:  %ws"),  pDevName
@@ -34,27 +34,27 @@ Method KDevice.Init, uses esi, pDevName : PWSTR, dwType : DWORD, pLinkName : PWS
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
     SetObject esi, KDriver, eax
-    push [esi].m_pMyDriver
-    pop pMyDriver
+    OCall eax::KDriver.DriverObject
+    mov pMyDriver, eax
  
     invoke RtlInitUnicodeString, addr DevName, pDevName
     invoke IoCreateDevice, pMyDriver, 0, addr DevName, dwType, dwChar, FALSE, addr pMyDevice
-    D $OfsCStr("    New Created Device: 0x%x"), pMyDevice
+    mov status, eax
 
     mov eax, pMyDevice
-    .if eax == NULL
-        mov eax, -1
-        ret
-    .endif
-
     mov esi, dwDevFlags
     or (DEVICE_OBJECT ptr [eax]).Flags, esi
     push pSelf
     pop (DEVICE_OBJECT ptr [eax]).DeviceExtension
+    D $OfsCStr("    New Created Device: (dev:0x%x, ret:0x%x)"), pMyDevice, status
 
     SetObject esi
-    push pMyDevice
-    pop [esi].m_pMyDevice
+    mov eax, pMyDevice
+    mov [esi].m_pMyDevice, eax
+MethodEnd
+
+Method KDevice.Done, uses esi
+    D $OfsCStr("KDevice.Done(this:0x%x)"), pSelf
 MethodEnd
 
 Method KDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP

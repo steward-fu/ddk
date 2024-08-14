@@ -1,21 +1,19 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/12
+;; Updated:  2024/08/14
 ;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
     .data
 pMyDriverInst PKDriver NULL
 
-    .const
 Object KDriver, KDriverID, Primer
+    RedefineMethod Done
+    RedefineMethod Init
+
     StaticMethod DriverInit, PDRIVER_OBJECT, PUNICODE_STRING
     StaticMethod DriverObject
     StaticMethod DriverInstance
-
-    RedefineMethod Init
-
-    VirtualMethod Delete
 
     VirtualAbstract AddDevice, PDEVICE_OBJECT
     VirtualAbstract DriverEntry, PUNICODE_STRING
@@ -24,20 +22,21 @@ Object KDriver, KDriverID, Primer
     VirtualMethod SetUpDispatchCalls
 
     DefineVariable m_pMyDriver, PDRIVER_OBJECT, NULL
+    DefineVariable m_pMyDeviceInst, PKDevice, NULL
 ObjectEnd
 
-    .code
 Method KDriver.Init, uses esi
-    D $OfsCStr("KDriver.Init()")
+    D $OfsCStr("KDriver.Init(this:0x%x)"), pSelf
 
     push pSelf
     pop pMyDriverInst
 MethodEnd
 
-Method KDriver.Delete, uses esi
-    D $OfsCStr("KDriver.Delete()")
+Method KDriver.Done, uses esi
+    D $OfsCStr("KDriver.Done(this:0x%x)"), pSelf
 
-    invoke ExFreePool, pMyDriverInst
+    SetObject esi
+    Destroy [esi].m_pMyDeviceInst
 MethodEnd
 
 Method KDriver.DriverInstance, uses esi
@@ -105,7 +104,7 @@ UnloadDispatch proc
     D $OfsCStr("UnloadDispatch()")
 
     OCall $ObjTmpl(KDriver)::KDriver.DriverInstance
-    Destroy eax::KDriver.Delete
+    Destroy eax
     ret
 UnloadDispatch endp
 

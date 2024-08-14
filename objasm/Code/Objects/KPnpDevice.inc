@@ -6,7 +6,6 @@
 
 MakeObjects KDeviceBase, KDevice
 
-    .const
 Object KPnpDevice, KPnpDeviceID, KDevice
     VirtualAbstract DefaultPnp, PKIrp
 
@@ -19,7 +18,6 @@ Object KPnpDevice, KPnpDeviceID, KDevice
     DefineVariable m_pLowerDevice, PKLowerDevice, NULL
 ObjectEnd
 
-    .code
 Method KPnpDevice.Init, uses esi, pDevName : PWSTR, dwDevType : DWORD, pLinkName : PWSTR, dwChar : DWORD, dwFlags : DWORD
     D $OfsCStr("KPnpDevice.Init()")
 
@@ -43,7 +41,7 @@ Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
     OCall I::KIrp.Init, pMyIrp
     OCall Pnp, I
     mov status, eax
-    Destroy I::KIrp.Delete
+    Destroy I
 
     mov eax, status
 MethodEnd

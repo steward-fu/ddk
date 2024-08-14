@@ -1,12 +1,11 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/12
+;; Updated:  2024/08/13
 ;; Purpose:  Implement the framework of NuMega's DriverWorks
 ;;
 
 MakeObjects KIrp
 
-    .const
 Object KLowerDevice, KLowerDeviceID, Primer
     VirtualMethod Initialize
     VirtualMethod DeviceObject
@@ -15,7 +14,6 @@ Object KLowerDevice, KLowerDeviceID, Primer
     DefineVariable m_pNextDevice, PDEVICE_OBJECT, NULL
 ObjectEnd
 
-    .code
 Method KLowerDevice.Initialize, uses esi
     D $OfsCStr("KLowerDevice.Initialize(this:0x%x)"), pSelf
 MethodEnd
