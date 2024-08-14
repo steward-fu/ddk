@@ -172,7 +172,7 @@ MemAlloc macro MemSize:req, Flags:=<MEM_DEFAULT>
   elseif TARGET_PLATFORM eq PLATFORM_DDK
     invoke ExAllocatePool, NonPagedPool, MemSize
     push eax
-    D $OfsCStr("Allocate Memory (MemPtr:0x%x, MemSize:%d)"), eax, MemSize
+    D $OfsCStr("MemAlloc(ptr:0x%x, size:%d)"), eax, MemSize
     pop eax
   endif
   if DEBUGGING
@@ -278,12 +278,10 @@ MemFree macro MemPtr:req, Flags:=<0>
       endif
     endif
   elseif TARGET_PLATFORM eq PLATFORM_DDK
-    ; Freeing memory in here causes crash
-    ; So, please free memory in your Delete method by the following form:
-    ; Destroy xxx.Delete
-
-    ;D $OfsCStr("Free Memory (MemPtr:0x%x)"), MemPtr
-    ;invoke ExFreePool, MemPtr
+    push MemPtr
+    invoke ExFreePool, MemPtr
+    pop eax
+    D $OfsCStr("MemFree(ptr:0x%x)"), eax
   endif
 endm
 

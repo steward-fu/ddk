@@ -7,7 +7,7 @@
 IFNDEF DDK_INC
 DDK_INC equ <1>
 
-KERNEL_DEBUG_ON                 equ 1
+KERNEL_DEBUG_ON                 equ 0
 
 ; Priority increment when no I/O has been done.  This is used by device
 ; and file system drivers when completing an IRP (IoCompleteRequest).

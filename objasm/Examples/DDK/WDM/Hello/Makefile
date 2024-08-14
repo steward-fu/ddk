@@ -1,6 +1,4 @@
 export WINEPREFIX=/home/user/.wine_amd64
-export BOX86_LOG=0
-export BOX86_NOBANNER=1
 
 WINE = box86 wine
 AS   = "c:\objasm\build\tools\assembler\uasm32.exe"
@@ -13,8 +11,8 @@ all:
 
 run:
 	genisoimage -o cdrom.iso autorun.inf main* run.bat ../../../../../tools/sysinternals/Winobj.exe
-	cp /opt/qemu/winxp.qcow2 /tmp
-	run_qemu /tmp/winxp.qcow2 /tmp/qemu_disk
+	cp /opt/qemu/win2k.qcow2 /tmp
+	run_qemu /tmp/win2k.qcow2 /tmp/qemu_disk
 
 clean:
 	rm -rf main.sys main.obj main.pdb cdrom.iso
