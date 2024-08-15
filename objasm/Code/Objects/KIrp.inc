@@ -12,6 +12,7 @@ Object KIrp, KIrpID, Primer
     VirtualMethod PIRP
     VirtualMethod ReadSize
     VirtualMethod WriteSize
+    VirtualMethod UserBuffer
     VirtualMethod Information
     VirtualMethod IoctlBuffer
     VirtualMethod PnpComplete, NTSTATUS, DWORD
@@ -115,6 +116,14 @@ Method KIrp.IoctlBuffer, uses esi
     SetObject esi
     mov eax, [esi].m_pMyIrp
     mov eax, (_IRP ptr [eax]).AssociatedIrp.SystemBuffer
+MethodEnd
+
+Method KIrp.UserBuffer, uses esi
+    D $OfsCStr("KIrp.UserBuffer()")
+
+    SetObject esi
+    mov eax, [esi].m_pMyIrp
+    mov eax, (_IRP ptr [eax]).UserBuffer
 MethodEnd
 
 Method KIrp.ReadSize, uses esi
