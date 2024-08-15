@@ -1382,6 +1382,9 @@ ExAllocatePoolWithTag PROTO STDCALL :DWORD,:DWORD,:DWORD
 ExAllocatePoolWithTagPriority PROTO STDCALL :DWORD,:DWORD,:DWORD,:DWORD
 ExFreePool proto stdcall :DWORD
 ExFreePoolWithTag proto stdcall :DWORD, :DWORD
+strcpy PROTO C :DWORD, :DWORD
+strlen PROTO C :DWORD
+swprintf PROTO C :DWORD, :DWORD, :VARARG
 
 DECLARE_DRIVER_CLASS macro class_name:req, driver_class_string:req
 __create_driver_class_instance proc
