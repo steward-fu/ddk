@@ -1,6 +1,6 @@
 ;;
 ;; Author:   Steward Fu
-;; Updated:  2024/08/10
+;; Updated:  2024/08/15
 ;; Purpose:  Try to implment the code found from NuMega's DriverWorks
 ;;
 
@@ -1296,6 +1296,10 @@ __create_driver_class_instance               proto
 DbgPrint                                     PROTO C :DWORD, :VARARG
 RtlInitUnicodeString                         proto stdcall :DWORD, :DWORD
 IoCreateDevice                               proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+IoCreateStreamFileObject                     proto stdcall :DWORD, :DWORD
+IoCreateStreamFileObjectLite                 proto stdcall :DWORD, :DWORD
+IoCreateSymbolicLink                         proto stdcall :DWORD, :DWORD
+IoCreateSynchronizationEvent                 proto stdcall :DWORD, :DWORD
 IoAttachDevice                               proto stdcall :DWORD, :DWORD, :DWORD
 IoAttachDeviceByPointer                      proto stdcall :DWORD, :DWORD
 IoAttachDeviceToDeviceStack                  proto stdcall :DWORD, :DWORD

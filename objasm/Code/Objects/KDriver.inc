@@ -60,6 +60,10 @@ Method KDriver.SetUpDispatchCalls, uses esi
     SetObject esi
     mov eax, [esi].m_pMyDriver
     mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_PNP * (sizeof PVOID)], offset DriverIrpDispatch
+    mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_CREATE * (sizeof PVOID)], offset DriverIrpDispatch
+    mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_READ * (sizeof PVOID)], offset DriverIrpDispatch
+    mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_WRITE * (sizeof PVOID)], offset DriverIrpDispatch
+    mov (DRIVER_OBJECT PTR [eax]).MajorFunction[IRP_MJ_CLOSE * (sizeof PVOID)], offset DriverIrpDispatch
     mov (DRIVER_OBJECT PTR [eax]).DriverUnload, offset UnloadDispatch
     mov eax, (DRIVER_OBJECT PTR [eax]).DriverExtension
     mov (DRIVER_EXTENSION PTR [eax]).AddDevice, offset AddDeviceDispatch

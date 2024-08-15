@@ -9,6 +9,7 @@ Object KIrp, KIrpID, Primer
     RedefineMethod Init, PIRP
 
     VirtualMethod PIRP
+    VirtualMethod PnpComplete, NTSTATUS, DWORD
     VirtualMethod MajorFunction
     VirtualMethod MinorFunction
     VirtualMethod ForceReuseOfCurrentStackLocationInCalldown
@@ -56,4 +57,16 @@ Method KIrp.PIRP, uses esi
 
     SetObject esi
     mov eax, [esi].m_pMyIrp
+MethodEnd
+
+Method KIrp.PnpComplete, uses esi, status : NTSTATUS, boost : DWORD
+    D $OfsCStr("KIrp.PnpComplete(status:0x%x, boost:0x%x)"), status, boost
+
+    SetObject esi
+    mov eax, [esi].m_pMyIrp
+    and (_IRP ptr [eax]).IoStatus.Information, 0
+    push status
+    pop (_IRP ptr [eax]).IoStatus.Status
+    invoke IoCompleteRequest, [esi].m_pMyIrp, boost
+    mov eax, status
 MethodEnd

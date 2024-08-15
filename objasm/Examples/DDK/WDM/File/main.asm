@@ -2,7 +2,7 @@
 ;; Author: Steward Fu
 ;; Update: 2024/08/15
 ;;
-;; Hello, world!
+;; Handling File Irp
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
@@ -19,6 +19,11 @@ Object MyDriver, , KDriver
 ObjectEnd
 
 Object MyDevice, , KPnpDevice
+    RedefineMethod Create, PKIrp
+    RedefineMethod Read, PKIrp
+    RedefineMethod Write, PKIrp
+    RedefineMethod Close, PKIrp
+
     RedefineMethod Init, PDEVICE_OBJECT
     RedefineMethod DefaultPnp, PKIrp
     RedefineMethod DeviceIrpDispatch, PIRP
@@ -33,8 +38,6 @@ Method MyDriver.DriverEntry, uses esi, pMyRegistry : PUNICODE_STRING
 MethodEnd
 
 Method MyDriver.AddDevice, uses esi, pPhyDevice : PDEVICE_OBJECT
-    T $OfsCStr("Hello, world%c"), 21h
-
     New MyDevice
     push eax
     OCall eax::MyDevice.Init, pPhyDevice
@@ -54,7 +57,7 @@ Method MyDriver.Unload, uses esi
 MethodEnd
 
 Method MyDevice.Init, uses esi, pPhyDevice : PDEVICE_OBJECT
-    ACall Init, $OfsCStrW("\Device\MyDriver"), FILE_DEVICE_UNKNOWN, NULL, 0, DO_BUFFERED_IO
+    ACall Init, $OfsCStrW("\Device\MyDriver"), FILE_DEVICE_UNKNOWN, $OfsCStrW("\DosDevices\MyDriver"), 0, DO_BUFFERED_IO
 
     SetObject esi
     OCall [esi].m_pMyLowerDevice::KPnpLowerDevice.Initialize, [esi].m_pMyDevice, pPhyDevice
@@ -69,5 +72,29 @@ Method MyDevice.DefaultPnp, uses esi, I : PKIrp
     SetObject esi
     OCall I::KIrp.ForceReuseOfCurrentStackLocationInCalldown
     OCall [esi].m_pMyLowerDevice::KLowerDevice.PnpCall, I
+MethodEnd
+
+Method MyDevice.Create, uses esi, I : PKIrp
+    T $OfsCStr("IRP_MJ_CREATE")
+
+    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
+MethodEnd
+
+Method MyDevice.Read, uses esi, I : PKIrp
+    T $OfsCStr("IRP_MJ_READ")
+
+    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
+MethodEnd
+
+Method MyDevice.Write, uses esi, I : PKIrp
+    T $OfsCStr("IRP_MJ_WRITE")
+
+    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
+MethodEnd
+
+Method MyDevice.Close, uses esi, I : PKIrp
+    T $OfsCStr("IRP_MJ_CLOSE")
+
+    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
 end
