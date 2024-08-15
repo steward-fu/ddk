@@ -2,7 +2,7 @@
 ;; Author: Steward Fu
 ;; Update: 2024/08/15
 ;;
-;; Choose DO_DIRECT_IO for File IRP
+;; Choose METHOD_BUFFERED for Ioctl Irp
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
@@ -10,6 +10,9 @@
 SysSetup OOP, DDK32, ANSI_STRING
 
 MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice
+
+IOCTL_GET equ CTL_CODE(FILE_DEVICE_UNKNOWN, 800h, METHOD_BUFFERED, FILE_ANY_ACCESS)
+IOCTL_SET equ CTL_CODE(FILE_DEVICE_UNKNOWN, 801h, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
 Object MyDriver, , KDriver
     RedefineMethod Unload
@@ -19,10 +22,9 @@ Object MyDriver, , KDriver
 ObjectEnd
 
 Object MyDevice, , KPnpDevice
-    RedefineMethod Create, PKIrp
-    RedefineMethod Read, PKIrp
-    RedefineMethod Write, PKIrp
     RedefineMethod Close, PKIrp
+    RedefineMethod Create, PKIrp
+    RedefineMethod DeviceControl, PKIrp
 
     RedefineMethod Init, PDEVICE_OBJECT
     RedefineMethod DefaultPnp, PKIrp
@@ -59,7 +61,7 @@ Method MyDriver.Unload, uses esi
 MethodEnd
 
 Method MyDevice.Init, uses esi, pPhyDevice : PDEVICE_OBJECT
-    ACall Init, $OfsCStrW("\Device\MyDriver"), FILE_DEVICE_UNKNOWN, $OfsCStrW("\DosDevices\MyDriver"), 0, DO_DIRECT_IO
+    ACall Init, $OfsCStrW("\Device\MyDriver"), FILE_DEVICE_UNKNOWN, $OfsCStrW("\DosDevices\MyDriver"), 0, DO_BUFFERED_IO
 
     SetObject esi
     OCall [esi].m_pMyLowerDevice::KPnpLowerDevice.Initialize, [esi].m_pMyDevice, pPhyDevice
@@ -79,68 +81,46 @@ MethodEnd
 Method MyDevice.Create, uses esi, I : PKIrp
     T $OfsCStr("IRP_MJ_CREATE")
 
-    OCall I::KIrp.Information
-    mov dword ptr [eax], 0
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
 
-Method MyDevice.Read, uses esi, I : PKIrp
-    local pMdl : POINTER
+Method MyDevice.DeviceControl, uses esi, I : PKIrp
+    local code : DWORD
     local dwSize : DWORD
     local pBuffer : POINTER
 
-    T $OfsCStr("IRP_MJ_READ")
+    and dwSize, 0
 
-    SetObject esi
-    OCall I::KIrp.Mdl
-    mov pMdl, eax
-
-    MmGetSystemAddressForMdlSafe pMdl, LowPagePriority
+    OCall I::KIrp.IoctlBuffer
     mov pBuffer, eax
 
-    invoke strcpy, pBuffer, addr [esi].m_Buffer
-    invoke strlen, pBuffer
-    mov dwSize, eax
+    OCall I::KIrp.IoctlCode
+    mov code, eax
+    .if code == IOCTL_SET
+        SetObject esi
+        invoke strcpy, addr [esi].m_Buffer, pBuffer
+        OCall I::KIrp.IoctlInputBufferSize
+        push dword ptr [eax]
+        pop dwSize
+
+        T $OfsCStr("Buffer: %s, Length: %d"), pBuffer, dwSize
+    .elseif code == IOCTL_GET
+        SetObject esi
+        invoke strcpy, pBuffer, addr [esi].m_Buffer
+        invoke strlen, pBuffer
+        mov dwSize, eax
+    .endif
 
     OCall I::KIrp.Information
     push dwSize
     pop dword ptr [eax]
 
-    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
-MethodEnd
-
-Method MyDevice.Write, uses esi, I : PKIrp
-    local pMdl : POINTER
-    local dwSize : DWORD
-    local pBuffer : POINTER
-
-    T $OfsCStr("IRP_MJ_WRITE")
-
-    SetObject esi
-    OCall I::KIrp.Mdl
-    mov pMdl, eax
-
-    MmGetMdlByteCount pMdl
-    mov dwSize, eax
-
-    MmGetSystemAddressForMdlSafe pMdl, LowPagePriority
-    mov pBuffer, eax
-
-    invoke strcpy, addr [esi].m_Buffer, pBuffer
-
-    OCall I::KIrp.Information
-    push dwSize
-    pop dword ptr [eax]
-
-    T $OfsCStr("Buffer: %s, Length: %d"), pBuffer, dwSize
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
 
 Method MyDevice.Close, uses esi, I : PKIrp
     T $OfsCStr("IRP_MJ_CLOSE")
 
-    OCall I::KIrp.Information
-    mov dword ptr [eax], 0
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
 end

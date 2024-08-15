@@ -21,6 +21,8 @@ Object KIrp, KIrpID, Primer
     VirtualMethod MinorFunction
     VirtualMethod BufferedReadDest
     VirtualMethod BufferedWriteSource
+    VirtualMethod IoctlInputBufferSize
+    VirtualMethod IoctlOutputBufferSize
     VirtualMethod ForceReuseOfCurrentStackLocationInCalldown
 
     DefineVariable m_pMyIrp, PIRP, 0
@@ -149,4 +151,20 @@ Method KIrp.IoctlCode, uses esi
     SetObject esi
     IoGetCurrentIrpStackLocation [esi].m_pMyIrp
     mov eax, (IO_STACK_LOCATION ptr [eax]).Parameters.DeviceIoControl.IoControlCode
+MethodEnd
+
+Method KIrp.IoctlInputBufferSize, uses esi
+    D $OfsCStr("KIrp.IoctlInputBufferSize()")
+
+    SetObject esi
+    IoGetCurrentIrpStackLocation [esi].m_pMyIrp
+    lea eax, (IO_STACK_LOCATION ptr [eax]).Parameters.DeviceIoControl.InputBufferLength
+MethodEnd
+
+Method KIrp.IoctlOutputBufferSize, uses esi
+    D $OfsCStr("KIrp.IoctlOuputBufferSize()")
+
+    SetObject esi
+    IoGetCurrentIrpStackLocation [esi].m_pMyIrp
+    lea eax, (IO_STACK_LOCATION ptr [eax]).Parameters.DeviceIoControl.OutputBufferLength
 MethodEnd
