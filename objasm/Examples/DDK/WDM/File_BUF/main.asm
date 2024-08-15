@@ -121,6 +121,10 @@ Method MyDevice.Write, uses esi, I : PKIrp
 
     invoke strcpy, addr [esi].Buffer, pBuffer
 
+    OCall I::KIrp.Information
+    push dwSize
+    pop dword ptr [eax]
+
     T $OfsCStr("Buffer: %s, Length: %d"), pBuffer, dwSize
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
