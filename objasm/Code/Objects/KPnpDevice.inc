@@ -14,6 +14,7 @@ Object KPnpDevice, KPnpDeviceID, KDevice
     VirtualMethod Read, PKIrp
     VirtualMethod Write, PKIrp
     VirtualMethod Close, PKIrp
+    VirtualMethod DeviceControl, PKIrp
     VirtualMethod SetLowerDevice, PKLowerDevice
 
     RedefineMethod Init, PWSTR, DWORD, PWSTR, DWORD, DWORD
@@ -56,6 +57,12 @@ MethodEnd
 
 Method KPnpDevice.Close, uses esi, I : PKIrp
     D $OfsCStr("KPnpDevice.Close()")
+
+    OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
+MethodEnd
+
+Method KPnpDevice.DeviceControl, uses esi, I : PKIrp
+    D $OfsCStr("KPnpDevice.DeviceControl()")
 
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
@@ -113,6 +120,9 @@ Method KPnpDevice.DeviceIrpDispatch, uses esi, pMyIrp : PIRP
         mov status, eax
     .elseif Major == IRP_MJ_CLOSE
         OCall Close, I
+        mov status, eax
+    .elseif Major == IRP_MJ_DEVICE_CONTROL
+        OCall DeviceControl, I
         mov status, eax
     .else
         mov eax, STATUS_INVALID_DEVICE_REQUEST

@@ -12,6 +12,7 @@ Object KIrp, KIrpID, Primer
     VirtualMethod PIRP
     VirtualMethod ReadSize
     VirtualMethod WriteSize
+    VirtualMethod IoctlCode
     VirtualMethod UserBuffer
     VirtualMethod Information
     VirtualMethod IoctlBuffer
@@ -140,4 +141,12 @@ Method KIrp.WriteSize, uses esi
     SetObject esi
     IoGetCurrentIrpStackLocation [esi].m_pMyIrp
     lea eax, (IO_STACK_LOCATION ptr [eax]).Parameters.Write._Length
+MethodEnd
+
+Method KIrp.IoctlCode, uses esi
+    D $OfsCStr("KIrp.IoctlCode()")
+
+    SetObject esi
+    IoGetCurrentIrpStackLocation [esi].m_pMyIrp
+    mov eax, (IO_STACK_LOCATION ptr [eax]).Parameters.DeviceIoControl.IoControlCode
 MethodEnd
