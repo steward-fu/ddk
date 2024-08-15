@@ -98,10 +98,6 @@ Method MyDevice.Read, uses esi, I : PKIrp
     invoke strlen, pBuffer
     mov dwSize, eax
 
-    OCall I::KIrp.ReadSize
-    push dwSize
-    pop dword ptr [eax]
-
     OCall I::KIrp.Information
     push dwSize
     pop dword ptr [eax]

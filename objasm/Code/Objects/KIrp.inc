@@ -8,6 +8,7 @@ Object KIrp, KIrpID, Primer
     RedefineMethod Done
     RedefineMethod Init, PIRP
 
+    VirtualMethod Mdl
     VirtualMethod PIRP
     VirtualMethod ReadSize
     VirtualMethod WriteSize
@@ -56,6 +57,14 @@ Method KIrp.ForceReuseOfCurrentStackLocationInCalldown, uses esi
 
     SetObject esi
     IoSkipCurrentIrpStackLocation [esi].m_pMyIrp
+MethodEnd
+
+Method KIrp.Mdl, uses esi
+    D $OfsCStr("KIrp.Mdl()")
+
+    SetObject esi
+    mov eax, [esi].m_pMyIrp
+    mov eax, (_IRP ptr [eax]).MdlAddress
 MethodEnd
 
 Method KIrp.PIRP, uses esi
