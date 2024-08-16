@@ -467,3 +467,5 @@ KPnpDeviceID                      equ     0000020003
 KLowerDeviceID                    equ     0000020004
 KPnpLowerDeviceID                 equ     0000020005
 KIrpID                            equ     0000020006
+KDispatcherObjectID               equ     0000020007
+KSystemThreadID                   equ     0000020008

@@ -73,6 +73,8 @@ syn keyword masmType            DRIVER_OBJECT DEVICE_OBJECT DEVICE_EXTENSION PWS
 syn keyword masmType            DRIVER_EXTENSION PIRP KIrp PKIrp KDriver PKDriver KDevice KDeviceBase
 syn keyword masmType            KPnpDevice KLowerDevice PKLowerDevice KPnpLowerDevice Primer
 syn keyword masmType            UNICODE_STRING addr PMyDevice PKDevice NTSTATUS
+syn keyword masmType            KSystemThread PKSystemThread KDispatcherObject PKDispatcherObject
+syn keyword masmType            PVOID LARGE_INTEGER
 syn keyword masmOperator        AND NOT OR SHL SHR XOR MOD DUP
 syn keyword masmOperator        EQ GE GT LE LT NE
 syn keyword masmOperator        LROFFSET SEG LENGTH LENGTHOF SIZE SIZEOF

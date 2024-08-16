@@ -9,9 +9,38 @@ DDK_INC equ <1>
 
 KERNEL_DEBUG_ON                 equ 0
 
+;typedef enum _KWAIT_REASON {
+    Executive			equ 0
+    FreePage			equ 1
+    PageIn				equ 2
+    PoolAllocation		equ 3
+    DelayExecution		equ 4
+    Suspended			equ 5
+    UserRequest			equ 6
+    WrExecutive			equ 7
+    WrFreePage			equ 8
+    WrPageIn			equ 9
+    WrPoolAllocation	equ 10
+    WrDelayExecution	equ 11
+    WrSuspended			equ 12
+    WrUserRequest		equ 13
+    WrEventPair			equ 14
+    WrQueue				equ 15
+    WrLpcReceive		equ 16
+    WrLpcReply			equ 17
+    WrVirtualMemory		equ 18
+    WrPageOut			equ 19
+    WrRendezvous		equ 20
+    Spare2				equ 21
+    Spare3				equ 22
+    Spare4				equ 23
+    Spare5				equ 24
+    Spare6				equ 25
+    WrKernel			equ 26
+    MaximumWaitReason	equ 27
+
 ; Priority increment when no I/O has been done.  This is used by device
 ; and file system drivers when completing an IRP (IoCompleteRequest).
-
 IO_NO_INCREMENT                 equ 0
 
 DO_VERIFY_VOLUME                equ 00000002h
@@ -242,6 +271,7 @@ PKIrp               typedef POINTER
 PKLowerDevice       typedef POINTER
 PKPnpLowerDevice    typedef POINTER
 PMyDevice           typedef POINTER
+PKSystemThread      typedef POINTER
 
 UNICODE_STRING STRUCT
     _Length         WORD    ?        ; len of string in bytes (not chars)
@@ -1450,6 +1480,7 @@ IoCompleteRequest proto stdcall :DWORD, :DWORD
 IoDeleteDevice PROTO STDCALL :DWORD
 IoDeleteSymbolicLink PROTO STDCALL :DWORD
 IoDetachDevice PROTO STDCALL :DWORD
+IoGetCurrentProcess proto stdcall
 ExAllocateFromPagedLookasideList PROTO STDCALL :DWORD
 ExAllocatePool PROTO STDCALL :DWORD,:DWORD
 ExAllocatePoolWithQuota PROTO STDCALL :DWORD,:DWORD
@@ -1463,6 +1494,19 @@ strlen PROTO C :DWORD
 swprintf PROTO C :DWORD, :DWORD, :VARARG
 MmMapLockedPages proto stdcall :DWORD, :DWORD
 MmMapLockedPagesSpecifyCache proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+PsCreateSystemProcess proto stdcall :DWORD, :DWORD, :DWORD
+PsCreateSystemThread proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+PsTerminateSystemThread proto stdcall :DWORD
+ObReferenceObjectByHandle proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+ObReferenceObjectByName proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+ObReferenceObjectByPointer proto stdcall :DWORD, :DWORD, :DWORD, :DWORD
+ObDereferenceObject proto stdcall :DWORD
+ZwClose proto stdcall :DWORD
+ZwCloseObjectAuditAlarm proto stdcall :DWORD, :DWORD, :DWORD
+KeDelayExecutionThread proto stdcall :DWORD, :DWORD, :DWORD
+KeWaitForMultipleObjects proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+KeWaitForMutexObject proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+KeWaitForSingleObject proto stdcall :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
 
 DECLARE_DRIVER_CLASS macro class_name:req, driver_class_string:req
 __create_driver_class_instance proc
