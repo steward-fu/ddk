@@ -1,8 +1,6 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Hello, world!
+;; Purpose: Hello, world!
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc

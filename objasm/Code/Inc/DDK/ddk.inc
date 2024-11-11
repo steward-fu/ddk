@@ -7,7 +7,7 @@
 IFNDEF DDK_INC
 DDK_INC equ <1>
 
-KERNEL_DEBUG_ON                 equ 0
+KERNEL_DEBUG_ON                 equ 1
 
 ;typedef enum _KWAIT_REASON {
     Executive			equ 0

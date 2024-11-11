@@ -1,7 +1,6 @@
 ;;
-;; Author:   Steward Fu
-;; Updated:  2024/08/15
-;; Purpose:  Implement the framework of NuMega's DriverWorks
+;; Purpose: Implement NuMega DriverWorks
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 Object KIrp, KIrpID, Primer

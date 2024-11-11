@@ -1,7 +1,6 @@
 ;;
-;; Author:   Steward Fu
-;; Updated:  2024/08/16
-;; Purpose:  Implement the framework of NuMega's DriverWorks
+;; Purpose: Implement NuMega DriverWorks
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 Object KSystemThread, KSystemThreadID, Primer
