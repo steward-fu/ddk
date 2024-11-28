@@ -1,13 +1,11 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Choose DO_NEITHER_IO for File IRP
+;; Purpose: File IRP with DO_NEITHER_IO
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
 
-SysSetup OOP, DDK32, ANSI_STRING
+SysSetup OOP, WDK_WDM, ANSI_STRING
 
 MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice
 
@@ -119,13 +117,13 @@ Method MyDevice.Write, uses esi, I : PKIrp
     push dword ptr [eax]
     pop dwSize
 
-    invoke strcpy, addr [esi].m_Buffer, pBuffer
+    invoke memcpy, addr [esi].m_Buffer, pBuffer, dwSize
 
     OCall I::KIrp.Information
     push dwSize
     pop dword ptr [eax]
 
-    T $OfsCStr("Address: 0x%x, Length: %d"), pBuffer, dwSize
+    T $OfsCStr("Address: 0x%x, Length: %d"), addr [esi].m_Buffer, dwSize
     OCall I::KIrp.PnpComplete, STATUS_SUCCESS, IO_NO_INCREMENT
 MethodEnd
 
