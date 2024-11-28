@@ -1,8 +1,6 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Application for File Irp Testing
+;; Purpose: File IRP with DO_BUFFERED_IO
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 .386p
