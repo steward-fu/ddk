@@ -1,13 +1,11 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/16
-;;
-;; Use Thread
+;; Purpose: Thread
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
 
-SysSetup OOP, DDK32, ANSI_STRING
+SysSetup OOP, WDK_WDM, ANSI_STRING
 
 MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice, KSystemThread
 
