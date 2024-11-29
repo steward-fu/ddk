@@ -1,8 +1,6 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Application for Ioctl Irp Testing
+;; Purpose: IOCTL IRP Test
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 .386p

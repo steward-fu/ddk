@@ -1,6 +1,6 @@
-export WINEPREFIX=/home/user/.wine_amd64
-
-WINE = box86 wine
+WINE = myx86.sh
+QEMU = myqemu.sh
+OS   = winxp_nano
 AS   = "c:\objasm\build\tools\assembler\uasm32.exe"
 ML   = "c:\masm32\bin\ml.exe"
 LD   = "c:\masm32\bin\link.exe"
@@ -17,9 +17,8 @@ app:
 
 run:
 	rm -rf cdrom.iso
-	genisoimage -o cdrom.iso autorun.inf main* app.exe run.bat ../../../../../tools/sysinternals/Winobj.exe
-	cp /opt/qemu/win2k.qcow2 /tmp
-	run_qemu /tmp/win2k.qcow2 /tmp/qemu_disk
+	genisoimage -o cdrom.iso autorun.inf main* app.exe run.bat
+	${QEMU} ${OS}
 
 clean:
 	rm -rf main.sys main.obj main.pdb app.obj app.pdb app.exe cdrom.iso

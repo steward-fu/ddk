@@ -1,13 +1,11 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Choose METHOD_NEITHER for IOCTL IRP
+;; Purpose: IOCTL IRP with METHOD_NEITHER
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
 
-SysSetup OOP, DDK32, ANSI_STRING
+SysSetup OOP,WDK_WDM, ANSI_STRING
 
 MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice
 
@@ -98,20 +96,20 @@ Method MyDevice.DeviceControl, uses esi, I : PKIrp
         mov pBuffer, eax
 
         SetObject esi
-        invoke strcpy, addr [esi].m_Buffer, pBuffer
         OCall I::KIrp.IoctlInputBufferSize
         push dword ptr [eax]
         pop dwSize
+        invoke memcpy, addr [esi].m_Buffer, pBuffer, dwSize
 
-        T $OfsCStr("Buffer: %s, Length: %d"), pBuffer, dwSize
+        T $OfsCStr("Buffer: %s, Length: %d"),addr [esi].m_Buffer, dwSize
     .elseif code == IOCTL_GET
         OCall I::KIrp.UserBuffer
         mov pBuffer, eax
 
         SetObject esi
-        invoke strcpy, pBuffer, addr [esi].m_Buffer
         invoke strlen, pBuffer
         mov dwSize, eax
+        invoke memcpy, pBuffer, addr [esi].m_Buffer, dwSize
     .endif
 
     OCall I::KIrp.Information

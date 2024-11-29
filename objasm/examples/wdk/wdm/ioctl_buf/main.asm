@@ -1,13 +1,11 @@
 ;;
-;; Author: Steward Fu
-;; Update: 2024/08/15
-;;
-;; Choose METHOD_BUFFERED for Ioctl Irp
+;; Purpose: IOCTL IRP with METHOD_BUFFERED
+;; Website: https://steward-fu.github.io/website/index.htm
 ;;
 
 %include @Environ(OBJASM_PATH)/Code/Macros/Model.inc
 
-SysSetup OOP, DDK32, ANSI_STRING
+SysSetup OOP, WDK_WDM, ANSI_STRING
 
 MakeObjects Primer, KDriver, KPnpDevice, KPnpLowerDevice
 
@@ -98,17 +96,17 @@ Method MyDevice.DeviceControl, uses esi, I : PKIrp
     mov code, eax
     .if code == IOCTL_SET
         SetObject esi
-        invoke strcpy, addr [esi].m_Buffer, pBuffer
         OCall I::KIrp.IoctlInputBufferSize
         push dword ptr [eax]
         pop dwSize
+        invoke memcpy, addr [esi].m_Buffer, pBuffer, dwSize
 
-        T $OfsCStr("Buffer: %s, Length: %d"), pBuffer, dwSize
+        T $OfsCStr("Buffer: %s, Length: %d"), addr [esi].m_Buffer, dwSize
     .elseif code == IOCTL_GET
         SetObject esi
-        invoke strcpy, pBuffer, addr [esi].m_Buffer
-        invoke strlen, pBuffer
+        invoke strlen, addr [esi].m_Buffer
         mov dwSize, eax
+        invoke memcpy, pBuffer, addr [esi].m_Buffer, dwSize
     .endif
 
     OCall I::KIrp.Information
