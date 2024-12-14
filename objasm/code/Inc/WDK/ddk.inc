@@ -275,6 +275,33 @@ PKPnpLowerDevice    typedef POINTER
 PMyDevice           typedef POINTER
 PKSystemThread      typedef POINTER
 
+; +
+; Common dispatcher object header
+; 
+; N.B. The size field contains the number of dwords in the structure.
+; -
+
+DISPATCHER_HEADER STRUCT			; sizeof = 010h
+	_Type			BYTE		?	; 0000h  DISP_TYPE_* (original name Type)
+	Absolute		BYTE		?	; 0001h
+	_Size			BYTE		?	; 0002h  (original name Size)
+	Inserted		BYTE		?	; 0003h
+	SignalState		SDWORD		?	; 0004h
+	WaitListHead	LIST_ENTRY <>	; 0008h
+DISPATCHER_HEADER ENDS
+
+; Timer object
+
+KTIMER STRUCT		; sizeof = 028h
+	Header			DISPATCHER_HEADER <>; 0000h
+	DueTime			ULARGE_INTEGER 	<>	; 0010h
+	TimerListEntry	LIST_ENTRY 		<>	; 0018h
+	Dpc				PVOID			?	; 0020h PTR KDPC
+	Period			SDWORD			?	; 0024h
+KTIMER ENDS
+PKTIMER typedef PTR KTIMER
+PRKTIMER typedef PTR KTIMER	; *RESTRICTED_POINTER
+
 UNICODE_STRING STRUCT
     _Length         WORD    ?        ; len of string in bytes (not chars)
     MaximumLength   WORD    ?        ; len of Buffer in bytes (not chars)
