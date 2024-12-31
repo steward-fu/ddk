@@ -1,0 +1,62 @@
+[Version]
+Signature="$Windows95$"
+Class=MEDIA		;; needed - this is a wave driver, so gets installed in media
+provider=%MSFT%
+
+[ClassInstall]
+Addreg=Class.AddReg	;; standard media stuff
+
+[Class.AddReg]		;; standard media stuff
+HKR,,,,%MediaClassName%
+HKR,,Icon,,"-1"
+HKR,,Installer,,mmci.dll
+
+[Manufacturer]
+%MfgName%=Microsoft
+
+[Microsoft]
+;; the device id's (MODEMWAVE\14.4_Data_Fax_Modem_Voice) correspond EXACTLY to the modem name 
+;; with underscores in place of spaces.  The names must be an exact match or installer 
+;; won't find device.
+;; this scheme is because of the way the serial wave device enumeration occurs.
+
+%Sample1.DeviceDesc%=SAMPLE1,  MODEMWAVE\14.4_Data_Fax_Modem_Voice
+%Sample2.DeviceDesc%=SAMPLE2,  MODEMWAVE\Microsoft_144_Data+Fax+Voice
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[SAMPLE2]
+AddReg=MSSERWAVE.AddReg, SAMPLE2.AddReg
+
+[SAMPLE1]
+AddReg=MSSERWAVE.AddReg, SAMPLE1.AddReg
+
+[SAMPLE2.AddReg]
+HKR,Drivers\wave\serwvdrv.drv,Description,,%Rockwell.DeviceDesc%	;; serwvdrv.drv is driver
+HKR,Config,XformModule,  , "umdmxfrm.dll"	;; necessary
+HKR,Config,XformID,     1, 01, 00, 00, 00	;; format - need docs on this
+
+[SAMPLE1.AddReg]
+HKR,Drivers\wave\serwvdrv.drv,Description,,%Cirrus.DeviceDesc%
+HKR,Config,XformModule,  , "umdmxfrm.dll"
+HKR,Config,XformID,     1, 02, 00, 00, 00
+HKR,Config,WaveDevices,  1, 01, 00		;; normally, have 2 wave devices, line and
+						;; handset.  If handset is not supported
+						;; only have 1 wave device, so serwvdrv
+						;; needs to know this so it only reports
+						;; one device.  If this entry is omitted
+						;; default is 2
+
+[MSSERWAVE.AddReg]				;; this stuff should never change
+HKR,,DevLoader,,mmdevldr.vxd
+HKR,Drivers,MIGRATED,,0
+HKR,Drivers\wave,,,
+HKR,,Driver,,serwave.vxd
+HKR,Drivers\wave\serwvdrv.drv,Driver,,serwvdrv.drv
+HKR,Drivers,SubClasses,,"wave"
+
+[Strings]
+MSFT="Microsoft"
+Sample2.DeviceDesc="Sample2 Voice Modem Serial Wave Device"
+Sample1.DeviceDesc="Sample1 Voice Modem Serial Wave Device"
