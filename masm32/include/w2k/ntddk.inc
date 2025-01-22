@@ -3342,18 +3342,18 @@ KSEMAPHORE ENDS
 PKSEMAPHORE  typedef PTR KSEMAPHORE
 PRKSEMAPHORE typedef PTR KSEMAPHORE	; *RESTRICTED_POINTER
 
-ULARGE_INTEGER UNION
-	struct
-		LowPart		DWORD ?
-		HighPart	DWORD ?
-	ends
-	struct u
-		LowPart		DWORD ?
-		HighPart	DWORD ?
-	ends
-	QuadPart		QWORD ?
-ULARGE_INTEGER ENDS
-PULARGE_INTEGER	typedef	PTR ULARGE_INTEGER
+;ULARGE_INTEGER UNION
+;	struct
+;		LowPart		DWORD ?
+;		HighPart	DWORD ?
+;	ends
+;	struct u
+;		LowPart		DWORD ?
+;		HighPart	DWORD ?
+;	ends
+;	QuadPart		QWORD ?
+;ULARGE_INTEGER ENDS
+;PULARGE_INTEGER	typedef	PTR ULARGE_INTEGER
 
 ; Timer object
 
