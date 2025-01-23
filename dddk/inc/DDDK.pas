@@ -1578,7 +1578,8 @@ procedure RtlInitUnicodeString(DestinationString:PUnicodeString; SourceString:PW
 procedure ProbeForRead(Address:Pointer; Length:Cardinal; Alignment:Cardinal); stdcall; 
 procedure ExFreePool(P:Pointer); stdcall; 
 procedure KeInitializeMutex(Mutex:PKMutex; Level:Cardinal); stdcall; 
-procedure memcpy(dst:Pointer; src:Pointer; len:ULONG); stdcall;
+procedure memset(dst : Pointer; val : Char; len : ULONG); stdcall;
+procedure memcpy(dst : Pointer; src : Pointer; len : ULONG); stdcall;
 procedure krnlObDereferenceObject(handle:Handle); stdcall; external NtKernel name 'ObDereferenceObject';
 procedure ObDereferenceObject(handle:Handle); stdcall;
 procedure krnlIoStartTimer(DeviceObject:PDeviceObject); stdcall; external NtKernel name 'IoStartTimer';
@@ -2287,19 +2288,30 @@ begin
   Result:= Pointer(ULONG(pMDL^.StartVa) + pMDL^.ByteOffset);
 end;
 
-procedure memcpy(dst:Pointer; src:Pointer; len:ULONG); stdcall;
+procedure memset(dst : Pointer; val : Char; len : ULONG); stdcall;
 var
-  i: ULONG;
-  s: PChar;
-  d: PChar;
+    i : ULONG;
+    d : PChar;
   
 begin
-  s:= src;
-  d:= dst;
-  for i:= 0 to len do
-  begin
-    d[i]:= s[i];
-  end;
+    d := dst;
+    for i := 0 to (len - 1) do begin
+        d[i] := val;
+    end;
+end;
+
+procedure memcpy(dst : Pointer; src : Pointer; len : ULONG); stdcall;
+var
+    i : ULONG;
+    s : PChar;
+    d : PChar;
+  
+begin
+    s := src;
+    d := dst;
+    for i := 0 to (len - 1) do begin
+        d[i] := s[i];
+    end;
 end;
 
 function strlen(src:Pointer):ULONG; stdcall;
