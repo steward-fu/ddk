@@ -3,7 +3,7 @@ unit main;
 interface
 uses
     DDDK;
- 
+         
 const
     DEV_NAME = '\Device\MyDriver';
     SYM_NAME = '\DosDevices\MyDriver';
@@ -11,6 +11,9 @@ const
 function _DriverEntry(pMyDriver : PDriverObject; pMyRegistry : PUnicodeString) : NTSTATUS; stdcall;
  
 implementation
+var
+    szBuf : array[0..255] of char;
+     
 function IrpOpen(pMyDevice : PDeviceObject; pIrp : PIrp) : NTSTATUS; stdcall;
 begin
     DbgPrint('IRP_MJ_CREATE', []);
@@ -22,21 +25,38 @@ begin
 end;
  
 function IrpRead(pMyDevice : PDeviceObject; pIrp : PIrp) : NTSTATUS; stdcall;
+var
+    len : ULONG;
+    dst : PChar;
+ 
 begin
     DbgPrint('IRP_MJ_READ', []);
-
+     
+    len := strlen(@szBuf[0]);
+    dst := MmGetSystemAddressForMdlSafe(pIrp^.MdlAddress, LowPagePriority);
+    memcpy(dst, @szBuf[0], len);
+ 
     Result := STATUS_SUCCESS;
-    pIrp^.IoStatus.Information := 0;
+    pIrp^.IoStatus.Information := len;
     pIrp^.IoStatus.Status := Result;
     IoCompleteRequest(pIrp, IO_NO_INCREMENT);
 end;
  
 function IrpWrite(pMyDevice : PDeviceObject; pIrp : PIrp) : NTSTATUS; stdcall;
+var
+    len : ULONG;
+    src : PChar;
+ 
 begin
     DbgPrint('IRP_MJ_WRITE', []);
-
+ 
+    src := MmGetSystemAddressForMdlSafe(pIrp^.MdlAddress, LowPagePriority);
+    len := MmGetMdlByteCount(pIrp^.MdlAddress);
+    memcpy(@szBuf[0], src, len);
+    DbgPrint('Buffer: %s, Length: %d', [szBuf, len]);
+    
     Result := STATUS_SUCCESS;
-    pIrp^.IoStatus.Information := 0;
+    pIrp^.IoStatus.Information := len;
     pIrp^.IoStatus.Status := Result;
     IoCompleteRequest(pIrp, IO_NO_INCREMENT);
 end;
@@ -63,22 +83,22 @@ end;
  
 function _DriverEntry(pMyDriver : PDriverObject; pMyRegistry : PUnicodeString) : NTSTATUS; stdcall;
 var
-    suDevName : TUnicodeString;
+    szDevName : TUnicodeString;
     szSymName : TUnicodeString;
     pMyDevice : PDeviceObject;
      
 begin
-    RtlInitUnicodeString(@suDevName, DEV_NAME);
+    RtlInitUnicodeString(@szDevName, DEV_NAME);
     RtlInitUnicodeString(@szSymName, SYM_NAME);
-    Result := IoCreateDevice(pMyDriver, 0, @suDevName, FILE_DEVICE_UNKNOWN, 0, FALSE, pMyDevice);
+    Result := IoCreateDevice(pMyDriver, 0, @szDevName, FILE_DEVICE_UNKNOWN, 0, FALSE, pMyDevice);
  
     pMyDriver^.MajorFunction[IRP_MJ_CREATE] := @IrpOpen;
     pMyDriver^.MajorFunction[IRP_MJ_READ]   := @IrpRead;
     pMyDriver^.MajorFunction[IRP_MJ_WRITE]  := @IrpWrite;
     pMyDriver^.MajorFunction[IRP_MJ_CLOSE]  := @IrpClose;
     pMyDriver^.DriverUnload := @Unload;
-    pMyDevice^.Flags := pMyDevice^.Flags or DO_BUFFERED_IO;
+    pMyDevice^.Flags := pMyDevice^.Flags or DO_DIRECT_IO;
     pMyDevice^.Flags := pMyDevice^.Flags and not DO_DEVICE_INITIALIZING;
-    Result := IoCreateSymbolicLink(@szSymName, @suDevName);
+    Result := IoCreateSymbolicLink(@szSymName, @szDevName);
 end;
 end.
