@@ -832,7 +832,7 @@ end;
 WAIT_CONTEXT_BLOCK = TWaitContextBlock;
 PWAIT_CONTEXT_BLOCK = ^WAIT_CONTEXT_BLOCK;
 
-TKSpinLock = Pointer; // ULONG_PTR
+TKSpinLock = ULONG; // ULONG_PTR
 PKSpinLock = ^TKSpinLock;
 KSPIN_LOCK = TKSpinLock;
 PKSPIN_LOCK = ^KSPIN_LOCK;
@@ -1598,8 +1598,9 @@ procedure IoStartNextPacket(DeviceObject:PDeviceObject; Cancelable:BOOLEAN); std
 procedure InitializeListHead(ListHead:PLIST_ENTRY); stdcall;
 procedure InsertHeadList(ListHead:PLIST_ENTRY; Entry:PLIST_ENTRY); stdcall;
 procedure InsertTailList(ListHead:PLIST_ENTRY; Entry:PLIST_ENTRY); stdcall;
+function KfAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; stdcall;
 procedure KefReleaseSpinLockFromDpcLevel(SpinLock:PKSPIN_LOCK); stdcall;
-procedure KiReleaseSpinLock(SpinLock:PKSPIN_LOCK); stdcall;
+procedure KfReleaseSpinLock(SpinLock:PKSPIN_LOCK; irql:KIRQL); stdcall;
 procedure IoCsqInsertIrp(Csq:PIO_CSQ; Irp:PIRP; Context:PIO_CSQ_IRP_CONTEXT); stdcall;
 procedure KeInitializeSpinLock(SpinLock:PKSPIN_LOCK); stdcall;
 procedure IoDetachDevice(TargetDevice:PDEVICE_OBJECT); stdcall;
@@ -1657,7 +1658,6 @@ function RemoveEntryList(Entry:PLIST_ENTRY):Boolean; stdcall;
 function RemoveHeadList(ListHead:PLIST_ENTRY):PLIST_ENTRY; stdcall;
 function RemoveTailList(ListHead:PLIST_ENTRY):PLIST_ENTRY; stdcall;
 function IoCsqInitialize(Csq:PIO_CSQ; CsqInsertIrp:PIO_CSQ_INSERT_IRP; CsqRemoveIrp:PIO_CSQ_REMOVE_IRP; CsqPeekNextIrp:PIO_CSQ_PEEK_NEXT_IRP; CsqAcquireLock:PIO_CSQ_ACQUIRE_LOCK; CsqReleaseLock:PIO_CSQ_RELEASE_LOCK; CsqCompleteCanceledIrp:PIO_CSQ_COMPLETE_CANCELED_IRP):NTSTATUS; stdcall;
-function KiAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; stdcall;
 function IoCallDriver(DeviceObject:PDEVICE_OBJECT; Irp:PIRP):NTSTATUS; stdcall;
 function IoAttachDeviceToDeviceStack(SourceDevice:PDEVICE_OBJECT; TargetDevice:PDEVICE_OBJECT):PDEVICE_OBJECT; stdcall;
 function WdfDeviceInitAssignName(DeviceInit:PWDFDEVICE_INIT; DeviceName:PUNICODE_STRING):NTSTATUS; stdcall; assembler
@@ -1687,8 +1687,9 @@ procedure krnlKeServiceDescriptorTable; external NtKernel name 'KeServiceDescrip
 procedure krnlProbeForRead(Address:Pointer; Length:Cardinal; Alignment:Cardinal); stdcall; external NtKernel name 'ProbeForRead';
 procedure krnlExFreePool(P:Pointer); stdcall; external NtKernel name 'ExFreePool';
 procedure krnlKeInitializeMutex(Mutex:PKMutex; Level:Cardinal); stdcall; external NtKernel name 'KeInitializeMutex';
-procedure krnlKefReleaseSpinLockFromDpcLevel(SpinLock:PKSPIN_LOCK); stdcall; external NtKernel name 'KefReleaseSpinLockFromDpcLevel';
-procedure krnlKiReleaseSpinLock(SpinLock:PKSPIN_LOCK); stdcall; external NtKernel name 'KiReleaseSpinLock';
+function krnlKfAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; register; external NtKernel name 'KfAcquireSpinLock';
+procedure krnlKefReleaseSpinLockFromDpcLevel(SpinLock:PKSPIN_LOCK); register; external NtKernel name 'KefReleaseSpinLockFromDpcLevel';
+procedure krnlKfReleaseSpinLock(SpinLock:PKSPIN_LOCK; irql:KIRQL); register; external NtKernel name 'KfReleaseSpinLock';
 procedure krnlIoCsqInsertIrp(Csq:PIO_CSQ; Irp:PIRP; Context:PIO_CSQ_IRP_CONTEXT); stdcall; external NtKernel name 'IoCsqInsertIrp';
 procedure krnlKeInitializeSpinLock(SpinLock:PKSPIN_LOCK); stdcall; external NtKernel name 'KeInitializeSpinLock';
 procedure krnlIoDetachDevice(TargetDevice:PDEVICE_OBJECT); stdcall; external NtKernel name 'IoDetachDevice';
@@ -1723,7 +1724,6 @@ function krnlIoGetCurrentProcess:Pointer; stdcall; external NtKernel name 'IoGet
 function krnlKeDelayExecutionThread(WaitMode:KPROCESSOR_MODE; Alertable:Boolean; Interval:PLARGE_INTEGER):NTSTATUS; stdcall; external NtKernel name 'KeDelayExecutionThread';
 function krnlIoInitializeTimer(DeviceObject:PDeviceObject; TimerRoutine:PIO_TIMER_ROUTINE; Context:Pointer):NTSTATUS; stdcall; external NtKernel name 'IoInitializeTimer';
 function krnlIoCsqInitialize(Csq:PIO_CSQ; CsqInsertIrp:PIO_CSQ_INSERT_IRP; CsqRemoveIrp:PIO_CSQ_REMOVE_IRP; CsqPeekNextIrp:PIO_CSQ_PEEK_NEXT_IRP; CsqAcquireLock:PIO_CSQ_ACQUIRE_LOCK; CsqReleaseLock:PIO_CSQ_RELEASE_LOCK; CsqCompleteCanceledIrp:PIO_CSQ_COMPLETE_CANCELED_IRP):NTSTATUS; stdcall; external NtKernel name 'IoCsqInitialize';
-function krnlKiAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; stdcall; external NtKernel name 'KiAcquireSpinLock';
 function krnlIoCallDriver(DeviceObject:PDEVICE_OBJECT; Irp:PIRP):NTSTATUS; stdcall; external NtKernel name 'IoCallDriver';
 function krnlIoAttachDeviceToDeviceStack(SourceDevice:PDEVICE_OBJECT; TargetDevice:PDEVICE_OBJECT):PDEVICE_OBJECT; stdcall; external NtKernel name 'IoAttachDeviceToDeviceStack';
 function MmMapLockedPagesSpecifyCache(MemoryDescriptorList:PMDL; AccessMode:ULONG; CacheType:ULONG; RequestedAddress:POINTER; BugCheckOnFailure:ULONG; Priority:ULONG):POINTER; stdcall; external NtKernel name 'MmMapLockedPagesSpecifyCache';
@@ -1820,9 +1820,14 @@ begin
   krnlIoCsqInsertIrp(Csq, Irp, Context);
 end;
 
-procedure KiReleaseSpinLock(SpinLock:PKSPIN_LOCK); stdcall;
+function KfAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; stdcall;
 begin
-  krnlKiReleaseSpinLock(SpinLock);
+  Result:= krnlKfAcquireSpinLock(SpinLock);
+end;
+
+procedure KfReleaseSpinLock(SpinLock:PKSPIN_LOCK; irql:KIRQL); stdcall;
+begin
+  krnlKfReleaseSpinLock(SpinLock, irql);
 end;
 
 procedure KefReleaseSpinLockFromDpcLevel(SpinLock:PKSPIN_LOCK); stdcall;
@@ -2079,11 +2084,6 @@ function RemoveHeadList(ListHead:PLIST_ENTRY):PLIST_ENTRY; stdcall;
 begin
   Result:= Pointer(ListHead^.Flink);
   RemoveEntryList(Pointer(ListHead^.Flink));
-end;
-
-function KiAcquireSpinLock(SpinLock:PKSPIN_LOCK):KIRQL; stdcall;
-begin
-  Result:= krnlKiAcquireSpinLock(SpinLock);
 end;
 
 function RemoveTailList(ListHead:PLIST_ENTRY):PLIST_ENTRY; stdcall;
