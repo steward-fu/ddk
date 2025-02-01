@@ -1,0 +1,585 @@
+{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang1033\deflangfe1033{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New{\*\falt Courier};}
+{\f3\froman\fcharset2\fprq2{\*\panose 05050102010706020507}Symbol;}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;\red255\green255\blue255;
+\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{\widctlpar\adjustright \fs20 \snext0 Normal;}{
+\s1\keepn\widctlpar\tx540\adjustright \b\fs20 \sbasedon0 \snext0 heading 1;}{\*\cs10 \additive Default Paragraph Font;}{\s15\widctlpar\tqc\tx4320\tqr\tx8640\adjustright \fs20 \sbasedon0 \snext15 footer;}{\*\cs16 \additive \sbasedon10 page number;}}
+{\*\listtable{\list\listtemplateid-1\listsimple{\listlevel\levelnfc0\leveljc0\levelfollow0\levelstartat0\levelspace0\levelindent0{\leveltext\'01*;}{\levelnumbers;}}{\listname ;}\listid-2}}{\*\listoverridetable{\listoverride\listid-2
+\listoverridecount1{\lfolevel\listoverrideformat{\listlevel\levelnfc23\leveljc0\levelfollow0\levelstartat1\levelold\levelspace0\levelindent360{\leveltext\'01\u-3913 ?;}{\levelnumbers;}\f3\fbias0 \fi-360\li360 }}\ls1}}{\info
+{\title 1394 Bus Interfaces Test Specification}{\author Tom Green}{\operator Peter Binder}{\creatim\yr1996\mo11\dy22\hr17\min22}{\revtim\yr1998\mo5\dy10\hr13\min57}{\printim\yr1996\mo12\dy17\hr10\min23}{\version11}{\edmins135}{\nofpages15}{\nofwords4101}
+{\nofchars23381}{\*\company Microsoft}{\nofcharsws0}{\vern89}}\widowctrl\ftnbj\aenddoc\hyphcaps0\formshade\viewkind4\viewscale100 \fet0\sectd \linex0\endnhere\sectdefaultcl {\footer \pard\plain \s15\widctlpar
+\tqc\tx4320\tqr\tx8640\pvpara\phmrg\posxr\posy0\adjustright \fs20 {\field{\*\fldinst {\cs16 PAGE  }}{\fldrslt {\cs16\lang1024 15}}}{\cs16 
+\par }\pard \s15\ri360\widctlpar\tqc\tx4320\tqr\tx8640\adjustright {
+\par }}{\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}
+{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8
+\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain \qc\widctlpar\adjustright \fs20 {\b\fs40 
+\par 
+\par 
+\par 
+\par 
+\par 
+\par Template WDM Driver for Memphis
+\par }{\fs28 12/16/96
+\par 
+\par 
+\par }{Tom Green
+\par 
+\par }\pard \widctlpar\adjustright {\page }{\b Introduction
+\par 
+\par }{
+This document describes a template WDM driver for Memphis that contains diagnostic tools and provides a developer with a shell of code for writing Memphis drivers. The template driver provides minimal functionality and a set of diagnostic tools that are a
+c
+cessible from a ring 3 application. Included is a template ring 3 Win32 application to help in developing code to sit on top of the template driver. It is not a goal of this document to describe writing a WDM driver (although looking through the doc and d
+river code can help, and it provides useful tools for a first time WDM driver writer). Following are features of the template driver:
+\par 
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+Template driver code with DriverEntry, Dispatch (IOCTL), Read, Write, and PnPAddDevice routines included. These routine
+s include vectored calls to routines that a developer supplies in a device-specific file. Also included is sample code for simple in-memory loopback testing.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+IRP (I/O request packets) history tables that can be extracted by a ring 3 application. Calls t
+o log IRPs are placed in appropriate places in the driver to track when the driver completes a request on an IRP. These entries are time stamped and the first few bytes of data in the IRP are saved. The number of data bytes and IRPs are saved on a device 
+object basis as well.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+Execution tracing in the driver that can be extracted by a ring 3 application. Execution tracing sticks a pointer to a constant string in a log with a time stamp and sends it to the kernel debug print routines if debugging is enabled.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+Error logging in the driver that allows a ring 3 application to extract errors that happen in the driver or drivers it sits on top of. Errors in WDM drivers are not always mapped in an understandable way for a ring 3 application. The error logging lo
+gs all errors with a time stamp. The errors can be extracted later in a time stamped list to find out the exact cause of an error in a driver or the drivers below. The error codes are translated into an NT style constant from NT header files.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {General de
+bug support including memory allocation logging and verifying, assertion support, traps in code.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {Code profiling using the Pentium RDTSC instruction.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+IOCTLs to extract information about devices attached to the driver. This information includes any symbolic links created for the device, and information about the device object including IRPs and bytes passed through the device object.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li360\widctlpar{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+A Win32 ring 3 application with sample code using diagnostic IOCTLs. The sample application demonstrates using ReadFil
+e and WriteFile calls with the in-memory software loopback mechanism in the template driver.  The application also extracts the various tables and diagnostic information from the driver using IOCTL calls.
+\par }\pard \widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {
+\par 
+\par }{\b Template Driver Code}{
+\par 
+\par The template driver code contains a minimally functional WDM driver that includes support for most driver entry points with diagnostic features installed. The intention is that the following six core files will not need to be changed.
+\par 
+\par Drvshell.c - code to
+ implement all of the driver entry points. Included in the code are calls through pointers that will be filled in by the developer for their specific driver. This code also contains calls for IRP history, execution tracing and error logging.
+\par 
+\par Drvshell.h - header file for Drvshell.c. This file is included in Drvshell.c and files created for the specific driver.
+\par 
+\par Debugwdm.c - IRP history table, execution tracing code, and error logging. This file includes routines that are used for history and tracing as well
+ as routines to format these tables into something to return to a ring 3 application. Some of these routines are implemented as macros in debugwdm.h for speed.
+\par 
+\par Debugwdm.h - header file for Debugcmd.c. This is included in Debugwdm.c and files created for the specific driver.
+\par 
+\par Vector.c \endash  this file contains pointers to routines in the device specific files that will be called by the template part of the driver. Also contains pointers to strings describing driver (name and version).
+\par 
+\par Vector.h \endash  header file for Vector.c. This file is included in template driver source files and files created for the specific driver.
+\par 
+\par 
+\par There are two files that are modified by the developer for their specific driver:
+\par 
+\par Testdrv.h - defines driver specific strings and data structures. This would include the name of the driver that would be put in any kernel print routines. Here is part of the example file:
+\par }\pard\plain \s15\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {
+\par }\pard\plain \widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\f2\fs18 // driver name and version
+\par #define DRIVER_NAME             "TESTDRV"
+\par #define DRIVER_VERSION          "1.00"
+\par 
+\par // the following define determines the IO method used, buffered or direct
+\par // for reads and writes
+\par #define DRIVER_IO_METHOD        DO_DIRECT_IO
+\par }{
+\par 
+\par Testdrv.c - this file contains routines called by Drvshell.c. The developer just fills
+ in pointers (from Vector.c) to the routines that will be called by the template driver. The developer must supply two routines that are called by the template driver. Following is example code for the routines:
+\par 
+\par \page 
+\par }{\f2\fs18 NTSTATUS
+\par OpenDriver(VOID)
+\par \{
+\par     VectorDriverEntry   = TESTDRV_DriverEntry;
+\par     VectorDispatch      = TESTDRV_Dispatch;
+\par     VectorUnload        = TESTDRV_Unload;
+\par     VectorAddDevice     = TESTDRV_AddDevice;
+\par     VectorRemoveDevice  = TESTDRV_RemoveDevice;
+\par     VectorCreate        = TESTDRV_Create;
+\par     VectorClose         = TESTDRV_Close;
+\par     VectorWrite         = TESTDRV_Write;
+\par     VectorRead          = TESTDRV_Read;
+\par 
+\par     DriverName          = DRIVER_NAME;
+\par     DriverVersion       = DRIVER_VERSION;
+\par 
+\par     return STATUS_SUCCESS;
+\par \} // OpenDriver
+\par }{
+\par }{\f2\fs18 VOID
+\par CloseDriver(VOID)
+\par \{
+\par     // probably don't need to make these vectors NULL, but why not
+\par     // could prevent my computer from exploding, you never know
+\par     VectorDriverEntry   = NULL;
+\par     VectorDispatch      = NULL;
+\par     VectorUnload        = NULL;
+\par     VectorAddDevice     = NULL;
+\par     VectorRemoveDevice  = NULL;
+\par     VectorCreate        = NULL;
+\par     VectorClose         = NULL;
+\par     VectorWrite         = NULL;
+\par     VectorRead          = NULL;
+\par 
+\par     DriverName          = "";
+\par     DriverVersion       = "";
+\par \} // CloseDriver
+\par }{
+\par \page 
+\par OpenDriver is called from the DriverEntry routine and CloseDriver is called from the Unload routine in the template driver. This is also a good place to allocate any driver resources that your device may need. The developer may want to ren
+ame Testdrv.c to reflect the hardware or class that it is used with. The vectors do not have to be filled in if the driver does not need a specific entry point. The vector pointers are checked in the template driver before being called.
+\par 
+\par 
+\par Following are the routines implemented in drvshell.c with a short description of what they do:
+\par 
+\par DriverEntry - this routine is called when the driver is first loaded. Calls a device specific routine called OpenDriver that sets up pointers to driver routines and does any dev
+ice specific driver initialization. It also calls routines to initialize and allocate resources for the diagnostic tools (IRP history, execution tracing, and error logging) and creates a default device object and symbolic link.
+\par 
+\par DRVSHELL_DriverUnload - frees any resources allocated in the DriverEntry routine. Also calls device specific routine called CloseDriver that undoes things done in device specific OpenDriver routine.
+\par 
+\par DRVSHELL_Dispatch - this routine handles all IOCTL and PNP_POWER calls to the driver. IOCTLs will be handled as best they can be, with a call to a device-specific IOCTL routine (if supported).
+\par  
+\par DRVSHELL_Create - this handles CreateFile calls from a ring 3 application.
+\par 
+\par DRVSHELL_Close - this handles CloseHandle calls from a ring 3 application.
+\par 
+\par DRVSHELL_Write - handles WriteFile calls from a ring 3 application.
+\par 
+\par DRVSHELL_Read - handles ReadFile calls from a ring 3 application.
+\par 
+\par DRVSHELL_PnPAddDevice - handles calls to the driver when a new device is installed. This routine creates a device object and symbolic links for the new device.
+\par 
+\par 
+\par All of these routines have execution path and kernel debug prints sprinkled liberally througho
+ut.  Calls to log IRP history are placed on entry to appropriate driver routines. Calls to log IRP history routines have also been placed in code whenever an IRP request is completed. Error logging has been placed at the end of all routines that return ty
+pe NTSTATUS. Here are a couple of routines from the template driver:
+\par \page }{\f2\fs18 NTSTATUS
+\par DriverEntry(IN PDRIVER_OBJECT DriverObject, IN PUNICODE_STRING RegistryPath)
+\par \{
+\par     NTSTATUS               ntStatus = STATUS_SUCCESS;
+\par     static BOOLEAN         initd = FALSE;
+\par     PDEVICE_OBJECT         pDeviceObject = NULL;
+\par     PDEVICE_EXTENSION      deviceExtension;
+\par 
+\par     if(!initd)
+\par     \{
+\par         // initialize calls to new driver routines, etc.
+\par         ntStatus = OpenDriver();
+\par \tab 
+\par         if(!NT_SUCCESS(ntStatus))
+\par         \{
+\par             Debug_KdPrint(("exit DriverEntry: OpenDriver call failed (%x)\\n",
+\par                            ntStatus));
+\par             return ntStatus;
+\par         \}
+\par \tab 
+\par         // initialize diagnostic stuff (history, tracing, error logging)
+\par         ntStatus = Debug_OpenWDMDebug();
+\par 
+\par         if(!NT_SUCCESS(ntStatus))
+\par         \{
+\par             Debug_KdPrint(("exit DriverEntry: OpenWDMDebug failed (%x)\\n",
+\par                            ntStatus));
+\par             return ntStatus;
+\par         \}
+\par     \}
+\par 
+\par     // chicken before the egg problem, can't call DEBUG_PATH until initd
+\par     DEBUG_LOG_PATH("enter DriverEntry");
+\par \tab 
+\par     Debug_KdPrint(("DriverObject = %0x08x\\n", DriverObject));
+\par     Debug_KdPrint(("DeviceObject = 0x%08x\\n", DriverObject->DeviceObject));
+\par 
+\par     // Create dispatch points for device control, create, close, etc.
+\par 
+\par     DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DRVSHELL_Dispatch;
+\par     DriverObject->MajorFunction[IRP_MJ_CREATE]         = DRVSHELL_Create;
+\par     DriverObject->MajorFunction[IRP_MJ_CLOSE]          = DRVSHELL_Close;
+\par     DriverObject->MajorFunction[IRP_MJ_PNP_POWER]      = DRVSHELL_Dispatch;
+\par     DriverObject->MajorFunction[IRP_MJ_WRITE]          = DRVSHELL_Write;
+\par     DriverObject->MajorFunction[IRP_MJ_READ]           = DRVSHELL_Read;
+\par     DriverObject->DriverUnload                         = DRVSHELL_Unload;
+\par     DriverObject->DriverExtension->AddDevice           = DRVSHELL_PnPAddDevice;
+\par \tab 
+\par     // call device specific DriverEntry if there is one
+\par     if(VectorDriverEntry != NULL)
+\par         ntStatus = (*VectorDriverEntry)(DriverObject, RegistryPath);
+\par 
+\par     if(!initd)
+\par     \{
+\par         // let's create a device object named the same as the driver
+\par         ntStatus = DRVSHELL_CreateDeviceObject(DriverObject, &pDeviceObject, 
+\par                                                DriverName);
+\par 
+\par         // check for error, remove the device if needed
+\par         if(!NT_SUCCESS(ntStatus))
+\par         \{
+\par             DEBUG_LOG_PATH("Failed to create device object");
+\par             DRVSHELL_RemoveDevice(DriverObject->DeviceObject);
+\par         \}
+\par         else
+\par         \{
+\par             // make sure we don't mess up when the object is removed
+\par             // and write past the end of our slot array
+\par 
+\par             // Get a pointer to the device extension
+\par             deviceExtension = pDeviceObject->DeviceExtension;
+\par 
+\par             // set to invalid slot value
+\par             deviceExtension->Instance = NUM_DEVICE_SLOTS;
+\par         \}
+\par 
+\par         initd = TRUE;
+\par     \}
+\par 
+\par     // log an error if we got one
+\par     DEBUG_LOG_ERROR(ntStatus);
+\par 
+\par     DEBUG_LOG_PATH("exit  DriverEntry");
+\par 
+\par     Debug_KdPrint(("status = (%x)\\n", ntStatus));
+\par \tab 
+\par     return ntStatus;
+\par \} // DriverEntry
+\par 
+\par 
+\par NTSTATUS
+\par DRVSHELL_Create(IN PDEVICE_OBJECT DeviceObject, IN PIRP Irp)
+\par \{
+\par     NTSTATUS              ntStatus = STATUS_SUCCESS;
+\par     PIO_STACK_LOCATION    irpStack;
+\par     PDEVICE_EXTENSION     deviceExtension;
+\par     PVOID                 ioBuffer;
+\par 
+\par     DEBUG_LOG_PATH("enter DRVSHELL_Create");
+\par \tab 
+\par     // set return values to something known
+\par     Irp->IoStatus.Status = STATUS_SUCCESS;
+\par     Irp->IoStatus.Information = 0;
+\par 
+\par     // Get a pointer to the current location in the Irp. This is where
+\par     // the function codes and parameters are located.
+\par     irpStack = IoGetCurrentIrpStackLocation(Irp);
+\par 
+\par     // Get a pointer to the device extension
+\par     deviceExtension = DeviceObject->DeviceExtension;
+\par 
+\par     // Get the pointer to the input/output buffer and it's length
+\par     ioBuffer = Irp->AssociatedIrp.SystemBuffer;
+\par 
+\par     // make entry in IRP history table
+\par     DEBUG_LOG_IRP_HIST(DeviceObject, Irp, irpStack->MajorFunction,
+\par                        ioBuffer, 0);
+\par 
+\par     // call device specific create if there is one
+\par     if(VectorCreate != NULL)
+\par         ntStatus = (*VectorCreate)(DeviceObject, Irp);
+\par \tab 
+\par     // complete IO and make entry in IRP history table
+\par     if(ntStatus != STATUS_PENDING)
+\par         DRVSHELL_CompleteIO(DeviceObject, Irp, irpStack->MajorFunction,
+\par                             ioBuffer, 0);
+\par     else
+\par         DEBUG_LOG_PATH("STATUS_PENDING");
+\par 
+\par     // log an error if we got one
+\par     DEBUG_LOG_ERROR(ntStatus);
+\par 
+\par     DEBUG_LOG_PATH("exit  DRVSHELL_Create");
+\par 
+\par     Debug_KdPrint(("status = (%x)\\n", ntStatus));
+\par \tab 
+\par     return ntStatus;
+\par \} // DRVSHELL_Create
+\par \page }{
+\par }{\b 
+\par }{When device objects are created and attached, usua
+lly there is information added to the object called a device extension. Typically this contains information needed by the specific driver.  When a device object is created the device extension is allocated, initialized, and then attached to the device obj
+ect. For this template driver there is a minimal device extension with a pointer for the developer to add stuff specific to their driver. Here is what the device extension looks like:
+\par 
+\par }{\f2\fs18 // device extension for driver instance, used to store needed data
+\par 
+\par typedef struct _DEVICE_EXTENSION
+\par \{
+\par \tab CHAR\tab \tab \tab DeviceName[NAME_MAX];\tab // string name of device
+\par \tab CHAR\tab \tab \tab LinkName[NAME_MAX];\tab \tab // name of symbolic link
+\par \tab PDEVICE_OBJECT\tab PhysDeviceObject;\tab \tab // physical device object
+\par \tab PDEVICE_OBJECT\tab StackDeviceObject;\tab \tab // stack device object
+\par \tab BOOLEAN\tab \tab Stopped;\tab \tab \tab // current state of device 
+\par \tab ULONG\tab \tab \tab IRPCount;\tab \tab \tab // number of IRPs complete
+\par \tab ULONG\tab \tab \tab ByteCount;\tab \tab \tab // number of bytes of data \tab ULONG\tab \tab \tab Instance;\tab \tab \tab // instance of device
+\par \tab PVOID\tab \tab \tab DeviceSpecificExt;\tab \tab // pointer to device
+\par                                                      // specific extension
+\par \} DEVICE_EXTENSION, *PDEVICE_EXTENSION;
+\par }{
+\par When the device object is created, the template driver calls through one of the vectors to the device specific code. The developer then allocates memory 
+for a device specific extension and fills in the DeviceSpecificExt void pointer. When the device specific code needs to extract this, the void pointer is cast to the type defined by the developer.
+\par }{\b 
+\par 
+\par Driver Diagnostic Tools
+\par 
+\par }{The following diagnostic routine
+s are implemented as either subroutines or macros. In the case of history tables and logs, if the size of the table or log is set to zero, a check is done before the subroutine call to avoid overhead if that table or log is disabled. The size of a table o
+r log may be set with an IOCTL call from the ring 3 application. The supplied ring 3 application demonstrates setting these sizes and extracting information from driver.
+\par }{\b 
+\par 
+\par IRP History Tables}{
+\par 
+\par IRP history tables allow tracking of IRPs as they are sent into t
+he driver, and when a request is completed by the driver (when IoCompleteRequest is called on an IRP). This table is a circular buffer and the size is determined by a default value in the driver. This buffer can be resized later with IOCTL calls to the dr
+i
+ver (currently you lose everything in the table when it is resized). Because it is a circular buffer, you only have access to the last TABLE_SIZE entries after the table has been filled and starts wrapping. Because the entries are small (under 32 bytes), 
+you can keep a lot of them hanging around. The default size is 64 entries. Following is the prototype for the macro that logs entries and the data structure for a history table entry:
+\par 
+\par }\pard\plain \s15\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\page 
+\par }\pard\plain \widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\f2\fs18 VOID
+\par DEBUG_LOG_IRP_HIST(IN PDEVICE_OBJECT pDeviceObject, IN PIRP pIrp,
+\par                    IN ULONG majorFunction, IN PVOID ioBuffer, ULONG bufferLen);
+\par 
+\par // entry for IRP history table for IRPs going in and out
+\par typedef struct IRPHistory
+\par \{
+\par     LARGE_INTEGER       timeStamp;
+\par     PDEVICE_OBJECT      pDeviceObject;
+\par     PIRP                pIrp;
+\par     ULONG               majorFunction;
+\par     UCHAR               irpData[IRP_DATA_SIZE];
+\par \} IRPHist, *PIRPHist;
+\par }{
+\par This entry includes a time stamp, a pointer to the device object the IRP is associated with, a pointer to the IRP, the major functi
+on, and the first 8 bytes of data in the buffer associated with the IRP. The time stamp is useful for determining when it takes a long time for an IRP to complete, and when used in conjunction with the execution tracing (which will also be time stamped). 
+It won\rquote 
+t take much time to fill an entry in the table, and it will provide valuable information about IRPs that have passed through the driver. If the size of the table is set to 0, IRP history is turned off and a subroutine call to the history routines is 
+avoided.
+\par 
+\par 
+\par }\pard \widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\b Execution Tracing}{
+\par 
+\par Execution tracing is similar to IRP history tables. It uses a circular buffer again, giving you access to the last LOG_SIZE entries that were logged. Each entry contains a time stamp and a pointer to a constant array of chars.
+ This means that there will be no printf-style formatting of the strings used in execution tracing. This is a bit of a downside, but the strings are extracted at some later time, so they would have to be copied and memory allocated for storage. This would
+ 
+be too time consuming and would turn into something way too complicated. This merely provides information about the path of execution through the code. Just sprinkle the DEBUG_LOG_PATH calls all over your code. Put them in all of the different paths that 
+t
+he code could take. The entries are time stamped for use in conjunction with other logs and tables. When debugging is enabled in the driver, the path logging is also sent to kernel print routines. If the size of the path tracing is set to 0, execution tra
+cing is turned off and a subroutine call is avoided. 
+\par 
+\par 
+\par }{\b Error Logging
+\par }{
+\par Many driver routines return an error of type NTSTATUS. Following is a macro for logging errors in the driver:
+\par 
+\par }{\f2\fs18 DEBUG_LOG_ERROR(ntStatus);}{
+\par 
+\par This macro will log ntStatus with a time stamp 
+if it is not equal to STATUS_SUCCESS. These will again be stored in a circular buffer and a list of errors can be extracted by the ring 3 application. This will be useful because NT style errors do not really make it up to the ring 3 application in a reco
+g
+nizable way. This makes it hard to tell what kind of error it is if it comes from a driver below. When the error log is extracted from the driver, logged error codes will be translated into ASCII strings from ntstatus.h, so someone looking at the log file
+ won\rquote t have to peruse header files for what the error codes really mean. If the error log size is set to 0, error logging is turned off and a subroutine call is avoided.
+\par 
+\par \page 
+\par }{\b General Debug Support
+\par }{
+\par This includes the following four routines:
+\par 
+\par 
+\par }{\f2\fs18 VOID DEBUG_TRAP(IN PCHAR pTrapCause);
+\par VOID DEBUG_ASSERT(IN PCHAR Message, BOOLEAN Exp);
+\par PVOID Debug_MemAlloc(IN POOL_TYPE PoolType, IN ULONG NumberOfBytes,
+\par                      IN BOOLEAN bZeroFill);
+\par VOID Debug_MemFree(IN PVOID pMem);
+\par }{
+\par The first routine DEBUG_TRAP, is pro
+vided to insert a trap in the code. The pointer passed into the routine will be time stamped and inserted in the execution trace buffer before actually halting the code.  DEBUG_ASSERT works in a similar fashion. Both of these routines are implemented as m
+acros. Here is how you might use the two routines:
+\par 
+\par }{\f2\fs18 DEBUG_TRAP("DRVSHELL_Create: Code Coverage trap 1");
+\par DEBUG_ASSERT("pUrb == NULL", pUrb != NULL);
+\par }{
+\par The next two routines, Debug_MemAlloc and Debug_MemFree provide memory allocation services that keep track 
+of the current amount of memory allocated, and perform sanity checks on all memory freed. These routines work like the ExAllocatePool and ExFreePool routines. If the bZeroFill flag is set to TRUE when the Debug_MemAlloc routine is called, the memory alloc
+a
+ted is zero filled. As a sanity check, the driver can check to make sure all allocated memory has been freed when it unloads. The memory allocation routines include a way to verify whether the driver has written past the end of an allocated buffer, tried 
+t
+o free an already, freed chunk of memory, or has tried to free memory not allocated by the template driver routines. An extra DWORD is tacked onto the end of any allocation and a signature is written there. When the memory is freed, the signature is check
+e
+d. If it is O.K. the memory will be freed (by calling ExFreePool). If not, this means the end of the buffer has been written past, someone is trying to free a junk block of memory, or the memory has already been freed. All of these are considered fatal co
+nditions. The routines can be adjusted to suit individual needs.
+\par 
+\par 
+\par }\pard\plain \s1\keepn\widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \b\fs20 {Code Profiling
+\par }\pard\plain \widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {
+\par There are two routines that allow very high resolution profiling of code. These routines use the Pentium RDTSC instruction, which returns a 64-bit count of clock cycles since the chip was powered on. The two routines are:
+\par 
+\par }\pard\plain \s15\widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {
+\par }\pard\plain \widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\f2\fs18 VOID
+\par Debug_StartPentiumCycleCounter(PLARGE_INTEGER cycleCount);
+\par 
+\par VOID
+\par Debug_StopPentiumCycleCounter(PLARGE_INTEGER cycleCount);
+\par }{
+\par 
+\par Just surround a piece code to profile with these calls to get a cycle count.  A LARGE_INTEGER is a Windows data structure of two 32-bit integers. Here is an example profile:
+\par \page 
+\par 
+\par }{\f2\fs18 LARGE_INTEGER cycleCount;
+\par 
+\par Debug_StartPentiumCycleCounter(&cycleCount);
+\par 
+\par // code to profile goes here, cycle count is returned in
+\par // LARGE_INTEGER cycleCount
+\par 
+\par Debug_StopPentiumCycleCounter(&cycleCount);
+\par }{
+\par 
+\par Following is debug output (using DEBUG_LOG_PATH and Debug_KdPrint calls) from the template driver. In the driver calls to RtlCopyMemory have been profiled, and the results are displayed here:
+\par 
+\par 
+\par }\pard\plain \s15\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\f2\fs18 c0fad768 00 e3fe78f0 TESTDRV: exit  DRVSHELL_CompleteIO
+\par }\pard\plain \nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {\f2\fs18 c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_CompleteIO
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  TESTDRV_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: RtlCopyMemory copied 0x000003ef bytes in 0x00000583 cycles
+\par c0fad768 00 e3fe78f0 TESTDRV: enter TESTDRV_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: status = (0)
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  DRVSHELL_Read
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  DRVSHELL_CompleteIO
+\par c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_CompleteIO
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  TESTDRV_Read
+\par c0fad768 00 e3fe78f0 TESTDRV: enter TESTDRV_Read
+\par c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_Read
+\par c0fad768 00 e3fe78f0 TESTDRV: status = (0)
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  DRVSHELL_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: exit  DRVSHELL_CompleteIO
+\par c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_CompleteIO
+\par c0fad768 00 e3fe78f0 TESTDRV: ext  TESTDRV_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: RtlCopyMemory copied 0x000003ee bytes in 0x00000764 cycles
+\par c0fad768 00 e3fe78f0 TESTDRV: enter TESTDRV_Write
+\par c0fad768 00 e3fe78f0 TESTDRV: enter DRVSHELL_Write
+\par c0fad768 00 e3fe78e3 TESTDRV: status = (0)
+\par }\pard \widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {
+\par 
+\par }{\b Attached Devices}{
+\par 
+\par This allows a ring 3 application to get information about all of the devices attached to the driver. Information includes the symbolic link name, device object, device object IRP count and device object byte count.
+\par 
+\par 
+\par }{\b Diagnostic IOCTLs
+\par }{
+\par Diagnostic IOCTLs are provided for dumping logs, history tables, and device and driver information. All of these IOCTLs return a buffer of ASCII characters with each line delimited by a carriage return. The information is extracted with IOCTL calls from t
+he ring 3 application. Here is what a log file dumping all of the information looks like:
+\par 
+\par \page 
+\par 
+\par 
+\par }{\f2\fs18 Driver:\tab  TESTDRV
+\par 
+\par Version:      1.00
+\par 
+\par Memory Allocated:          0x00000518
+\par Maximum Memory Allocated:  0x000014b4
+\par MemAlloc Count:            0x00167b2d
+\par MemFree Count:             0x00167b27
+\par MemAlloc Fail Count:       0x00000000
+\par MemFree Fail Count:        0x00000000
+\par 
+\par 
+\par 
+\par Attached Devices
+\par 
+\par Device              Device Obj  IRPs Complete   Byte Count
+\par 
+\par TESTDRV000          0xc0fa1d68  0x002cf640      0x5a0032a2
+\par TESTDRV             0xc0fa0cc8  0x0000000d      0x000020cb
+\par 
+\par 
+\par 
+\par IRP History
+\par 
+\par Time Stamp          Device Obj  IRP         Func    Data
+\par 
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  READ    1b 1b 1b 1b 1b 1b 1b 1b
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1c 1c 1c 1c 1c 1c 1c 1c
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1c 1c 1c 1c 1c 1c 1c 1c
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  READ    1b 1b 1b 1b 1b 1b 1b 1b
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  READ    1c 1c 1c 1c 1c 1c 1c 1c
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1d 1d 1d 1d 1d 1d 1d 1d
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1d 1d 1d 1d 1d 1d 1d 1d
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  READ    1c 1c 1c 1c 1c 1c 1c 1c
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  READ    1d 1d 1d 1d 1d 1d 1d 1d
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1e 1e 1e 1e 1e 1e 1e 1e
+\par 0x01bbd8d8bd2b55d0  0xc0fa1d68  0xc0fa5ee0  WRITE   1e 1e 1e 1e 1e 1e 1e 1e
+\par 0x01bbd8d8bd2d78b0  0xc0fa0cc8  0xc0fad000  CREATE  ff ff ff ff ff ff ff ff
+\par 0x01bbd8d8bd2d78b0  0xc0fa0cc8  0xc0fad000  CREATE  ff ff ff ff ff ff ff ff
+\par 0x01bbd8d8bd2d78b0  0xc0fa1d68  0xc0fa5ee0  READ    1d 1d 1d 1d 1d 1d 1d 1d
+\par 0x01bbd8d8bd2d78b0  0xc0fa1d68  0xc0fa5ee0  READ    1e 1e 1e 1e 1e 1e 1e 1e
+\par 0x01bbd8d8bd2d78b0  0xc0fa0cc8  0xc0fad000  DEVCTL  ff ff ff ff ff ff ff ff
+\par 
+\par 
+\par 
+\par Execution Path History
+\par 
+\par Time Stamp          Path
+\par 
+\par 0x01bbd8d8bd2b55d0  exit  DRVSHELL_Write
+\par 0x01bbd8d8bd2d78b0  enter DRVSHELL_Create
+\par 0x01bbd8d8bd2d78b0  enter TESTDRV_Create
+\par 0x01bbd8d8bd2d78b0  exit  TESTDRV_Create
+\par 0x01bbd8d8bd2d78b0  enter DRVSHELL_CompleteIO
+\par 0x01bbd8d8bd2d78b0  exit  DRVSHELL_CompleteIO
+\par 0x01bbd8d8bd2d78b0  exit  DRVSHELL_Create
+\par 0x01bbd8d8bd2d78b0  enter DRVSHELL_Read
+\par 0x01bbd8d8bd2d78b0  enter TESTDRV_Read
+\par 0x01bbd8d8bd2d78b0  exit  TESTDRV_Read
+\par 0x01bbd8d8bd2d78b0  enter DRVSHELL_CompleteIO
+\par 0x01bbd8d8bd2d78b0  exit  DRVSHELL_CompleteIO
+\par 0x01bbd8d8bd2d78b0  exit  DRVSHELL_Read
+\par 0x01bbd8d8bd2d78b0  enter DRVSHELL_Dispatch
+\par 0x01bbd8d8bd2d78b0  IRP_MJ_DEVICE_CONTROL
+\par 0x01bbd8d8bd2d78b0  GET_DRIVER_LOG
+\par 
+\par 
+\par 
+\par Error Log
+\par 
+\par Time Stamp          Error
+\par 
+\par 0x01bbd8d8b88107a0  STATUS_DEVICE_BUSY
+\par 0x01bbd8d8ba0f21b0  STATUS_DEVICE_BUSY
+\par 
+\par }{\page 
+\par 
+\par 
+\par }{\b Loading the Driver}{
+\par 
+\par Included with the driver source and executables is a file called testdrv.reg. Run this from Explorer and it will create a registry key to load the driver when Memphis boots. The driver will create a device object that can be opened (with a CreateFile call
+)
+ from the ring 3 application. You can also create more device objects by installing an .inf file for a particular piece of hardware. When the driver receives Plug and Play notification for the device, another device object will be created. For each device
+ 
+object created, a symbolic link that can be opened by the application is created. The driver object created when the driver is loaded is named the same as the driver (as described in your device specific header file). For Plug and Play devices, the name o
+f the driver is used with a 3 digit decimal number tacked on the end. See the sample log file for an example of the naming convention.
+\par 
+\par 
+\par }{\b Win32 Application Code
+\par }{
+\par A sample Win32 application is supplied that includes code for extracting diagnostic information from the driver and writing it to a log file. The application implements a loopback test using ReadFile and WriteFile calls to the driver\rquote 
+s in-memory loopback mechanism. There is also code to set the size of logs and history tables in the driver. Try out t
+he various menu choices and try starting loopback, stopping loopback, and then extracting information from the driver. Developers new to WDM may find working with the application and driver educational.
+\par 
+\par 
+\par }\pard\plain \s1\keepn\widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \b\fs20 {Future Enhancements
+\par }\pard\plain \widctlpar\tx540{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20 {
+\par The template driver is an ongoing project, and feel free to modify it as needed. Here are some features that may be added for the next release:
+\par 
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li405\widctlpar\tx540{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+An edit control in the application, so driver information and loopback progress are recorded in the application window. A menu option will allow the buffer to be saved to a file.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li405\widctlpar\tx540{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+More control and feedback for the loopback test in the driver. This might include setting buffer sizes for the loopback test, doing synch and async reads and write, and doing some sort of profiling of the test.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li405\widctlpar\tx540{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+More robust and flexible device object handling in the driver. There are some shortcomings with the device object created when the driver loads that are being worked out.
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \fi-360\li405\widctlpar\tx540{\*\pn \pnlvlblt\ilvl0\ls1\pnrnot0\pnf3\pnstart1\pnindent360\pnhang{\pntxtb \'b7}}\ls1\adjustright {
+Fix resizing table and log routines to retain current information when resized.
+\par }\pard \li45\widctlpar\tx540\adjustright {
+\par }\pard \widctlpar\tx540\adjustright {
+\par }{\b 
+\par }}

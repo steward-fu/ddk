@@ -1,0 +1,51 @@
+; Copyright (c) 1993-1998 Microsoft Corporation
+
+[Version]
+Signature="$CHICAGO$"
+Class=MTD
+ClassGUID={4d36e970-e325-11ce-bfc1-08002be10318}
+Provider=%MS%
+
+;
+;   List of manufacturers and devices
+;
+[Manufacturer]
+%SampleMTDDrvs%=SampleMTD
+
+;
+; Note: PnP IDs for PCMCIA memory cards are based on the JEDEC ID of the card
+;
+[SampleMTD]
+%PCMCIA\MTD-0000.DeviceDesc%=SRAM_MTD, PCMCIA\MTD-0000
+
+;
+;   Generic SRAM Memory Card
+;
+[SRAM_MTD]
+CopyFiles=@SRAMMTD.VXD
+AddReg=SRAM_MTD_Reg
+
+[SRAM_MTD_Reg]
+HKR,,DriverDesc,,"Sample SRAM Memory Technology Driver"
+HKR,,DevLoader,,"PCCARD.VXD"
+HKR,,MTD,,"SRAMMTD.VXD"
+
+;
+;   Information about where the files are
+;
+[DestinationDirs]
+DefaultDestDir=11               ; LDID_SYS
+
+[SourceDisksNames]
+1="Windows 98 Sample MTD Driver Disk",,0
+
+[SourceDisksFiles]
+srammtd.vxd=1
+
+[ForceCopy]
+HKR,,NoSetupUI,,1
+
+[Strings]
+MS="Microsoft"
+SampleMTDDrvs="(Sample MTD driver)"
+PCMCIA\MTD-0000.DeviceDesc = "SRAM Memory Card (Sample Driver)"

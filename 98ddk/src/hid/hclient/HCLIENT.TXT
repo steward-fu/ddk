@@ -1,0 +1,124 @@
+HCLIENT.EXE: A sample HID client application
+
+
+COMPONENTS
+==========
+
+hclient.c       GUI routines
+pnp.c           Routines for finding HID devices and determining their
+                properties
+report.c        Routines for extracting data received from a HID device,
+                as well as routines for creating HID report packets
+hid.h           Data structures for a HID device
+hclient.rc      Resource script defining type and placement of GUI
+                components
+resource.h      Visual Studio(TM) include file to hold Windows message
+                identifiers
+ecdisp.c        Module that handles the GUI for the extended calls
+                dialog box
+extcalls.c      Module for wrapping the HID.DLL calls to perform extra
+                validation on the state of the APIs
+buffers.c       Routines to track the buffer's input/output/feature buffers
+                that are used as parameters in the HID.DLL APIs
+debug.c         Memory debugging routines to check for memory leaks and
+                create buffers that can help check for buffer overflow errors
+strings.c       Routines for converting parameter data from the user
+                into forms used by HID.DLL routines
+
+For build and development purposes, HID.LIB and HIDPARSE.LIB files are
+provided in the LIB\I386 directory of this DDK.  
+
+NOTE: When building client applications, link using the HID.LIB library.
+      When building kernel-mode client drivers, link using the HIDPARSE.LIB 
+          library.
+
+
+OVERVIEW
+========
+
+Device Enumeration
+------------------
+
+Once a HID device has been found by the Plug and Play subsystem and
+initialized by HIDClass, a device object is created for each of the
+top level collections described in the report descriptor of that HID
+device. HIDClass creates a symbolic link to each of these device 
+objects, creating an Application Device Class Association. Each of 
+these strings is stored under an Application Device Class GUID. Given
+this GUID, an application in the user space can locate all the names
+of HID device objects. The enumeration functions are provided by 
+SetupDI 32-bit APIs. For an example of how these functions can be used,
+see FindKnownHidDevices in pnp.c.
+
+
+Determining Device Capabilities
+-------------------------------
+
+Once a HID device has been enumerated, it can be accessed by passing 
+its device object name to the Win32 CreateFile routine. This supplies
+a file handle, which the client uses to query the device capabilities
+from HID.DLL. There are seven such capabilities (all contained in
+hidpi.h).
+
+(1) HIDP_CAPS: This lists the usage page and usage of the top level
+collection and the lengths of the input, output, and feature
+reports of this device.
+
+    NOTE: Regardless of the number of reports in a device, a Report
+    ID is ALWAYS the first byte (for example, a standard keyboard has
+    a report size of 9 and not 8).
+
+Also in this field is the length (the number of array entries, not
+bytes) of each of the six remaining capabilities.
+
+(2-4) HIDP_BUTTON_CAPS: There are three of these capabilities (input, output, and feature). This contains the information about all
+the buttons on the device. Note that the buttons' presentation (array
+or bitmap) is abstracted away.
+
+(5-7) HIDP_VALUE_CAPS: There are three of these capabilities (input, output, and feature). This contains the information about all
+the values (non-binary fields) in a HID device. (Any non-array field
+with a report count size from 2 to 32 is a value.)
+
+For further information, see the USB and HID specifications.
+
+
+Reading Device Information
+--------------------------
+
+Input report packets are obtained one at a time through the Win32 Read
+API. Output reports are sent through the Win32 Write API.
+
+All services associated with Read and Write are applicable, including
+overlapped reads and writes, but note that HIDCLASS provides standard
+ring buffers for each device. Overlapped reads are not required to
+prevent loss of data because each device the client accesses receives
+its own ring buffer. A Read will not affect another client's data.
+
+The data packet sent to Read and Write may be further broken down by six
+main accessor functions:
+    HidP_GetUsages
+    HidP_SetUsages
+    HidP_GetUsageValue
+    HidP_GetScaledUsageValue
+    HidP_SetUsageValue
+    HidP_SetScaledUsageValue
+Refer to the Windows Driver Documentation in this DDK for information about these accessor functions.
+
+
+Writing Applications
+--------------------
+
+HID devices behave in two fundamental ways: either enumerating all the
+channels (as is done in this sample) or using values you expect and
+waiting on an error (as is done for example in the USB keyboard driver).
+
+Most applications will choose the second model, because they typically
+understand a very small set of usages. Such applications use the HidP
+accessor functions, which return #define HIDP_STATUS_USAGE_NOT_FOUND if
+a particular usage does not exist in a device. (Do not confuse this with
+the error HIDP_STATUS_INVALID_REPORT, which indicates that the usage
+does exist but not in the given report).
+
+Applications may also choose the first model, receiving all the
+capabilities of a HID device. In this model, the application developer
+must decide how to handle unexpected usages.

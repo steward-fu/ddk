@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>MYSAMPLE - Title That Will Appear in the Main TOC of the DDK Docs</TITLE>
+</HEAD>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" leftMargin=8>
+
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE">BULLTLP3.VXD – Smart Card Driver</A></H2>
+<H3>SUMMARY</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>This driver is used for the Bull TLP3 serial smart card reader. Do not confuse this Plug and Play smart card reader with the Bull CP8 smart card reader which looks pretty much the same. </P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>BUILDING BULLTLP3.SYS</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>To build the bulltlp3.vxd driver simply select either the checked or free DDK environment, change to the directory bulltlp3 and type build.&nbsp;This driver uses services provided by the smart card driver library (smclib.vxd), which are explained in detail in the accompanied documentation.</P>
+<P>To install the driver, simply plug the reader into a serial port, start the device manager (right click on ‘My Computer’, select ‘Properties’, select the ‘Hardware’ tab)<! ---------------- Snip Snip ---------------- > and click on ‘Refresh’. The ‘Found new hardware’ wizard will pop up and you need to provide the inf-file (on a floppy) and the driver file, which will then be copied to your system directory. The driver will then be started automatically. To stop the driver, you can either unplug the reader or select the taskbar icon to stop the driver. Note: Unlike PCMCIA, the serial port was never designed for hot-plugging, so don’t expect the driver to unload automatically. You need to ‘Refresh’ in ‘Device Manager’, which will trigger unload of the device. You will also see a message that the device has been stopped. Also, the driver will not unload as long as you have ifdtest.exe running and connected to the driver. </P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>Tools</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>Microsoft offers a test tool (ifdtest.exe), which allows you to directly use a smart card reader from the command line. Normally, the smart card resource manager is connected to a reader. In order to use ifdtest.exe, you must ‘kill’ the smart card resource manager (scardsvr.exe)..</P>
+<P>Ifdtest.exe can be downloaded from </FONT><A HREF="http://www.microsoft.com/hwtest">http://www.microsoft.com/hwtest</A><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"> (follow the links for smart cards). In order to get YOUR smart card reader logo’ed, you need to order special test smart cards. Information on how to obtain test smart cards can also be found on the above web page.</P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>RESOURCES</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>ISO 7816 part 3 describes smart cards and smart card protocols in detail. Also, please, refer to the PC99 handbook for smart card reader requirements.</P>
+<P>The document ‘Plug and Play External COM Device Specification’ describes the requirements for serial device Plug and Play and can be downloaded from </FONT><A HREF="http://www.microsoft.com/hwdev/respec/pnpspecs.htm">http://www.microsoft.com/hwdev/respec/pnpspecs.htm</A></P>
+<FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>CODE TOUR</H3>
+<H4>File Manifest</H4>
+</FONT><PRE>&nbsp;
+<U>Files         Description
+</U>BULLTLP3.HTM  The Sample Tour documentation for this sample (this file).
+<FONT FACE="Courier">SOURCES       The generic file for building the code sample.
+MAKEFILE      Makefile required to build the driver
+BULLTLP3.INF  The INF file for installing the code sample.
+TLP3SCR.C     The main source file
+TLP3CB.C      Source file containing the callback functions for the smart card library
+BULLSCR.H    Data definitions for the driver
+
+</FONT><FONT FACE="Verdana"> </PRE>
+</FONT><H4>Programming Tour</H4>
+<FONT FACE="Verdana" SIZE=2><P>The major topics covered in this tour are: </P>
+
+<UL>
+<LI>T=1 data transfers </LI>
+<LI>Plug and Play </LI>
+<LI>Power Management </LI></UL>
+
+<P>T=1 data transfers</P>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>The Bull TLP3 reader does not have firmware that handles the low-level protocols. The T=0 and T=1 protocols are implemented in software. The T=0 implementation is done in the driver, the T=1 protocol is implemented in the smart card library. It is very important for the driver not to make ‘own decisions’ about whether to cancel an unsuccessful data transfer or not. It should only be the smart card library (which implements the functions SmartcardT1Request(), SmartcardT1Reply()) that decides when to abort a transmission. Even if the driver does not receive any data from a smart card at all, the driver must pass this ‘result’ to the smart card library. Please, take a closer look at TLP3Transmit()</P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>Plug and Play</P>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>Unlike the PCMCIA bus, the serial port was never designed for hot-plugging and device detection. This means, you can certainly plug or unplug a device while the system is running, but there is no real hardware support for detection of a device. But there is software support that implements serial device detection and it can be used in the following way:</P><DIR>
+
+<P>Click ‘Refresh’ in the device manager as described previously.</P></DIR>
+
+<P>This method makes use of a filter driver that implements serial Plug and Play. This filter driver ‘watches’ the serial port. But it has to do this actively by changing the control lines according to the serial Plug and Play specifications mentioned above.</P>
+<P>This method does not support device removal detection. Once the driver opens a connection to a serial port, it ‘owns’ the port and therefor the serial enumerator can’t do device removal monitoring, because it would interfere with the smart card driver. This means that the smart card driver needs to do the work. </P>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>&nbsp;</P>
+</FONT><P ALIGN="CENTER"><A HREF="http://devkits/ddk/doctemplate.htm#top"><FONT FACE="Verdana" SIZE=2>Top of page</FONT></A><FONT FACE="Verdana" SIZE=2> </P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 WIDTH=624>
+<TR><TD VALIGN="MIDDLE" BGCOLOR="#00ffff" HEIGHT=2>
+<P></TBODY></TD>
+</TR>
+</TABLE>
+
+<FONT FACE="MS Sans Serif" SIZE=1><P>&copy; 1998 Microsoft Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT></BODY>
+</HTML>

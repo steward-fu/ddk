@@ -1,0 +1,23 @@
+TARGETNAME=filter
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+TARGETPATH=$(BASEDIR)\lib
+
+USER_C_FLAGS=-Fc
+MSC_WARNING_LEVEL=-W3 -WX
+MSC_OPTIMIZATION=/Odi
+
+
+INCLUDES=..\inc; $(BASEDIR)\inc;
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\ntpnp.lib
+
+
+SOURCES= filter.c \
+         pnp.c \
+         power.c \
+         util.c \
+         filter.rc
+
+
+        

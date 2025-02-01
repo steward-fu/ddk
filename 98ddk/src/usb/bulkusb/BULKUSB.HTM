@@ -1,0 +1,278 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+
+<TITLE>Handling Asynchronous Bulk Data Transfer in a USB Minidriver</TITLE>
+</HEAD>
+<BODY>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" leftmargin="8">
+
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE"></H2>
+<H2>BULKUSB -</FONT><FONT FACE="Verdana" SIZE=2></FONT><FONT FACE="Verdana">
+ Handling Asynchronous Bulk Data Transfer in a USB Minidriver</A></H2>
+<H3>SUMMARY</H3>
+
+
+<FONT size=2>
+<P>This  document and the associated sample source code describe how to handle the transfer of large amounts of data to and from a USB peripheral using the USB Driver Interface (USBDI). This article shows driver writers of USB devices such as digital cameras, printers, and scanners much of what they need to know to create or improve their own Win32 Driver Model (WDM) USB minidrivers.</P>
+<P>In addition to handling asynchronous bulk data transfers, the sample source code demonstrates the correct way to handle Plug and Play and power management I/O Request Packets (IRPs), which are the basic I/O Manager structures used to communicate with the minidriver. See the Microsoft Windows&nbsp;2000 DDK for background information on the IRPs discussed in this sample.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What is the USB Driver Interface?</P>
+</B></I></FONT><FONT size=2><P>USBDI is part of the WDM layered architecture for the Windows&nbsp;98 and Windows&nbsp;2000 operating systems and is the interface offered to kernel-mode minidrivers by the operating system USB driver stack. A portion of the WDM layered architecture, with the USB driver interface highlighted, is shown in Figure 1.</P>
+</FONT><B><I><FONT FACE="Arial" size=2><P>Figure 1. USB Driver Interface and the USB Driver Stack</P>
+</B></I></FONT><FONT size=2><P><IMG SRC="BulkUsb.gif" ></P>
+</FONT><FONT SIZE=2><P>The following modules are shown in Figure 1:</P>
+
+<UL>
+</FONT><FONT size=2><LI>Hidclass.sys is the Human Interface Device (HID) class driver that sends and receives HID reports to and from its minidrivers.</LI>
+<LI>Hidusb.sys is the HID device driver that sends and receives HID reports over the USB bus.</LI>
+<LI>Bulkusb.sys is the sample minidriver. </LI>
+<LI>Usbd.sys is the USB class driver.</LI>
+<LI>Uhcd.sys and Openhci.sys are USB host controller drivers (Openhci.sys for the Open Host Controller Interface or UHCD.SYS for the Universal Host Controller Driver).</LI>
+<LI>PCI Enumerator takes care of loading the USB stack driver components when a USB bus is detected on a platform and always loads at least the other core components.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT SIZE=2><P>A USB minidriver communicates with the USB stack through an IRP interface. There are two basic methods and both are used by Bulkusb.sys:</P>
+
+<UL>
+</FONT><FONT size=2><LI>The USB minidriver device driver passes USB request block (URB) structures to the next-lower driver as a parameter in an IRP with MajorFunction set to IRP_MJ_INTERNAL_DEVICE_CONTROL and the next IRP stack location Parameters.DeviceIoControl.IoControlCode field set to IOCTL_INTERNAL_USB_SUBMIT_URB. </LI>
+<LI>The USB minidriver device driver passes an IRP with MajorFunction set to IRP_MJ_INTERNAL_DEVICE_CONTROL and the next IRP stack location Parameters.DeviceIoControl.IoControlCode field set to one of the IOCTL_INTERNAL_USB_ other function codes.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What is Bulk Data Transfer?</P>
+</B></I></FONT><FONT size=2><P>The USB standard defines four data transfer types: control, isochronous, interrupt, and bulk. All USB peripherals must support the control transfer type for configuration, command, and status information. Each of the remaining three data transfer types targets a particular category of USB peripheral. The bulk transfer type targets USB devices such as printers, scanners, and digital cameras that move large amounts of data to or from the PC over USB.</P>
+<P>The USB device used for this sample is a generic Intel i82930 USB evaluation board programmed with a simple loopback test using a 64-KB circular buffer. None of the code in the BulkUSB sample is specific to this particular controller chip, except for some checked-build-only debug dumps indicating manufacturer-specific information from the USB_DEVICE_DESCRIPTOR obtained from the USB stack through USBDI at StartDevice() time. The URBs used to communicate with the USB stack use abstracted chip-independent device characteristics as defined in the URB request types and structures in Usbdi.h.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What Does the USB Minidriver Sample Do?</P>
+</B></I></FONT><FONT size=2><P>This sample consists of two parts: a USB minidriver (Bulkusb.sys) and a console application (Rwbulk.exe). They are described individually in this section. It is intended that driver writers apply the methods illustrated in this sample to their own devices. The sample code is heavily commented to improve its usefulness.</P>
+<B><P>Bulkusb.sys USB Minidriver</P>
+</B><P>Bulkusb.sys is a USB bulk I/O sample minidriver that transfers asynchronous data packets to and from an Intel i82930 USB peripheral microcontroller over USB. This minidriver also performs the power management and Plug and Play tasks that are required of any WDM USB minidriver. The particular device test board we used is part of the Intel USB developer’s kit. Information on obtaining the kit is available from Intel’s developer web site at http://developer.intel.com. </P>
+<P>The individual source code files that make up the BulkUSB minidriver sample and their functions are the following:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=599>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>Bulkusb.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains DriverEntry and code that builds the dispatch table to functions that handle the IRPs and AddDevice request. URBs are sent to the USB driver stack from routines in Bulkusb.c.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>BulkPwr.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle power management IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>BulkPnp.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle Plug and Play IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IoctlBlk.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle miscellaneous IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>OcrwBlk.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle basic I/O IRPs and code to perform asynchronous bulk data transfers.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>BusbDbg.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains the functions used for debug output.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT size=2><P>The following header files are available in the same directory:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=615>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>Blk82930.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines DeviceExtension for instances of BulkUSB devices and the BULKUSB_RW_CONTEXT structure used for tracking information on staged IRP processing. Also defines the limits of this sample driver.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>Bulkusb.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines the Bulkusb.sys IOCTLs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>Guid829.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines the globally unique identifier (GUID) used to generate symbolic links to driver instances created from user mode.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><B><FONT size=2><P>Rwbulk.exe Console Application</P>
+</B><P>Rwbulk.exe is a console application used to initiate bulk transfer and to obtain a dump of information on the device’s I/O endpoints (named pipes) from USBDI. The application also demonstrates how to use GUID-based device names and pipe names generated by the operating system using the SetupDi<I>XXX</I> user-mode APIs. The source code file that makes up the Rwbulk console application sample and its function is the following:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=590>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>RWBulk.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains source code for a simple console application to test writing to a Bulk mode output pipe and reading from a Bulk mode input pipe. Various command-line switches allow for either single or multiple iterations of the read/write test with or without data dumps, as well as a dump of information on all the endpoints (named pipes) available on the device.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT size=2><P>The following steps briefly describe the operation of the USB bulk I/O minidriver. The sample minidriver routines mentioned here are described in greater detail in the comments of the sample source code and in routine-specific comments later in this article. It is helpful here to follow along in the sample code.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Bulk I/O Operation: Loading</P>
+</B></I></FONT><FONT size=2><P>When Bulkusb.sys is loaded by the operating system, the minidriver’s <B>DriverEntry</B> routine (in Bulkusb.c) is called to set the Dispatch entry points for the MajorFunction IRPs that it handles and for AddDevice.</P>
+<P>Notice that no resources are allocated here, because it should not be assumed that a Plug and Play device is actually plugged in at driver load time. Resource allocation and the creation of the Functional Device Object (FDO) do not occur until the device is detected by the USB stack. At this point, Plug and Play Manager calls the minidriver’s <B>BulkUsb_PnPAddDevice</B> routine (in Bulkpnp.c), which in turn calls the following functions:</P>
+<B><P>BulkUsb_CreateDeviceObject</B> (in Bulkusb.c) is called to create the FDO and a DeviceExtension. Notice that <B>BulkUsb_SymbolicLink</B> (in Bulkusb.c) is called here to create and initialize a GUID-based symbolic link to the device that is used to open/create instances of the minidriver from user mode.</P>
+<B><P>BulkUsb_QueryCapabilities</B> (in Bulkpwr.c) is called to learn which system power states are to be mapped to which device power states for honoring IRP_MJ_POWER IRPs. To do this, an IRP is created by Bulkusb.sys using IoAllocateIrp() and set up with MajorFunction = IRP_MJ_PNP and MinorFunction = IRP_MN_QUERY_CAPABILITIES. This IRP is sent to the PDO, which is represented by the USB class driver, using IoCallDriver(). A DEVICE_CAPABILITIES structure describing the device’s power capabilities is returned and saved in the FDO’s device extension.</P>
+<B><P>BulkUsb_SelfSuspendOrActivate</B> (in Bulkpwr.c) is called to try to power down the device until data transfer is actually requested. This is because there may be a significant time between device detection and the first time an application actually uses the device for I/O—for example, if a USB camera is kept plugged in at all times but used only occasionally. Bulkusb.sys attempts to power down the device when no I/O pipes are actually open on it.</P>
+<P>After the USB stack assigns any resources to the device, it sends an IRP_MN_START_DEVICE that is handled by this minidriver’s <B>BulkUsb_ProcessPnPIrp</B> routine (in Bulkpnp.c). Several additional minor Plug and Play IRPs are used by Plug and Play Manager to ensure the orderly stopping and removal of devices for purposes such as resource balancing. See the &quot;Stopping and Removing the Device&quot; section later in this article for a discussion of how these minor Plug and Play IRPs are handled by <B>BulkUsb_ProcessPnPIrp</B>.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Bulk I/O Operation: Opening the Device</P>
+</B></I></FONT><FONT size=2><P>At this point the minidriver is operational; let’s talk about what needs to be done to start bulk data transfer. Rwbulk.exe initiates data transfer by making CreateFile, ReadFile, and WriteFile calls from within its <B>main</B> function. RWBulk.exe closes pipes with the CloseHandle() function. The handler functions for these calls are discussed next.</P>
+<P>For an application to talk to a device, the application must obtain a handle to the device using the CreateFile call. When the system receives the CreateFile call, it sends an IRP_MJ_CREATE to the device. In the BulkUSB sample, IRP_MJ_CREATE IRPs are routed to the <B>BulkUsb_Create</B> function.</P>
+<P>Note there is a fair amount of complexity to build up the file name used in the CreateFile call. To understand what happens here, we need to look back to <B>BulkUsb_PnpAddDevice</B>. When the device is added, <B>BulkUsb_SymbolicLink</B> (in Bulkusb.c) registers a symbolic link with the operating system. The symbolic link is based on a GUID defined in Guid829.h, generated by the Guidgen.exe utility, which is a sample utility provided in the Microsoft Platform. Software Development Kit (SDK). </P>
+<P>Notice that driver writers should use Microsoft-defined GUIDs that correspond to their type of device, whenever available. If no applicable GUIDs can be found in the DDK header files, then generate a new GUID using Guidgen.exe.</P>
+<P>Sometime after <B>BulkUsb_PnPAddDevice</B> is called, the Plug and Play Manager will send the BulkUSB driver an IRP_MN_PNP_START_DEVICE IRP. After the lower level drivers process this IRP, <B>BulkUsb_ProcessPnPIrp</B> calls <B>BulkUsb_StartDevice</B>. <B>BulkUsb_PnpStartDevice</B> then calls <B>BulkUsb_ConfigureDevice </B>that later calls <B>BulkUsb_SelectInterface</B>. Together these routines get and parse the BulkUSB device interface to allow the interface to be accessed from user-mode applications using the CreateFile API. </P>
+<P>For brevity reasons, this sample only supports one interface; however, the sample can be extended to support multiple interfaces. A sensor glove is an example of a device where multiple interfaces might be desirable. The driver might create a simple joystick interface so the glove can be used with existing applications. The driver might also create a specialized glove interface that allows new applications to access the advanced capabilities of a glove sensor not available on a typical joystick interface.</P>
+</FONT><FONT SIZE=2><P>Our particular test board was programmed to support six pipes, where:</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier New" size=2><P>Pipe #0 is a BULK-type INPUT pipe,</P>
+<P>Pipe #1 is a BULK-type OUTPUT pipe,</P>
+<P>Pipe #2 is a INTERRUPT-DRIVEN-type INPUT pipe,</P>
+<P>Pipe #3 is a INTERRUPT-DRIVEN-type OUTPUT pipe,</P>
+<P>Pipe #4 is a ISOCHRONOUS-type INPUT pipe, and</P>
+<P>Pipe #5 is a ISOCHRONOUS-type OUTPUT pipe</P>
+</DIR>
+</DIR>
+
+</FONT><FONT size=2><P>User-mode applications ask the operating system to generate a unique device instance name based on the GUID used by the driver in the IoRegisterDeviceInterface routine by calling a sequence of SetupDi functions. The user-mode application then appends the pipe name to the device instance name and passes this concatenated string to CreateFile. Pipe names have the form PIPE<I>xx</I>, where <I>xx</I> is an ASCII representation of an integer from 0 to the number of pipes supported by the USB device, minus one.</P>
+<P>In this sample, it is assumed that the user-mode application knows that pipe #0 is the device’s input bulk pipe, and pipe #1 is the device’s output bulk pipe. Assuming that the device instance name returned from the SetupDi<I>XXX</I> calls is the following:</P>
+</FONT><FONT FACE="Courier New" size=2><P>&#9;\\.\0000000000000086#{a1155b78-a32c-11d1-9aed-00a0c98ba608}</P>
+
+</FONT><FONT size=2><P>Then the user application would call CreateFile() on the following for input:</P>
+</FONT><FONT FACE="Courier New" size=2><P>&#9;\\.\0000000000000086#{a1155b78-a32c-11d1-9aed-00a0c98ba608}\PIPE00</P>
+
+</FONT><FONT size=2><P>The application would call on the following for output:</P>
+</FONT><FONT FACE="Courier New" size=2><P>&#9;\\.\0000000000000086#{a1155b78-a32c-11d1-9aed-00a0c98ba608}\PIPE01</P>
+
+</FONT><FONT size=2><P>The <B>BulkUsb_Create </B>function (which is called in response to the user-mode CreateFile API) parses the ASCII digit back out of the supplied pipe name and associates the pipe with its Nth endpoint. BulkUSB then essentially just sets a flag in its saved pipe information in its FDO device extension to indicate that the Nth pipe is open. No further hardware protocol is required at this point; no further URBs are created and sent to the device through USBDI until a read or write is actually performed.</P>
+<B><P>BulkUsb_Close</B> (in Ocrwblk.c) is the IRP-handler function for IRP_MJ_CLOSE and is the entry-point for CloseHandle calls from Rwbulk. <B>BulkUsb_Close</B> closes a pipe. Notice that when the last pipe is closed, <B>BulkUsb_SelfSuspendOrActivate</B> is called to power down.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Bulk I/O Operations: Data Transfer</P>
+</I></FONT><FONT size=2><P>BulkUsb_Read</B> and <B>BulkUsb_Write</B> (both in Ocrwblk.c), which are the respective IRP-handler functions for IRP_MJ_READ and IRP_MJ_WRITE, are the entry points for ReadFile and WriteFile calls from user-mode code. These two functions immediately delegate their work to a common read/write function <B>BulkUsb_StagedReadWrite</B> (in Ocrwblk.c) because the difference between read logic and write logic is trivial. </P>
+<B><P>BulkUsb_StagedReadWrite</B> breaks up a read or write request into fixed-size pieces so the request can be completed in stages. This sample arbitrarily picks a size of 4096. The essential idea is that by breaking up a large user-mode I/O request into multiple IRPs in kernel mode, operating system throughput is maximized and single-process monopolizing of system resources is minimized by allowing other processes to do I/O between staged IRPs. The following pseudo code describes the process:</P>
+</FONT><FONT FACE="Courier New" size=2><P>
+
+<P><PRE><FONT FACE="Courier">
+
+Calculate totalIrpsNeeded, the number of IRPs needed to break request into 4096-byte pieces.
+Allocate space for array of totalIrpsNeeded BULKUSB_RW_CONTEXT structs.
+For each IRP to be staged:
+    Allocate the IRP with IoAllocateIrp
+    Get the virtual address for the buffer described by our original
+        input IRP's MDL, using MmGetMdlVirtualAddress;
+    Each new IRP will 'see' the entire buffer, but map its I/O location to a
+        single 4096 byte section within it using IoAllocateMdl and IoBuildPartialMdl.
+    Call BulkUsb_BuildAsyncRequest to build and return an URB of type
+        URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER;
+ 
+    if (URB returned) then
+        Call IoMarkPending() on the IRP, since it will not be completed until all the 
+            new IRP’s we stage are completed.
+        Call IoGetNextIrpStackLocation on the IRP to get nextStack, which is a pointer
+    to the next-lower driver in the USB stack;
+
+    nextStack-&gt;MajorFunction = IRP_MJ_INTERNAL_DEVICE_CONTROL;
+    nextStack-&gt;Parameters.Others.Argument1 = pointer to the returned URB;
+    nextStack-&gt;Parameters.DeviceIoControl.IoControlCode =
+        IOCTL_INTERNAL_USB_SUBMIT_URB;
+    Call IoSetCompletionRoutine on the IRP and register 
+       BulkUsb_AsyncReadWrite_Complete as the I/O completion routine.
+       BulkUsb_AsyncReadWrite_Complete moves information from a completed
+       asynchronous transfer URB to an IRP, resets the irpStackLocation, and
+       deallocates the URB.
+    Call IoCallDriver on the IRP to pass it to the USB stack;
+    endif
+endfor
+
+</FONT></PRE></P>
+
+<P>
+
+</FONT><FONT SIZE=2><P>Bulkusb.sys is a relatively simple minidriver that sends asynchronous bulk data transfer requests to the USB stack and uses only a handful of the possible requests. The following describes the requests used in this sample:</P>
+
+<UL>
+</FONT><FONT size=2><LI>URB_FUNCTION_ABORT_PIPE is a general-purpose request that enables a client to cancel any pending transfers for the specified pipe. </LI>
+<LI>URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER is a transfer request that enables a client to submit bulk or interrupt transfers to a specific pipe. </LI>
+<LI>URB_FUNCTION_GET_DESCRIPTOR_<I>XXX</I> are default pipe requests that enable a client to use the USB command GetDescriptor to retrieve USB descriptors from a particular device or endpoint. </LI>
+<LI>URB_FUNCTION_RESET_PIPE is a general-purpose request that enables a client to clear the stalled state of a pipe within the USB stack. Transfers will resume with the next URB queued for the endpoint.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Bulk I/O Operation: Stopping and Removing the Device</P>
+</B></I></FONT><FONT size=2><P>Although there are a number of Plug and Play IRPs that various types of WDM drivers might have to handle, all USB minidrivers must<I> </I>handle the following minor Plug and Play device stopping and removal IRPs: </P>
+</FONT><FONT SIZE=2><P>IRP_MN_CANCEL_REMOVE_DEVICE</P>
+<P>IRP_MN_CANCEL_STOP_DEVICE</P>
+<P>IRP_MN_QUERY_REMOVE_DEVICE</P>
+<P>IRP_MN_QUERY_STOP_DEVICE</P>
+<P>IRP_MN_REMOVE_DEVICE</P>
+<P>IRP_MN_STOP_DEVICE</P>
+</FONT><FONT FACE="Courier New" size=2>
+</FONT><FONT size=2><P>See the Windows 2000 DDK for background information on the full list of IRPs.</P>
+<P>The handlers for these in <B>BulkUsb_ProcessPnPIrp</B> (in Bulkpnp.c) are well commented, and you are strongly encouraged to look at the code. For all of the IRPs above, unless the driver fails the Plug and Play IRP, it must pass the IRP down the driver stack to the physical device object (PDO).</P>
+<P>Note that no Plug and Play driver is allowed to fail IRP_MN_STOP_DEVICE or IRP_MN_REMOVE_DEVICE. The driver must be able to handle receiving either or both of these IRPs without having received their corresponding queries previously. An example of this is in the case of a power failure or if the user suddenly yanks the USB plug without warning.</P>
+
+<UL>
+<LI>IRP_MN_CANCEL_REMOVE_DEVICE is sent to indicate the device will not be removed; BulkUSB just resets its &quot;remove-pending&quot; DeviceExtension flag, indicating it can resume normal I/O.</LI>
+<LI>IRP_MN_CANCEL_STOP_DEVICE is sent to indicate the device will not be reconfigured; BulkUSB just resets its &quot;stop-pending&quot; DeviceExtension flag, indicating it can resume normal I/O.</LI>
+<LI>IRP_MN_QUERY_REMOVE_DEVICE is sent by the Plug and Play Manager to query whether a device can be physically removed without disrupting the system. It is sent just before&nbsp;IRP_MN_REMOVE_DEVICE during &quot;polite&quot; shutdowns, such as occur when the user&nbsp;explicitly requests the service be uninstalled or unplugged from Device Manager in Control Panel. A driver fails this IRP to inform the system that it is unsafe to remove the device at this time. </LI></UL>
+<DIR>
+
+<P>In this sample, the difference between the way BulkUSB handles the QUERY_STOP and the QUERY_REMOVE is that BulkUSB fails the &quot;stop&quot; query if any I/O is pending, whereas in the &quot;remove&quot; case, BulkUSB waits for any pending I/O to complete before returning SUCCESS to the query. IRP_MN_REMOVE_DEVICE will not be sent if the driver fails the IRP_MN_QUERY_REMOVE IRP. A driver that returns SUCCESS for the IRP should not accept any further I/O requests while it’s in the remove-pending state.</P></DIR>
+
+
+<UL>
+<LI>IRP_MN_QUERY_STOP_DEVICE is sent by the Plug and Play Manager to query whether a&nbsp;device can be stopped for resource reconfiguration. It is sent just before IRP_MN_STOP_DEVICE during &quot;polite&quot; reconfigurations, such as the user explicitly requesting reconfiguration from the Device Manager. Bulkusb.sys fails this IRP if any I/O is still pending. IRP_MN_STOP_DEVICE is only sent afterward if the query is successful. If the&nbsp;driver returns SUCCESS for the IRP, it must set a flag in the FDO DeviceExtension in order not to accept any further new I/O requests until reconfiguration is completed.</LI>
+<LI>IRP_MN_REMOVE_DEVICE is sent when the device has been removed and probably physically detached from the computer. As with STOP_DEVICE, the driver cannot assume it&nbsp;has received any previous query and may have to explicitly cancel any pending I/O IRPs it&nbsp;has&nbsp;staged using IoCancelIrp(). Then, the GUID-based symbolic link registered at <B>BulkUsb_PnpAddDevice</B> is deleted by a call to IoSetDeviceInterfaceState(), and the FDO is&nbsp;detached from the USB stack by a call to IoDetachDevice() and deleted by a call to IoDeleteDevice().</LI></UL>
+
+<P>IRP_MN_STOP_DEVICE is sent when the device is about to be reconfigured (not necessarily unplugged). Because the driver cannot assume it has received any previous query, it may have to explicitly cancel any pending I/O IRPs it has staged using IoCancelIrp(). <B>BulkUsb_StopDevice</B> essentially sends the USB stack a &quot;select configuration&quot; URB with a NULL pointer for the handle to close the configuration and put the device in the &quot;unconfigured&quot; state.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Power Management</P>
+</B></I></FONT><FONT size=2><P>All WDM drivers must handle the following IRPs in order to support power management:</P>
+</FONT><FONT SIZE=2><P>IRP_MN_QUERY_POWER </P>
+<P>IRP_MN_SET_POWER</P>
+<P>IRP_MN_WAIT_WAKE</P>
+</FONT><FONT FACE="Courier New" size=2>
+</FONT><FONT size=2><P>See the Windows&nbsp;NT&nbsp;5.0 DDK for background information on the full list of IRPs.</P>
+
+<P>The handlers for these in <B>BulkUsb_ProcessPowerIrp</B> (in Bulkpwr.c) are well-commented and you are strongly encouraged to look at the code. For each power management IRP, drivers must call PoStartNextPowerIrp and use PoCallDriver to pass the IRP all the way down the driver stack to the underlying PDO. The PoCallDriver interface is similar to that of IoCallDriver, except that the power management subsystem may delay the IRP before passing it on to the next driver—for example, if it must wait for sufficient power level to resume the PowerDeviceD0 (fully on) state.</P>
+
+<UL>
+<LI>IRP_MN_QUERY_POWER</FONT><FONT FACE="Courier New" size=2> </FONT><FONT size=2>is sent by the system power manager to determine whether it can change the system or device power state, typically to go to sleep. Bulkusb.sys performs minimal handling for this IRP and simply passes it down to the PDO.</LI>
+<LI>IRP_MN_SET_POWER is sent by the system power policy manager with irpStack.Parameters.Power.Type set to &quot;SystemPowerState&quot; to set the system power state. Alternatively, IRP_MN_SET_POWER may be called by a device power policy manager with irpStack.Parameters.Power.Type set to &quot;DevicePowerState&quot; to set the device power state for a device. </LI></UL>
+
+<P>In the case of setting the device power state, little needs to be done except to save the requested state in the FDO and pass the IRP down the stack to the PDO. In the &quot;SystemPowerState&quot; case, the basic objective is to set the device to the DevicePowerState most nearly equivalent to the SystemPowerState being set. This is done by again consulting the saved DEVICE_CAPABILITIES power-state table of the FDO and possibly generating a IRP_MN_SET_POWER IRP to change the device power state.</P>
+</FONT><FONT SIZE=2><P>BulkUSB is a good example of active power management because it self-initiates<I> </I>power management requests in the function <B>BulkUsb_SelfSuspendOrActivate</B> (in Bulkpwr.c). In&nbsp;three&nbsp;cases, Bulkusb.sys initiates power IRPs:</P>
+
+<UL>
+</FONT><FONT size=2><LI>In <B>BulkUsb_PnPAddDevice</B> after FDO creation, to power down until needed (that is, until&nbsp;the&nbsp;first I/O pipe is opened).</LI>
+<LI>In <B>BulkUsb_Create</B> to power up the device to D0 (fully on) before opening the first pipe.</LI>
+<LI>In <B>BulkUsb_Close</B> to power down the device after the last pipe is closed.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Bulk I/O Operation: Handling IOCTLs</P>
+</I></FONT><FONT size=2><P>BulkUsb_ProcessIOCTL</B> (in Ioctlblk.c) is the entry-point that is registered to handle IRP_MJ_DEVICE_CONTROL IRPs. Notice that there are circumstances under which <B>BulkUsb_ProcessIOCTL</B> can refuse to accept an I/O Control (IOCTL) request, such as if a device is removed. The IOCTLs handled by this function are described in this section and are defined in Bulkusb.h.</P>
+<P>Bulkusb.h defines three IOCTLs for user-mode applications to access the driver using DeviceIoControl() calls, although this sample console application only uses one of them.</P>
+<P>IOCTL_BULKUSB_GET_CONFIG_DESCRIPTOR calls <B>BulkUsb_GetConfigDescriptor</B> to get a copy of the USB configuration descriptor that Bulkusb.sys saves at AddDevice time, and then returns a copy of the descriptor in the user-mode I/O buffer. The configuration descriptor is parsed by Rwbulk.exe to provide a nicely formatted console dump of the device configuration and endpoints (named pipes).</P>
+</FONT><FONT SIZE=2>
+<P>The other two IOCTLs are not used by this sample console application, but may be used by a more sophisticated application to deal with certain user-mode device errors:</P>
+
+<UL>
+</FONT><FONT size=2><LI>IOCTL_BULKUSB_RESET_DEVICE calls <B>BulkUsb_ResetDevice</B>.</LI>
+<LI>IOCTL_BULKUSB_RESET_PIPE calls <B>BulkUsb_ResetPipe</B>. Both of these functions are called internally by Bulkusb.sys in its read/write logic as part of normal error handling. <B>BulkUsb_ResetDevice</B> attempts a complete reset of the USB port, while <B>BulkUsb_ResetPipe </B>only deals with error conditions on a particular pipe.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Supporting References for BulkUSB Sample Minidriver</P>
+</B></I></FONT><FONT SIZE=2><P>The following additional materials will help you understand this sample minidriver:</P>
+
+<UL>
+</FONT><I><FONT size=2><LI>USB Specification Version 1.0</I>, as well as the clarifications and enhancements to the core specification recommended by the USB Device Working Group. These documents are available on the web at http://www.usb.org.</LI>
+<I><LI>Microsoft Windows&nbsp;2000 DDK</I>, available through MSDN Professional membership, contains references to WDM core services used by Bulkusb.sys, as well as reference material for IRPs that Bulkusb.sys handles.</LI>
+<I><LI>WDM USB Driver Interface</I> contains background information on the USB driver interface. This document is available on the web at http://www.microsoft.com/hwdev/wdmusb.htm.</LI></UL>
+
+</FONT><FONT FACE="MS Sans Serif" size=2><P>&copy; 1999 Microsoft
+Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT>
+
+</FONT><FONT SIZE=2></FONT></BODY>
+</HTML>

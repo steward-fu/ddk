@@ -1,0 +1,22 @@
+TARGETNAME=RwIso
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+UMTYPE=console
+UMBASE=0x01000000
+
+
+INCLUDES=$(BASEDIR)\inc; \
+    $(BASEDIR)\src\usb\inc; \
+    $(BASEDIR)\src\wdm\usb\inc; \
+    ..\sys;      \
+    ..\..\..\inc
+
+USE_MAPSYM=1
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\usbd.lib \
+    $(BASEDIR)\lib\*\free\setupapi.lib
+
+SOURCES=      \
+    RwIso.c  \
+    RwIso.rc

@@ -1,0 +1,20 @@
+TARGETNAME=imeeudc
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+
+
+INCLUDES=.;..
+
+NO_NTDLL=1
+
+SOURCES=imeeudc.c  \
+        imeeudc.rc
+
+UMTYPE=windows
+UMENTRY=winmain
+UMBASE=0x06000000
+
+UMLIBS=$(BASEDIR)\lib\*\$(DDKBUILDENV)\comdlg32.lib  \
+       $(BASEDIR)\lib\*\$(DDKBUILDENV)\IMM32.LIB       
+

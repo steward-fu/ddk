@@ -1,0 +1,22 @@
+TARGETNAME=atishare
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=LIBRARY
+#NTDUMPAMAP=TRUE
+
+
+INCLUDES=$(BASEDIR)\inc; \
+        ..\inc; \
+        ..\..\stream\inc;
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib \
+			$(BASEDIR)\lib\*\free\dxapi.lib
+
+
+SOURCES=aticonfg.cpp \
+        i2script.cpp \
+        pinmedia.cpp \
+        registry.cpp
+
+C_DEFINES=-DMSC
+USER_C_FLAGS=-TP

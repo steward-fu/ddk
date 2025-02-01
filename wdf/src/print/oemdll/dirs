@@ -1,0 +1,15 @@
+DIRS= \
+     bitmap \
+     custhlp \
+     gdl \
+     oemprean \
+     oemps \
+     oemui \
+     oemuni \
+     PSUIRep \
+     PTPCPlPr \
+     SyncSet \
+     ThemeUI \
+     uniuirep \
+     watermark \
+     watermarkuni

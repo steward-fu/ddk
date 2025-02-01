@@ -1,0 +1,33 @@
+!IF 0
+
+Copyright (c) 1997-1998  Microsoft Corporation
+
+!ENDIF
+
+TARGETNAME=HIDMINI
+TARGETTYPE=DRIVER
+USE_PDB=1
+
+!if "$(DDKBUILDENV)"=="free"
+MSC_OPTIMIZATION=/Ox
+!endif
+
+TARGETPATH=$(BASEDIR)\lib
+
+INCLUDES=..\inc;  \
+         $(BASEDIR)\src\usb\inc; \
+	 $(BASEDIR)\src\hid\inc; \
+         $(BASEDIR)\inc;
+
+TARGETLIBS=$(BASEDIR)\lib\i386\free\hidclass.lib \
+           $(BASEDIR)\lib\i386\free\usbd.lib
+            
+
+         
+SOURCES=hid.c      \
+        hidmini.c  \
+        hidmini.rc \
+        ioctl.c    \
+        pnp.c         
+         
+         

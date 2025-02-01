@@ -1,0 +1,86 @@
+; SetupExt.INF  -- An example of using a vendor setup extension
+; Copyright (c) 1997-1998 Microsoft Corporation
+
+; All of the lines in this file are the same as in the sampusd
+; INF file except for the VendorSetup line and adding setupext.dll
+; to the list of files to copy.
+[Version]
+Signature="$CHICAGO$"
+Class=Image
+ClassGUID={6bdd1fc6-810f-11d0-bec7-08002be2092f}
+Provider=%Msft%
+LayoutFile=layout.inf, layout1.inf
+
+[DestinationDirs]
+DefaultDestDir=11
+
+[ControlFlags]
+;ExcludeFromSelect=*
+
+[Manufacturer]
+%Mfg%=Models
+
+[Models]
+%Samp.DeviceDesc% = Samp.Scanner, PnPIDInformation
+
+[Samp.Scanner]
+SubClass=StillImage
+DeviceType=1
+DeviceSubType=0x1
+Capabilities=1
+PropertyPages="Sampcpl.cpl ,EnumStiPropPages"
+Events=SampUSD.Events
+DeviceData=Samp.DeviceData
+AddReg=Samp.AddReg
+CopyFiles=Samp.CopyFiles
+DelFiles=Samp.DelSysFiles
+UninstallSection=Uninstall.Samp
+ICMProfiles="sRGB Color Space Profile.icm"
+
+; This is the line that tells the STI class installer to run the
+; setup extension. The first item is the name of the DLL, the
+; second item is the entry point name, and the last item is
+; passed to the entry point function. For this example, it should
+; be the PnP ID for the device.
+VendorSetup="SetupExt.dll,SetupEntryPoint PnPIDInformation"
+
+[Samp.DeviceData]
+TwainDS="Samp TWAIN DS"
+SpecialInfo="My very special information"
+
+[SampUSD.Events]
+TimeChanged="%TimeChanged%",{61127F40-E1A5-11D0-B454-00A02438AD48},*
+SizeChanged="%SizeChanged%",{052ED270-28A3-11D1-ACAD-00A02438AD48},*
+
+[Samp.AddReg]
+HKR,,HardwareConfig,1,1
+HKR,,USDClass,,"{C3A80960-28B1-11D1-ACAD-00A02438AD48}"
+
+HKCR,CLSID\{C3A80960-28B1-11D1-ACAD-00A02438AD48} ,,,"Samp STI File USD"
+HKCR,CLSID\{C3A80960-28B1-11D1-ACAD-00A02438AD48} \InProcServer32,,,%11%\Sampusd.dll
+HKCR,CLSID\{C3A80960-28B1-11D1-ACAD-00A02438AD48} \InProcServer32,ThreadingModel,,"Both"
+
+[Samp.CopyFiles]
+Sampusd.dll
+Sampcpl.cpl
+SetupExt.dll
+
+[Samp.CopySys32Files]
+Scsiscan.sys
+
+[Samp.CopyTwainFiles]
+SampDs.ds
+
+[Uninstall.Samp]
+DelFiles=Samp.DelSysFiles
+
+[Samp.DelSysFiles]
+Sampusd.dll
+Sampcpl.cpl
+
+[Strings]
+Msft="Microsoft"
+Mfg="Sample Manufacturer"
+Samp.DeviceDesc="Sample Device"
+TimeChanged="File Time Changed"
+SizeChanged="File Size Changed"

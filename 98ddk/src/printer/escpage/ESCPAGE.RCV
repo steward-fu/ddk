@@ -1,0 +1,18 @@
+/********************************************************************/
+/*        ESCPAGE.RCV                                               */
+/*        Version control data generated from layouts.dat           */
+/********************************************************************/
+#include <version.h>
+
+
+#define VER_FILETYPE                    VFT_DRV
+#define VER_FILESUBTYPE                 VFT2_DRV_PRINTER
+#define VER_FILEDESCRIPTION_STR         "EPSON ESC/Page Printer Driver"
+#define VER_INTERNALNAME_STR            "ESCPAGE"
+#define VER_LEGALCOPYRIGHT_YEARS        "1994-1998"
+#define VER_ORIGINALFILENAME_STR        "ESCPAGE.DRV"
+#define VER_LEGALCOPYRIGHT_STR          "Copyright(C) Microsoft Corp. " VER_LEGALCOPYRIGHT_YEARS
+
+
+
+#include <common.ver>

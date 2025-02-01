@@ -1,0 +1,47 @@
+; Copyright (c) 1993-1995, Microsoft Corporation
+
+[version]
+signature="$CHICAGO$"
+Class=System
+ClassGUID={CED58E00-E9A6-11D1-80CE-00A0C9696BAE}
+Provider=%MS%
+
+[Manufacturer]
+;Use your name here
+%ABCD_MFG%=ABCD_SYS
+
+[SourceDisksNames]
+;Only one source disk
+1 = "ABCD 1234 Miniport Installation Disk",,0
+
+[SourceDisksFiles]
+;The miniport comes from our only source disk
+expcimp.pci = 1
+
+[DestinationDirs]
+;The miniport goes into the system directory
+AGPCopyFiles = 11          ; LDID_SYS
+
+[ABCD_SYS]
+; Use the correct ven-dev id here for your chipset
+%PCI\VEN_ABCD&DEV_1234.DeviceDesc%=AGP_BRIDGE_DRV, PCI\VEN_ABCD&DEV_1234
+
+[AGP_BRIDGE_DRV]
+AddReg=AddGARTMiniport
+CopyFiles=AGPCopyFiles
+
+[AddGARTMiniport]
+; Use the correct ven-dev id here for your chipset 
+HKLM,System\CurrentControlSet\Services\VxD\PCI\GARTMiniports\1234ABCD,Name,,"ABCD 1234"
+HKLM,System\CurrentControlSet\Services\VxD\PCI\GARTMiniports\1234ABCD,Path,,"EXPCIMP.PCI"
+HKLM,System\CurrentControlSet\Services\VxD\PCI\GARTMiniports\1234ABCD,Instance,1,00,00,00,00
+
+[AGPCopyFiles]
+; Miniport name
+expcimp.pci
+
+[Strings]
+MS          = "Microsoft"
+ABCD_MFG	= "ABCD AGP Chipset"
+PCI\VEN_ABCD&DEV_1234.DeviceDesc="ABCD 1234 AGP System Controller"
+

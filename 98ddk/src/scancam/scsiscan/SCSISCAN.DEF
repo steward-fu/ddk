@@ -1,0 +1,3 @@
+LIBRARY         SCSISCAN.SYS
+DESCRIPTION     'SCSI Scanner Device Driver (C) 1996 Microsoft Corp.'
+

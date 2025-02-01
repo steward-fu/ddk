@@ -1,0 +1,24 @@
+TARGETNAME=atitunep
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+#NTDUMPAMAP=TRUE
+
+
+INCLUDES=$(BASEDIR)\inc;  \
+	..\..\stream\inc; \
+	..\atishare;
+
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib \
+	    $(BASEDIR)\lib\*\free\dxapi.lib \
+	    $(BASEDIR)\lib\*\$(DDKBUILDENV)\atishare.lib
+
+
+SOURCES=atitunep.cpp \
+	tuneprop.cpp \
+	tunerhdw.cpp \
+	wdmtuner.cpp
+
+C_DEFINES=-DMSC
+USER_C_FLAGS=-TP

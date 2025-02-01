@@ -1,0 +1,25 @@
+#############################################################################
+#
+#       Copyright (C) Microsoft Corporation 1995
+#       All Rights Reserved.
+#                                                                          
+#       Sources for SCSISCAN device
+#
+##########################################################################
+TARGETNAME=ScsiScan
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+C_DEFINES=-DPNP_POWER
+
+INCLUDES=..\inc;                \
+        $(WDMDDKROOT)\inc
+
+TARGETPATH=$(BASEDIR)\lib
+
+USE_MAPSYM=1
+SYNCHRONIZE_BLOCK=1
+
+SOURCES=class.c         \
+	scsiscan.c 
+                

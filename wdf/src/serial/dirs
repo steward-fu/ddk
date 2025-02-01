@@ -1,0 +1,4 @@
+DIRS= \
+     serenum \
+     serial \
+     VirtualSerial

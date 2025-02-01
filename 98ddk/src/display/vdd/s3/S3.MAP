@@ -1,0 +1,266 @@
+ S3
+
+ Timestamp is 35754ea2 (Wed Jun 03 06:24:50 1998)
+
+ Preferred load address is 00400000
+
+ Start         Length     Name                   Class
+ 0001:00000000 000000dfH _LDATA                  CODE
+ 0001:000000e0 00000122H _LTEXT                  CODE
+ 0002:00000000 00000342H RARE                    CODE
+ 0003:00000000 00000aa7H DOSVM                   CODE
+ 0004:00000000 000003cbH _ITEXT                  CODE
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000000       S3MINI_DDB                 00401000     s3mini.obj
+ 0001:00000050       WindowsVMHandle            00401050     s3mini.obj
+ 0001:00000054       PlanarStateID              00401054     s3mini.obj
+ 0001:00000058       MessageModeID              00401058     s3mini.obj
+ 0001:0000005c       TotalMemorySize            0040105c     s3mini.obj
+ 0001:00000060       Vid_PhysA0000              00401060     s3mini.obj
+ 0001:00000064       OurCBDataPointer           00401064     s3mini.obj
+ 0001:00000068       InSrcBLTAddr               00401068     s3mini.obj
+ 0001:0000006c       CurrentChipModeAddr        0040106c     s3mini.obj
+ 0001:00000074       Old3C2Handler              00401074     s3mini.obj
+ 0001:00000078       MessageModeCBData          00401078     s3mini.obj
+ 0001:00000088       ForcedPlanarCBData         00401088     s3mini.obj
+ 0001:00000098       DisplayInfoStructure       00401098     s3mini.obj
+ 0001:000000ca       LAWAddrRegLow              004010ca     s3mini.obj
+ 0001:000000cc       LAWAddrRegHigh             004010cc     s3mini.obj
+ 0001:000000ce       VFLATDFlag                 004010ce     s3mini.obj
+ 0001:000000cf       ChipID                     004010cf     s3mini.obj
+ 0001:000000d0       NewBankingSupport          004010d0     s3mini.obj
+ 0001:000000d1       S3ModeChangeFlags          004010d1     s3mini.obj
+ 0001:000000d2       DisplayEnabledFlag         004010d2     s3mini.obj
+ 0001:000000d3       SuperVGAModeFlag           004010d3     s3mini.obj
+ 0001:000000d5       VDDBankLow                 004010d5     s3mini.obj
+ 0001:000000d6       VDDBankHigh                004010d6     s3mini.obj
+ 0001:000000d7       BankEnableSave             004010d7     s3mini.obj
+ 0001:000000d8       BankRegSaveLow             004010d8     s3mini.obj
+ 0001:000000d9       BankRegSaveHigh            004010d9     s3mini.obj
+ 0001:000000da       LatchSave31H               004010da     s3mini.obj
+ 0001:000000db       LatchSave35H               004010db     s3mini.obj
+ 0001:000000dc       LatchSave51H               004010dc     s3mini.obj
+ 0001:000000dd       LAWApertureSizeBits        004010dd     s3mini.obj
+ 0001:000000e0       MiniVDD_Control            004010e0 f   s3mini.obj
+ 0001:0000015e       MiniVDD_VirtualizeBLTerIO  0040115e f   s3mini.obj
+ 0001:00000180       MVBIWordInput              00401180     s3mini.obj
+ 0001:00000185       MVBIWordInputLoop          00401185     s3mini.obj
+ 0001:0000019e       MVBIByteInput              0040119e     s3mini.obj
+ 0001:000001a8       MVBIByteInputLoop          004011a8     s3mini.obj
+ 0001:000001ba       MVBIWeHandledIt            004011ba     s3mini.obj
+ 0001:000001bd       MVBINotInterested          004011bd     s3mini.obj
+ 0001:000001bf       MiniVDD_VESACallPostProcessing 004011bf f   s3mini.obj
+ 0001:000001cd       MVPPPost4F02H              004011cd     s3mini.obj
+ 0001:000001dc       MVPPPost4F00H              004011dc     s3mini.obj
+ 0002:00000000       MiniVDD_RegisterDisplayDriver 00401400 f   s3mini.obj
+ 0002:0000005f       MiniVDD_PreCRTCModeChange  0040145f f   s3mini.obj
+ 0002:00000098       MPMCDispatch               00401498     s3mini.obj
+ 0002:00000142       MPMCSeries1Refresh         00401542     s3mini.obj
+ 0002:0000014a       MPMC1Dispatch              0040154a     s3mini.obj
+ 0002:00000162       MPMC1_1280                 00401562     s3mini.obj
+ 0002:00000166       MPMC1_1024                 00401566     s3mini.obj
+ 0002:00000178       MPMC1_800                  00401578     s3mini.obj
+ 0002:0000018a       MPMC1_640                  0040158a     s3mini.obj
+ 0002:00000193       MPMC1Cleanup               00401593     s3mini.obj
+ 0002:0000019b       MPMCSeries2Refresh         0040159b     s3mini.obj
+ 0002:000001fc       MPMCSeries3Refresh         004015fc     s3mini.obj
+ 0002:00000212       MPMC3_640                  00401612     s3mini.obj
+ 0002:0000023f       MPMC3_800                  0040163f     s3mini.obj
+ 0002:0000027d       MPMC3_1024                 0040167d     s3mini.obj
+ 0002:000002b0       MPMC3_1280                 004016b0     s3mini.obj
+ 0002:000002d9       MPMCRestoreCRTC            004016d9     s3mini.obj
+ 0002:000002dd       MiniVDD_DisplayDriverDisabling 004016dd f   s3mini.obj
+ 0002:00000300       MiniVDD_SaveMsgModeState   00401700 f   s3mini.obj
+ 0002:0000032d       MiniVDD_SaveForcedPlanarState 0040172d f   s3mini.obj
+ 0003:00000000       MiniVDD_GetVDDBank         00401800 f   s3mini.obj
+ 0003:00000032       MGVBCalcAmountToUse        00401832     s3mini.obj
+ 0003:0000004c       MGVBGetBankingValues       0040184c     s3mini.obj
+ 0003:000000a1       MGVBMemoryShy              004018a1     s3mini.obj
+ 0003:000000a6       MiniVDD_SetVDDBank         004018a6 f   s3mini.obj
+ 0003:000000e6       MSTVNewBanking             004018e6     s3mini.obj
+ 0003:000000fb       MSTVOldBanking             004018fb     s3mini.obj
+ 0003:0000012d       MiniVDD_ResetBank          0040192d f   s3mini.obj
+ 0003:0000015a       MRBNewBanking              0040195a     s3mini.obj
+ 0003:00000170       MRBOldBanking              00401970     s3mini.obj
+ 0003:000001c3       MRBResetBankSaveFlags      004019c3     s3mini.obj
+ 0003:000001d6       MiniVDD_SetLatchBank       004019d6 f   s3mini.obj
+ 0003:0000020d       MSLBNewBanking             00401a0d     s3mini.obj
+ 0003:00000222       MSLBOldBanking             00401a22     s3mini.obj
+ 0003:00000254       MiniVDD_ResetLatchBank     00401a54 f   s3mini.obj
+ 0003:0000027b       MRLBNewBanking             00401a7b     s3mini.obj
+ 0003:00000287       MRLBOldBanking             00401a87     s3mini.obj
+ 0003:000002ac       MiniVDD_PreHiResToVGA      00401aac f   s3mini.obj
+ 0003:000002e1       MHTVDiscardSrcBLT          00401ae1     s3mini.obj
+ 0003:000002f8       BYONG                      00401af8     s3mini.obj
+ 0003:00000310       MiniVDD_PostHiResToVGA     00401b10 f   s3mini.obj
+ 0003:0000033b       MiniVDD_PreVGAToHiRes      00401b3b f   s3mini.obj
+ 0003:00000343       MiniVDD_PostVGAToHiRes     00401b43 f   s3mini.obj
+ 0003:0000034b       MiniVDD_SaveRegisters      00401b4b f   s3mini.obj
+ 0003:00000399       MSRSGet3C2State            00401b99     s3mini.obj
+ 0003:000003a8       MiniVDD_RestoreRegisters   00401ba8 f   s3mini.obj
+ 0003:000003c3       MRRSCheckMessageModeRestore 00401bc3     s3mini.obj
+ 0003:000003da       MRRSCheckForcedPlanarRestore 00401bda     s3mini.obj
+ 0003:000003ed       MRRSFixClock               00401bed     s3mini.obj
+ 0003:00000406       MRRSFixClockNonWindows     00401c06     s3mini.obj
+ 0003:00000432       MRRSDispatch               00401c32     s3mini.obj
+ 0003:00000447       MRRSRestoreWindowsVMState  00401c47     s3mini.obj
+ 0003:000004a9       MRRSRestoreVMState         00401ca9     s3mini.obj
+ 0003:000004f4       MiniVDD_AccessVGAMemoryMode 00401cf4 f   s3mini.obj
+ 0003:00000535       MiniVDD_AccessLinearMemoryMode 00401d35 f   s3mini.obj
+ 0003:00000596       MiniVDD_EnableTraps        00401d96 f   s3mini.obj
+ 0003:00000675       MiniVDD_DisableTraps       00401e75 f   s3mini.obj
+ 0003:0000073e       MiniVDD_Virtual4AE8H       00401f3e f   s3mini.obj
+ 0003:00000752       MV4PerformPhysicalIO       00401f52     s3mini.obj
+ 0003:0000075f       MiniVDD_MakeHardwareNotBusy 00401f5f f   s3mini.obj
+ 0003:000007d3       MHNBBoardNotBusy           00401fd3     s3mini.obj
+ 0003:000007d5       Delay                      00401fd5 f   s3mini.obj
+ 0003:000007e1       MiniVDD_VirtualCRTCIn      00401fe1 f   s3mini.obj
+ 0003:000007ff       MVCIVirtual40H             00401fff     s3mini.obj
+ 0003:00000807       MVCICheckChipIDReg         00402007     s3mini.obj
+ 0003:0000080c       MVCIVirtual30H             0040200c     s3mini.obj
+ 0003:00000818       MVCIRestoreCRTCIndex       00402018     s3mini.obj
+ 0003:00000822       MiniVDD_VirtualCRTCOut     00402022 f   s3mini.obj
+ 0003:0000084b       MVCOTryRegister40H         0040204b     s3mini.obj
+ 0003:0000085d       MVCOTryRegister42H         0040205d     s3mini.obj
+ 0003:0000086f       MVCOTryRegister53H         0040206f     s3mini.obj
+ 0003:00000881       MVCOTryRegister58H         00402081     s3mini.obj
+ 0003:00000891       MVCOLetCallerHandleIt      00402091     s3mini.obj
+ 0003:00000893       MiniVDD_VirtualMiscOutput  00402093 f   s3mini.obj
+ 0003:000008ab       MiniVDD_GetTotalVRAMSize   004020ab f   s3mini.obj
+ 0003:000008b3       MiniVDD_GetCurrentBank     004020b3 f   s3mini.obj
+ 0003:000008f5       MGBWGotBank                004020f5     s3mini.obj
+ 0003:00000900       MiniVDD_GetBankSize        00402100 f   s3mini.obj
+ 0003:00000909       MiniVDD_PreHiResSaveRestore 00402109 f   s3mini.obj
+ 0003:000009b4       MPSRDoneSaving             004021b4     s3mini.obj
+ 0003:000009bd       MiniVDD_PostHiResSaveRestore 004021bd f   s3mini.obj
+ 0003:00000a2d       MPSRDoneRestoring          0040222d     s3mini.obj
+ 0003:00000a36       MiniVDD_SetBank            00402236 f   s3mini.obj
+ 0003:00000a8d       MSVDoneSettingBank         0040228d     s3mini.obj
+ 0003:00000a96       MiniVDD_SetHiResMode       00402296 f   s3mini.obj
+ 0004:00000000       MiniVDD_Sys_Critical_Init  00402400 f   s3mini.obj
+ 0004:0000001b       MiniVDD_Dynamic_Init       0040241b f   s3mini.obj
+ 0004:00000093       MVDI_FourthGenerationChipsets 00402493     s3mini.obj
+ 0004:00000174       MVDI_FillInTable           00402574     s3mini.obj
+ 0004:00000291       MVDI_Takeover3C2           00402691     s3mini.obj
+ 0004:000002a7       MVDI_GetSpecialVMs         004026a7     s3mini.obj
+ 0004:000002b9       MVDI_SetupPortTrapping     004026b9     s3mini.obj
+ 0004:000003c3       MiniVDD_GetChipID          004027c3 f   s3mini.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+
+ 0001:00000050       $$$00001                   00401050 f   s3mini.obj
+ 0001:00000050       $$$00003                   00401050 f   s3mini.obj
+ 0001:000000df       $$$00004                   004010df f   s3mini.obj
+ 0004:00000000       $$$00005                   00402400 f   s3mini.obj
+ 0004:0000001b       $$$00007                   0040241b f   s3mini.obj
+ 0004:000003c3       $$$00009                   004027c3 f   s3mini.obj
+ 0004:000003cb       $$$00011                   004027cb f   s3mini.obj
+ 0001:000000e0       $$$00012                   004010e0 f   s3mini.obj
+ 0001:000000e0       $$$00013                   004010e0 f   s3mini.obj
+ 0001:0000015e       $$$00015                   0040115e f   s3mini.obj
+ 0001:0000015e       $$$00016                   0040115e f   s3mini.obj
+ 0002:00000000       $$$00017                   00401400 f   s3mini.obj
+ 0002:0000005f       $$$00019                   0040145f f   s3mini.obj
+ 0001:0000015e       $$$00020                   0040115e f   s3mini.obj
+ 0002:0000005f       $$$00021                   0040145f f   s3mini.obj
+ 0002:000002dd       $$$00023                   004016dd f   s3mini.obj
+ 0001:0000015e       $$$00024                   0040115e f   s3mini.obj
+ 0003:00000000       $$$00025                   00401800 f   s3mini.obj
+ 0003:000000a6       $$$00027                   004018a6 f   s3mini.obj
+ 0001:0000015e       $$$00028                   0040115e f   s3mini.obj
+ 0003:000000a6       $$$00029                   004018a6 f   s3mini.obj
+ 0003:0000012d       $$$00031                   0040192d f   s3mini.obj
+ 0001:0000015e       $$$00032                   0040115e f   s3mini.obj
+ 0003:0000012d       $$$00033                   0040192d f   s3mini.obj
+ 0003:000001d6       $$$00035                   004019d6 f   s3mini.obj
+ 0001:0000015e       $$$00036                   0040115e f   s3mini.obj
+ 0003:000001d6       $$$00037                   004019d6 f   s3mini.obj
+ 0003:00000254       $$$00039                   00401a54 f   s3mini.obj
+ 0001:0000015e       $$$00040                   0040115e f   s3mini.obj
+ 0003:00000254       $$$00041                   00401a54 f   s3mini.obj
+ 0003:000002ac       $$$00043                   00401aac f   s3mini.obj
+ 0001:0000015e       $$$00044                   0040115e f   s3mini.obj
+ 0003:000002ac       $$$00045                   00401aac f   s3mini.obj
+ 0003:00000310       $$$00047                   00401b10 f   s3mini.obj
+ 0001:0000015e       $$$00048                   0040115e f   s3mini.obj
+ 0003:00000310       $$$00049                   00401b10 f   s3mini.obj
+ 0003:0000033b       $$$00051                   00401b3b f   s3mini.obj
+ 0001:0000015e       $$$00052                   0040115e f   s3mini.obj
+ 0003:0000033b       $$$00053                   00401b3b f   s3mini.obj
+ 0003:00000343       $$$00055                   00401b43 f   s3mini.obj
+ 0001:0000015e       $$$00056                   0040115e f   s3mini.obj
+ 0003:00000343       $$$00057                   00401b43 f   s3mini.obj
+ 0003:0000034b       $$$00059                   00401b4b f   s3mini.obj
+ 0001:0000015e       $$$00060                   0040115e f   s3mini.obj
+ 0003:0000034b       $$$00061                   00401b4b f   s3mini.obj
+ 0003:000003a8       $$$00063                   00401ba8 f   s3mini.obj
+ 0001:0000015e       $$$00064                   0040115e f   s3mini.obj
+ 0003:000003a8       $$$00065                   00401ba8 f   s3mini.obj
+ 0003:000004f4       $$$00067                   00401cf4 f   s3mini.obj
+ 0001:0000015e       $$$00068                   0040115e f   s3mini.obj
+ 0003:000004f4       $$$00069                   00401cf4 f   s3mini.obj
+ 0003:00000535       $$$00071                   00401d35 f   s3mini.obj
+ 0001:0000015e       $$$00072                   0040115e f   s3mini.obj
+ 0003:00000535       $$$00073                   00401d35 f   s3mini.obj
+ 0003:00000596       $$$00075                   00401d96 f   s3mini.obj
+ 0001:0000015e       $$$00076                   0040115e f   s3mini.obj
+ 0003:00000596       $$$00077                   00401d96 f   s3mini.obj
+ 0003:00000675       $$$00079                   00401e75 f   s3mini.obj
+ 0001:0000015e       $$$00080                   0040115e f   s3mini.obj
+ 0003:00000675       $$$00081                   00401e75 f   s3mini.obj
+ 0003:0000073e       $$$00083                   00401f3e f   s3mini.obj
+ 0001:0000015e       $$$00084                   0040115e f   s3mini.obj
+ 0003:0000073e       $$$00085                   00401f3e f   s3mini.obj
+ 0003:0000075f       $$$00087                   00401f5f f   s3mini.obj
+ 0001:0000015e       $$$00088                   0040115e f   s3mini.obj
+ 0003:0000075f       $$$00089                   00401f5f f   s3mini.obj
+ 0003:000007d5       $$$00091                   00401fd5 f   s3mini.obj
+ 0001:0000015e       $$$00092                   0040115e f   s3mini.obj
+ 0003:000007d5       $$$00093                   00401fd5 f   s3mini.obj
+ 0003:000007e1       $$$00095                   00401fe1 f   s3mini.obj
+ 0001:0000015e       $$$00096                   0040115e f   s3mini.obj
+ 0002:000002dd       $$$00097                   004016dd f   s3mini.obj
+ 0002:00000300       $$$00099                   00401700 f   s3mini.obj
+ 0001:0000015e       $$$00100                   0040115e f   s3mini.obj
+ 0003:000007e1       $$$00101                   00401fe1 f   s3mini.obj
+ 0003:00000822       $$$00103                   00402022 f   s3mini.obj
+ 0001:0000015e       $$$00104                   0040115e f   s3mini.obj
+ 0003:00000822       $$$00105                   00402022 f   s3mini.obj
+ 0003:00000893       $$$00107                   00402093 f   s3mini.obj
+ 0001:0000015e       $$$00108                   0040115e f   s3mini.obj
+ 0001:000001bf       $$$00110                   004011bf f   s3mini.obj
+ 0003:00000893       $$$00111                   00402093 f   s3mini.obj
+ 0003:000008ab       $$$00113                   004020ab f   s3mini.obj
+ 0001:000001bf       $$$00114                   004011bf f   s3mini.obj
+ 0002:00000300       $$$00115                   00401700 f   s3mini.obj
+ 0002:0000032d       $$$00117                   0040172d f   s3mini.obj
+ 0001:000001bf       $$$00118                   004011bf f   s3mini.obj
+ 0002:0000032d       $$$00119                   0040172d f   s3mini.obj
+ 0002:00000342       $$$00121                   00401742 f   s3mini.obj
+ 0001:000001bf       $$$00122                   004011bf f   s3mini.obj
+ 0003:000008ab       $$$00123                   004020ab f   s3mini.obj
+ 0003:000008b3       $$$00125                   004020b3 f   s3mini.obj
+ 0001:000001bf       $$$00126                   004011bf f   s3mini.obj
+ 0003:000008b3       $$$00127                   004020b3 f   s3mini.obj
+ 0003:00000900       $$$00129                   00402100 f   s3mini.obj
+ 0001:000001bf       $$$00130                   004011bf f   s3mini.obj
+ 0003:00000900       $$$00131                   00402100 f   s3mini.obj
+ 0003:00000909       $$$00133                   00402109 f   s3mini.obj
+ 0001:000001bf       $$$00134                   004011bf f   s3mini.obj
+ 0003:00000909       $$$00135                   00402109 f   s3mini.obj
+ 0003:000009bd       $$$00137                   004021bd f   s3mini.obj
+ 0001:000001bf       $$$00138                   004011bf f   s3mini.obj
+ 0003:000009bd       $$$00139                   004021bd f   s3mini.obj
+ 0003:00000a36       $$$00141                   00402236 f   s3mini.obj
+ 0001:000001bf       $$$00142                   004011bf f   s3mini.obj
+ 0003:00000a36       $$$00143                   00402236 f   s3mini.obj
+ 0003:00000a96       $$$00145                   00402296 f   s3mini.obj
+ 0001:000001bf       $$$00146                   004011bf f   s3mini.obj
+ 0003:00000a96       $$$00147                   00402296 f   s3mini.obj
+ 0003:00000aa7       $$$00149                   004022a7 f   s3mini.obj
+ 0001:000001bf       $$$00150                   004011bf f   s3mini.obj
+ 0001:00000202       $$$00152                   00401202 f   s3mini.obj

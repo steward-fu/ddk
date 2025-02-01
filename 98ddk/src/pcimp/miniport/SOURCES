@@ -1,0 +1,16 @@
+TARGETNAME=EXPCIMP
+TARGETTYPE=EXPORT_DRIVER
+TARGETPATH=$(BASEDIR)\lib
+DRIVERTYPE=WDM
+
+#INCLUDES=..\inc;
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\pci.lib
+
+SOURCES=expcimp.c  \
+        misc.c     \
+        ide.c      \
+        irq.c      \
+        gart.c
+
+USER_C_FLAGS = -Ogaisb1

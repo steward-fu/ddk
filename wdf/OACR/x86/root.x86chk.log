@@ -1,0 +1,7 @@
+Microsoft (R) Auto Code Review Version 3.0.30122.1
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Feb 01 07:08:38   daemon  Starting 'root:x86chk'
+PREfast - main.c (1 of 1)
+Generating warning log for 'root:x86chk'
+Feb 01 07:08:45   daemon  Finishing 'root:x86chk' - 2 warning(s), 1 file(s), 0:01

@@ -1,0 +1,12 @@
+TARGETNAME=scope
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+INCLUDES=.\DirectShow\inc; \
+                    .\DirectShow\inc\classes\base
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\setupapi.lib \
+                          .\DirectShow\lib
+
+SOURCES=
+NTTARGETFILE1 = makefile

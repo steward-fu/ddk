@@ -1,0 +1,20 @@
+
+TARGETNAME=stillvue
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+UMTYPE=windows
+CRT_LIB_PATH=$(MSVCDIR)\lib
+USE_LIBCMT=TRUE
+UMENTRY=winmain
+UMBASE=0x01000000
+
+INCLUDES=..\inc; \
+         $(BASEDIR)\inc;
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\sti.lib
+
+SOURCES=stillvue.rc \
+        stillvue.cpp \
+        winx.cpp \
+        wsti.cpp
+

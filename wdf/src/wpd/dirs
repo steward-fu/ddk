@@ -1,0 +1,6 @@
+DIRS= \
+     WpdBasicHardwareDriver \
+     WpdHelloWorldDriver \
+     WpdMultiTransportDriver \
+     WpdServiceSampleDriver \
+     WpdWudfSampleDriver

@@ -1,0 +1,39 @@
+LIBRARY MYNP
+
+DESCRIPTION 'Network Installer'
+
+EXETYPE WINDOWS
+PROTMODE
+
+SECTIONS
+   .text    READ
+   .bss     READ WRITE
+   .rdata   READ
+   .edata   READ
+   .data    READ WRITE
+   .idata   READ WRITE
+   
+
+CODE  LOADONCALL MOVEABLE DISCARDABLE
+DATA  SINGLE MOVEABLE PRELOAD
+
+HEAPSIZE    1024
+
+EXPORTS		NPGetConnection				@12
+EXPORTS		NPGetCaps					@13
+EXPORTS		NPGetUser					@16
+EXPORTS		NPAddConnection				@17
+EXPORTS		NPCancelConnection			@18
+EXPORTS		NPOpenEnum					@33
+EXPORTS		NPEnumResource				@34 
+EXPORTS		NPCloseEnum					@35
+;EXPORTS		NPGetUniversalName			36
+;EXPORTS		NPGetResourceParent			41
+;EXPORTS		NPValidDevice				42
+EXPORTS		NPLogon						@43
+EXPORTS		NPLogoff					@44
+;EXPORTS		NPGetHomeDirectory			45
+;EXPORTS		NPFormatNetworkName			46
+;EXPORTS		NPGetConnectionPerformance	49
+;EXPORTS		NPGetPolicyPath				50
+;EXPORTS		NPGetResourceInformation	52

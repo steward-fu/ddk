@@ -1,0 +1,4 @@
+DIRS= \
+     firefly \
+     hclient \
+     hidusbfx2

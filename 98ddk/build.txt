@@ -1,0 +1,1 @@
+This DDK Release is synched to Windows98 Build bld1998.6

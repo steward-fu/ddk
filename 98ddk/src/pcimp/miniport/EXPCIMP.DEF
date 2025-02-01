@@ -1,0 +1,31 @@
+LIBRARY         EXPCIMP
+DESCRIPTION     'Microsoft Windows Example PCI Miniport Driver'
+
+SECTIONS
+
+HEAPSIZE        8192
+
+EXPORTS
+	DriverEntry
+
+	PCIMP_IRQInitialize
+	PCIMP_IRQExit
+	PCIMP_SetIRQ
+	PCIMP_GetIRQ
+	PCIMP_SetTrigger
+	PCIMP_GetTrigger
+	PCIMP_ValidateTable
+
+	PCIMP_IDEInitialize
+	PCIMP_IDEExit
+	PCIMP_GetChannelStatus
+
+	PCIMP_GARTInit
+	PCIMP_GARTExit
+	PCIMP_GARTReset
+	PCIMP_GARTReserve
+	PCIMP_GARTMap
+	PCIMP_GARTFlush
+	PCIMP_GARTUnMap
+	PCIMP_GARTFree
+    

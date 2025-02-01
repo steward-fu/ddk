@@ -1,0 +1,7 @@
+DIRS= \
+     config \
+     modem \
+     ndis \
+     trans \
+     wlan \
+     wsk

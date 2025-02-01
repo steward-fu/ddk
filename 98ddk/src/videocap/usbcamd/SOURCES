@@ -1,0 +1,20 @@
+TARGETNAME=usbcamd
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=EXPORT_DRIVER
+DRIVERTYPE=WDM
+
+INCLUDES=;..\..\usb\inc;..\inc
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\stream.lib \
+           $(BASEDIR)\lib\*\free\usbd.lib   \
+           $(BASEDIR)\lib\*\free\ksguid.lib 
+
+
+SOURCES=usbcamd.c  \
+        iso.c      \
+        reset.c    \
+        dbglog.c   \
+        stream.c
+
+C_DEFINES=-DDRIVER

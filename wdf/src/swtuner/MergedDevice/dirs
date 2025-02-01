@@ -1,0 +1,11 @@
+DIRS= \
+     BDAATSCTuner \
+     BDADMBTHTuner \
+     BDADVBCTuner \
+     BDADVBSTuner \
+     BDADVBTTuner \
+     BDAISDBSTuner \
+     BDAISDBTTuner \
+     BDANetopDVBTTuner \
+     BDANetopTuner \
+     BDAQAMTuner

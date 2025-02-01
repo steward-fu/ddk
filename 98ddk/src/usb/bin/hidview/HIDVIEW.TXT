@@ -1,0 +1,98 @@
+OVERVIEW
+--------
+
+HIDView is a diagnostic tool used to evaluate USB HID devices. It 
+directly accesses such devices, queries for their characteristics, 
+and flags any invalid or conflicting items. HIDView is good tool 
+for identifying problems with prototype devices for checking 
+HID compliance.
+
+
+INSTALLATION
+------------
+
+HIDView requires the full Microsoft USB and HID driver stacks to be 
+present, and these are automatically installed when Microsoft(R) 
+Windows(R) 98 operating system is installed on a USB-enabled computer.
+
+HIDView is supplied with the DDK. The latest version of this tool can 
+also be obtained from the USB Implementers' Forum Web site: 
+    http://www.usb.org/developers/index.html
+
+HIDView is downloaded with the generic USB device compliance
+program USBCheck.exe. 
+
+
+DEVICE ACQUISITION
+------------------
+
+When HIDView starts, it places the USB stack in diagnostic mode. 
+When the stack is in this mode, all new devices plugged in to the 
+system (or unplugged and re-plugged) are enumerated as Diagnostic 
+devices, which can be manipulated by HIDView.
+
+Note that devices enumerated as Diagnostic do not perform their normal
+functions. They do not provide any normal input. To return a device to
+normal functionality, turn off Diagnostic mode within HIDView and then 
+re-plug the device. To turn off Diagnostic mode, clear the "Grab newly
+added devices" check box on the main HIDView window, or exit the 
+program.
+
+HIDView does not automatically report new diagnostic devices added to
+the system. To view new devices, click Refresh on the main HIDView
+window or restart the program.
+
+
+DEVICE EVALUATION
+-----------------
+
+A list of devices appears under "Available USB Devices." If necessary,
+click Refresh to list the device you want to evaluate.
+
+NOTE: HIDView 3.0 contained a UI change that places the following 
+actions in a separate "Perform Tests" dialog.  The "Perform Tests" 
+dialog enables the user to perform a series of compliance tests or to perform each test individually.  None of the functionality of 
+previous versions has been removed.  
+
+To get descriptor information on a device, select the particular device
+and then select "Perform Tests."  The following descriptor information can
+be obtained:
+
+  1. Execute "Get Device Descriptor" to display the fields of the Device
+     Descriptor. HIDView reads the fields directly from the device.
+  2. Execute "Get Class Descriptor" to display the fields of the Class
+     Descriptor. HIDView reads the fields directly from the device.
+  3. Execute "Get Report Descriptor (OS)" to display the fields of the Report
+     Descriptor. HIDView obtains the descriptor from the device and
+     passes it to the HID parser for interpretation.
+  4. Execute "Get Report Descriptor (TParse)" to display the fields of the 
+     Report Descriptor. HIDView obtains the descriptor from the device and
+     passes it to TParse.dll, a separate parsing utility, which provides
+     more detailed error checking and can display the contents of the 
+     descriptor in a more readable format.  However, it cannot provide 
+     any OS parser-specific information.
+
+To view a raw dump of the input data from the device, click "Get data
+from device."  If TParse.dll is present, this function can also break
+down the raw data packets into the corresponding fields that are defined
+within the report descriptor.
+
+
+SAVING DESCRIPTORS
+------------------
+
+Any descriptor can be saved to disk and examined at another time. 
+Files can be saved in three formats: text, hex, and binary. The hex
+and binary formats can be re-loaded by HIDView; the text format
+is output-only.
+
+To save a descriptor, click "Save descriptor to disk" in the 
+descriptor display window. To load a saved descriptor file, click 
+"Load saved descriptor" in the main HIDView window.
+
+When Device and Class descriptors are loaded, they are interpreted 
+directly by HIDView and displayed on the screen. When Report 
+descriptors are loaded, they can be passed to the OS HID parser or 
+to TParse.dll for interpretation and display.
+
+Note that only one descriptor can be saved per file.

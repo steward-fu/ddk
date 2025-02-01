@@ -1,0 +1,25 @@
+TARGETNAME=BulkUsb
+TARGETTYPE=DRIVER
+TARGETPATH=$(BASEDIR)\LIB
+DRIVERTYPE=WDM
+
+
+INCLUDES=$(BASEDIR)\inc; \
+		 $(BASEDIR)\src\usb\inc; \
+		 $(BASEDIR)\src\wdm\usb\inc; \
+          ..\..\inc
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\usbd.lib
+
+USE_MAPSYM=1
+
+SOURCES=          \
+        BulkUsb.rc \
+        BusbDbg.c \
+        BulkUsb.c  \
+        BulkPnP.c \
+        BulkPwr.c \
+        IoctlBlk.c   \
+        OcrwBlk.c
+

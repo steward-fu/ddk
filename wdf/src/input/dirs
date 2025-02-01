@@ -1,0 +1,9 @@
+DIRS= \
+     HBtnKey \
+     hiddigi \
+     kbdclass \
+     kbfiltr \
+     layout \
+     mouclass \
+     moufiltr \
+     vserial

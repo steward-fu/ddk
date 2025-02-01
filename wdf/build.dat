@@ -1,0 +1,2697 @@
+V 426
+D "c:\" 85
+ F "dddk" 2 10 ef88ae40 0 0
+ F "doc" 2 10 ef8ecb00 0 0
+ F "documents and settings" 2 10 315b0fb0 0 0
+ F "fasm" 2 10 ef9b0480 0 0
+ F "freebasic" 2 10 f0dd7110 0 0
+ F "hla" 2 10 f38d1370 0 0
+ F "ida" 2 10 6ed6a450 0 0
+ F "main.c" 43041 0 b6d86950 20 0
+  I "ntddk.h" 0 0
+  I "wdf.h" 0 0
+ F "masm32" 2 10 f54837d0 0 0
+ F "nasm" 2 10 f54b4630 0 0
+ F "nasmx" 2 10 f5623200 0 0
+ F "ntldr" 1044 0 10a1a000 852 0
+ F "numega" 2 10 9b2a9400 0 0
+ F "objasm" 2 10 737fcec0 0 0
+ F "program files" 2 10 6a2592f0 0 0
+ F "recycler" 2 10 2eccad00 0 0
+ F "system volume information" 2 10 fe96c600 0 0
+ F "tools" 2 10 f5855750 0 0
+ F "winddk" 2 10 20c276d0 0 0
+ F "windows" 2 10 c235bcd0 0 0
+
+D "c:\winddk\7600.16385.1\inc\ddk" 20
+ F "1394.h" 1044 0 9f55aa00 2229 0
+  I "initguid.h" 0 0
+ F "61883.h" 1044 0 9f55aa00 1101 0
+ F "accctrl.h" 1044 0 a086d700 802 0
+  I "wtypes.h" 0 0
+ F "acpiioct.h" 1044 0 9f55aa00 253 0
+ F "amtvuids.h" 1044 0 9e247d00 68 0
+ F "anchorsyncdeviceservice.h" 1044 0 9e247d00 316 0
+  I "deviceservices.h" 0 0
+  I "syncdeviceservice.h" 0 0
+ F "ata.h" 1044 0 9e247d00 695 0
+ F "atm.h" 1044 0 9e247d00 785 0
+ F "aux_klib.h" 1044 0 9e247d00 104 0
+  I "ntimage.h" 0 0
+ F "avc.h" 1044 0 9f55aa00 397 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "avcstrm.h" 1044 0 9f55aa00 551 0
+ F "backpack.h" 1044 0 901b3000 189 0
+ F "bdasup.h" 1044 0 9f55aa00 696 0
+ F "bridgedeviceservice.h" 1044 0 9e247d00 1999 0
+ F "bthddi.h" 1044 0 9e247d00 2025 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "bthguid.h" 1044 0 9e247d00 18 0
+ F "bthioctl.h" 1044 0 9e247d00 609 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "bthref.h" 1044 0 9e247d00 49 0
+ F "bthsdpddi.h" 1044 0 9e247d00 266 0
+ F "buffring.h" 1044 0 901b3000 166 9
+ F "calendardeviceservice.h" 1044 0 9e247d00 291 0
+  I "deviceservices.h" 0 0
+  I "messagedeviceservice.h" 0 0
+  I "syncdeviceservice.h" 0 0
+ F "cifs.h" 1044 0 901b3000 6340 0
+  I "winerror.h" 0 0
+  I "packon.h" 0 0
+  I "packoff.h" 0 0
+ F "classpnp.h" 1044 0 9e247d00 3306 0
+  I "ntdddisk.h" 0 0
+  I "ntddcdrm.h" 0 0
+  I "ntddtape.h" 0 0
+  I "ntddscsi.h" 0 0
+  I "ntddstor.h" 1 0
+  I "stdio.h" 0 0
+  I "scsi.h" 0 0
+ F "clfs.h" 1044 0 a086d700 1294 0
+  I "stdio.h" 0 0
+  I "clfslsn.h" 0 0
+ F "clfslsn.h" 1044 0 a086d700 88 0
+ F "clfsmsg.h" 1044 0 a086d700 164 0
+ F "cloneviewhelper.h" 1044 0 9e247d00 409 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+ F "cloneviewhelper.idl" 21081 0 9e247d00 103 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+ F "codecapi.h" 1044 0 a086d700 1940 0
+ F "contactdeviceservice.h" 1044 0 9e247d00 937 0
+  I "deviceservices.h" 0 0
+  I "syncdeviceservice.h" 0 0
+ F "csq.h" 1044 0 9e247d00 310 0
+ F "d3dhal.h" 1044 0 9e247d00 2763 0
+  I "ddraw.h" 1 0
+  I "d3dtypes.h" 1 0
+  I "d3dcaps.h" 1 0
+  I "d3d.h" 1 0
+  I "d3d9.h" 1 0
+  I "dxva9typ.h" 1 0
+  I "d3d8.h" 1 0
+ F "d3dhalex.h" 1044 0 9e247d00 113 0
+ F "d3dkmdt.h" 1044 0 9e247d00 1524 0
+  I "d3dukmdt.h" 0 0
+  I "wmidata.h" 0 0
+ F "d3dukmdt.h" 1044 0 9e247d00 758 0
+ F "d3dvec.inl" 1044 0 a086d700 256 0
+  I "math.h" 0 0
+ F "d4drvif.h" 1044 0 9e247d00 155 0
+ F "d4iface.h" 1044 0 9e247d00 101 0
+ F "dciddi.h" 1044 0 9e247d00 288 0
+ F "dciman.h" 1044 0 9e247d00 156 0
+  I "dciddi.h" 1 0
+ F "dderror.h" 1044 0 9e247d00 47 0
+ F "deviceservices.h" 1044 0 9e247d00 80 0
+  I "bridgedeviceservice.h" 1 0
+ F "dispmprt.h" 1044 0 9e247d00 1480 0
+  I "acpiioct.h" 0 0
+  I "ntddvdeo.h" 0 0
+  I "video.h" 0 0
+  I "windef.h" 0 0
+  I "d3dkmddi.h" 0 0
+  I "d3dkmdt.h" 0 0
+ F "dmusicks.h" 1044 0 9e247d00 449 0
+  I "dmusprop.h" 0 0
+ F "dmusics.h" 1044 0 9e247d00 207 0
+  I "dmusicc.h" 1 0
+ F "dmusprop.h" 1044 0 9e247d00 263 0
+  I "dmusbuff.h" 1 0
+ F "driverspecs.h" 1044 0 9f55aa00 847 0
+  I "specstrings.h" 0 0
+  I "sdv_driverspecs.h" 1 0
+ F "drivinit.h" 1044 0 9e247d00 12 0
+ F "drmk.h" 1044 0 9e247d00 199 0
+ F "dsfhrmports.h" 1044 0 9e247d00 1 0
+ F "dsfif.h" 1044 0 9e247d00 5513 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+ F "dsm.h" 1044 0 9e247d00 1612 0
+  I "ntddk.h" 0 0
+  I "scsi.h" 0 0
+  I "ntddscsi.h" 0 0
+  I "ntddstor.h" 0 0
+  I "wmistr.h" 0 0
+  I "wmiguid.h" 0 0
+  I "wmilib.h" 0 0
+ F "dxapi.h" 1044 0 9e247d00 37 0
+ F "dxva9typ.h" 1044 0 a086d700 1001 0
+  I "stdlib.h" 0 0
+  I "objbase.h" 0 0
+  I "windows.h" 0 0
+ F "exdispid.h" 1044 0 a086d700 170 0
+ F "fcb.h" 1044 0 901b3000 1599 0
+  I "fcbtable.h" 1 0
+  I "buffring.h" 1 0
+ F "fcbtable.h" 1044 0 901b3000 153 0
+ F "filterpipeline.h" 1044 0 9e247d00 3130 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "imgerror.h" 1 0
+ F "filterpipelineutil.h" 1044 0 9e247d00 246 0
+ F "fltkernel.h" 1044 0 a086d700 5212 0
+  I "ntifs.h" 0 0
+  I "fltuserstructures.h" 0 0
+  I "initguid.h" 0 0
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+ F "fltsafe.h" 1044 0 9e247d00 30 0
+ F "fltuser.h" 1044 0 a086d700 420 0
+  I "fltuserstructures.h" 0 0
+ F "fltuserstructures.h" 1044 0 a086d700 601 0
+ F "fltwinerror.h" 1044 0 a086d700 383 5
+ F "fullenumsyncdeviceservice.h" 1044 0 9e247d00 191 0
+  I "deviceservices.h" 0 0
+  I "syncdeviceservice.h" 0 0
+ F "hbaapi.h" 1044 0 9e247d00 1561 0
+  I "time.h" 0 0
+ F "hbapiwmi.h" 1044 0 9e247d00 4369 0
+ F "hdaudio.h" 1044 0 9e247d00 361 0
+ F "hidclass.h" 1044 0 a086d700 245 0
+  I "basetyps.h" 0 0
+ F "hidpddi.h" 1044 0 a086d700 256 0
+  I "hidusage.h" 1 0
+  I "hidpi.h" 1 0
+ F "hidport.h" 1044 0 a086d700 222 0
+  I "hidclass.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "hintsdeviceservice.h" 1044 0 9e247d00 295 0
+  I "deviceservices.h" 0 0
+ F "hubbusif.h" 1044 0 a086d700 1232 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "i2cgpio.h" 1044 0 9e247d00 162 0
+ F "imgerror.h" 1044 0 9e247d00 423 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+ F "imgerror.idl" 21081 0 9e247d00 124 0
+  I "oaidl.idl" 1 0
+ F "ioaccess.h" 1044 0 9e247d00 468 0
+ F "iointex.h" 1044 0 9e247d00 73 0
+ F "ip6firewall.h" 1044 0 9e247d00 112 0
+  I "ipinfo.h" 0 0
+ F "ipfirewall.h" 1044 0 9e247d00 165 0
+ F "ipinfo.h" 1044 0 9e247d00 410 0
+  I "in6addr.h" 0 0
+ F "irb.h" 1044 0 9e247d00 1973 0
+  I "initguid.h" 0 0
+ F "irclass_ioctl.h" 1044 0 9e247d00 634 0
+ F "iscsicfg.h" 1044 0 9e247d00 388 0
+  I "iscsidef.h" 0 0
+ F "iscsidef.h" 1044 0 9e247d00 350 0
+ F "iscsierr.h" 1044 0 9e247d00 1031 0
+ F "iscsifnd.h" 1044 0 9e247d00 274 0
+  I "iscsidef.h" 0 0
+ F "iscsilog.h" 1044 0 9e247d00 737 0
+ F "iscsimgt.h" 1044 0 9e247d00 1143 0
+  I "iscsidef.h" 0 0
+ F "iscsiop.h" 1044 0 9e247d00 1449 0
+  I "iscsidef.h" 0 0
+ F "iscsiprf.h" 1044 0 9e247d00 712 0
+ F "isvbop.h" 1044 0 9e247d00 139 1
+ F "isvbop.inc" 1014 0 9e247d00 22 0
+ F "kbdmou.h" 1044 0 3450a700 134 0
+  I "ntddkbd.h" 0 0
+  I "ntddmou.h" 0 0
+  I "wmidata.h" 0 0
+ F "ksi.h" 1044 0 9e247d00 194 0
+ F "lmstats.h" 1044 0 a086d700 191 1
+  I "lmcons.h" 0 0
+ F "lmuseflg.h" 1044 0 a086d700 43 1
+ F "lmwksta.h" 1044 0 a086d700 545 6
+  I "lmcons.h" 0 0
+  I "lmuseflg.h" 0 0
+ F "lowio.h" 1044 0 901b3000 88 0
+  I "mrx.h" 1 0
+ F "mcd.h" 1044 0 9e247d00 471 0
+  I "scsi.h" 1 0
+  I "ntddchgr.h" 1 0
+  I "classpnp.h" 0 0
+  I "wmidata.h" 0 0
+  I "wmistr.h" 0 0
+ F "mce.h" 1044 0 a086d700 1391 11
+ F "messagedeviceservice.h" 1044 0 9e247d00 398 0
+  I "deviceservices.h" 0 0
+ F "metadatadeviceservice.h" 1044 0 9e247d00 84 0
+  I "deviceservices.h" 0 0
+ F "mf.h" 1044 0 9e247d00 161 0
+ F "midatlax.h" 1044 0 901b3000 122 9
+ F "miniport.h" 1044 0 9e247d00 6608 0
+  I "stddef.h" 1 0
+  I "specstrings.h" 0 0
+  I "kernelspecs.h" 0 0
+  I "basetsd.h" 0 0
+  I "sdkddkver.h" 0 0
+  I "guiddef.h" 0 0
+  I "dsfhrmports.h" 0 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "minitape.h" 1044 0 9e247d00 5905 0
+  I "stddef.h" 1 0
+  I "specstrings.h" 0 0
+  I "kernelspecs.h" 0 0
+  I "basetsd.h" 0 0
+  I "sdkddkver.h" 0 0
+ F "mountdev.h" 1044 0 9e247d00 77 0
+  I "mountmgr.h" 0 0
+ F "mountmgr.h" 1044 0 9e247d00 295 0
+ F "mpiodisk.h" 1044 0 9e247d00 674 0
+ F "mpiowmi.h" 1044 0 9e247d00 806 0
+ F "mrx.h" 1044 0 901b3000 818 0
+  I "mrxfcb.h" 0 0
+ F "mrxfcb.h" 1044 0 901b3000 822 0
+ F "msdadc.h" 1044 0 a086d700 392 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "oledb.h" 1 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "msdaguid.h" 1044 0 a086d700 41 0
+ F "msdasc.h" 1044 0 a086d700 828 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "oledb.h" 1 0
+ F "msviddrv.h" 1044 0 9e247d00 127 0
+ F "namcache.h" 1044 0 901b3000 210 0
+ F "ndis.h" 1044 0 9e247d00 12456 0
+  I "ntddk.h" 0 0
+  I "ntstatus.h" 0 0
+  I "netevent.h" 0 0
+  I "driverspecs.h" 0 0
+  I "ntddndis.h" 0 0
+  I "xfilter.h" 0 0
+  I "windot11.h" 0 0
+  I "qos.h" 0 0
+ F "ndischimney.h" 1044 0 9e247d00 973 0
+ F "ndisguid.h" 1044 0 9e247d00 278 0
+ F "ndistapi.h" 1044 0 9e247d00 1676 0
+ F "ndiswan.h" 1044 0 9e247d00 485 0
+ F "ndiswwan.h" 1044 0 9e247d00 285 0
+ F "ndr64types.h" 1044 0 a086d700 754 0
+  I "pshpack8.h" 0 0
+  I "guiddef.h" 0 0
+  I "poppack.h" 0 0
+ F "netdma.h" 1044 0 9e247d00 461 0
+ F "netioddk.h" 1044 0 9e247d00 254 0
+  I "netiodef.h" 0 0
+ F "netpnp.h" 1044 0 9e247d00 74 0
+ F "nodetype.h" 1044 0 901b3000 243 0
+ F "notesdeviceservice.h" 1044 0 9e247d00 50 0
+  I "deviceservices.h" 0 0
+  I "messagedeviceservice.h" 0 0
+ F "npapi.h" 1044 0 a086d700 609 0
+ F "npivwmi.h" 1044 0 9e247d00 203 0
+ F "ntagp.h" 1044 0 9e247d00 289 0
+ F "ntdddump.h" 1044 0 9e247d00 176 0
+  I "ntddk.h" 0 0
+ F "ntddk.h" 1044 0 9f55aa00 16070 184
+  I "wdm.h" 0 0
+  I "excpt.h" 0 0
+  I "ntdef.h" 0 0
+  I "ntstatus.h" 0 0
+  I "bugcodes.h" 0 0
+  I "ntiologc.h" 0 0
+  I "mce.h" 0 0
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+  I "guiddef.h" 0 0
+  I "pshpack1.h" 0 0
+ F "ntddnlb.h" 1044 0 9f55aa00 778 0
+ F "ntddpcm.h" 1044 0 9f55aa00 245 0
+ F "ntddsd.h" 1044 0 9f55aa00 468 0
+  I "sddef.h" 0 0
+ F "ntddsfio.h" 1044 0 9f55aa00 60 0
+ F "ntifs.h" 1044 0 a086d700 18685 146
+  I "ntddk.h" 0 0
+  I "excpt.h" 0 0
+  I "ntdef.h" 0 0
+  I "ntnls.h" 0 0
+  I "ntstatus.h" 0 0
+  I "bugcodes.h" 0 0
+  I "ntiologc.h" 0 0
+  I "guiddef.h" 0 0
+ F "ntimage.h" 1044 0 9f55aa00 2010 4
+  I "pshpack4.h" 1 0
+  I "pshpack2.h" 1 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+  I "pshpack8.h" 1 0
+ F "ntintsafe.h" 1044 0 9f55aa00 8550 0
+  I "specstrings.h" 0 0
+ F "ntlmsp.h" 1044 0 a086d700 312 0
+  I "ntmsv1_0.h" 0 0
+ F "ntnls.h" 1044 0 9f55aa00 58 0
+ F "ntpoapi.h" 1044 0 9f55aa00 2207 1
+ F "ntrxdef.h" 1044 0 901b3000 237 0
+ F "ntsam.h" 1044 0 a086d700 2381 6
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+ F "ntstrsafe.h" 1044 0 9f55aa00 12594 0
+  I "stdio.h" 0 0
+  I "string.h" 0 0
+  I "stdarg.h" 0 0
+  I "specstrings.h" 0 0
+  I "ntdef.h" 0 0
+ F "offreg.h" 1044 0 a086d700 214 0
+ F "oledberr.h" 1044 0 a086d700 1829 0
+ F "oprghdlr.h" 1044 0 a086d700 135 0
+  I "wdm.h" 1 0
+ F "parallel.h" 1044 0 9f55aa00 755 0
+  I "ntddpar.h" 0 0
+ F "pciprop.h" 1044 0 a086d700 436 0
+ F "pfhook.h" 1044 0 9f55aa00 70 0
+ F "poclass.h" 1044 0 9f55aa00 589 1
+  I "devpropdef.h" 0 0
+ F "portabledevice.h" 1044 0 9f55aa00 4438 0
+  I "propkeydef.h" 1 0
+ F "portabledeviceclassextension.h" 1044 0 9f55aa00 229 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propidl.h" 1 0
+  I "portabledevicetypes.h" 1 0
+ F "portabledeviceclassextension.idl" 21081 0 9f55aa00 66 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "propidl.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "portabledevicetypes.idl" 1 0
+ F "portabledevicetypes.h" 1044 0 9f55aa00 1301 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propsys.h" 1 0
+ F "portabledevicetypes.idl" 21081 0 9f55aa00 400 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "propsys.idl" 1 0
+  I "wtypes.idl" 1 0
+ F "portcls.h" 1044 0 9f55aa00 3555 0
+  I "wdm.h" 0 0
+  I "windef.h" 0 0
+  I "mmreg.h" 0 0
+  I "ks.h" 0 0
+  I "ksmedia.h" 0 0
+  I "punknown.h" 0 0
+  I "drmk.h" 0 0
+ F "prefix.h" 1044 0 901b3000 305 0
+ F "prnasnot.h" 1044 0 a086d700 232 0
+  I "initguid.h" 1 0
+  I "objbase.h" 0 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+ F "procgrp.h" 1044 0 9f55aa00 240 0
+ F "ptpusd.h" 1044 0 9f55aa00 89 0
+ F "punknown.h" 1044 0 9f55aa00 76 0
+  I "wdm.h" 0 0
+  I "windef.h" 0 0
+  I "basetyps.h" 0 0
+  I "initguid.h" 0 0
+ F "richedit.h" 1044 0 a086d700 1311 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+ F "richole.h" 1044 0 a086d700 165 0
+ F "ringtonedeviceservice.h" 1044 0 9f55aa00 60 0
+  I "deviceservices.h" 0 0
+  I "messagedeviceservice.h" 0 0
+ F "rx.h" 1044 0 901b3000 107 9
+  I "rxovride.h" 1 0
+  I "ntifs.h" 1 0
+  I "rxtypes.h" 1 0
+  I "rxpooltg.h" 1 0
+  I "ntrxdef.h" 1 0
+  I "rxce.h" 1 0
+  I "rxcehdlr.h" 1 0
+  I "fcbtable.h" 1 0
+  I "midatlax.h" 1 0
+  I "mrxfcb.h" 1 0
+  I "namcache.h" 1 0
+  I "rxworkq.h" 1 0
+  I "rxprocs.h" 1 0
+  I "rxexcept.h" 1 0
+  I "rxdata.h" 1 0
+  I "buffring.h" 1 0
+ F "rxce.h" 1044 0 901b3000 387 9
+  I "nodetype.h" 0 0
+  I "rxcehdlr.h" 0 0
+  I "rxworkq.h" 0 0
+ F "rxcehdlr.h" 1044 0 901b3000 309 9
+  I "tdi.h" 1 0
+ F "rxcontx.h" 1044 0 901b3000 826 0
+ F "rxdata.h" 1044 0 901b3000 144 0
+ F "rxexcept.h" 1044 0 901b3000 140 0
+ F "rxlog.h" 1044 0 901b3000 141 0
+ F "rxovride.h" 1044 0 901b3000 73 0
+  I "struchdr.h" 0 0
+ F "rxprocs.h" 1044 0 901b3000 1541 0
+  I "rx.h" 1 0
+  I "backpack.h" 1 0
+  I "rxtypes.h" 1 0
+  I "rxlog.h" 1 0
+  I "rxtrace.h" 1 0
+  I "rxtimer.h" 1 0
+  I "rxstruc.h" 1 0
+ F "rxstruc.h" 1044 0 901b3000 369 0
+  I "prefix.h" 1 0
+  I "lowio.h" 1 0
+  I "scavengr.h" 1 0
+  I "rxcontx.h" 1 0
+  I "mrx.h" 1 0
+  I "fcb.h" 1 0
+ F "rxtimer.h" 1044 0 901b3000 75 0
+ F "rxtrace.h" 1044 0 901b3000 292 0
+ F "rxtypes.h" 1044 0 901b3000 37 0
+  I "nodetype.h" 1 0
+ F "rxworkq.h" 1044 0 901b3000 249 0
+ F "scarderr.h" 1044 0 a086d700 655 0
+ F "scavengr.h" 1044 0 901b3000 276 0
+ F "scsi.h" 1044 0 9f55aa00 3666 0
+  I "srb.h" 1 0
+ F "scsiscan.h" 1044 0 9f55aa00 112 0
+ F "scsiwmi.h" 1044 0 9f55aa00 782 0
+ F "sddef.h" 1044 0 9f55aa00 226 0
+ F "sdplib.h" 1044 0 9f55aa00 366 0
+  I "sdpnode.h" 1 0
+ F "sdpnode.h" 1044 0 9f55aa00 114 0
+ F "sdv_driverspecs.h" 1044 0 9f55aa00 23 0
+ F "sensorsclassextension.h" 1044 0 9f55aa00 516 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "propidl.h" 1 0
+  I "wudfddi.h" 1 0
+  I "portabledevicetypes.h" 1 0
+ F "sffdisk.h" 1044 0 9f55aa00 202 0
+ F "sffprtcl.h" 1044 0 9f55aa00 144 0
+ F "softehciif.h" 1044 0 9f55aa00 972 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+ F "softhidusbif.h" 1044 0 9f55aa00 2246 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+ F "softusbif.h" 1044 0 9f55aa00 4424 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+ F "srb.h" 1044 0 9f55aa00 1521 0
+ F "statusdeviceservice.h" 1044 0 9f55aa00 231 0
+  I "deviceservices.h" 0 0
+ F "stdcall.inc" 1014 0 9f55aa00 366 0
+ F "stdunk.h" 1044 0 9f55aa00 255 0
+  I "punknown.h" 1 0
+ F "stiusd.h" 1044 0 9f55aa00 222 0
+  I "objbase.h" 0 0
+  I "stireg.h" 0 0
+  I "stierr.h" 0 0
+ F "storduid.h" 1044 0 9f55aa00 409 1
+ F "storport.h" 1044 0 9f55aa00 6540 0
+ F "storswtr.h" 1044 0 9f55aa00 199 0
+  I "stdarg.h" 0 0
+ F "stortrce.h" 1044 0 9f55aa00 680 0
+  I "stdarg.h" 0 0
+ F "strmini.h" 1044 0 a086d700 1381 0
+  I "wdm.h" 0 0
+  I "windef.h" 0 0
+  I "stdio.h" 0 0
+  I "ks.h" 1 0
+ F "struchdr.h" 1044 0 901b3000 62 0
+ F "swenum.h" 1044 0 9f55aa00 212 0
+ F "syncdeviceservice.h" 1044 0 9f55aa00 138 0
+ F "taskdeviceservice.h" 1044 0 9f55aa00 118 0
+  I "deviceservices.h" 0 0
+  I "messagedeviceservice.h" 0 0
+  I "syncdeviceservice.h" 0 0
+ F "tdikrnl.h" 1044 0 9f55aa00 1473 0
+  I "tdi.h" 0 0
+  I "netpnp.h" 0 0
+ F "tdistat.h" 1044 0 9f55aa00 110 0
+ F "upssvc.h" 1044 0 9f55aa00 198 0
+ F "usbbusif.h" 1044 0 a086d700 494 0
+ F "usbdlib.h" 1044 0 a086d700 576 0
+ F "usbdrivr.h" 1044 0 a086d700 35 0
+  I "usbioctl.h" 1 0
+  I "usb.h" 1 0
+  I "usbdlib.h" 1 0
+  I "usbbusif.h" 1 0
+ F "usbkern.h" 1044 0 a086d700 35 0
+  I "usbioctl.h" 1 0
+ F "usbprint.h" 1044 0 a086d700 49 0
+ F "usbprotocoldefs.h" 1044 0 9f55aa00 886 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "usbscan.h" 1044 0 9f55aa00 157 0
+ F "usbstorioctl.h" 1044 0 9f55aa00 103 0
+ F "vcclr.h" 1044 0 a086d700 60 0
+  I "gcroot.h" 0 0
+ F "vfwext.h" 1044 0 9f55aa00 73 0
+  I "prsht.h" 0 0
+ F "video.h" 1044 0 9f55aa00 2783 0
+  I "videoagp.h" 0 0
+ F "videoagp.h" 1044 0 9f55aa00 133 0
+ F "wdm.h" 1044 0 a086d700 32429 162
+  I "excpt.h" 0 0
+  I "ntdef.h" 0 0
+  I "ntstatus.h" 0 0
+  I "bugcodes.h" 0 0
+  I "ntiologc.h" 0 0
+  I "mce.h" 0 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+  I "guiddef.h" 0 0
+  I "pshpack1.h" 1 0
+  I "string.h" 0 0
+  I "dpfilter.h" 0 0
+  I "ktmtypes.h" 0 0
+  I "dsfhrmports.h" 0 0
+  I "ia64reg.h" 1 0
+  I "evntrace.h" 0 0
+  I "stdarg.h" 0 0
+  I "evntprov.h" 0 0
+  I "devpropdef.h" 0 0
+  I "clfslsn.h" 0 0
+ F "wdmguid.h" 1044 0 a086d700 136 0
+ F "wdmsec.h" 1044 0 9f55aa00 446 0
+ F "wdmwarn4.h" 1044 0 a086d700 17 0
+ F "wheaevents.h" 1044 0 9f55aa00 61 0
+ F "wiaintfc.h" 1044 0 9f55aa00 39 0
+  I "pshpack8.h" 0 0
+  I "guiddef.h" 0 0
+ F "wiamdef.h" 1044 0 9f55aa00 326 0
+  I "strsafe.h" 0 0
+ F "wiamicro.h" 1044 0 9f55aa00 221 0
+  I "scsiscan.h" 0 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "wiamindr.h" 1044 0 9f55aa00 6 0
+  I "wiamindr_lh.h" 0 0
+  I "wiamindr_xp.h" 0 0
+ F "wiamindr_lh.h" 1044 0 9f55aa00 1032 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "oaidl.h" 1 0
+  I "propidl.h" 1 0
+  I "wia_lh.h" 1 0
+  I "wiamdef.h" 1 0
+ F "wiamindr_xp.h" 1044 0 9f55aa00 928 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "oaidl.h" 1 0
+  I "propidl.h" 1 0
+  I "wia_xp.h" 1 0
+  I "wiamdef.h" 1 0
+ F "wiatwcmp.h" 1044 0 9f55aa00 52 0
+ F "wiautil.h" 1044 0 9f55aa00 1394 0
+  I "strsafe.h" 0 0
+ F "wia_lh.h" 1044 0 9f55aa00 4755 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "oaidl.h" 1 0
+  I "propidl.h" 1 0
+  I "wiadef.h" 1 0
+ F "wia_xp.h" 1044 0 9f55aa00 2844 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "oaidl.h" 1 0
+  I "propidl.h" 1 0
+  I "wiadef.h" 1 0
+ F "windowssideshow.h" 1044 0 9f55aa00 151 0
+  I "propkeydef.h" 1 0
+ F "windowssideshowclassextension.h" 1044 0 9f55aa00 896 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "propidl.h" 1 0
+  I "wudfddi.h" 1 0
+ F "windowssideshowdriverevents.h" 1044 0 9f55aa00 159 0
+ F "winusb.h" 1044 0 9f55aa00 253 0
+  I "winusbio.h" 0 0
+ F "winusbio.h" 1044 0 9f55aa00 85 0
+  I "usb.h" 0 0
+  I "initguid.h" 0 0
+ F "wmicore.mof" 21401 0 9f55aa00 18173 0
+ F "wmidata.h" 1044 0 a086d700 12202 0
+ F "wmiguid.h" 1044 0 a086d700 312 0
+  I "guiddef.h" 0 0
+ F "wmilib.h" 1044 0 a086d700 543 0
+ F "ws2san.h" 1044 0 9f55aa00 303 0
+ F "wsk.h" 1044 0 9f55aa00 1589 0
+  I "netioddk.h" 0 0
+  I "ws2def.h" 0 0
+  I "mswsockdef.h" 0 0
+ F "wwan.h" 1044 0 9f55aa00 718 0
+ F "xfilter.h" 1044 0 9f55aa00 269 0
+ F "xpsrassvc.h" 1044 0 9f55aa00 379 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "wincodec.h" 1 0
+  I "xpsobjectmodel.h" 1 0
+
+D "c:\winddk\7600.16385.1\inc\api" 20
+ F "aclapi.h" 1044 0 9f55aa00 702 1
+  I "windows.h" 0 0
+  I "accctrl.h" 0 0
+ F "af_irda.h" 1044 0 9f55aa00 220 0
+ F "atsmedia.h" 1044 0 9f55aa00 35 0
+ F "audioapotypes.h" 1044 0 9f55aa00 85 0
+ F "audioendpoints.h" 1044 0 9f55aa00 166 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+ F "audioendpoints.idl" 21081 0 9f55aa00 61 0
+  I "unknwn.idl" 1 0
+ F "audioenginebaseapo.h" 1044 0 9f55aa00 896 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "mmdeviceapi.h" 1 0
+  I "audiomediatype.h" 1 0
+  I "audioapotypes.h" 1 0
+ F "audioenginebaseapo.idl" 21081 0 9f55aa00 1048 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "mmdeviceapi.idl" 1 0
+  I "audiomediatype.idl" 1 0
+  I "audioapotypes.h" 1 0
+ F "audiomediatype.h" 1044 0 9f55aa00 244 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "mmreg.h" 1 0
+ F "audiomediatype.idl" 21081 0 9f55aa00 90 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "mmreg.h" 1 0
+ F "baseaudioprocessingobject.h" 1044 0 9f55aa00 316 0
+  I "audioenginebaseapo.h" 0 0
+  I "strsafe.h" 0 0
+  I "ks.h" 0 0
+  I "ksmedia.h" 0 0
+  I "intsafe.h" 0 0
+  I "crtdbg.h" 0 0
+ F "basetsd.h" 1044 0 9f55aa00 498 0
+ F "basetyps.h" 1044 0 9f55aa00 227 0
+  I "guiddef.h" 0 0
+ F "batclass.h" 1044 0 9f55aa00 520 1
+ F "bcrypt.h" 1044 0 9f55aa00 1276 0
+ F "bdamedia.h" 1044 0 9f55aa00 3677 0
+ F "bdatypes.h" 1044 0 9f55aa00 1116 0
+  I "exposeenums2managed.h" 0 0
+  I "unexposeenums2managed.h" 0 0
+ F "bluetoothapis.h" 1044 0 9f55aa00 1954 0
+  I "bthdef.h" 0 0
+ F "bthdef.h" 1044 0 9f55aa00 1116 0
+  I "bthsdpdef.h" 1 0
+ F "bthsdpdef.h" 1044 0 9f55aa00 117 0
+ F "bugcodes.h" 1044 0 9f55aa00 3037 1
+ F "callconv.inc" 1014 0 9f55aa00 304 0
+ F "cderr.h" 1044 0 9f55aa00 63 0
+ F "cfg.h" 1044 0 9f55aa00 244 0
+ F "cfgmgr32.h" 1044 0 9f55aa00 3571 0
+  I "cfg.h" 0 0
+  I "guiddef.h" 0 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "cguid.h" 1044 0 9f55aa00 160 0
+ F "coguid.h" 1044 0 9f55aa00 86 0
+ F "comcat.h" 1044 0 9f55aa00 849 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+ F "comdef.h" 1044 0 9f55aa00 1122 0
+  I "ole2.h" 0 0
+  I "olectl.h" 0 0
+  I "comutil.h" 0 0
+  I "comip.h" 0 0
+ F "comip.h" 1044 0 9f55aa00 920 0
+  I "ole2.h" 0 0
+  I "malloc.h" 0 0
+  I "comutil.h" 0 0
+ F "commctrl.h" 1044 0 9f55aa00 8700 0
+  I "prsht.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+  I "commctrl.inl" 1 0
+ F "commctrl.inl" 1044 0 9f55aa00 4718 0
+ F "commctrl.rh" 1044 0 9f55aa00 375 0
+ F "commdlg.h" 1044 0 9f55aa00 1226 0
+  I "prsht.h" 0 0
+  I "pshpack1.h" 0 0
+  I "commdlg.inl" 1 0
+  I "poppack.h" 0 0
+ F "commdlg.inl" 1044 0 9f55aa00 1049 0
+ F "common.ver" 1004 0 9f55aa00 242 0
+ F "compstui.h" 1044 0 9e247d00 4237 0
+ F "comutil.h" 1044 0 9f55aa00 1904 0
+  I "ole2.h" 0 0
+  I "intsafe.h" 0 0
+ F "cpl.h" 1044 0 9f55aa00 209 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "crt" 2 10 2f578de0 0 0
+ F "d3d.h" 1044 0 9f55aa00 1689 0
+  I "stdlib.h" 0 0
+  I "objbase.h" 0 0
+  I "d3dtypes.h" 1 0
+  I "d3dcaps.h" 1 0
+ F "d3d10tokenizedprogramformat.hpp" 1044 0 9e247d00 1516 0
+ F "d3d10umddi.h" 1044 0 9e247d00 2920 0
+  I "dxmini.h" 1 0
+  I "d3dkmddi.h" 1 0
+  I "d3d9types.h" 1 0
+  I "d3dumddi.h" 1 0
+  I "d3dkmthk.h" 1 0
+  I "dxgiddi.h" 1 0
+  I "d3d10tokenizedprogramformat.hpp" 1 0
+  I "d3d11tokenizedprogramformat.hpp" 1 0
+ F "d3d11tokenizedprogramformat.hpp" 1044 0 9e247d00 2280 0
+ F "d3d8.h" 1044 0 9f55aa00 1280 0
+  I "stdlib.h" 0 0
+  I "objbase.h" 0 0
+  I "windows.h" 0 0
+  I "d3d8types.h" 1 0
+  I "d3d8caps.h" 1 0
+ F "d3d8caps.h" 1044 0 9f55aa00 365 0
+ F "d3d8types.h" 1044 0 9f55aa00 1686 0
+  I "float.h" 0 0
+ F "d3d9.h" 1044 0 9f55aa00 2784 0
+  I "stdlib.h" 0 0
+  I "objbase.h" 0 0
+  I "windows.h" 0 0
+  I "d3d9types.h" 1 0
+  I "d3d9caps.h" 1 0
+ F "d3d9caps.h" 1044 0 9f55aa00 564 0
+ F "d3d9types.h" 1044 0 9f55aa00 2416 0
+  I "float.h" 0 0
+ F "d3dcaps.h" 1044 0 9f55aa00 602 0
+  I "ddraw.h" 1 0
+ F "d3dkmddi.h" 1044 0 9f55aa00 3960 0
+  I "d3dkmdt.h" 0 0
+ F "d3dkmthk.h" 1044 0 9f55aa00 1380 0
+  I "d3dkmdt.h" 0 0
+ F "d3dnthal.h" 1044 0 9e247d00 2387 0
+  I "ddrawint.h" 0 0
+  I "d3dtypes.h" 0 0
+  I "d3dcaps.h" 0 0
+ F "d3dtypes.h" 1044 0 9f55aa00 2121 0
+  I "windows.h" 0 0
+  I "float.h" 0 0
+  I "ddraw.h" 1 0
+  I "d3dvec.inl" 1 0
+ F "d3dumddi.h" 1044 0 9f55aa00 3293 0
+  I "d3dukmdt.h" 0 0
+  I "winerror.h" 0 0
+ F "dao350" 2 10 2f5f31d0 0 0
+ F "dao360" 2 10 2f5f31d0 0 0
+ F "dbt.h" 1044 0 9f55aa00 537 0
+  I "guiddef.h" 0 0
+ F "dde.h" 1044 0 9f55aa00 196 0
+  I "windef.h" 0 0
+ F "dde.rh" 1044 0 9f55aa00 31 0
+ F "ddeml.h" 1044 0 9f55aa00 655 0
+ F "ddkernel.h" 1044 0 9f55aa00 302 0
+  I "objbase.h" 0 0
+ F "ddkmapi.h" 1044 0 9f55aa00 497 0
+ F "ddraw.h" 1044 0 9f55aa00 5856 0
+  I "objbase.h" 0 0
+ F "ddrawi.h" 1044 0 9f55aa00 2980 0
+  I "ddraw.h" 1 0
+  I "dvp.h" 1 0
+  I "ddkernel.h" 1 0
+  I "dmemmgr.h" 1 0
+  I "dciddi.h" 1 0
+ F "ddrawint.h" 1044 0 9f55aa00 1999 0
+  I "ddraw.h" 1 0
+  I "dvp.h" 1 0
+ F "delayimp.h" 1044 0 9f55aa00 230 0
+ F "devguid.h" 1044 0 9f55aa00 101 1
+ F "devicetopology.h" 1044 0 9f55aa00 3484 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propidl.h" 1 0
+  I "ks.h" 1 0
+  I "ksmedia.h" 1 0
+ F "devioctl.h" 1044 0 9f55aa00 164 4
+ F "devpkey.h" 1044 0 9f55aa00 236 0
+  I "devpropdef.h" 0 0
+ F "devpropdef.h" 1044 0 9f55aa00 137 0
+ F "difxapi.h" 1044 0 1f792300 346 0
+ F "dimm.h" 1044 0 9f55aa00 3867 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "unknwn.h" 1 0
+  I "imm.h" 0 0
+ F "dinput.h" 1044 0 9f55aa00 4414 0
+  I "objbase.h" 0 0
+ F "dinputd.h" 1044 0 9f55aa00 756 0
+ F "diskguid.h" 1044 0 9f55aa00 53 0
+ F "dispex.h" 1044 0 9f55aa00 910 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+  I "servprov.h" 1 0
+ F "dlgs.h" 1044 0 9f55aa00 266 0
+ F "dls1.h" 1044 0 9f55aa00 270 0
+ F "dls2.h" 1044 0 9f55aa00 144 0
+ F "dmdls.h" 1044 0 9f55aa00 206 0
+  I "dls1.h" 1 0
+ F "dmemmgr.h" 1044 0 9f55aa00 197 0
+ F "dmerror.h" 1044 0 9f55aa00 857 0
+ F "dmksctrl.h" 1044 0 9f55aa00 167 0
+  I "pshpack8.h" 0 0
+  I "objbase.h" 0 0
+  I "poppack.h" 0 0
+ F "dmusbuff.h" 1044 0 9f55aa00 42 0
+  I "dmdls.h" 1 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+ F "dmusicc.h" 1044 0 9f55aa00 863 0
+  I "windows.h" 0 0
+  I "objbase.h" 0 0
+  I "mmsystem.h" 0 0
+  I "dls1.h" 1 0
+  I "dmerror.h" 1 0
+  I "dmdls.h" 1 0
+  I "dsound.h" 1 0
+  I "dmusbuff.h" 1 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "docobj.h" 1044 0 9f55aa00 1767 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+ F "dontuse.h" 1044 0 9f55aa00 585 0
+ F "dot1x.h" 1044 0 9f55aa00 221 0
+  I "l2cmn.h" 0 0
+  I "eaptypes.h" 0 0
+ F "dpfilter.h" 1044 0 9f55aa00 161 0
+ F "driverspecs.h" 1044 0 9f55aa00 847 0
+  I "specstrings.h" 0 0
+  I "sdv_driverspecs.h" 1 0
+ F "dsound.h" 1044 0 9f55aa00 2386 0
+  I "objbase.h" 0 0
+  I "float.h" 0 0
+  I "sal.h" 0 0
+ F "dvp.h" 1044 0 9f55aa00 969 0
+  I "objbase.h" 0 0
+ F "dx95type.h" 1044 0 9f55aa00 781 0
+  I "stddef.h" 0 0
+  I "winddi.h" 0 0
+  I "ddrawi.h" 0 0
+  I "d3dhal.h" 0 0
+ F "dxgiddi.h" 1044 0 9f55aa00 313 0
+  I "dxgitype.h" 1 0
+ F "dxgiformat.h" 1044 0 a374ce00 112 0
+ F "dxgitype.h" 1044 0 a374ce00 123 0
+  I "dxgiformat.h" 1 0
+ F "dxmini.h" 1044 0 9f55aa00 349 0
+ F "dxva.h" 1044 0 9f55aa00 1964 0
+ F "eaptypes.h" 1044 0 9f55aa00 644 0
+  I "guiddef.h" 0 0
+ F "event.h" 1044 0 a086d700 523 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "wmscontext.h" 1 0
+  I "wmsevent.h" 1 0
+ F "evntprov.h" 1044 0 a086d700 457 0
+ F "evntrace.h" 1044 0 a086d700 1555 0
+  I "guiddef.h" 0 0
+ F "exdisp.h" 1044 0 a086d700 4562 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "ocidl.h" 1 0
+  I "docobj.h" 1 0
+ F "exposeenums2managed.h" 1044 0 a086d700 73 0
+ F "fttypes.h" 1044 0 a086d700 136 0
+ F "functiondiscovery.h" 1044 0 a086d700 160 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propsys.h" 1 0
+  I "functiondiscoveryapi.h" 1 0
+ F "functiondiscovery.idl" 21081 0 a086d700 59 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "propsys.idl" 1 0
+  I "functiondiscoveryapi.idl" 1 0
+ F "functiondiscoveryapi.h" 1044 0 a086d700 1107 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propsys.h" 1 0
+  I "functiondiscoverycategories.h" 1 0
+  I "functiondiscoveryerror.h" 1 0
+  I "functiondiscoverykeys.h" 1 0
+  I "functiondiscoveryserviceids.h" 1 0
+  I "functiondiscoveryconstraints.h" 1 0
+  I "functiondiscoverynotification.h" 1 0
+ F "functiondiscoveryapi.idl" 21081 0 a086d700 248 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "propsys.idl" 1 0
+  I "functiondiscoveryconstraints.h" 1 0
+ F "functiondiscoverycategories.h" 1044 0 a086d700 63 0
+ F "functiondiscoveryconstraints.h" 1044 0 a086d700 145 0
+ F "functiondiscoveryerror.h" 1044 0 a086d700 72 0
+  I "winerror.h" 0 0
+ F "functiondiscoverykeys.h" 1044 0 a086d700 349 0
+  I "propkey.h" 0 0
+  I "functiondiscoverykeys_devpkey.h" 0 0
+ F "functiondiscoverykeys_devpkey.h" 1044 0 a086d700 212 0
+ F "functiondiscoverynotification.h" 1044 0 a086d700 48 0
+ F "functiondiscoveryprovider.h" 1044 0 a086d700 1137 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propsys.h" 1 0
+  I "functiondiscoveryapi.h" 1 0
+ F "functiondiscoveryprovider.idl" 21081 0 a086d700 246 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "propsys.idl" 1 0
+  I "functiondiscoveryapi.idl" 1 0
+ F "functiondiscoveryproviderhelper.h" 1044 0 a086d700 263 0
+ F "functiondiscoveryserviceids.h" 1044 0 a086d700 19 0
+ F "fwpmk.h" 1044 0 9f55aa00 3922 0
+  I "fwpmtypes.h" 1 0
+  I "fwpvi.h" 1 0
+ F "fwpmtypes.h" 1044 0 a086d700 789 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "fwptypes.h" 1 0
+  I "iketypes.h" 1 0
+  I "ipsectypes.h" 1 0
+ F "fwpmtypes.idl" 21081 0 a086d700 1376 0
+  I "fwptypes.idl" 1 0
+  I "iketypes.idl" 1 0
+  I "ipsectypes.idl" 1 0
+ F "fwpmu.h" 1044 0 a086d700 3884 0
+  I "fwpmtypes.h" 1 0
+  I "fwpvi.h" 1 0
+ F "fwpsk.h" 1044 0 9f55aa00 2432 0
+  I "fwpstypes.h" 1 0
+  I "ndis.h" 1 0
+  I "ws2def.h" 1 0
+  I "ws2ipdef.h" 0 0
+  I "netioapi.h" 0 0
+  I "fwpvi.h" 1 0
+ F "fwpstypes.h" 1044 0 a086d700 244 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "fwptypes.h" 1 0
+ F "fwpstypes.idl" 21081 0 a086d700 320 0
+  I "fwptypes.idl" 1 0
+ F "fwpsu.h" 1044 0 a086d700 1618 0
+  I "fwpstypes.h" 1 0
+  I "ws2def.h" 1 0
+  I "ws2ipdef.h" 0 0
+  I "netioapi.h" 0 0
+  I "fwpvi.h" 1 0
+ F "fwptypes.h" 1044 0 a086d700 368 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "wtypes.h" 1 0
+ F "fwptypes.idl" 21081 0 a086d700 488 0
+  I "wtypes.idl" 1 0
+ F "fwpvi.h" 1044 0 a086d700 565 0
+  I "sdkddkver.h" 1 0
+ F "gcroot.h" 1044 0 a086d700 123 0
+  I "stddef.h" 0 0
+ F "gdiplus.h" 1044 0 a54b8b00 82 0
+  I "pshpack8.h" 0 0
+  I "gdiplusmem.h" 1 0
+  I "gdiplusbase.h" 1 0
+  I "gdiplusenums.h" 1 0
+  I "gdiplustypes.h" 1 0
+  I "gdiplusinit.h" 1 0
+  I "gdipluspixelformats.h" 1 0
+  I "gdipluscolor.h" 1 0
+  I "gdiplusmetaheader.h" 1 0
+  I "gdiplusimaging.h" 1 0
+  I "gdipluscolormatrix.h" 1 0
+  I "gdipluseffects.h" 1 0
+  I "gdiplusgpstubs.h" 1 0
+  I "gdiplusheaders.h" 1 0
+  I "gdiplusflat.h" 1 0
+  I "gdiplusimageattributes.h" 1 0
+  I "gdiplusmatrix.h" 1 0
+  I "gdiplusbrush.h" 1 0
+  I "gdipluspen.h" 1 0
+  I "gdiplusstringformat.h" 1 0
+  I "gdipluspath.h" 1 0
+  I "gdipluslinecaps.h" 1 0
+  I "gdiplusgraphics.h" 1 0
+  I "gdiplusmetafile.h" 1 0
+  I "gdipluscachedbitmap.h" 1 0
+  I "gdiplusregion.h" 1 0
+  I "gdiplusfontcollection.h" 1 0
+  I "gdiplusfontfamily.h" 1 0
+  I "gdiplusfont.h" 1 0
+  I "gdiplusbitmap.h" 1 0
+  I "gdiplusimagecodec.h" 1 0
+  I "poppack.h" 0 0
+ F "gdiplusbase.h" 1044 0 a54b8b00 41 0
+ F "gdiplusbitmap.h" 1044 0 a54b8b00 1122 0
+ F "gdiplusbrush.h" 1044 0 a54b8b00 841 0
+ F "gdipluscachedbitmap.h" 1044 0 a54b8b00 52 0
+ F "gdipluscolor.h" 1044 0 a54b8b00 325 0
+ F "gdipluscolormatrix.h" 1044 0 a54b8b00 88 0
+ F "gdipluseffects.h" 1044 0 a54b8b00 521 0
+ F "gdiplusenums.h" 1044 0 a54b8b00 1116 0
+ F "gdiplusflat.h" 1044 0 a54b8b00 2782 0
+ F "gdiplusfont.h" 1044 0 a54b8b00 281 0
+ F "gdiplusfontcollection.h" 1044 0 a54b8b00 135 0
+ F "gdiplusfontfamily.h" 1044 0 a54b8b00 208 0
+ F "gdiplusgpstubs.h" 1044 0 a54b8b00 108 0
+ F "gdiplusgraphics.h" 1044 0 a54b8b00 2547 0
+ F "gdiplusheaders.h" 1044 0 a54b8b00 936 0
+ F "gdiplusimageattributes.h" 1044 0 a54b8b00 378 0
+ F "gdiplusimagecodec.h" 1044 0 a54b8b00 60 0
+ F "gdiplusimaging.h" 1044 0 a54b8b00 589 0
+ F "gdiplusinit.h" 1044 0 a54b8b00 128 0
+ F "gdipluslinecaps.h" 1044 0 a54b8b00 263 0
+ F "gdiplusmatrix.h" 1044 0 a54b8b00 308 0
+ F "gdiplusmem.h" 1044 0 a54b8b00 39 0
+ F "gdiplusmetafile.h" 1044 0 a54b8b00 473 0
+ F "gdiplusmetaheader.h" 1044 0 a54b8b00 222 0
+  I "pshpack2.h" 0 0
+  I "poppack.h" 0 0
+ F "gdipluspath.h" 1044 0 a54b8b00 1537 0
+ F "gdipluspen.h" 1044 0 a54b8b00 476 0
+ F "gdipluspixelformats.h" 1044 0 a54b8b00 188 0
+ F "gdiplusregion.h" 1044 0 a54b8b00 515 0
+ F "gdiplusstringformat.h" 1044 0 a54b8b00 334 0
+ F "gdiplustypes.h" 1044 0 a54b8b00 773 0
+ F "guiddef.h" 1044 0 a086d700 206 0
+  I "string.h" 0 0
+ F "hidpi.h" 1044 0 a086d700 1829 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+ F "hidsdi.h" 1044 0 a086d700 494 0
+  I "pshpack4.h" 0 0
+  I "hidusage.h" 1 0
+  I "hidpi.h" 1 0
+  I "poppack.h" 0 0
+ F "hidusage.h" 1044 0 a086d700 292 0
+ F "htmlhelp.h" 1044 0 a086d700 431 0
+ F "httpext.h" 1044 0 a086d700 593 0
+  I "windows.h" 0 0
+  I "wincrypt.h" 0 0
+ F "httpfilt.h" 1044 0 a086d700 689 0
+ F "hvgdk.h" 1044 0 af13c500 6157 0
+ F "ia64reg.h" 1044 0 a086d700 723 4
+ F "icm.h" 1044 0 a086d700 1316 0
+ F "icmpapi.h" 1044 0 a086d700 366 0
+ F "idispids.h" 1044 0 a086d700 21 0
+ F "ieverp.h" 1044 0 a086d700 87 0
+  I "ntverp.h" 0 0
+ F "ifdef.h" 1044 0 a086d700 385 0
+  I "ipifcons.h" 0 0
+ F "ifmib.h" 1044 0 a086d700 79 0
+  I "ifdef.h" 0 0
+ F "iketypes.h" 1044 0 a086d700 690 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "fwptypes.h" 1 0
+ F "iketypes.idl" 21081 0 a086d700 1178 0
+  I "winerror.h" 1 0
+  I "fwptypes.idl" 1 0
+ F "imagehlp.h" 1044 0 a086d700 4923 0
+  I "pshpack8.h" 0 0
+  I "wintrust.h" 0 0
+  I "poppack.h" 0 0
+  I "pshpack4.h" 0 0
+ F "ime_cmodes.h" 1044 0 a086d700 21 0
+ F "imm.h" 1044 0 a086d700 711 0
+  I "ime_cmodes.h" 0 0
+ F "immdev.h" 1044 0 9f55aa00 941 0
+  I "ime_cmodes.h" 0 0
+ F "in6addr.h" 1044 0 a086d700 45 0
+ F "inaddr.h" 1044 0 a086d700 37 0
+ F "infstr.h" 1044 0 a086d700 312 0
+ F "initguid.h" 1044 0 a086d700 17 0
+  I "guiddef.h" 0 0
+ F "intsafe.h" 1044 0 a086d700 8552 0
+  I "specstrings.h" 0 0
+ F "ioevent.h" 1044 0 a086d700 275 1
+ F "ip2string.h" 1044 0 a086d700 273 6
+ F "ipexport.h" 1044 0 a086d700 275 0
+  I "in6addr.h" 0 0
+  I "inaddr.h" 0 0
+  I "packon.h" 0 0
+  I "packoff.h" 0 0
+ F "iphlpapi.h" 1044 0 a086d700 992 0
+  I "iprtrmib.h" 0 0
+  I "ipexport.h" 0 0
+  I "iptypes.h" 0 0
+  I "tcpestats.h" 0 0
+  I "netioapi.h" 0 0
+ F "ipifcons.h" 1044 0 a086d700 349 0
+ F "ipmib.h" 1044 0 a086d700 555 0
+  I "ifmib.h" 0 0
+  I "nldef.h" 0 0
+ F "iprtrmib.h" 1044 0 a086d700 332 0
+  I "mprapi.h" 0 0
+  I "ipifcons.h" 0 0
+  I "ipmib.h" 0 0
+  I "tcpmib.h" 0 0
+  I "udpmib.h" 0 0
+ F "ipsectypes.h" 1044 0 a086d700 813 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "fwptypes.h" 1 0
+  I "iketypes.h" 1 0
+ F "ipsectypes.idl" 21081 0 a086d700 1312 0
+  I "fwptypes.idl" 1 0
+  I "iketypes.idl" 1 0
+ F "iptypes.h" 1044 0 a086d700 477 0
+  I "time.h" 0 0
+  I "ifdef.h" 0 0
+  I "nldef.h" 0 0
+ F "ipv6prefast.h" 1044 0 a086d700 24 0
+ F "isguids.h" 1044 0 a086d700 28 0
+ F "issper16.h" 1044 0 a086d700 321 0
+ F "kbd.h" 1044 0 9f55aa00 2173 0
+ F "kcom.h" 1044 0 a086d700 307 0
+ F "kernelspecs.h" 1044 0 a086d700 192 0
+  I "driverspecs.h" 1 0
+ F "knownfolders.h" 1044 0 a086d700 330 0
+ F "ks.h" 1044 0 a086d700 6159 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ks386.inc" 1014 0 a086d700 1542 0
+ F "ksamd64.inc" 1014 0 9f55aa00 1 0
+  I "kxamd64.inc" 1 0
+ F "ksdebug.h" 1044 0 a086d700 147 0
+  I "evntrace.h" 0 0
+ F "ksguid.h" 1044 0 a086d700 30 0
+  I "guiddef.h" 0 0
+ F "ksia64.h" 1044 0 a086d700 2130 0
+  I "kxia64.h" 1 0
+  I "regia64.h" 1 0
+ F "ksmedia.h" 1044 0 a086d700 6257 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ksproxy.h" 1044 0 a086d700 864 0
+ F "ksuuids.h" 1044 0 a086d700 297 0
+ F "ktmtypes.h" 1044 0 a086d700 208 0
+ F "kxamd64.inc" 1014 0 9f55aa00 2 0
+  I "macamd64.inc" 1 0
+ F "kxia64.h" 1044 0 a086d700 2018 4
+ F "l2cmn.h" 1044 0 a086d700 100 0
+ F "lmcons.h" 1044 0 a086d700 260 3
+ F "lmerr.h" 1044 0 a086d700 641 1
+  I "winerror.h" 0 0
+ F "lmon.h" 1044 0 9f55aa00 35 0
+ F "lsalookup.h" 1044 0 a086d700 282 0
+ F "lsalookupi.h" 1044 0 a086d700 150 0
+ F "lzexpand.h" 1044 0 a086d700 164 0
+ F "macamd64.inc" 1014 0 a086d700 612 0
+ F "macwin32.h" 1044 0 a086d700 481 0
+ F "mcdrv.h" 1044 0 9f55aa00 1015 0
+ F "mcx.h" 1044 0 a086d700 723 0
+ F "minidrv.h" 1044 0 9f55aa00 316 0
+  I "stddef.h" 0 0
+  I "stdlib.h" 0 0
+  I "objbase.h" 0 0
+  I "stdarg.h" 0 0
+  I "windef.h" 0 0
+  I "winerror.h" 0 0
+  I "winbase.h" 0 0
+  I "wingdi.h" 0 0
+  I "winddi.h" 0 0
+  I "tchar.h" 0 0
+  I "excpt.h" 0 0
+  I "winspool.h" 0 0
+  I "windows.h" 0 0
+  I "compstui.h" 0 0
+  I "winddiui.h" 0 0
+  I "stdio.h" 0 0
+  I "printoem.h" 0 0
+  I "prntfont.h" 0 0
+ F "mlang.h" 1044 0 a086d700 4130 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "unknwn.h" 1 0
+ F "mmc.h" 1044 0 a086d700 7009 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "basetsd.h" 1 0
+  I "oaidl.h" 1 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+  I "specstrings.h" 0 0
+ F "mmddk.h" 1044 0 a086d700 701 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "mmdeviceapi.h" 1044 0 a1b80400 940 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "propsys.h" 1 0
+ F "mmdeviceapi.idl" 21081 0 a1b80400 600 0
+  I "unknwn.idl" 1 0
+  I "propsys.idl" 1 0
+ F "mmreg.h" 1044 0 a1b80400 3629 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "mmsystem.h" 1044 0 a1b80400 4074 0
+  I "pshpack1.h" 0 0
+  I "macwin32.h" 0 0
+  I "poppack.h" 0 0
+ F "mprapi.h" 1044 0 a1b80400 2559 0
+  I "lmcons.h" 0 0
+  I "ras.h" 0 0
+  I "in6addr.h" 0 0
+  I "wincrypt.h" 0 0
+ F "msacm.h" 1044 0 a1b80400 1941 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "msacmdrv.h" 1044 0 a1b80400 311 0
+  I "pshpack1.h" 1 0
+  I "poppack.h" 1 0
+ F "msdatsrc.h" 1044 0 a1b80400 340 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+ F "mshtmcid.h" 1044 0 a1b80400 527 0
+ F "mshtmdid.h" 1044 0 a1b80400 5095 0
+ F "mshtmhst.h" 1044 0 a1b80400 1306 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+  I "docobj.h" 1 0
+ F "mshtml.h" 1044 0 a1b80400 31981 0
+  I "mshtmlc.h" 1 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+  I "dimm.h" 1 0
+  I "shtypes.h" 1 0
+  I "dispex.h" 1 0
+  I "olectl.h" 0 0
+ F "mshtmlc.h" 1044 0 a1b80400 33296 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+  I "dimm.h" 1 0
+  I "shtypes.h" 1 0
+  I "dispex.h" 1 0
+  I "olectl.h" 0 0
+ F "msopc.h" 1044 0 a1b80400 4717 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "wincrypt.h" 1 0
+ F "msports.h" 1044 0 a1b80400 322 0
+ F "msstkppg.h" 1044 0 a1b80400 27 0
+ F "mstcpip.h" 1044 0 a1b80400 1732 0
+  I "nldef.h" 0 0
+ F "mswsock.h" 1044 0 a1b80400 515 0
+  I "mswsockdef.h" 0 0
+ F "mswsockdef.h" 1044 0 a1b80400 97 0
+ F "msxml.h" 1044 0 a1b80400 9815 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "unknwn.h" 1 0
+  I "objidl.h" 1 0
+  I "oaidl.h" 1 0
+ F "msxml.idl" 21081 0 a1b80400 239 0
+  I "msxmldid.h" 1 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "objidl.idl" 1 0
+  I "oaidl.idl" 1 0
+  I "xmldom.idl" 1 0
+  I "xmldso.idl" 1 0
+ F "msxml2.h" 1044 0 a1b80400 22818 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "unknwn.h" 1 0
+  I "objidl.h" 1 0
+  I "oaidl.h" 1 0
+ F "msxml6.h" 1044 0 a1b80400 21350 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "unknwn.h" 1 0
+  I "objidl.h" 1 0
+  I "oaidl.h" 1 0
+ F "msxml6.idl" 21081 0 a1b80400 4002 0
+  I "msxml6did.h" 1 0
+  I "idispids.h" 0 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "objidl.idl" 1 0
+  I "oaidl.idl" 1 0
+ F "msxml6did.h" 1044 0 a1b80400 661 0
+ F "msxmldid.h" 1044 0 a1b80400 63 0
+ F "mxdc.h" 1044 0 a1b80400 225 0
+ F "naptypes.h" 1044 0 a1b80400 312 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+ F "nb30.h" 1044 0 a1b80400 317 0
+ F "ncrypt.h" 1044 0 a1b80400 599 0
+  I "bcrypt.h" 0 0
+ F "netcfgn.h" 1044 0 a1b80400 1335 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "netcfgx.h" 1 0
+ F "netcfgn.idl" 21081 0 a1b80400 357 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "netcfgx.idl" 1 0
+ F "netcfgx.h" 1044 0 a1b80400 1941 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "prsht.h" 1 0
+ F "netcfgx.idl" 21081 0 a1b80400 545 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "prsht.idl" 1 0
+ F "netevent.h" 1044 0 a1b80400 7199 1
+ F "netioapi.h" 1044 0 a1b80400 2694 0
+  I "ws2def.h" 0 0
+  I "ws2ipdef.h" 0 0
+  I "ntddk.h" 0 0
+  I "ifdef.h" 0 0
+  I "nldef.h" 0 0
+  I "ntddndis.h" 0 0
+ F "netiodef.h" 1044 0 a1b80400 1888 0
+  I "ws2def.h" 0 0
+  I "ws2ipdef.h" 0 0
+  I "mswsockdef.h" 0 0
+  I "mstcpip.h" 0 0
+  I "nldef.h" 0 0
+  I "ifdef.h" 0 0
+ F "nettypes.h" 1044 0 a1b80400 80 0
+ F "newdev.h" 1044 0 a1b80400 179 0
+  I "pshpack1.h" 0 0
+  I "setupapi.h" 0 0
+  I "poppack.h" 0 0
+ F "nldef.h" 1044 0 a1b80400 244 0
+ F "nspapi.h" 1044 0 a1b80400 691 0
+ F "nspapip.h" 1044 0 a1b80400 145 0
+ F "ntdd1394.h" 1044 0 a1b80400 207 0
+ F "ntdd8042.h" 1044 0 a1b80400 415 1
+ F "ntddbeep.h" 1044 0 a1b80400 67 1
+ F "ntddcdrm.h" 1044 0 a1b80400 939 1
+  I "ntddstor.h" 0 0
+ F "ntddcdvd.h" 1044 0 a1b80400 791 1
+  I "ntddstor.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ntddchgr.h" 1044 0 a1b80400 778 1
+  I "ntddstor.h" 0 0
+ F "ntdddisk.h" 1044 0 a1b80400 1759 0
+  I "diskguid.h" 0 0
+  I "ntddstor.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ntddft.h" 1044 0 a1b80400 223 0
+  I "ntdskreg.h" 0 0
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+ F "ntddft2.h" 1044 0 a1b80400 272 0
+  I "fttypes.h" 0 0
+ F "ntddkbd.h" 1044 0 a1b80400 360 1
+ F "ntddmmc.h" 1044 0 a1b80400 841 0
+ F "ntddmodm.h" 1044 0 a1b80400 106 1
+ F "ntddmou.h" 1044 0 a1b80400 250 1
+ F "ntddndis.h" 1044 0 a1b80400 4741 1
+  I "ifdef.h" 0 0
+  I "devpkey.h" 0 0
+  I "pciprop.h" 0 0
+  I "guiddef.h" 0 0
+  I "windot11.h" 0 0
+ F "ntddpar.h" 1044 0 a1b80400 177 1
+ F "ntddscsi.h" 1044 0 a1b80400 580 1
+ F "ntddser.h" 1044 0 a1b80400 689 2
+ F "ntddstor.h" 1044 0 a1b80400 1383 1
+ F "ntddtape.h" 1044 0 a1b80400 348 1
+  I "ntddstor.h" 0 0
+ F "ntddtdi.h" 1044 0 a1b80400 68 1
+ F "ntddvdeo.h" 1044 0 a1b80400 1939 1
+  I "tvout.h" 0 0
+ F "ntddvol.h" 1044 0 a1b80400 804 0
+ F "ntdef.h" 1044 0 a1b80400 2679 1
+  I "ctype.h" 0 0
+  I "specstrings.h" 0 0
+  I "kernelspecs.h" 0 0
+  I "basetsd.h" 0 0
+  I "guiddef.h" 0 0
+  I "excpt.h" 0 0
+  I "sdkddkver.h" 0 0
+ F "ntdskreg.h" 1044 0 a1b80400 268 0
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+ F "ntiologc.h" 1044 0 a1b80400 1397 1
+ F "ntlsa.h" 1044 0 a1b80400 3489 11
+  I "sdkddkver.h" 0 0
+  I "lsalookup.h" 0 0
+  I "lsalookupi.h" 0 0
+  I "guiddef.h" 0 0
+ F "ntmsv1_0.h" 1044 0 a1b80400 836 1
+  I "sdkddkver.h" 0 0
+  I "ntlsa.h" 0 0
+  I "ntsam.h" 0 0
+ F "ntsecapi.h" 1044 0 a1b80400 4801 0
+  I "lsalookup.h" 0 0
+  I "guiddef.h" 0 0
+ F "ntstatus.h" 1044 0 a1b80400 18760 5
+ F "ntverp.h" 1044 0 a1b80400 139 0
+ F "nt_vdd.h" 1044 0 a1b80400 310 0
+ F "oaidl.h" 1044 0 a1b80400 5609 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+ F "oaidl.idl" 21081 0 a1b80400 2053 0
+  I "objidl.idl" 1 0
+ F "objbase.h" 1044 0 a1b80400 1025 0
+  I "rpc.h" 0 0
+  I "rpcndr.h" 0 0
+  I "pshpack8.h" 0 0
+  I "stdlib.h" 0 0
+  I "wtypes.h" 0 0
+  I "unknwn.h" 0 0
+  I "objidl.h" 0 0
+  I "guiddef.h" 0 0
+  I "cguid.h" 0 0
+  I "urlmon.h" 0 0
+  I "propidl.h" 0 0
+  I "poppack.h" 0 0
+ F "objectarray.h" 1044 0 a1b80400 300 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+ F "objectarray.idl" 21081 0 a1b80400 30 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+ F "objerror.h" 1044 0 a2e93100 15 0
+  I "winerror.h" 0 0
+ F "objidl.h" 1044 0 a2e93100 13664 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+ F "objidl.idl" 21081 0 a2e93100 3557 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+ F "objsafe.h" 1044 0 a2e93100 237 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+ F "ocidl.h" 1044 0 a2e93100 6583 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oleidl.h" 1 0
+  I "oaidl.h" 1 0
+  I "servprov.h" 1 0
+  I "urlmon.h" 1 0
+ F "ocidl.idl" 21081 0 a2e93100 1867 0
+  I "oleidl.idl" 1 0
+  I "oaidl.idl" 1 0
+  I "servprov.idl" 1 0
+  I "urlmon.idl" 1 0
+ F "oemupgex.h" 1044 0 a2e93100 296 0
+ F "ole.h" 1044 0 a2e93100 508 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ole2.h" 1044 0 a2e93100 411 0
+  I "pshpack8.h" 0 0
+  I "winerror.h" 0 0
+  I "objbase.h" 0 0
+  I "oleauto.h" 0 0
+  I "oleidl.h" 0 0
+  I "poppack.h" 0 0
+ F "oleacc.h" 1044 0 a2e93100 1581 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+ F "oleauto.h" 1044 0 a2e93100 1246 0
+  I "pshpack8.h" 0 0
+  I "oaidl.h" 0 0
+  I "poppack.h" 0 0
+ F "olectl.h" 1044 0 a2e93100 620 0
+  I "pshpack8.h" 0 0
+  I "ocidl.h" 0 0
+  I "poppack.h" 0 0
+ F "oledb.h" 1044 0 a2e93100 16624 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "wtypes.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propidl.h" 1 0
+  I "transact.h" 1 0
+  I "pshpack8.h" 0 0
+  I "pshpack2.h" 0 0
+  I "accctrl.h" 0 0
+  I "poppack.h" 0 0
+ F "oledlg.h" 1044 0 a2e93100 1616 2
+  I "windows.h" 0 0
+  I "shellapi.h" 0 0
+  I "commdlg.h" 0 0
+  I "ole2.h" 0 0
+  I "string.h" 0 0
+  I "tchar.h" 0 0
+  I "dlgs.h" 0 0
+  I "prsht.h" 0 0
+ F "oleidl.h" 1044 0 a2e93100 4012 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+ F "oleidl.idl" 21081 0 a2e93100 1271 0
+  I "objidl.idl" 1 0
+ F "packoff.h" 1044 0 a2e93100 31 0
+ F "packon.h" 1044 0 a2e93100 29 0
+ F "pbdaerrors.h" 1044 0 9f55aa00 80 0
+ F "pciprop.h" 1044 0 a2e93100 436 0
+ F "pdrvver.h" 1044 0 9f55aa00 124 0
+  I "ntverp.h" 0 0
+ F "pmi.h" 1044 0 a2e93100 216 0
+ F "polarity.h" 1044 0 a2e93100 41 0
+ F "poppack.h" 1044 0 a2e93100 37 0
+ F "powrprof.h" 1044 0 a2e93100 1116 0
+ F "prcomoem.h" 1044 0 9f55aa00 2942 0
+ F "prdrvcom.h" 1044 0 9f55aa00 146 0
+ F "printoem.h" 1044 0 9f55aa00 1630 0
+ F "prnasntp.h" 1044 0 9f55aa00 505 0
+ F "prntfont.h" 1044 0 9f55aa00 577 0
+ F "prntvpt.h" 1044 0 a2e93100 144 0
+ F "profinfo.h" 1044 0 a2e93100 56 0
+ F "propapi.h" 1044 0 a2e93100 41 0
+  I "propidl.h" 0 0
+ F "propidl.h" 1044 0 a2e93100 1329 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oaidl.h" 1 0
+ F "propidl.idl" 21081 0 a2e93100 803 0
+  I "objidl.idl" 1 0
+  I "oaidl.idl" 1 0
+  I "wtypes.idl" 1 0
+ F "propkey.h" 1044 0 a2e93100 5118 0
+  I "propkeydef.h" 0 0
+ F "propkeydef.h" 1044 0 a2e93100 37 0
+ F "propsys.h" 1044 0 a2e93100 4503 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oleidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "shtypes.h" 1 0
+  I "structuredquerycondition.h" 1 0
+  I "propkeydef.h" 0 0
+ F "propsys.idl" 21081 0 a2e93100 1186 0
+  I "objidl.idl" 1 0
+  I "oleidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "shtypes.idl" 1 0
+  I "structuredquerycondition.idl" 1 0
+ F "propvarutil.h" 1044 0 a2e93100 634 0
+  I "propapi.h" 0 0
+  I "shtypes.h" 0 0
+  I "shlwapi.h" 0 0
+ F "provexce.h" 1044 0 a2e93100 114 0
+  I "eh.h" 0 0
+ F "prsht.h" 1044 0 a2e93100 950 0
+  I "pshpack8.h" 0 0
+  I "pshpack4.h" 0 0
+  I "prsht.inl" 1 0
+  I "poppack.h" 0 0
+ F "prsht.idl" 21081 0 a2e93100 29 0
+  I "wtypes.idl" 1 0
+ F "prsht.inl" 1044 0 a2e93100 373 0
+ F "pshpack1.h" 1044 0 a2e93100 34 0
+ F "pshpack2.h" 1044 0 a2e93100 34 0
+ F "pshpack4.h" 1044 0 a2e93100 34 0
+ F "pshpack8.h" 1044 0 a2e93100 34 0
+ F "pshpck16.h" 1044 0 a2e93100 34 0
+ F "qos.h" 1044 0 a2e93100 210 0
+ F "qosobjs.h" 1044 0 a2e93100 133 0
+ F "qossp.h" 1044 0 a2e93100 677 0
+ F "ras.h" 1044 0 a2e93100 2262 0
+  I "lmcons.h" 0 0
+  I "naptypes.h" 0 0
+  I "pshpack4.h" 0 0
+  I "inaddr.h" 0 0
+  I "in6addr.h" 0 0
+  I "poppack.h" 0 0
+ F "reason.h" 1044 0 a2e93100 118 0
+ F "regia64.h" 1044 0 a2e93100 264 0
+ F "regstr.h" 1044 0 a2e93100 1511 0
+ F "rpc.h" 1044 0 a2e93100 218 0
+  I "windows.h" 0 0
+  I "pshpack2.h" 0 0
+  I "basetsd.h" 0 0
+  I "pshpack8.h" 0 0
+  I "setjmp.h" 0 0
+  I "rpcdce.h" 0 0
+  I "rpcnsi.h" 0 0
+  I "rpcerr.h" 0 0
+  I "rpcmac.h" 0 0
+  I "poppack.h" 0 0
+  I "rpcnterr.h" 0 0
+  I "excpt.h" 0 0
+  I "winerror.h" 0 0
+  I "rpcasync.h" 0 0
+ F "rpcasync.h" 1044 0 a2e93100 677 0
+  I "pshpack8.h" 0 0
+  I "ntddk.h" 0 0
+  I "windef.h" 0 0
+  I "poppack.h" 0 0
+ F "rpcdce.h" 1044 0 a2e93100 2628 0
+  I "specstrings.h" 0 0
+  I "guiddef.h" 0 0
+  I "rpcdcep.h" 0 0
+ F "rpcdcep.h" 1044 0 a2e93100 1080 0
+ F "rpcndr.h" 1044 0 a2e93100 3106 0
+  I "pshpack8.h" 0 0
+  I "basetsd.h" 0 0
+  I "rpcnsip.h" 0 0
+  I "rpcsal.h" 0 0
+  I "poppack.h" 0 0
+ F "rpcnsi.h" 1044 0 a2e93100 556 0
+ F "rpcnsip.h" 1044 0 a2e93100 94 0
+ F "rpcnterr.h" 1044 0 a2e93100 544 0
+ F "rpcproxy.h" 1044 0 a2e93100 773 0
+  I "pshpack8.h" 0 0
+  I "basetsd.h" 0 0
+  I "guiddef.h" 0 0
+  I "rpc.h" 0 0
+  I "rpcndr.h" 0 0
+  I "string.h" 0 0
+  I "memory.h" 0 0
+  I "poppack.h" 0 0
+ F "rpcsal.h" 1044 0 a2e93100 501 0
+  I "specstrings.h" 0 0
+ F "sal.h" 1044 0 a2e93100 730 0
+ F "sal_supp.h" 1044 0 a2e93100 62 0
+ F "schemadef.h" 1044 0 a2e93100 121 0
+ F "sddl.h" 1044 0 a2e93100 306 0
+ F "sdkddkver.h" 1044 0 a2e93100 278 0
+ F "sdv_driverspecs.h" 1044 0 9f55aa00 23 0
+ F "secext.h" 1044 0 a2e93100 181 0
+ F "security.h" 1044 0 a2e93100 73 0
+  I "sspi.h" 0 0
+  I "secext.h" 0 0
+  I "issper16.h" 0 0
+ F "sensors.h" 1044 0 a54b8b00 435 0
+  I "propkeydef.h" 1 0
+ F "servprov.h" 1044 0 a2e93100 267 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+ F "servprov.idl" 21081 0 a2e93100 93 0
+  I "objidl.idl" 1 0
+ F "setupapi.h" 1044 0 a2e93100 7531 0
+  I "spapidef.h" 0 0
+  I "commctrl.h" 0 0
+  I "devpropdef.h" 0 0
+  I "pshpack8.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "shellapi.h" 1044 0 a2e93100 1711 0
+  I "specstrings.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "sherrors.h" 1044 0 a2e93100 121 0
+  I "winerror.h" 0 0
+ F "shldisp.h" 1044 0 a2e93100 7121 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "ocidl.h" 1 0
+ F "shlguid.h" 1044 0 a2e93100 864 0
+  I "isguids.h" 0 0
+  I "exdisp.h" 0 0
+  I "shldisp.h" 0 0
+  I "knownfolders.h" 0 0
+ F "shlobj.h" 1044 0 a2e93100 4705 0
+  I "ole2.h" 0 0
+  I "prsht.h" 0 0
+  I "commctrl.h" 0 0
+  I "shlguid.h" 0 0
+  I "shtypes.h" 0 0
+  I "shobjidl.h" 0 0
+  I "pshpack1.h" 0 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "shlwapi.h" 1044 0 a2e93100 2545 0
+  I "specstrings.h" 0 0
+  I "objbase.h" 0 0
+  I "shtypes.h" 0 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "shobjidl.h" 1044 0 a2e93100 33660 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oleidl.h" 1 0
+  I "oaidl.h" 1 0
+  I "docobj.h" 1 0
+  I "shtypes.h" 1 0
+  I "comcat.h" 1 0
+  I "propidl.h" 1 0
+  I "prsht.h" 1 0
+  I "propsys.h" 1 0
+  I "objectarray.h" 1 0
+  I "sherrors.h" 0 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+  I "commctrl.h" 0 0
+  I "pshpack1.h" 0 0
+ F "shtypes.h" 1044 0 a2e93100 477 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "wtypes.h" 1 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+  I "pshpack8.h" 0 0
+ F "shtypes.idl" 21081 0 a2e93100 459 0
+  I "wtypes.idl" 1 0
+ F "spapidef.h" 1044 0 a2e93100 115 0
+ F "specstrings.h" 1044 0 a2e93100 328 0
+  I "sal_supp.h" 1 0
+  I "specstrings_supp.h" 1 0
+  I "sal.h" 0 0
+  I "specstrings_strict.h" 0 0
+  I "driverspecs.h" 0 0
+ F "specstrings_strict.h" 1044 0 a2e93100 1104 0
+  I "specstrings_undef.h" 0 0
+ F "specstrings_supp.h" 1044 0 a2e93100 84 0
+  I "sal_supp.h" 1 0
+ F "specstrings_undef.h" 1044 0 a2e93100 388 0
+ F "sql.h" 1044 0 a2e93100 885 0
+  I "sqltypes.h" 1 0
+ F "sqlext.h" 1044 0 a2e93100 2188 0
+  I "sql.h" 1 0
+  I "sqlucode.h" 1 0
+ F "sqltypes.h" 1044 0 a2e93100 306 0
+ F "sqlucode.h" 1044 0 a2e93100 956 0
+  I "sqlext.h" 0 0
+ F "sspi.h" 1044 0 a2e93100 2938 0
+  I "sdkddkver.h" 0 0
+ F "sti.h" 1044 0 a2e93100 850 0
+  I "pshpack8.h" 0 0
+  I "objbase.h" 0 0
+  I "stireg.h" 0 0
+  I "stierr.h" 0 0
+  I "poppack.h" 0 0
+ F "stierr.h" 1044 0 a2e93100 187 0
+ F "stireg.h" 1044 0 a2e93100 82 0
+ F "stralign.h" 1044 0 a2e93100 682 0
+ F "strsafe.h" 1044 0 a2e93100 9858 0
+  I "stdio.h" 0 0
+  I "string.h" 0 0
+  I "stdarg.h" 0 0
+  I "specstrings.h" 0 0
+ F "structuredquery.h" 1044 0 a2e93100 2526 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "structuredquerycondition.h" 1 0
+  I "objectarray.h" 1 0
+  I "propkeydef.h" 0 0
+ F "structuredquery.idl" 21081 0 a2e93100 976 0
+  I "structuredquerycondition.idl" 1 0
+  I "objectarray.idl" 1 0
+ F "structuredquerycondition.h" 1044 0 a2e93100 749 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "propidl.h" 1 0
+ F "structuredquerycondition.idl" 21081 0 a2e93100 137 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "objidl.idl" 1 0
+  I "propidl.idl" 1 0
+ F "suppress.h" 1044 0 a2e93100 912 0
+ F "svcguid.h" 1044 0 a2e93100 399 1
+  I "basetyps.h" 0 0
+ F "tcpestats.h" 1044 0 a2e93100 364 0
+ F "tcpmib.h" 1044 0 a2e93100 322 0
+ F "tcpxcv.h" 1044 0 9f55aa00 104 0
+ F "tdi.h" 1044 0 a2e93100 982 0
+  I "nettypes.h" 0 0
+  I "ntddtdi.h" 0 0
+  I "packon.h" 0 0
+  I "packoff.h" 0 0
+ F "tdiinfo.h" 1044 0 a2e93100 193 0
+ F "tmschema.h" 1044 0 a2e93100 1281 0
+  I "vssym32.h" 1 0
+  I "schemadef.h" 1 0
+ F "traffic.h" 1044 0 a7a9f900 459 0
+  I "qosobjs.h" 0 0
+ F "transact.h" 1044 0 a2e93100 1119 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "unknwn.h" 1 0
+  I "winerror.h" 1 0
+ F "tvout.h" 1044 0 a41a5e00 90 0
+  I "guiddef.h" 0 0
+ F "udpmib.h" 1044 0 a41a5e00 153 0
+ F "unexposeenums2managed.h" 1044 0 a41a5e00 30 0
+ F "unknown.h" 1044 0 a41a5e00 82 0
+  I "wdm.h" 0 0
+  I "windef.h" 0 0
+  I "basetyps.h" 0 0
+  I "initguid.h" 0 0
+ F "unknwn.h" 1044 0 a41a5e00 563 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "wtypes.h" 1 0
+ F "unknwn.idl" 21081 0 a41a5e00 164 0
+  I "wtypes.idl" 1 0
+ F "urlmon.h" 1044 0 a41a5e00 9524 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oleidl.h" 1 0
+  I "servprov.h" 1 0
+  I "msxml.h" 1 0
+ F "urlmon.idl" 21081 0 a41a5e00 4271 0
+  I "objidl.idl" 1 0
+  I "oleidl.idl" 1 0
+  I "servprov.idl" 1 0
+  I "msxml.idl" 1 0
+ F "usb.h" 1044 0 a41a5e00 1083 0
+  I "usb200.h" 1 0
+ F "usb100.h" 1044 0 a41a5e00 270 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "usb200.h" 1044 0 a41a5e00 126 0
+  I "usb100.h" 1 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "usbcamdi.h" 1044 0 a41a5e00 594 0
+ F "usbdi.h" 1044 0 a41a5e00 72 0
+  I "usb.h" 0 0
+  I "usbioctl.h" 0 0
+ F "usbioctl.h" 1044 0 a41a5e00 1548 0
+  I "usb200.h" 1 0
+  I "usbiodef.h" 1 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "usbiodef.h" 1044 0 a41a5e00 219 0
+ F "usbrpmif.h" 1044 0 a41a5e00 67 0
+  I "windef.h" 1 0
+  I "usb100.h" 1 0
+ F "usbuser.h" 1044 0 a41a5e00 675 0
+  I "usbiodef.h" 1 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "userenv.h" 1044 0 a41a5e00 1352 0
+  I "wbemcli.h" 0 0
+  I "profinfo.h" 0 0
+ F "uuids.h" 1044 0 a41a5e00 1825 0
+  I "ksuuids.h" 1 0
+  I "codecapi.h" 0 0
+ F "uxtheme.h" 1044 0 a41a5e00 1768 0
+  I "commctrl.h" 0 0
+  I "specstrings.h" 0 0
+ F "vddsvc.h" 1044 0 a41a5e00 354 0
+  I "nt_vdd.h" 1 0
+ F "verrsrc.h" 1044 0 a41a5e00 158 0
+ F "vfw.h" 1044 0 a41a5e00 3820 0
+  I "mmsystem.h" 0 0
+  I "pshpack8.h" 1 0
+  I "mmreg.h" 0 0
+  I "ole2.h" 0 0
+  I "msacm.h" 0 0
+  I "poppack.h" 1 0
+ F "vsstyle.h" 1044 0 a41a5e00 1606 0
+ F "vssym32.h" 1044 0 a41a5e00 712 0
+  I "vsstyle.h" 1 0
+ F "warning.h" 1044 0 a41a5e00 118 0
+  I "suppress.h" 0 0
+ F "wbemcli.h" 1044 0 a41a5e00 4149 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+ F "wbemdisp.h" 1044 0 a41a5e00 7170 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "dispex.h" 1 0
+ F "wbemidl.h" 1044 0 a41a5e00 26 0
+  I "wbemcli.h" 0 0
+  I "wbemprov.h" 0 0
+  I "wbemtran.h" 0 0
+  I "wbemdisp.h" 0 0
+ F "wbemprov.h" 1044 0 a41a5e00 1735 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oleidl.h" 1 0
+  I "oaidl.h" 1 0
+  I "wbemcli.h" 1 0
+ F "wbemtime.h" 1044 0 a41a5e00 149 0
+  I "polarity.h" 0 0
+  I "time.h" 0 0
+  I "provexce.h" 0 0
+ F "wbemtran.h" 1044 0 a41a5e00 1022 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "oleidl.h" 1 0
+  I "oaidl.h" 1 0
+  I "wbemcli.h" 1 0
+ F "wcsplugin.h" 1044 0 a41a5e00 494 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+ F "wcsplugin.idl" 21081 0 a41a5e00 188 0
+  I "oaidl.idl" 1 0
+ F "wdbgexts.h" 1044 0 a41a5e00 2805 0
+ F "wia.h" 1044 0 a41a5e00 6 0
+  I "wia_lh.h" 0 0
+  I "wia_xp.h" 0 0
+ F "wiadef.h" 1044 0 a41a5e00 1836 0
+  I "pshpack8.h" 0 0
+  I "objbase.h" 0 0
+  I "poppack.h" 0 0
+ F "wiadevd.h" 1044 0 a41a5e00 114 0
+  I "wia.h" 1 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "wiavideo.h" 1044 0 a41a5e00 508 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+ F "wiawsdsc.h" 1044 0 a41a5e00 73 0
+  I "wiadef.h" 0 0
+ F "winbase.h" 1044 0 a41a5e00 15466 0
+  I "macwin32.h" 0 0
+  I "winerror.h" 0 0
+  I "winbase.inl" 1 0
+ F "winbase.inl" 1044 0 a41a5e00 685 0
+ F "winbio.h" 1044 0 a41a5e00 483 0
+  I "winbio_types.h" 1 0
+  I "winbio_err.h" 1 0
+ F "winbio_adapter.h" 1044 0 a41a5e00 2108 0
+  I "winbio_types.h" 1 0
+  I "winbio_err.h" 1 0
+ F "winbio_err.h" 1044 0 a41a5e00 601 0
+ F "winbio_ioctl.h" 1044 0 a41a5e00 244 0
+  I "winbio_types.h" 1 0
+ F "winbio_types.h" 1044 0 a41a5e00 994 0
+ F "wincodec.h" 1044 0 a41a5e00 6736 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "wtypes.h" 1 0
+  I "propidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "intsafe.h" 0 0
+ F "wincodec.idl" 21081 0 a41a5e00 2602 0
+  I "wtypes.idl" 1 0
+  I "propidl.idl" 1 0
+  I "objidl.idl" 1 0
+  I "ocidl.idl" 1 0
+ F "wincodecsdk.h" 1044 0 a41a5e00 2293 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "wtypes.h" 1 0
+  I "wincodec.h" 1 0
+ F "wincodecsdk.idl" 21081 0 a41a5e00 588 0
+  I "wtypes.idl" 1 0
+  I "wincodec.idl" 1 0
+ F "wincon.h" 1044 0 a41a5e00 1085 2
+  I "wingdi.h" 0 0
+ F "wincrypt.h" 1044 0 a41a5e00 19786 0
+  I "specstrings.h" 0 0
+  I "bcrypt.h" 0 0
+  I "ncrypt.h" 0 0
+ F "winddi.h" 1044 0 9f55aa00 4981 0
+  I "ddrawint.h" 0 0
+  I "d3dnthal.h" 0 0
+ F "winddiui.h" 1044 0 9f55aa00 754 0
+  I "compstui.h" 0 0
+ F "windef.h" 1044 0 a41a5e00 419 0
+  I "winnt.h" 0 0
+  I "specstrings.h" 0 0
+ F "windot11.h" 1044 0 a41a5e00 2936 0
+  I "ntddndis.h" 0 0
+  I "wlantypes.h" 0 0
+ F "windows.h" 1044 0 a41a5e00 253 0
+  I "sdkddkver.h" 0 0
+  I "winresrc.h" 0 0
+  I "excpt.h" 0 0
+  I "stdarg.h" 0 0
+  I "windef.h" 0 0
+  I "winbase.h" 0 0
+  I "wingdi.h" 0 0
+  I "winuser.h" 0 0
+  I "winnls.h" 0 0
+  I "wincon.h" 0 0
+  I "winver.h" 0 0
+  I "winreg.h" 0 0
+  I "winnetwk.h" 0 0
+  I "cderr.h" 0 0
+  I "dde.h" 0 0
+  I "ddeml.h" 0 0
+  I "dlgs.h" 0 0
+  I "lzexpand.h" 0 0
+  I "mmsystem.h" 0 0
+  I "nb30.h" 0 0
+  I "rpc.h" 0 0
+  I "shellapi.h" 0 0
+  I "winperf.h" 0 0
+  I "winsock.h" 0 0
+  I "wincrypt.h" 0 0
+  I "winefs.h" 0 0
+  I "winscard.h" 0 0
+  I "winspool.h" 0 0
+  I "ole.h" 0 0
+  I "ole2.h" 0 0
+  I "commdlg.h" 0 0
+  I "stralign.h" 0 0
+  I "winwlm.h" 0 0
+  I "winsvc.h" 0 0
+  I "mcx.h" 0 0
+  I "imm.h" 0 0
+ F "windowsx.h" 1044 0 a41a5e00 1372 0
+ F "winefs.h" 1044 0 a41a5e00 427 0
+ F "winerror.h" 1044 0 a41a5e00 43975 0
+  I "specstrings.h" 0 0
+ F "wingdi.h" 1044 0 a41a5e00 5779 0
+  I "macwin32.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+  I "pshpack2.h" 0 0
+  I "pshpack4.h" 0 0
+ F "wininet.h" 1044 0 a41a5e00 3974 0
+  I "specstrings.h" 0 0
+  I "pshpack8.h" 0 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+ F "winioctl.h" 1044 0 a41a5e00 6194 16
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "winmeta.h" 1044 0 a41a5e00 142 0
+ F "winnetwk.h" 1044 0 6b24be00 826 0
+  I "wnnc.h" 0 0
+ F "winnls.h" 1044 0 a41a5e00 2617 0
+  I "macwin32.h" 0 0
+ F "winnls32.h" 1044 0 a41a5e00 92 3
+ F "winnt.h" 1044 0 a41a5e00 15031 91
+  I "ctype.h" 0 0
+  I "specstrings.h" 0 0
+  I "kernelspecs.h" 0 0
+  I "basetsd.h" 0 0
+  I "guiddef.h" 0 0
+  I "excpt.h" 0 0
+  I "sdkddkver.h" 0 0
+  I "pshpack4.h" 1 0
+  I "poppack.h" 1 0
+  I "pshpack2.h" 1 0
+  I "pshpack1.h" 1 0
+  I "pshpack8.h" 1 0
+  I "string.h" 0 0
+  I "ktmtypes.h" 0 0
+ F "winnt.rh" 1044 0 a41a5e00 459 1
+ F "winperf.h" 1044 0 a41a5e00 675 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "winppi.h" 1044 0 9f55aa00 73 0
+ F "winreg.h" 1044 0 a41a5e00 1347 1
+  I "macwin32.h" 0 0
+  I "reason.h" 0 0
+ F "winres.h" 1044 0 a41a5e00 50 0
+  I "winresrc.h" 0 0
+ F "winresrc.h" 1044 0 a41a5e00 44 0
+  I "winuser.rh" 0 0
+  I "commctrl.rh" 0 0
+  I "dde.rh" 0 0
+  I "winnt.rh" 0 0
+  I "dlgs.h" 0 0
+  I "winver.h" 0 0
+ F "winscard.h" 1044 0 a41a5e00 1138 0
+  I "wtypes.h" 0 0
+  I "winioctl.h" 0 0
+  I "winsmcrd.h" 1 0
+  I "scarderr.h" 1 0
+ F "winsmcrd.h" 1044 0 a41a5e00 331 0
+ F "winsock.h" 1044 0 a41a5e00 1085 0
+  I "windows.h" 0 0
+  I "inaddr.h" 0 0
+ F "winsock2.h" 1044 0 a41a5e00 3988 0
+  I "pshpack4.h" 0 0
+  I "windows.h" 0 0
+  I "ws2def.h" 0 0
+  I "qos.h" 0 0
+  I "guiddef.h" 0 0
+  I "poppack.h" 0 0
+  I "wsipv6ok.h" 0 0
+ F "winsplp.h" 1044 0 9f55aa00 1825 0
+ F "winspool.h" 1044 0 a41a5e00 3690 0
+  I "prsht.h" 0 0
+ F "winsvc.h" 1044 0 a41a5e00 1522 10
+ F "wintrust.h" 1044 0 a41a5e00 1467 0
+  I "wincrypt.h" 0 0
+  I "pshpack8.h" 0 0
+  I "poppack.h" 0 0
+ F "winuser.h" 1044 0 a41a5e00 13140 0
+  I "macwin32.h" 0 0
+  I "stdarg.h" 0 0
+  I "pshpack2.h" 0 0
+  I "poppack.h" 0 0
+  I "tvout.h" 0 0
+  I "winuser.inl" 1 0
+ F "winuser.inl" 1044 0 a41a5e00 957 0
+ F "winuser.rh" 1044 0 a41a5e00 1669 0
+ F "winver.h" 1044 0 a41a5e00 211 0
+  I "specstrings.h" 0 0
+  I "verrsrc.h" 0 0
+ F "wlanihv.h" 1044 0 a41a5e00 885 0
+  I "windot11.h" 0 0
+  I "wlclient.h" 0 0
+  I "l2cmn.h" 0 0
+  I "wlanihvtypes.h" 0 0
+  I "dot1x.h" 0 0
+ F "wlanihvtypes.h" 1044 0 a41a5e00 86 0
+  I "eaptypes.h" 0 0
+  I "wlantypes.h" 0 0
+ F "wlanihvui.idl" 21081 0 9f55aa00 175 0
+  I "unknwn.idl" 1 0
+  I "wtypes.idl" 1 0
+  I "wlanihvtypes.h" 0 0
+ F "wlantypes.h" 1044 0 a41a5e00 86 0
+ F "wlclient.h" 1044 0 a41a5e00 95 0
+  I "windot11.h" 0 0
+  I "packon.h" 0 0
+  I "packoff.h" 0 0
+ F "wmistr.h" 1044 0 a41a5e00 501 0
+ F "wmscontext.h" 1044 0 a41a5e00 679 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+ F "wmsevent.h" 1044 0 a41a5e00 131 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "oaidl.h" 1 0
+ F "wnnc.h" 1044 0 52180f00 109 0
+ F "ws2bth.h" 1044 0 a41a5e00 386 0
+  I "bthdef.h" 0 0
+  I "pshpack1.h" 0 0
+  I "poppack.h" 0 0
+ F "ws2def.h" 1044 0 a54b8b00 968 0
+  I "ipv6prefast.h" 0 0
+  I "inaddr.h" 0 0
+ F "ws2ipdef.h" 1044 0 a54b8b00 900 0
+  I "in6addr.h" 0 0
+ F "ws2spi.h" 1044 0 a54b8b00 1505 0
+  I "winsock2.h" 0 0
+  I "pshpack4.h" 0 0
+  I "poppack.h" 0 0
+ F "ws2tcpip.h" 1044 0 a54b8b00 963 0
+  I "winsock2.h" 0 0
+  I "ws2ipdef.h" 0 0
+  I "limits.h" 0 0
+  I "wspiapi.h" 0 0
+ F "wsdapi.h" 1044 0 a54b8b00 26 0
+  I "wsdbase.h" 0 0
+  I "wsdattachment.h" 0 0
+  I "wsdxml.h" 0 0
+  I "wsddisco.h" 0 0
+  I "wsdclient.h" 0 0
+  I "wsdhost.h" 0 0
+  I "wsdtypes.h" 0 0
+  I "wsdutil.h" 0 0
+  I "wsdns.h" 0 0
+ F "wsdattachment.h" 1044 0 a54b8b00 369 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+ F "wsdattachment.idl" 21081 0 a54b8b00 79 0
+  I "objidl.idl" 1 0
+ F "wsdbase.h" 1044 0 a54b8b00 1627 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "wincrypt.h" 1 0
+ F "wsdbase.idl" 21081 0 a54b8b00 455 0
+  I "objidl.idl" 1 0
+  I "wincrypt.idl" 1 0
+ F "wsdclient.h" 1044 0 a54b8b00 1585 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsdclient.idl" 21081 0 a54b8b00 422 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsddisco.h" 1044 0 a54b8b00 1197 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "objidl.h" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsddisco.idl" 21081 0 a54b8b00 349 0
+  I "objidl.idl" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsdhost.h" 1044 0 a54b8b00 550 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsdhost.idl" 21081 0 a54b8b00 167 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "wsdxmldom.h" 1 0
+  I "wsdtypes.h" 1 0
+ F "wsdns.h" 1044 0 a54b8b00 303 0
+ F "wsdtypes.h" 1044 0 a54b8b00 754 0
+ F "wsdutil.h" 1044 0 a54b8b00 144 0
+ F "wsdxml.h" 1044 0 a54b8b00 374 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "windows.h" 1 0
+  I "ole2.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+ F "wsdxml.idl" 21081 0 a54b8b00 208 0
+  I "oaidl.idl" 1 0
+  I "ocidl.idl" 1 0
+ F "wsdxmldom.h" 1044 0 a54b8b00 99 0
+ F "wsipv6ok.h" 1044 0 a54b8b00 111 0
+  I "ws2tcpip.h" 0 0
+  I "wspiapi.h" 0 0
+ F "wspiapi.h" 1044 0 a54b8b00 1073 0
+  I "stdio.h" 0 0
+  I "stdlib.h" 0 0
+  I "malloc.h" 0 0
+  I "string.h" 0 0
+ F "wtypes.h" 1044 0 a54b8b00 1387 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "basetsd.h" 1 0
+  I "guiddef.h" 1 0
+ F "wtypes.idl" 21081 0 a54b8b00 1412 0
+  I "basetsd.h" 1 0
+  I "guiddef.h" 1 0
+ F "xmldom.idl" 21081 0 a54b8b00 1208 0
+  I "ocidl.idl" 1 0
+  I "xmldomdid.h" 1 0
+  I "idispids.h" 0 0
+ F "xmldomdid.h" 1044 0 a54b8b00 230 0
+ F "xmldso.idl" 21081 0 a54b8b00 63 0
+  I "wtypes.idl" 1 0
+  I "ocidl.idl" 1 0
+  I "idispids.h" 0 0
+  I "xmldsodid.h" 1 0
+ F "xmldsodid.h" 1044 0 a54b8b00 30 0
+ F "xpsobjectmodel.h" 1044 0 a54b8b00 10646 0
+  I "rpc.h" 1 0
+  I "rpcndr.h" 1 0
+  I "oaidl.h" 1 0
+  I "ocidl.h" 1 0
+  I "msopc.h" 1 0
+ F "zmouse.h" 1044 0 a54b8b00 169 0
+
+D "c:\winddk\7600.16385.1\inc\crt" 0
+ F "assert.h" 1044 0 9cf35000 43 0
+  I "crtdefs.h" 0 0
+ F "conio.h" 1044 0 9cf35000 163 0
+  I "crtdefs.h" 0 0
+ F "crtdbg.h" 1044 0 9cf35000 1190 0
+  I "crtdefs.h" 0 0
+ F "crtdefs.h" 1044 0 9cf35000 1777 0
+  I "specstrings.h" 0 0
+ F "crtwrn.h" 1044 0 9cf35000 89 0
+  I "crtdefs.h" 0 0
+ F "cstddef" 1044 0 9cf35000 18 0
+  I "stddef.h" 0 0
+ F "ctype.h" 1044 0 9cf35000 421 0
+  I "crtdefs.h" 0 0
+ F "direct.h" 1044 0 9cf35000 145 0
+  I "crtdefs.h" 0 0
+ F "dos.h" 1044 0 9cf35000 84 0
+  I "crtdefs.h" 0 0
+ F "dvec.h" 1044 0 9cf35000 1107 0
+  I "emmintrin.h" 0 0
+  I "assert.h" 0 0
+  I "fvec.h" 0 0
+  I "crtdefs.h" 0 0
+  I "iostream" 0 0
+ F "eh.h" 1044 0 9cf35000 88 0
+  I "crtdefs.h" 0 0
+ F "emmintrin.h" 1044 0 9cf35000 399 0
+  I "crtdefs.h" 0 0
+  I "xmmintrin.h" 0 0
+ F "errno.h" 1044 0 9cf35000 117 0
+  I "crtdefs.h" 0 0
+ F "exception" 1044 0 9cf35000 94 0
+  I "_70_exception" 1 0
+  I "xstddef" 0 0
+  I "eh.h" 0 0
+  I "crtdefs.h" 0 0
+ F "excpt.h" 1044 0 9cf35000 153 0
+  I "crtdefs.h" 0 0
+ F "fcntl.h" 1044 0 9cf35000 85 0
+  I "crtdefs.h" 0 0
+ F "float.h" 1044 0 9cf35000 321 0
+  I "crtdefs.h" 0 0
+  I "crtwrn.h" 0 0
+ F "fpieee.h" 1044 0 9cf35000 361 0
+  I "crtdefs.h" 0 0
+ F "fstream.h" 1044 0 9e247d00 162 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "iostream.h" 0 0
+ F "fvec.h" 1044 0 9cf35000 495 0
+  I "xmmintrin.h" 0 0
+  I "assert.h" 0 0
+  I "ivec.h" 0 0
+  I "crtdefs.h" 0 0
+  I "iostream" 0 0
+ F "gl" 2 10 2f685cf0 0 0
+ F "io.h" 1044 0 9cf35000 349 0
+  I "crtdefs.h" 0 0
+ F "io.inl" 1044 0 9cf35000 86 0
+  I "crtdefs.h" 0 0
+ F "iomanip.h" 1044 0 9e247d00 155 0
+  I "useoldio.h" 0 0
+  I "iostream.h" 0 0
+ F "ios.h" 1044 0 9e247d00 302 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "streamb.h" 0 0
+ F "iostream.h" 1044 0 9e247d00 95 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "ios.h" 0 0
+  I "streamb.h" 0 0
+  I "istream.h" 0 0
+  I "ostream.h" 0 0
+ F "istream.h" 1044 0 9e247d00 191 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "ios.h" 0 0
+ F "ivec.h" 1044 0 9cf35000 851 0
+  I "mmintrin.h" 0 0
+  I "assert.h" 0 0
+  I "iostream" 0 0
+ F "limits.h" 1044 0 9cf35000 107 0
+  I "crtdefs.h" 0 0
+ F "locale.h" 1044 0 9cf35000 148 0
+  I "crtdefs.h" 0 0
+ F "malloc.h" 1044 0 9cf35000 289 0
+  I "limits.h" 0 0
+ F "math.h" 1044 0 9cf35000 638 0
+  I "crtdefs.h" 0 0
+ F "mbctype.h" 1044 0 9cf35000 151 0
+  I "crtdefs.h" 0 0
+  I "ctype.h" 0 0
+ F "mbstring.h" 1044 0 9cf35000 356 0
+  I "crtdefs.h" 0 0
+ F "memory.h" 1044 0 9cf35000 64 0
+  I "crtdefs.h" 0 0
+ F "minmax.h" 1044 0 9cf35000 30 0
+ F "mm3dnow.h" 1044 0 9cf35000 86 0
+  I "crtdefs.h" 0 0
+  I "mmintrin.h" 0 0
+  I "xmmintrin.h" 0 0
+ F "mmintrin.h" 1044 0 9cf35000 204 0
+  I "crtdefs.h" 0 0
+ F "new" 1044 0 9cf35000 108 0
+  I "_70_new" 1 0
+  I "exception" 0 0
+  I "crtdefs.h" 0 0
+ F "new.h" 1044 0 9cf35000 125 0
+  I "new" 0 0
+  I "crtdefs.h" 0 0
+ F "ostream.h" 1044 0 9e247d00 161 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "ios.h" 0 0
+ F "pgobootrun.h" 1044 0 9e247d00 18 0
+ F "process.h" 1044 0 9e247d00 226 0
+  I "crtdefs.h" 0 0
+ F "rpcsal.h" 1044 0 9e247d00 501 0
+  I "specstrings.h" 0 0
+ F "rtcapi.h" 1044 0 9e247d00 175 0
+  I "crtdefs.h" 0 0
+ F "search.h" 1044 0 9e247d00 130 0
+  I "crtdefs.h" 0 0
+  I "stddef.h" 0 0
+ F "setjmp.h" 1044 0 9e247d00 270 0
+  I "crtdefs.h" 0 0
+  I "setjmpex.h" 0 0
+ F "setjmpex.h" 1044 0 9e247d00 52 0
+  I "setjmp.h" 0 0
+ F "share.h" 1044 0 9e247d00 41 0
+ F "signal.h" 1044 0 9e247d00 110 0
+  I "crtdefs.h" 0 0
+ F "stdarg.h" 1044 0 9e247d00 37 0
+  I "crtdefs.h" 0 0
+  I "vadefs.h" 0 0
+ F "stddef.h" 1044 0 9e247d00 90 0
+  I "crtdefs.h" 0 0
+ F "stdexcpt.h" 1044 0 9e247d00 30 0
+  I "crtdefs.h" 0 0
+  I "exception" 0 0
+ F "stdio.h" 1044 0 9e247d00 684 0
+  I "crtdefs.h" 0 0
+  I "swprintf.inl" 0 0
+ F "stdiostr.h" 1044 0 9e247d00 85 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "iostream.h" 0 0
+  I "stdio.h" 0 0
+ F "stdlib.h" 1044 0 9e247d00 823 0
+  I "crtdefs.h" 0 0
+  I "limits.h" 0 0
+ F "streamb.h" 1044 0 9e247d00 183 0
+  I "useoldio.h" 0 0
+  I "crtdefs.h" 0 0
+  I "ios.h" 0 0
+ F "string.h" 1044 0 9e247d00 377 0
+  I "crtdefs.h" 0 0
+ F "strstrea.h" 1044 0 9e247d00 117 0
+  I "crtdefs.h" 0 0
+  I "useoldio.h" 0 0
+  I "iostream.h" 0 0
+ F "swprintf.inl" 1044 0 9e247d00 23 0
+  I "crtdefs.h" 0 0
+ F "sys" 2 10 2f69e420 0 0
+ F "tchar.h" 1044 0 9e247d00 2301 0
+  I "crtdefs.h" 0 0
+  I "wchar.h" 0 0
+  I "string.h" 0 0
+  I "mbstring.h" 0 0
+ F "time.h" 1044 0 9e247d00 272 0
+  I "crtdefs.h" 0 0
+  I "wtime.inl" 0 0
+  I "time.inl" 0 0
+ F "time.inl" 1044 0 9e247d00 23 0
+  I "crtdefs.h" 0 0
+ F "typeinfo.h" 1044 0 9e247d00 135 0
+  I "crtdefs.h" 0 0
+  I "typeinfo" 0 0
+  I "stdexcpt.h" 0 0
+ F "useoldio.h" 1044 0 9e247d00 59 0
+ F "use_ansi.h" 1044 0 9e247d00 43 0
+ F "vadefs.h" 1044 0 9e247d00 158 0
+  I "crtdefs.h" 0 0
+ F "varargs.h" 1044 0 9e247d00 155 0
+  I "crtdefs.h" 0 0
+ F "wchar.h" 1044 0 9e247d00 1277 0
+  I "crtdefs.h" 0 0
+  I "swprintf.inl" 0 0
+  I "wtime.inl" 0 0
+ F "wcstr.h" 1044 0 9e247d00 33 0
+  I "wchar.h" 0 0
+ F "wio.inl" 1044 0 9e247d00 24 0
+  I "crtdefs.h" 0 0
+ F "wtime.inl" 1044 0 9e247d00 23 0
+  I "crtdefs.h" 0 0
+ F "xmmintrin.h" 1044 0 9e247d00 509 0
+  I "crtdefs.h" 0 0
+  I "mmintrin.h" 0 0
+  I "xmm_func.h" 1 0
+  I "malloc.h" 0 0
+ F "xstddef" 1044 0 9e247d00 80 0
+  I "_70_xstddef" 1 0
+  I "yvals.h" 0 0
+  I "cstddef" 0 0
+  I "crtdefs.h" 0 0
+ F "yvals.h" 1044 0 9e247d00 103 0
+  I "_70_yvals.h" 1 0
+  I "use_ansi.h" 0 0
+ F "_70_exception" 1044 0 9e247d00 217 0
+  I "xstddef" 0 0
+  I "eh.h" 0 0
+  I "malloc.h" 0 0
+  I "crtdefs.h" 0 0
+ F "_70_new" 1044 0 9e247d00 157 0
+  I "exception" 0 0
+  I "crtdefs.h" 0 0
+ F "_70_xstddef" 1044 0 9e247d00 82 0
+  I "yvals.h" 0 0
+  I "cstddef" 0 0
+ F "_70_yvals.h" 1044 0 9e247d00 575 0
+  I "crtdefs.h" 0 0
+  I "crtwrn.h" 0 0
+  I "use_ansi.h" 0 0
+

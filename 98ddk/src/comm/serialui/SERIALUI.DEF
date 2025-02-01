@@ -1,0 +1,28 @@
+LIBRARY SERIALUI
+EXETYPE WINDOWS
+PROTMODE
+
+DESCRIPTION     'Windows Serial Port Properties'
+
+CODE    MOVEABLE DISCARDABLE
+DATA    PRELOAD MOVEABLE SINGLE
+
+HEAPSIZE    1024
+
+SEGMENTS
+    INIT_TEXT        PRELOAD MOVEABLE DISCARDABLE
+    COMMON_TEXT              MOVEABLE DISCARDABLE
+
+EXPORTS
+
+    WEP                         @1 RESIDENTNAME    ;Internal
+
+    EnumPropPages               @2
+
+    ; Stubs to KERNEL32
+    drvCommConfigDialog         @3
+    drvSetDefaultCommConfig     @4
+    drvGetDefaultCommConfig     @5
+
+    ; Private entry point for FIFO
+    FeFiFoFum                   @6

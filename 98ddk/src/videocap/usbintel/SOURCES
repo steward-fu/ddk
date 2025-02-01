@@ -1,0 +1,29 @@
+TARGETNAME=usbintel
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+#NTDUMPAMAP=TRUE
+
+INCLUDES=..\inc; \
+		..\..\usb\inc; \
+		..\..\stream\inc;
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\usbcamd.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib \
+			$(BASEDIR)\lib\*\free\usbd.lib \
+			$(BASEDIR)\lib\*\free\ntpnp.lib
+
+SOURCES=usbintel.rc \
+	intelcam.c  \
+	prpget.c    \
+	prpmanf.c   \
+	prpobj.c    \
+	prpset.c
+
+!IF "$(DDKBUILDENV)" == "checked"
+C_DEFINES=-DDEBUG_LOG -DMAX_DEBUG
+USER_C_FLAGS=-Oi
+!ENDIF
+
+USER_C_FLAGS=$(USER_C_FLAGS) -Fc 

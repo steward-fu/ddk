@@ -1,0 +1,14 @@
+DIRS= \
+     amcc5933 \
+     cancel \
+     echo \
+     event \
+     ioctl \
+     pcidrv \
+     perfcounters \
+     PLX9x5x \
+     portio \
+     registry \
+     toaster \
+     tracing \
+     umdfSkeleton

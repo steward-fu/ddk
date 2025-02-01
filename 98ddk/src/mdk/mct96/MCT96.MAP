@@ -1,0 +1,1920 @@
+ MCT96
+
+ Timestamp is 373ca40e (Fri May 14 15:30:38 1999)
+
+ Preferred load address is 01000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000664H .idata$5                CODE
+ 0001:00000668 000019a8H .rdata                  CODE
+ 0001:00002010 0000053cH .rdata$r                CODE
+ 0001:00002550 000168b8H .text                   CODE
+ 0001:00018e10 000008f3H .text$x                 CODE
+ 0001:00019708 00000810H .xdata$x                CODE
+ 0001:00019f18 000000b4H .idata$2                CODE
+ 0001:00019fcc 00000014H .idata$3                CODE
+ 0001:00019fe0 00000664H .idata$4                CODE
+ 0001:0001a644 00000bbcH .idata$6                CODE
+ 0001:0001b200 00000000H .edata                  CODE
+ 0002:00000000 00000004H .CRT$XCA                DATA
+ 0002:00000004 00000004H .CRT$XCL                DATA
+ 0002:00000008 00000008H .CRT$XCU                DATA
+ 0002:00000010 00000004H .CRT$XCZ                DATA
+ 0002:00000014 00000004H .CRT$XIA                DATA
+ 0002:00000018 00000004H .CRT$XIZ                DATA
+ 0002:00000020 00004af9H .data                   DATA
+ 0002:00004b20 00000348H .bss                    DATA
+ 0003:00000000 000007a8H .rsrc$01                DATA
+ 0003:000007b0 00005a70H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000000       __imp__RegOpenKeyExA@20    01001000     advapi32:ADVAPI32.dll
+ 0001:00000004       __imp__RegQueryValueExA@24 01001004     advapi32:ADVAPI32.dll
+ 0001:00000008       __imp__RegCloseKey@4       01001008     advapi32:ADVAPI32.dll
+ 0001:0000000c       \177ADVAPI32_NULL_THUNK_DATA 0100100c     advapi32:ADVAPI32.dll
+ 0001:00000010       __imp__WaitForSingleObject@8 01001010     kernel32:KERNEL32.dll
+ 0001:00000014       __imp__lstrcpyA@8          01001014     kernel32:KERNEL32.dll
+ 0001:00000018       __imp__DeleteFileA@4       01001018     kernel32:KERNEL32.dll
+ 0001:0000001c       __imp__ExitThread@4        0100101c     kernel32:KERNEL32.dll
+ 0001:00000020       __imp__ResetEvent@4        01001020     kernel32:KERNEL32.dll
+ 0001:00000024       __imp__GetLastError@0      01001024     kernel32:KERNEL32.dll
+ 0001:00000028       __imp__FormatMessageA@28   01001028     kernel32:KERNEL32.dll
+ 0001:0000002c       __imp__ClearCommError@12   0100102c     kernel32:KERNEL32.dll
+ 0001:00000030       __imp__lstrcatA@8          01001030     kernel32:KERNEL32.dll
+ 0001:00000034       __imp__GetOverlappedResult@16 01001034     kernel32:KERNEL32.dll
+ 0001:00000038       __imp__CreateEventA@16     01001038     kernel32:KERNEL32.dll
+ 0001:0000003c       __imp__ReadFile@20         0100103c     kernel32:KERNEL32.dll
+ 0001:00000040       __imp__lstrlenA@4          01001040     kernel32:KERNEL32.dll
+ 0001:00000044       __imp__CreateFileA@28      01001044     kernel32:KERNEL32.dll
+ 0001:00000048       __imp__CloseHandle@4       01001048     kernel32:KERNEL32.dll
+ 0001:0000004c       __imp__LocalAlloc@8        0100104c     kernel32:KERNEL32.dll
+ 0001:00000050       __imp__LocalFree@4         01001050     kernel32:KERNEL32.dll
+ 0001:00000054       __imp__GetFileSize@8       01001054     kernel32:KERNEL32.dll
+ 0001:00000058       __imp__Sleep@4             01001058     kernel32:KERNEL32.dll
+ 0001:0000005c       __imp__lstrcpynA@12        0100105c     kernel32:KERNEL32.dll
+ 0001:00000060       __imp__LocalReAlloc@12     01001060     kernel32:KERNEL32.dll
+ 0001:00000064       __imp__GetSystemTime@4     01001064     kernel32:KERNEL32.dll
+ 0001:00000068       __imp__GlobalFree@4        01001068     kernel32:KERNEL32.dll
+ 0001:0000006c       __imp__GlobalUnlock@4      0100106c     kernel32:KERNEL32.dll
+ 0001:00000070       __imp__GlobalLock@4        01001070     kernel32:KERNEL32.dll
+ 0001:00000074       __imp__GlobalAlloc@8       01001074     kernel32:KERNEL32.dll
+ 0001:00000078       __imp__WriteFile@20        01001078     kernel32:KERNEL32.dll
+ 0001:0000007c       __imp__SetFilePointer@16   0100107c     kernel32:KERNEL32.dll
+ 0001:00000080       __imp__CreateThread@24     01001080     kernel32:KERNEL32.dll
+ 0001:00000084       __imp__GetComputerNameA@8  01001084     kernel32:KERNEL32.dll
+ 0001:00000088       __imp__SetEvent@4          01001088     kernel32:KERNEL32.dll
+ 0001:0000008c       __imp__WaitForMultipleObjects@16 0100108c     kernel32:KERNEL32.dll
+ 0001:00000090       __imp__lstrcmpiA@8         01001090     kernel32:KERNEL32.dll
+ 0001:00000094       __imp__GetCommProperties@8 01001094     kernel32:KERNEL32.dll
+ 0001:00000098       __imp__GetModuleHandleA@4  01001098     kernel32:KERNEL32.dll
+ 0001:0000009c       __imp__GetStartupInfoA@4   0100109c     kernel32:KERNEL32.dll
+ 0001:000000a0       __imp__IsBadReadPtr@8      010010a0     kernel32:KERNEL32.dll
+ 0001:000000a4       __imp__IsBadWritePtr@8     010010a4     kernel32:KERNEL32.dll
+ 0001:000000a8       __imp__IsBadStringPtrA@8   010010a8     kernel32:KERNEL32.dll
+ 0001:000000ac       __imp__GetCommConfig@12    010010ac     kernel32:KERNEL32.dll
+ 0001:000000b0       __imp__SetCommTimeouts@8   010010b0     kernel32:KERNEL32.dll
+ 0001:000000b4       __imp__PurgeComm@8         010010b4     kernel32:KERNEL32.dll
+ 0001:000000b8       __imp__ReleaseSemaphore@12 010010b8     kernel32:KERNEL32.dll
+ 0001:000000bc       \177KERNEL32_NULL_THUNK_DATA 010010bc     kernel32:KERNEL32.dll
+ 0001:000000c0       __imp_??4CString@@QAEABV0@PBD@Z 010010c0     mfc42:MFC42.DLL
+ 0001:000000c4       __imp_?DDX_Text@@YGXPAVCDataExchange@@HAAVCString@@@Z 010010c4     mfc42:MFC42.DLL
+ 0001:000000c8       __imp_?MessageBoxA@CWnd@@QAEHPBD0I@Z 010010c8     mfc42:MFC42.DLL
+ 0001:000000cc       __imp_?GetWindowTextA@CWnd@@QBEXAAVCString@@@Z 010010cc     mfc42:MFC42.DLL
+ 0001:000000d0       __imp_?GetDlgItem@CWnd@@QBEPAV1@H@Z 010010d0     mfc42:MFC42.DLL
+ 0001:000000d4       __imp_?SetWindowTextA@CWnd@@QAEXPBD@Z 010010d4     mfc42:MFC42.DLL
+ 0001:000000d8       __imp_?EndDialog@CDialog@@QAEXH@Z 010010d8     mfc42:MFC42.DLL
+ 0001:000000dc       __imp_??2@YAPAXI@Z         010010dc     mfc42:MFC42.DLL
+ 0001:000000e0       __imp_?GetWindowTextLengthA@CWnd@@QBEHXZ 010010e0     mfc42:MFC42.DLL
+ 0001:000000e4       __imp_?classCFrameWnd@CFrameWnd@@2UCRuntimeClass@@B 010010e4     mfc42:MFC42.DLL
+ 0001:000000e8       __imp_?messageMap@CFrameWnd@@1UAFX_MSGMAP@@B 010010e8     mfc42:MFC42.DLL
+ 0001:000000ec       __imp_?ExitHelpMode@CFrameWnd@@UAEXXZ 010010ec     mfc42:MFC42.DLL
+ 0001:000000f0       __imp_?DelayUpdateFrameMenu@CFrameWnd@@UAEXPAUHMENU__@@@Z 010010f0     mfc42:MFC42.DLL
+ 0001:000000f4       __imp_?GetDefaultAccelerator@CFrameWnd@@UAEPAUHACCEL__@@XZ 010010f4     mfc42:MFC42.DLL
+ 0001:000000f8       __imp_?OnUpdateFrameMenu@CFrameWnd@@UAEXPAUHMENU__@@@Z 010010f8     mfc42:MFC42.DLL
+ 0001:000000fc       __imp_?OnUpdateFrameTitle@CFrameWnd@@UAEXH@Z 010010fc     mfc42:MFC42.DLL
+ 0001:00000100       __imp_?OnCreateClient@CFrameWnd@@MAEHPAUtagCREATESTRUCTA@@PAUCCreateContext@@@Z 01001100     mfc42:MFC42.DLL
+ 0001:00000104       __imp_?NegotiateBorderSpace@CFrameWnd@@UAEHIPAUtagRECT@@@Z 01001104     mfc42:MFC42.DLL
+ 0001:00000108       __imp_?GetMessageBar@CFrameWnd@@UAEPAVCWnd@@XZ 01001108     mfc42:MFC42.DLL
+ 0001:0000010c       __imp_?OnSetPreviewMode@CFrameWnd@@UAEXHPAUCPrintPreviewState@@@Z 0100110c     mfc42:MFC42.DLL
+ 0001:00000110       __imp_?ActivateFrame@CFrameWnd@@UAEXH@Z 01001110     mfc42:MFC42.DLL
+ 0001:00000114       __imp_?RecalcLayout@CFrameWnd@@UAEXH@Z 01001114     mfc42:MFC42.DLL
+ 0001:00000118       __imp_?GetMessageString@CFrameWnd@@UBEXIAAVCString@@@Z 01001118     mfc42:MFC42.DLL
+ 0001:0000011c       __imp_?GetActiveFrame@CFrameWnd@@UAEPAV1@XZ 0100111c     mfc42:MFC42.DLL
+ 0001:00000120       __imp_?GetActiveDocument@CFrameWnd@@UAEPAVCDocument@@XZ 01001120     mfc42:MFC42.DLL
+ 0001:00000124       __imp_?LoadFrame@CFrameWnd@@UAEHIKPAVCWnd@@PAUCCreateContext@@@Z 01001124     mfc42:MFC42.DLL
+ 0001:00000128       __imp_?SetOccDialogInfo@CWnd@@MAEHPAU_AFX_OCC_DIALOG_INFO@@@Z 01001128     mfc42:MFC42.DLL
+ 0001:0000012c       __imp_?IsFrameWnd@CFrameWnd@@UBEHXZ 0100112c     mfc42:MFC42.DLL
+ 0001:00000130       __imp_?CheckAutoCenter@CWnd@@UAEHXZ 01001130     mfc42:MFC42.DLL
+ 0001:00000134       __imp_?PostNcDestroy@CFrameWnd@@MAEXXZ 01001134     mfc42:MFC42.DLL
+ 0001:00000138       __imp_?PreTranslateMessage@CFrameWnd@@UAEHPAUtagMSG@@@Z 01001138     mfc42:MFC42.DLL
+ 0001:0000013c       __imp_?EndModalState@CFrameWnd@@UAEXXZ 0100113c     mfc42:MFC42.DLL
+ 0001:00000140       __imp_?BeginModalState@CFrameWnd@@UAEXXZ 01001140     mfc42:MFC42.DLL
+ 0001:00000144       __imp_?OnCommand@CFrameWnd@@MAEHIJ@Z 01001144     mfc42:MFC42.DLL
+ 0001:00000148       __imp_?PreCreateWindow@CFrameWnd@@MAEHAAUtagCREATESTRUCTA@@@Z 01001148     mfc42:MFC42.DLL
+ 0001:0000014c       __imp_?OnCmdMsg@CFrameWnd@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 0100114c     mfc42:MFC42.DLL
+ 0001:00000150       __imp_??1CStatusBar@@UAE@XZ 01001150     mfc42:MFC42.DLL
+ 0001:00000154       __imp_??1CFrameWnd@@UAE@XZ 01001154     mfc42:MFC42.DLL
+ 0001:00000158       __imp_??0CToolBar@@QAE@XZ  01001158     mfc42:MFC42.DLL
+ 0001:0000015c       __imp_??0CStatusBar@@QAE@XZ 0100115c     mfc42:MFC42.DLL
+ 0001:00000160       __imp_??0CFrameWnd@@QAE@XZ 01001160     mfc42:MFC42.DLL
+ 0001:00000164       __imp_??1CToolBar@@UAE@XZ  01001164     mfc42:MFC42.DLL
+ 0001:00000168       __imp_?EnableDocking@CFrameWnd@@QAEXK@Z 01001168     mfc42:MFC42.DLL
+ 0001:0000016c       __imp_?SetIndicators@CStatusBar@@QAEHPBIH@Z 0100116c     mfc42:MFC42.DLL
+ 0001:00000170       __imp_?Create@CStatusBar@@QAEHPAVCWnd@@KI@Z 01001170     mfc42:MFC42.DLL
+ 0001:00000174       __imp_?OnCreate@CFrameWnd@@IAEHPAUtagCREATESTRUCTA@@@Z 01001174     mfc42:MFC42.DLL
+ 0001:00000178       __imp_?ShowWindow@CWnd@@QAEHH@Z 01001178     mfc42:MFC42.DLL
+ 0001:0000017c       __imp_?FromHandle@CMenu@@SGPAV1@PAUHMENU__@@@Z 0100117c     mfc42:MFC42.DLL
+ 0001:00000180       __imp_?OnInitMenuPopup@CFrameWnd@@IAEXPAVCMenu@@IH@Z 01001180     mfc42:MFC42.DLL
+ 0001:00000184       __imp_?Create@CDialog@@QAEHPBDPAVCWnd@@@Z 01001184     mfc42:MFC42.DLL
+ 0001:00000188       __imp_??1CButton@@UAE@XZ   01001188     mfc42:MFC42.DLL
+ 0001:0000018c       __imp_??1CEdit@@UAE@XZ     0100118c     mfc42:MFC42.DLL
+ 0001:00000190       __imp_?OnClose@CFrameWnd@@IAEXXZ 01001190     mfc42:MFC42.DLL
+ 0001:00000194       __imp_?WriteProfileStringA@CWinApp@@QAEHPBD00@Z 01001194     mfc42:MFC42.DLL
+ 0001:00000198       __imp_??0CString@@QAE@PBD@Z 01001198     mfc42:MFC42.DLL
+ 0001:0000019c       __imp_??4CString@@QAEABV0@ABV0@@Z 0100119c     mfc42:MFC42.DLL
+ 0001:000001a0       __imp_?GetWindowPlacement@CWnd@@QBEHPAUtagWINDOWPLACEMENT@@@Z 010011a0     mfc42:MFC42.DLL
+ 0001:000001a4       __imp_?AfxGetModuleState@@YGPAVAFX_MODULE_STATE@@XZ 010011a4     mfc42:MFC42.DLL
+ 0001:000001a8       __imp_?FromHandle@CWnd@@SGPAV1@PAUHWND__@@@Z 010011a8     mfc42:MFC42.DLL
+ 0001:000001ac       __imp_??0CString@@QAE@ABV0@@Z 010011ac     mfc42:MFC42.DLL
+ 0001:000001b0       __imp_??H@YG?AVCString@@ABV0@PBD@Z 010011b0     mfc42:MFC42.DLL
+ 0001:000001b4       __imp_?PreTranslateMessage@CWnd@@UAEHPAUtagMSG@@@Z 010011b4     mfc42:MFC42.DLL
+ 0001:000001b8       __imp_?GetMessageMap@CWnd@@MBEPBUAFX_MSGMAP@@XZ 010011b8     mfc42:MFC42.DLL
+ 0001:000001bc       __imp_?OnCmdMsg@CCmdTarget@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 010011bc     mfc42:MFC42.DLL
+ 0001:000001c0       __imp_?GetRuntimeClass@CEdit@@UBEPAUCRuntimeClass@@XZ 010011c0     mfc42:MFC42.DLL
+ 0001:000001c4       __imp_??0CWnd@@QAE@XZ      010011c4     mfc42:MFC42.DLL
+ 0001:000001c8       __imp_?messageMap@CWinApp@@1UAFX_MSGMAP@@B 010011c8     mfc42:MFC42.DLL
+ 0001:000001cc       __imp_?WinHelpA@CWinApp@@UAEXKI@Z 010011cc     mfc42:MFC42.DLL
+ 0001:000001d0       __imp_?OnDDECommand@CWinApp@@UAEHPAD@Z 010011d0     mfc42:MFC42.DLL
+ 0001:000001d4       __imp_?DoWaitCursor@CWinApp@@UAEXH@Z 010011d4     mfc42:MFC42.DLL
+ 0001:000001d8       __imp_?DoMessageBox@CWinApp@@UAEHPBDII@Z 010011d8     mfc42:MFC42.DLL
+ 0001:000001dc       __imp_?SaveAllModified@CWinApp@@UAEHXZ 010011dc     mfc42:MFC42.DLL
+ 0001:000001e0       __imp_?InitApplication@CWinApp@@UAEHXZ 010011e0     mfc42:MFC42.DLL
+ 0001:000001e4       __imp_?AddToRecentFileList@CWinApp@@UAEXPBD@Z 010011e4     mfc42:MFC42.DLL
+ 0001:000001e8       __imp_?OpenDocumentFile@CWinApp@@UAEPAVCDocument@@PBD@Z 010011e8     mfc42:MFC42.DLL
+ 0001:000001ec       __imp_?Delete@CWinThread@@UAEXXZ 010011ec     mfc42:MFC42.DLL
+ 0001:000001f0       __imp_?GetMainWnd@CWinThread@@UAEPAVCWnd@@XZ 010011f0     mfc42:MFC42.DLL
+ 0001:000001f4       __imp_?ProcessMessageFilter@CWinThread@@UAEHHPAUtagMSG@@@Z 010011f4     mfc42:MFC42.DLL
+ 0001:000001f8       __imp_?ProcessWndProcException@CWinApp@@UAEJPAVCException@@PBUtagMSG@@@Z 010011f8     mfc42:MFC42.DLL
+ 0001:000001fc       __imp_?IsIdleMessage@CWinThread@@UAEHPAUtagMSG@@@Z 010011fc     mfc42:MFC42.DLL
+ 0001:00000200       __imp_?OnIdle@CWinApp@@UAEHJ@Z 01001200     mfc42:MFC42.DLL
+ 0001:00000204       __imp_?PumpMessage@CWinThread@@UAEHXZ 01001204     mfc42:MFC42.DLL
+ 0001:00000208       __imp_?PreTranslateMessage@CWinThread@@UAEHPAUtagMSG@@@Z 01001208     mfc42:MFC42.DLL
+ 0001:0000020c       __imp_?Run@CWinApp@@UAEHXZ 0100120c     mfc42:MFC42.DLL
+ 0001:00000210       __imp_?OnFinalRelease@CCmdTarget@@UAEXXZ 01001210     mfc42:MFC42.DLL
+ 0001:00000214       __imp_?GetRuntimeClass@CWinApp@@UBEPAUCRuntimeClass@@XZ 01001214     mfc42:MFC42.DLL
+ 0001:00000218       __imp_??0CWinApp@@QAE@PBD@Z 01001218     mfc42:MFC42.DLL
+ 0001:0000021c       __imp_??0CString@@QAE@XZ   0100121c     mfc42:MFC42.DLL
+ 0001:00000220       __imp_?DDV_MaxChars@@YGXPAVCDataExchange@@ABVCString@@H@Z 01001220     mfc42:MFC42.DLL
+ 0001:00000224       __imp_?PreCreateWindow@CWnd@@UAEHAAUtagCREATESTRUCTA@@@Z 01001224     mfc42:MFC42.DLL
+ 0001:00000228       __imp_?GetProfileStringA@CWinApp@@QAE?AVCString@@PBD00@Z 01001228     mfc42:MFC42.DLL
+ 0001:0000022c       __imp_??1CCommandLineInfo@@UAE@XZ 0100122c     mfc42:MFC42.DLL
+ 0001:00000230       __imp_?ProcessShellCommand@CWinApp@@QAEHAAVCCommandLineInfo@@@Z 01001230     mfc42:MFC42.DLL
+ 0001:00000234       __imp_?ParseCommandLine@CWinApp@@QAEXAAVCCommandLineInfo@@@Z 01001234     mfc42:MFC42.DLL
+ 0001:00000238       __imp_??0CCommandLineInfo@@QAE@XZ 01001238     mfc42:MFC42.DLL
+ 0001:0000023c       __imp_?AddDocTemplate@CWinApp@@QAEXPAVCDocTemplate@@@Z 0100123c     mfc42:MFC42.DLL
+ 0001:00000240       __imp_??0CSingleDocTemplate@@QAE@IPAUCRuntimeClass@@00@Z 01001240     mfc42:MFC42.DLL
+ 0001:00000244       __imp_?LoadStdProfileSettings@CWinApp@@IAEXI@Z 01001244     mfc42:MFC42.DLL
+ 0001:00000248       __imp_?SetRegistryKey@CWinApp@@IAEXPBD@Z 01001248     mfc42:MFC42.DLL
+ 0001:0000024c       __imp_?Enable3dControls@CWinApp@@IAEHXZ 0100124c     mfc42:MFC42.DLL
+ 0001:00000250       __imp_?ExitInstance@CWinApp@@UAEHXZ 01001250     mfc42:MFC42.DLL
+ 0001:00000254       __imp_??H@YG?AVCString@@ABV0@D@Z 01001254     mfc42:MFC42.DLL
+ 0001:00000258       __imp_??4CString@@QAEABV0@D@Z 01001258     mfc42:MFC42.DLL
+ 0001:0000025c       __imp_?classCDocument@CDocument@@2UCRuntimeClass@@B 0100125c     mfc42:MFC42.DLL
+ 0001:00000260       __imp_?messageMap@CDocument@@1UAFX_MSGMAP@@B 01001260     mfc42:MFC42.DLL
+ 0001:00000264       __imp_?OnIdle@CDocument@@UAEXXZ 01001264     mfc42:MFC42.DLL
+ 0001:00000268       __imp_?GetDefaultAccelerator@CDocument@@UAEPAUHACCEL__@@XZ 01001268     mfc42:MFC42.DLL
+ 0001:0000026c       __imp_?GetDefaultMenu@CDocument@@UAEPAUHMENU__@@XZ 0100126c     mfc42:MFC42.DLL
+ 0001:00000270       __imp_?UpdateFrameCounts@CDocument@@UAEXXZ 01001270     mfc42:MFC42.DLL
+ 0001:00000274       __imp_?DoFileSave@CDocument@@UAEHXZ 01001274     mfc42:MFC42.DLL
+ 0001:00000278       __imp_?DoSave@CDocument@@UAEHPBDH@Z 01001278     mfc42:MFC42.DLL
+ 0001:0000027c       __imp_?PreCloseFrame@CDocument@@UAEXPAVCFrameWnd@@@Z 0100127c     mfc42:MFC42.DLL
+ 0001:00000280       __imp_?SaveModified@CDocument@@UAEHXZ 01001280     mfc42:MFC42.DLL
+ 0001:00000284       __imp_?CanCloseFrame@CDocument@@UAEHPAVCFrameWnd@@@Z 01001284     mfc42:MFC42.DLL
+ 0001:00000288       __imp_?ReleaseFile@CDocument@@UAEXPAVCFile@@H@Z 01001288     mfc42:MFC42.DLL
+ 0001:0000028c       __imp_?GetFile@CDocument@@UAEPAVCFile@@PBDIPAVCFileException@@@Z 0100128c     mfc42:MFC42.DLL
+ 0001:00000290       __imp_?ReportSaveLoadException@CDocument@@UAEXPBDPAVCException@@HI@Z 01001290     mfc42:MFC42.DLL
+ 0001:00000294       __imp_?OnCloseDocument@CDocument@@UAEXXZ 01001294     mfc42:MFC42.DLL
+ 0001:00000298       __imp_?OnSaveDocument@CDocument@@UAEHPBD@Z 01001298     mfc42:MFC42.DLL
+ 0001:0000029c       __imp_?OnOpenDocument@CDocument@@UAEHPBD@Z 0100129c     mfc42:MFC42.DLL
+ 0001:000002a0       __imp_?DeleteContents@CDocument@@UAEXXZ 010012a0     mfc42:MFC42.DLL
+ 0001:000002a4       __imp_?OnChangedViewList@CDocument@@UAEXXZ 010012a4     mfc42:MFC42.DLL
+ 0001:000002a8       __imp_?GetNextView@CDocument@@UBEPAVCView@@AAPAU__POSITION@@@Z 010012a8     mfc42:MFC42.DLL
+ 0001:000002ac       __imp_?GetFirstViewPosition@CDocument@@UBEPAU__POSITION@@XZ 010012ac     mfc42:MFC42.DLL
+ 0001:000002b0       __imp_?SetPathName@CDocument@@UAEXPBDH@Z 010012b0     mfc42:MFC42.DLL
+ 0001:000002b4       __imp_?SetTitle@CDocument@@UAEXPBD@Z 010012b4     mfc42:MFC42.DLL
+ 0001:000002b8       __imp_?OnFinalRelease@CDocument@@UAEXXZ 010012b8     mfc42:MFC42.DLL
+ 0001:000002bc       __imp_?OnCmdMsg@CDocument@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 010012bc     mfc42:MFC42.DLL
+ 0001:000002c0       __imp_??0CDocument@@QAE@XZ 010012c0     mfc42:MFC42.DLL
+ 0001:000002c4       __imp_??1CDocument@@UAE@XZ 010012c4     mfc42:MFC42.DLL
+ 0001:000002c8       __imp_?OnNewDocument@CDocument@@UAEHXZ 010012c8     mfc42:MFC42.DLL
+ 0001:000002cc       __imp_?classCView@CView@@2UCRuntimeClass@@B 010012cc     mfc42:MFC42.DLL
+ 0001:000002d0       __imp_?messageMap@CView@@1UAFX_MSGMAP@@B 010012d0     mfc42:MFC42.DLL
+ 0001:000002d4       __imp_?OnEndPrintPreview@CView@@MAEXPAVCDC@@PAUCPrintInfo@@UtagPOINT@@PAVCPreviewView@@@Z 010012d4     mfc42:MFC42.DLL
+ 0001:000002d8       __imp_?OnEndPrinting@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 010012d8     mfc42:MFC42.DLL
+ 0001:000002dc       __imp_?OnPrint@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 010012dc     mfc42:MFC42.DLL
+ 0001:000002e0       __imp_?OnBeginPrinting@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 010012e0     mfc42:MFC42.DLL
+ 0001:000002e4       __imp_?OnPreparePrinting@CView@@MAEHPAUCPrintInfo@@@Z 010012e4     mfc42:MFC42.DLL
+ 0001:000002e8       __imp_?OnUpdate@CView@@MAEXPAV1@JPAVCObject@@@Z 010012e8     mfc42:MFC42.DLL
+ 0001:000002ec       __imp_?OnActivateFrame@CView@@MAEXIPAVCFrameWnd@@@Z 010012ec     mfc42:MFC42.DLL
+ 0001:000002f0       __imp_?OnActivateView@CView@@MAEXHPAV1@0@Z 010012f0     mfc42:MFC42.DLL
+ 0001:000002f4       __imp_?OnInitialUpdate@CView@@UAEXXZ 010012f4     mfc42:MFC42.DLL
+ 0001:000002f8       __imp_?OnPrepareDC@CView@@UAEXPAVCDC@@PAUCPrintInfo@@@Z 010012f8     mfc42:MFC42.DLL
+ 0001:000002fc       __imp_?OnDragScroll@CView@@UAEKKVCPoint@@@Z 010012fc     mfc42:MFC42.DLL
+ 0001:00000300       __imp_?OnDropEx@CView@@UAEKPAVCOleDataObject@@KKVCPoint@@@Z 01001300     mfc42:MFC42.DLL
+ 0001:00000304       __imp_?OnDrop@CView@@UAEHPAVCOleDataObject@@KVCPoint@@@Z 01001304     mfc42:MFC42.DLL
+ 0001:00000308       __imp_?OnDragLeave@CView@@UAEXXZ 01001308     mfc42:MFC42.DLL
+ 0001:0000030c       __imp_?OnDragOver@CView@@UAEKPAVCOleDataObject@@KVCPoint@@@Z 0100130c     mfc42:MFC42.DLL
+ 0001:00000310       __imp_?OnDragEnter@CView@@UAEKPAVCOleDataObject@@KVCPoint@@@Z 01001310     mfc42:MFC42.DLL
+ 0001:00000314       __imp_?OnScrollBy@CView@@UAEHVCSize@@H@Z 01001314     mfc42:MFC42.DLL
+ 0001:00000318       __imp_?OnScroll@CView@@UAEHIIH@Z 01001318     mfc42:MFC42.DLL
+ 0001:0000031c       __imp_?IsSelected@CView@@UBEHPBVCObject@@@Z 0100131c     mfc42:MFC42.DLL
+ 0001:00000320       __imp_?PostNcDestroy@CView@@MAEXXZ 01001320     mfc42:MFC42.DLL
+ 0001:00000324       __imp_?GetScrollBarCtrl@CView@@UBEPAVCScrollBar@@H@Z 01001324     mfc42:MFC42.DLL
+ 0001:00000328       __imp_?CalcWindowRect@CView@@UAEXPAUtagRECT@@I@Z 01001328     mfc42:MFC42.DLL
+ 0001:0000032c       __imp_?OnCmdMsg@CView@@MAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 0100132c     mfc42:MFC42.DLL
+ 0001:00000330       __imp_??0CView@@IAE@XZ     01001330     mfc42:MFC42.DLL
+ 0001:00000334       __imp_??1CView@@UAE@XZ     01001334     mfc42:MFC42.DLL
+ 0001:00000338       __imp_?PreCreateWindow@CView@@MAEHAAUtagCREATESTRUCTA@@@Z 01001338     mfc42:MFC42.DLL
+ 0001:0000033c       __imp_?Create@CEdit@@QAEHKABUtagRECT@@PAVCWnd@@I@Z 0100133c     mfc42:MFC42.DLL
+ 0001:00000340       __imp_?OnCreate@CView@@IAEHPAUtagCREATESTRUCTA@@@Z 01001340     mfc42:MFC42.DLL
+ 0001:00000344       __imp_?Default@CWnd@@IAEJXZ 01001344     mfc42:MFC42.DLL
+ 0001:00000348       __imp_?DrawItem@CButton@@UAEXPAUtagDRAWITEMSTRUCT@@@Z 01001348     mfc42:MFC42.DLL
+ 0001:0000034c       __imp_?OnChildNotify@CButton@@MAEHIIJPAJ@Z 0100134c     mfc42:MFC42.DLL
+ 0001:00000350       __imp_?GetRuntimeClass@CButton@@UBEPAUCRuntimeClass@@XZ 01001350     mfc42:MFC42.DLL
+ 0001:00000354       __imp_?DDV_MinMaxInt@@YGXPAVCDataExchange@@HHH@Z 01001354     mfc42:MFC42.DLL
+ 0001:00000358       __imp_?DDX_Text@@YGXPAVCDataExchange@@HAAH@Z 01001358     mfc42:MFC42.DLL
+ 0001:0000035c       __imp_?DDX_Check@@YGXPAVCDataExchange@@HAAH@Z 0100135c     mfc42:MFC42.DLL
+ 0001:00000360       __imp_?DDX_Control@@YGXPAVCDataExchange@@HAAVCWnd@@@Z 01001360     mfc42:MFC42.DLL
+ 0001:00000364       __imp_?GetProfileIntA@CWinApp@@QAEIPBD0H@Z 01001364     mfc42:MFC42.DLL
+ 0001:00000368       __imp_?WriteProfileInt@CWinApp@@QAEHPBD0H@Z 01001368     mfc42:MFC42.DLL
+ 0001:0000036c       __imp_?EnableWindow@CWnd@@QAEHH@Z 0100136c     mfc42:MFC42.DLL
+ 0001:00000370       __imp_?SetFocus@CWnd@@QAEPAV1@XZ 01001370     mfc42:MFC42.DLL
+ 0001:00000374       __imp_?GetDlgItemTextA@CWnd@@QBEHHAAVCString@@@Z 01001374     mfc42:MFC42.DLL
+ 0001:00000378       __imp_?PreInitDialog@CDialog@@MAEXXZ 01001378     mfc42:MFC42.DLL
+ 0001:0000037c       __imp_??1CString@@QAE@XZ   0100137c     mfc42:MFC42.DLL
+ 0001:00000380       __imp_?OnOK@CDialog@@MAEXXZ 01001380     mfc42:MFC42.DLL
+ 0001:00000384       __imp_?PostNcDestroy@CWnd@@MAEXXZ 01001384     mfc42:MFC42.DLL
+ 0001:00000388       __imp_?messageMap@CDialog@@1UAFX_MSGMAP@@B 01001388     mfc42:MFC42.DLL
+ 0001:0000038c       __imp_??1CDialog@@UAE@XZ   0100138c     mfc42:MFC42.DLL
+ 0001:00000390       __imp_??3@YAXPAX@Z         01001390     mfc42:MFC42.DLL
+ 0001:00000394       __imp_??0CDialog@@QAE@IPAVCWnd@@@Z 01001394     mfc42:MFC42.DLL
+ 0001:00000398       __imp_?GetRuntimeClass@CDialog@@UBEPAUCRuntimeClass@@XZ 01001398     mfc42:MFC42.DLL
+ 0001:0000039c       __imp_?OnCmdMsg@CDialog@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 0100139c     mfc42:MFC42.DLL
+ 0001:000003a0       __imp_?OnFinalRelease@CWnd@@UAEXXZ 010013a0     mfc42:MFC42.DLL
+ 0001:000003a4       __imp_?IsInvokeAllowed@CCmdTarget@@UAEHJ@Z 010013a4     mfc42:MFC42.DLL
+ 0001:000003a8       __imp_?GetDispatchIID@CCmdTarget@@UAEHPAU_GUID@@@Z 010013a8     mfc42:MFC42.DLL
+ 0001:000003ac       __imp_?GetTypeInfoCount@CCmdTarget@@UAEIXZ 010013ac     mfc42:MFC42.DLL
+ 0001:000003b0       __imp_?GetTypeLibCache@CCmdTarget@@UAEPAVCTypeLibCache@@XZ 010013b0     mfc42:MFC42.DLL
+ 0001:000003b4       __imp_?GetTypeLib@CCmdTarget@@UAEJKPAPAUITypeLib@@@Z 010013b4     mfc42:MFC42.DLL
+ 0001:000003b8       __imp_?GetCommandMap@CCmdTarget@@MBEPBUAFX_OLECMDMAP@@XZ 010013b8     mfc42:MFC42.DLL
+ 0001:000003bc       __imp_?GetDispatchMap@CCmdTarget@@MBEPBUAFX_DISPMAP@@XZ 010013bc     mfc42:MFC42.DLL
+ 0001:000003c0       __imp_?GetConnectionMap@CCmdTarget@@MBEPBUAFX_CONNECTIONMAP@@XZ 010013c0     mfc42:MFC42.DLL
+ 0001:000003c4       __imp_?GetInterfaceMap@CCmdTarget@@MBEPBUAFX_INTERFACEMAP@@XZ 010013c4     mfc42:MFC42.DLL
+ 0001:000003c8       __imp_?GetEventSinkMap@CCmdTarget@@MBEPBUAFX_EVENTSINKMAP@@XZ 010013c8     mfc42:MFC42.DLL
+ 0001:000003cc       __imp_?OnCreateAggregates@CCmdTarget@@UAEHXZ 010013cc     mfc42:MFC42.DLL
+ 0001:000003d0       __imp_?GetInterfaceHook@CCmdTarget@@UAEPAUIUnknown@@PBX@Z 010013d0     mfc42:MFC42.DLL
+ 0001:000003d4       __imp_?GetExtraConnectionPoints@CCmdTarget@@MAEHPAVCPtrArray@@@Z 010013d4     mfc42:MFC42.DLL
+ 0001:000003d8       __imp_?GetConnectionHook@CCmdTarget@@MAEPAUIConnectionPoint@@ABU_GUID@@@Z 010013d8     mfc42:MFC42.DLL
+ 0001:000003dc       __imp_?PreSubclassWindow@CWnd@@UAEXXZ 010013dc     mfc42:MFC42.DLL
+ 0001:000003e0       __imp_?Create@CWnd@@UAEHPBD0KABUtagRECT@@PAV1@IPAUCCreateContext@@@Z 010013e0     mfc42:MFC42.DLL
+ 0001:000003e4       __imp_?DestroyWindow@CWnd@@UAEHXZ 010013e4     mfc42:MFC42.DLL
+ 0001:000003e8       __imp_?OnToolHitTest@CWnd@@UBEHVCPoint@@PAUtagTOOLINFOA@@@Z 010013e8     mfc42:MFC42.DLL
+ 0001:000003ec       __imp_?CalcWindowRect@CWnd@@UAEXPAUtagRECT@@I@Z 010013ec     mfc42:MFC42.DLL
+ 0001:000003f0       __imp_?DoModal@CDialog@@UAEHXZ 010013f0     mfc42:MFC42.DLL
+ 0001:000003f4       __imp_?OnInitDialog@CDialog@@UAEHXZ 010013f4     mfc42:MFC42.DLL
+ 0001:000003f8       __imp_?OnSetFont@CDialog@@UAEXPAVCFont@@@Z 010013f8     mfc42:MFC42.DLL
+ 0001:000003fc       __imp_?OnCancel@CDialog@@MAEXXZ 010013fc     mfc42:MFC42.DLL
+ 0001:00000400       __imp_?ContinueModal@CWnd@@UAEHXZ 01001400     mfc42:MFC42.DLL
+ 0001:00000404       __imp_?GetScrollBarCtrl@CWnd@@UBEPAVCScrollBar@@H@Z 01001404     mfc42:MFC42.DLL
+ 0001:00000408       __imp_?WinHelpA@CWnd@@UAEXKI@Z 01001408     mfc42:MFC42.DLL
+ 0001:0000040c       __imp_?OnNotify@CWnd@@MAEHIJPAJ@Z 0100140c     mfc42:MFC42.DLL
+ 0001:00000410       __imp_?EndModalLoop@CWnd@@UAEXH@Z 01001410     mfc42:MFC42.DLL
+ 0001:00000414       __imp_?OnCommand@CWnd@@MAEHIJ@Z 01001414     mfc42:MFC42.DLL
+ 0001:00000418       __imp_?OnAmbientProperty@CWnd@@UAEHPAVCOleControlSite@@JPAUtagVARIANT@@@Z 01001418     mfc42:MFC42.DLL
+ 0001:0000041c       __imp_?GetSuperWndProcAddr@CWnd@@MAEPAP6GJPAUHWND__@@IIJ@ZXZ 0100141c     mfc42:MFC42.DLL
+ 0001:00000420       __imp_?PreTranslateMessage@CDialog@@UAEHPAUtagMSG@@@Z 01001420     mfc42:MFC42.DLL
+ 0001:00000424       __imp_?DefWindowProcA@CWnd@@MAEJIIJ@Z 01001424     mfc42:MFC42.DLL
+ 0001:00000428       __imp_?WindowProc@CWnd@@MAEJIIJ@Z 01001428     mfc42:MFC42.DLL
+ 0001:0000042c       __imp_?OnWndMsg@CWnd@@MAEHIIJPAJ@Z 0100142c     mfc42:MFC42.DLL
+ 0001:00000430       __imp_?IsFrameWnd@CWnd@@UBEHXZ 01001430     mfc42:MFC42.DLL
+ 0001:00000434       __imp_?OnChildNotify@CWnd@@MAEHIIJPAJ@Z 01001434     mfc42:MFC42.DLL
+ 0001:00000438       __imp_?CheckAutoCenter@CDialog@@UAEHXZ 01001438     mfc42:MFC42.DLL
+ 0001:0000043c       __imp_?SetWindowPos@CWnd@@QAEHPBV1@HHHHI@Z 0100143c     mfc42:MFC42.DLL
+ 0001:00000440       __imp_?SetOccDialogInfo@CDialog@@MAEHPAU_AFX_OCC_DIALOG_INFO@@@Z 01001440     mfc42:MFC42.DLL
+ 0001:00000444       __imp_?MoveWindow@CWnd@@QAEXHHHHH@Z 01001444     mfc42:MFC42.DLL
+ 0001:00000448       __imp_??1CWinApp@@UAE@XZ   01001448     mfc42:MFC42.DLL
+ 0001:0000044c       __imp_?LoadStringA@CString@@QAEHI@Z 0100144c     mfc42:MFC42.DLL
+ 0001:00000450       __imp_?AfxWinMain@@YGHPAUHINSTANCE__@@0PADH@Z 01001450     mfc42:MFC42.DLL
+ 0001:00000454       \177MFC42_NULL_THUNK_DATA  01001454     mfc42:MFC42.DLL
+ 0001:00000458       __imp___onexit             01001458     msvcrt:MSVCRT.dll
+ 0001:0000045c       __imp____dllonexit         0100145c     msvcrt:MSVCRT.dll
+ 0001:00000460       __imp___controlfp          01001460     msvcrt:MSVCRT.dll
+ 0001:00000464       __imp_??1type_info@@UAE@XZ 01001464     msvcrt:MSVCRT.dll
+ 0001:00000468       __imp___except_handler3    01001468     msvcrt:MSVCRT.dll
+ 0001:0000046c       __imp____set_app_type      0100146c     msvcrt:MSVCRT.dll
+ 0001:00000470       __imp____p__fmode          01001470     msvcrt:MSVCRT.dll
+ 0001:00000474       __imp____p__commode        01001474     msvcrt:MSVCRT.dll
+ 0001:00000478       __imp___adjust_fdiv        01001478     msvcrt:MSVCRT.dll
+ 0001:0000047c       __imp____setusermatherr    0100147c     msvcrt:MSVCRT.dll
+ 0001:00000480       __imp___initterm           01001480     msvcrt:MSVCRT.dll
+ 0001:00000484       __imp____getmainargs       01001484     msvcrt:MSVCRT.dll
+ 0001:00000488       __imp___acmdln             01001488     msvcrt:MSVCRT.dll
+ 0001:0000048c       __imp__exit                0100148c     msvcrt:MSVCRT.dll
+ 0001:00000490       __imp___XcptFilter         01001490     msvcrt:MSVCRT.dll
+ 0001:00000494       __imp___exit               01001494     msvcrt:MSVCRT.dll
+ 0001:00000498       __imp__memcpy              01001498     msvcrt:MSVCRT.dll
+ 0001:0000049c       __imp__malloc              0100149c     msvcrt:MSVCRT.dll
+ 0001:000004a0       __imp__atoi                010014a0     msvcrt:MSVCRT.dll
+ 0001:000004a4       __imp___itoa               010014a4     msvcrt:MSVCRT.dll
+ 0001:000004a8       __imp___setmbcp            010014a8     msvcrt:MSVCRT.dll
+ 0001:000004ac       __imp__vsprintf            010014ac     msvcrt:MSVCRT.dll
+ 0001:000004b0       __imp__time                010014b0     msvcrt:MSVCRT.dll
+ 0001:000004b4       __imp__localtime           010014b4     msvcrt:MSVCRT.dll
+ 0001:000004b8       __imp__strcpy              010014b8     msvcrt:MSVCRT.dll
+ 0001:000004bc       __imp__strcat              010014bc     msvcrt:MSVCRT.dll
+ 0001:000004c0       __imp__strlen              010014c0     msvcrt:MSVCRT.dll
+ 0001:000004c4       __imp__free                010014c4     msvcrt:MSVCRT.dll
+ 0001:000004c8       __imp__memset              010014c8     msvcrt:MSVCRT.dll
+ 0001:000004cc       __imp___mbscmp             010014cc     msvcrt:MSVCRT.dll
+ 0001:000004d0       __imp____CxxFrameHandler   010014d0     msvcrt:MSVCRT.dll
+ 0001:000004d4       \177MSVCRT_NULL_THUNK_DATA 010014d4     msvcrt:MSVCRT.dll
+ 0001:000004d8       __imp__NdrSendReceive@8    010014d8     rpcrt4:RPCRT4.dll
+ 0001:000004dc       __imp__RpcServerListen@12  010014dc     rpcrt4:RPCRT4.dll
+ 0001:000004e0       __imp__RpcMgmtStopServerListening@4 010014e0     rpcrt4:RPCRT4.dll
+ 0001:000004e4       __imp__RpcRaiseException@4 010014e4     rpcrt4:RPCRT4.dll
+ 0001:000004e8       __imp__NdrConvert@8        010014e8     rpcrt4:RPCRT4.dll
+ 0001:000004ec       __imp__NdrFreeBuffer@4     010014ec     rpcrt4:RPCRT4.dll
+ 0001:000004f0       __imp__RpcStringBindingComposeA@24 010014f0     rpcrt4:RPCRT4.dll
+ 0001:000004f4       __imp__RpcBindingFromStringBindingA@8 010014f4     rpcrt4:RPCRT4.dll
+ 0001:000004f8       __imp__RpcStringFreeA@4    010014f8     rpcrt4:RPCRT4.dll
+ 0001:000004fc       __imp__RpcBindingFree@4    010014fc     rpcrt4:RPCRT4.dll
+ 0001:00000500       __imp__NdrConformantStringMarshall@12 01001500     rpcrt4:RPCRT4.dll
+ 0001:00000504       __imp__NdrClientInitializeNew@16 01001504     rpcrt4:RPCRT4.dll
+ 0001:00000508       __imp__RpcServerUnregisterIf@12 01001508     rpcrt4:RPCRT4.dll
+ 0001:0000050c       __imp__NdrConformantArrayUnmarshall@16 0100150c     rpcrt4:RPCRT4.dll
+ 0001:00000510       __imp__NdrConformantArrayMarshall@12 01001510     rpcrt4:RPCRT4.dll
+ 0001:00000514       __imp__NdrConformantArrayBufferSize@12 01001514     rpcrt4:RPCRT4.dll
+ 0001:00000518       __imp__NdrSimpleStructBufferSize@12 01001518     rpcrt4:RPCRT4.dll
+ 0001:0000051c       __imp__NdrSimpleStructUnmarshall@16 0100151c     rpcrt4:RPCRT4.dll
+ 0001:00000520       __imp__NdrSimpleStructMarshall@12 01001520     rpcrt4:RPCRT4.dll
+ 0001:00000524       __imp__RpcServerUseAllProtseqsIf@12 01001524     rpcrt4:RPCRT4.dll
+ 0001:00000528       __imp__NdrServerInitializeNew@12 01001528     rpcrt4:RPCRT4.dll
+ 0001:0000052c       __imp__RpcServerRegisterIf@12 0100152c     rpcrt4:RPCRT4.dll
+ 0001:00000530       __imp__NdrConformantStringBufferSize@12 01001530     rpcrt4:RPCRT4.dll
+ 0001:00000534       __imp__NdrGetBuffer@12     01001534     rpcrt4:RPCRT4.dll
+ 0001:00000538       \177RPCRT4_NULL_THUNK_DATA 01001538     rpcrt4:RPCRT4.dll
+ 0001:0000053c       __imp__lineDeallocateCall@4 0100153c     tapi32:TAPI32.dll
+ 0001:00000540       __imp__lineOpen@36         01001540     tapi32:TAPI32.dll
+ 0001:00000544       __imp__lineMonitorDigits@8 01001544     tapi32:TAPI32.dll
+ 0001:00000548       __imp__phoneSetVolume@12   01001548     tapi32:TAPI32.dll
+ 0001:0000054c       __imp__phoneSetStatusMessages@16 0100154c     tapi32:TAPI32.dll
+ 0001:00000550       __imp__phoneSetHookSwitch@12 01001550     tapi32:TAPI32.dll
+ 0001:00000554       __imp__phoneOpen@28        01001554     tapi32:TAPI32.dll
+ 0001:00000558       __imp__phoneInitialize@20  01001558     tapi32:TAPI32.dll
+ 0001:0000055c       __imp__phoneGetStatus@8    0100155c     tapi32:TAPI32.dll
+ 0001:00000560       __imp__phoneGetID@12       01001560     tapi32:TAPI32.dll
+ 0001:00000564       __imp__phoneGetHookSwitch@8 01001564     tapi32:TAPI32.dll
+ 0001:00000568       __imp__phoneGetDevCaps@20  01001568     tapi32:TAPI32.dll
+ 0001:0000056c       __imp__phoneClose@4        0100156c     tapi32:TAPI32.dll
+ 0001:00000570       __imp__lineAnswer@12       01001570     tapi32:TAPI32.dll
+ 0001:00000574       __imp__lineClose@4         01001574     tapi32:TAPI32.dll
+ 0001:00000578       __imp__lineDrop@12         01001578     tapi32:TAPI32.dll
+ 0001:0000057c       __imp__lineGenerateDigits@16 0100157c     tapi32:TAPI32.dll
+ 0001:00000580       __imp__lineGetDevCaps@20   01001580     tapi32:TAPI32.dll
+ 0001:00000584       __imp__lineGetDevConfig@12 01001584     tapi32:TAPI32.dll
+ 0001:00000588       __imp__lineGetID@24        01001588     tapi32:TAPI32.dll
+ 0001:0000058c       __imp__lineShutdown@4      0100158c     tapi32:TAPI32.dll
+ 0001:00000590       __imp__phoneShutdown@4     01001590     tapi32:TAPI32.dll
+ 0001:00000594       __imp__phoneSetGain@12     01001594     tapi32:TAPI32.dll
+ 0001:00000598       __imp__lineInitialize@20   01001598     tapi32:TAPI32.dll
+ 0001:0000059c       __imp__lineMakeCall@20     0100159c     tapi32:TAPI32.dll
+ 0001:000005a0       __imp__lineSetDevConfig@16 010015a0     tapi32:TAPI32.dll
+ 0001:000005a4       \177TAPI32_NULL_THUNK_DATA 010015a4     tapi32:TAPI32.dll
+ 0001:000005a8       __imp__GetSubMenu@8        010015a8     user32:USER32.dll
+ 0001:000005ac       __imp__PostMessageA@16     010015ac     user32:USER32.dll
+ 0001:000005b0       __imp__DefWindowProcA@16   010015b0     user32:USER32.dll
+ 0001:000005b4       __imp__DestroyWindow@4     010015b4     user32:USER32.dll
+ 0001:000005b8       __imp__RegisterClassA@4    010015b8     user32:USER32.dll
+ 0001:000005bc       __imp__CreateWindowExA@48  010015bc     user32:USER32.dll
+ 0001:000005c0       __imp__UnregisterClassA@8  010015c0     user32:USER32.dll
+ 0001:000005c4       __imp__GetMenuState@12     010015c4     user32:USER32.dll
+ 0001:000005c8       __imp__CheckMenuItem@12    010015c8     user32:USER32.dll
+ 0001:000005cc       __imp__IsWindow@4          010015cc     user32:USER32.dll
+ 0001:000005d0       __imp__GetDlgItem@8        010015d0     user32:USER32.dll
+ 0001:000005d4       __imp__SetWindowTextA@8    010015d4     user32:USER32.dll
+ 0001:000005d8       __imp__EndDialog@8         010015d8     user32:USER32.dll
+ 0001:000005dc       __imp__DialogBoxParamA@20  010015dc     user32:USER32.dll
+ 0001:000005e0       __imp__wsprintfA           010015e0     user32:USER32.dll
+ 0001:000005e4       __imp__SetForegroundWindow@4 010015e4     user32:USER32.dll
+ 0001:000005e8       __imp__SendMessageA@16     010015e8     user32:USER32.dll
+ 0001:000005ec       __imp__EnableWindow@8      010015ec     user32:USER32.dll
+ 0001:000005f0       __imp__GetMenu@4           010015f0     user32:USER32.dll
+ 0001:000005f4       __imp__InvalidateRect@12   010015f4     user32:USER32.dll
+ 0001:000005f8       __imp__ReleaseCapture@0    010015f8     user32:USER32.dll
+ 0001:000005fc       __imp__EnableMenuItem@12   010015fc     user32:USER32.dll
+ 0001:00000600       __imp__IsWindowVisible@4   01001600     user32:USER32.dll
+ 0001:00000604       __imp__ShowWindow@8        01001604     user32:USER32.dll
+ 0001:00000608       __imp__GetSystemMetrics@4  01001608     user32:USER32.dll
+ 0001:0000060c       __imp__FindWindowA@8       0100160c     user32:USER32.dll
+ 0001:00000610       __imp__IsMenu@4            01001610     user32:USER32.dll
+ 0001:00000614       __imp__SetCapture@4        01001614     user32:USER32.dll
+ 0001:00000618       __imp__GetClientRect@8     01001618     user32:USER32.dll
+ 0001:0000061c       __imp__MessageBoxA@16      0100161c     user32:USER32.dll
+ 0001:00000620       \177USER32_NULL_THUNK_DATA 01001620     user32:USER32.dll
+ 0001:00000624       __imp__GetFileVersionInfoA@16 01001624     version:VERSION.dll
+ 0001:00000628       __imp__VerQueryValueA@16   01001628     version:VERSION.dll
+ 0001:0000062c       __imp__GetFileVersionInfoSizeA@8 0100162c     version:VERSION.dll
+ 0001:00000630       \177VERSION_NULL_THUNK_DATA 01001630     version:VERSION.dll
+ 0001:00000634       __imp__waveInUnprepareHeader@12 01001634     winmm:WINMM.dll
+ 0001:00000638       __imp__waveOutWrite@12     01001638     winmm:WINMM.dll
+ 0001:0000063c       __imp__waveOutPrepareHeader@12 0100163c     winmm:WINMM.dll
+ 0001:00000640       __imp__waveOutClose@4      01001640     winmm:WINMM.dll
+ 0001:00000644       __imp__waveOutOpen@24      01001644     winmm:WINMM.dll
+ 0001:00000648       __imp__waveInStart@4       01001648     winmm:WINMM.dll
+ 0001:0000064c       __imp__waveOutUnprepareHeader@12 0100164c     winmm:WINMM.dll
+ 0001:00000650       __imp__waveInAddBuffer@12  01001650     winmm:WINMM.dll
+ 0001:00000654       __imp__waveInPrepareHeader@12 01001654     winmm:WINMM.dll
+ 0001:00000658       __imp__waveInClose@4       01001658     winmm:WINMM.dll
+ 0001:0000065c       __imp__waveInOpen@24       0100165c     winmm:WINMM.dll
+ 0001:00000660       \177WINMM_NULL_THUNK_DATA  01001660     winmm:WINMM.dll
+ 0001:000006e0       ?messageMap@CAbortDlg@@1UAFX_MSGMAP@@B 010016e0     abortdlg.obj
+ 0001:000006e8       ?_messageEntries@CAbortDlg@@0PBUAFX_MSGMAP_ENTRY@@B 010016e8     abortdlg.obj
+ 0001:00000704       ??_7CAbortDlg@@6B@         01001704     abortdlg.obj
+ 0001:000007e0       ?messageMap@chngnum@@1UAFX_MSGMAP@@B 010017e0     chngnum.obj
+ 0001:000007e8       ?_messageEntries@chngnum@@0PBUAFX_MSGMAP_ENTRY@@B 010017e8     chngnum.obj
+ 0001:00000804       ??_7chngnum@@6B@           01001804     chngnum.obj
+ 0001:000008e0       ?messageMap@CChooseModem@@1UAFX_MSGMAP@@B 010018e0     choosem.obj
+ 0001:000008e8       ?_messageEntries@CChooseModem@@0PBUAFX_MSGMAP_ENTRY@@B 010018e8     choosem.obj
+ 0001:00000904       ??_7CChooseModem@@6B@      01001904     choosem.obj
+ 0001:000009e0       ?classCMainFrame@CMainFrame@@2UCRuntimeClass@@B 010019e0     mainfrm.obj
+ 0001:000009f8       ?messageMap@CMainFrame@@1UAFX_MSGMAP@@B 010019f8     mainfrm.obj
+ 0001:00000a00       ?_messageEntries@CMainFrame@@0PBUAFX_MSGMAP_ENTRY@@B 01001a00     mainfrm.obj
+ 0001:00000d94       ??_7CMainFrame@@6B@        01001d94     mainfrm.obj
+ 0001:00000e90       ?messageMap@CMct96App@@1UAFX_MSGMAP@@B 01001e90     mct96.obj
+ 0001:00000e98       ?_messageEntries@CMct96App@@0PBUAFX_MSGMAP_ENTRY@@B 01001e98     mct96.obj
+ 0001:00000ec8       ?messageMap@CAboutDlg@@1UAFX_MSGMAP@@B 01001ec8     mct96.obj
+ 0001:00000ed0       ?_messageEntries@CAboutDlg@@0PBUAFX_MSGMAP_ENTRY@@B 01001ed0     mct96.obj
+ 0001:00000eec       ??_7CEdit@@6B@             01001eec     mct96.obj
+ 0001:00000fb4       ??_7CMct96App@@6B@         01001fb4     mct96.obj
+ 0001:0000105c       ??_7CAboutDlg@@6B@         0100205c     mct96.obj
+ 0001:00001138       ?classCMct96Doc@CMct96Doc@@2UCRuntimeClass@@B 01002138     mct96doc.obj
+ 0001:00001150       ?messageMap@CMct96Doc@@1UAFX_MSGMAP@@B 01002150     mct96doc.obj
+ 0001:00001158       ?_messageEntries@CMct96Doc@@0PBUAFX_MSGMAP_ENTRY@@B 01002158     mct96doc.obj
+ 0001:00001174       ??_7CMct96Doc@@6B@         01002174     mct96doc.obj
+ 0001:00001230       ?classCMct96View@CMct96View@@2UCRuntimeClass@@B 01002230     mct96v.obj
+ 0001:00001248       ?messageMap@CMct96View@@1UAFX_MSGMAP@@B 01002248     mct96v.obj
+ 0001:00001250       ?_messageEntries@CMct96View@@0PBUAFX_MSGMAP_ENTRY@@B 01002250     mct96v.obj
+ 0001:0000129c       ??_7CMct96View@@6B@        0100229c     mct96v.obj
+ 0001:000013b0       ?messageMap@Params2@@1UAFX_MSGMAP@@B 010023b0     params2.obj
+ 0001:000013b8       ?_messageEntries@Params2@@0PBUAFX_MSGMAP_ENTRY@@B 010023b8     params2.obj
+ 0001:000013ec       ??_7Params2@@6B@           010023ec     params2.obj
+ 0001:000014cc       ??_7CButton@@6B@           010024cc     params2.obj
+ 0001:00001590       ?messageMap@CTestResults@@1UAFX_MSGMAP@@B 01002590     testres.obj
+ 0001:00001598       ?_messageEntries@CTestResults@@0PBUAFX_MSGMAP_ENTRY@@B 01002598     testres.obj
+ 0001:0000162c       ??_7CTestResults@@6B@      0100262c     testres.obj
+ 0001:0000171c       ??_7type_info@@6B@         0100271c     msvcrt:ti_inst.obj
+ 0001:00002010       ??_R1A@?0A@A@CObject@@8    01003010     abortdlg.obj
+ 0001:00002028       ??_R1A@?0A@A@CCmdTarget@@8 01003028     abortdlg.obj
+ 0001:00002040       ??_R1A@?0A@A@CWnd@@8       01003040     abortdlg.obj
+ 0001:00002058       ??_R1A@?0A@A@CDialog@@8    01003058     abortdlg.obj
+ 0001:00002070       ??_R1A@?0A@A@CAbortDlg@@8  01003070     abortdlg.obj
+ 0001:00002088       ??_R2CAbortDlg@@8          01003088     abortdlg.obj
+ 0001:000020a0       ??_R3CAbortDlg@@8          010030a0     abortdlg.obj
+ 0001:000020b0       ??_R4CAbortDlg@@6B@        010030b0     abortdlg.obj
+ 0001:000020c8       ??_R1A@?0A@A@chngnum@@8    010030c8     chngnum.obj
+ 0001:000020e0       ??_R2chngnum@@8            010030e0     chngnum.obj
+ 0001:000020f8       ??_R3chngnum@@8            010030f8     chngnum.obj
+ 0001:00002108       ??_R4chngnum@@6B@          01003108     chngnum.obj
+ 0001:00002120       ??_R1A@?0A@A@CChooseModem@@8 01003120     choosem.obj
+ 0001:00002138       ??_R2CChooseModem@@8       01003138     choosem.obj
+ 0001:00002150       ??_R3CChooseModem@@8       01003150     choosem.obj
+ 0001:00002160       ??_R4CChooseModem@@6B@     01003160     choosem.obj
+ 0001:00002178       ??_R1A@?0A@A@CFrameWnd@@8  01003178     mainfrm.obj
+ 0001:00002190       ??_R1A@?0A@A@CMainFrame@@8 01003190     mainfrm.obj
+ 0001:000021a8       ??_R2CMainFrame@@8         010031a8     mainfrm.obj
+ 0001:000021c0       ??_R3CMainFrame@@8         010031c0     mainfrm.obj
+ 0001:000021d0       ??_R4CMainFrame@@6B@       010031d0     mainfrm.obj
+ 0001:000021e8       ??_R1A@?0A@A@CEdit@@8      010031e8     mct96.obj
+ 0001:00002200       ??_R2CEdit@@8              01003200     mct96.obj
+ 0001:00002218       ??_R3CEdit@@8              01003218     mct96.obj
+ 0001:00002228       ??_R4CEdit@@6B@            01003228     mct96.obj
+ 0001:00002240       ??_R1A@?0A@A@CWinThread@@8 01003240     mct96.obj
+ 0001:00002258       ??_R1A@?0A@A@CWinApp@@8    01003258     mct96.obj
+ 0001:00002270       ??_R1A@?0A@A@CMct96App@@8  01003270     mct96.obj
+ 0001:00002288       ??_R2CMct96App@@8          01003288     mct96.obj
+ 0001:000022a0       ??_R3CMct96App@@8          010032a0     mct96.obj
+ 0001:000022b0       ??_R4CMct96App@@6B@        010032b0     mct96.obj
+ 0001:000022c8       ??_R1A@?0A@A@CAboutDlg@@8  010032c8     mct96.obj
+ 0001:000022e0       ??_R2CAboutDlg@@8          010032e0     mct96.obj
+ 0001:000022f8       ??_R3CAboutDlg@@8          010032f8     mct96.obj
+ 0001:00002308       ??_R4CAboutDlg@@6B@        01003308     mct96.obj
+ 0001:00002320       ??_R1A@?0A@A@CDocument@@8  01003320     mct96doc.obj
+ 0001:00002338       ??_R1A@?0A@A@CMct96Doc@@8  01003338     mct96doc.obj
+ 0001:00002350       ??_R2CMct96Doc@@8          01003350     mct96doc.obj
+ 0001:00002368       ??_R3CMct96Doc@@8          01003368     mct96doc.obj
+ 0001:00002378       ??_R4CMct96Doc@@6B@        01003378     mct96doc.obj
+ 0001:00002390       ??_R1A@?0A@A@CView@@8      01003390     mct96v.obj
+ 0001:000023a8       ??_R1A@?0A@A@CMct96View@@8 010033a8     mct96v.obj
+ 0001:000023c0       ??_R2CMct96View@@8         010033c0     mct96v.obj
+ 0001:000023d8       ??_R3CMct96View@@8         010033d8     mct96v.obj
+ 0001:000023e8       ??_R4CMct96View@@6B@       010033e8     mct96v.obj
+ 0001:00002400       ??_R1A@?0A@A@Params2@@8    01003400     params2.obj
+ 0001:00002418       ??_R2Params2@@8            01003418     params2.obj
+ 0001:00002430       ??_R3Params2@@8            01003430     params2.obj
+ 0001:00002440       ??_R4Params2@@6B@          01003440     params2.obj
+ 0001:00002458       ??_R1A@?0A@A@CButton@@8    01003458     params2.obj
+ 0001:00002470       ??_R2CButton@@8            01003470     params2.obj
+ 0001:00002488       ??_R3CButton@@8            01003488     params2.obj
+ 0001:00002498       ??_R4CButton@@6B@          01003498     params2.obj
+ 0001:000024b0       ??_R1A@?0A@A@CTestResults@@8 010034b0     testres.obj
+ 0001:000024c8       ??_R2CTestResults@@8       010034c8     testres.obj
+ 0001:000024e0       ??_R3CTestResults@@8       010034e0     testres.obj
+ 0001:000024f0       ??_R4CTestResults@@6B@     010034f0     testres.obj
+ 0001:00002508       ??_R1A@?0A@A@type_info@@8  01003508     msvcrt:ti_inst.obj
+ 0001:00002520       ??_R2type_info@@8          01003520     msvcrt:ti_inst.obj
+ 0001:00002528       ??_R3type_info@@8          01003528     msvcrt:ti_inst.obj
+ 0001:00002538       ??_R4type_info@@6B@        01003538     msvcrt:ti_inst.obj
+ 0001:00002550       ??0CAbortDlg@@QAE@PAVCWnd@@@Z 01003550 f   abortdlg.obj
+ 0001:00002580       ?AssertValid@CObject@@UBEXXZ 01003580 f i abortdlg.obj
+ 0001:00002590       ?BeginModalState@CWnd@@UAEXXZ 01003590 f i abortdlg.obj
+ 0001:000025b0       ?EndModalState@CWnd@@UAEXXZ 010035b0 f i abortdlg.obj
+ 0001:000025d0       ??3CObject@@SGXPAX@Z       010035d0 f i abortdlg.obj
+ 0001:000025f0       ?DoDataExchange@CChooseModem@@MAEXPAVCDataExchange@@@Z 010035f0 f   abortdlg.obj
+ 0001:000025f0       ?DoDataExchange@CAbortDlg@@MAEXPAVCDataExchange@@@Z 010035f0 f   abortdlg.obj
+ 0001:000025f0       ?DoDataExchange@CTestResults@@MAEXPAVCDataExchange@@@Z 010035f0 f   abortdlg.obj
+ 0001:00002610       ?Serialize@CObject@@UAEXAAVCArchive@@@Z 01003610 f i abortdlg.obj
+ 0001:00002610       ?DoDataExchange@CWnd@@MAEXPAVCDataExchange@@@Z 01003610 f i abortdlg.obj
+ 0001:00002610       ?Dump@CObject@@UBEXAAVCDumpContext@@@Z 01003610 f i abortdlg.obj
+ 0001:00002620       ?GetMessageMap@CAbortDlg@@MBEPBUAFX_MSGMAP@@XZ 01003620 f   abortdlg.obj
+ 0001:00002630       ?OnOK@CAbortDlg@@MAEXXZ    01003630 f   abortdlg.obj
+ 0001:00002650       ?PostNcDestroy@CAbortDlg@@MAEXXZ 01003650 f   abortdlg.obj
+ 0001:00002670       ??0chngnum@@QAE@PAVCWnd@@@Z 01003670 f   chngnum.obj
+ 0001:00002730       ??_Echngnum@@UAEPAXI@Z     01003730 f i chngnum.obj
+ 0001:00002730       ??_Gchngnum@@UAEPAXI@Z     01003730 f i chngnum.obj
+ 0001:00002760       ??1chngnum@@UAE@XZ         01003760 f i chngnum.obj
+ 0001:000027d0       ?DoDataExchange@chngnum@@MAEXPAVCDataExchange@@@Z 010037d0 f   chngnum.obj
+ 0001:00002860       ?GetMessageMap@chngnum@@MBEPBUAFX_MSGMAP@@XZ 01003860 f   chngnum.obj
+ 0001:00002870       ?OnCommand@chngnum@@MAEHIJ@Z 01003870 f   chngnum.obj
+ 0001:000029d0       ??8@YG_NABVCString@@PBD@Z  010039d0 f i chngnum.obj
+ 0001:000029f0       ?Compare@CString@@QBEHPBD@Z 010039f0 f i chngnum.obj
+ 0001:00002a10       __tcscmp@8                 01003a10 f i chngnum.obj
+ 0001:00002a30       ?GotoDlgCtrl@CDialog@@QAEXPAVCWnd@@@Z 01003a30 f i chngnum.obj
+ 0001:00002a60       ?OnInitDialog@chngnum@@MAEHXZ 01003a60 f   chngnum.obj
+ 0001:00002ae0       ??0CChooseModem@@QAE@PAVCWnd@@@Z 01003ae0 f   choosem.obj
+ 0001:00002b10       ??_ECChooseModem@@UAEPAXI@Z 01003b10 f i choosem.obj
+ 0001:00002b10       ??_GCAbortDlg@@UAEPAXI@Z   01003b10 f i choosem.obj
+ 0001:00002b10       ??_ECAbortDlg@@UAEPAXI@Z   01003b10 f i choosem.obj
+ 0001:00002b10       ??_ECTestResults@@UAEPAXI@Z 01003b10 f i choosem.obj
+ 0001:00002b10       ??_GCChooseModem@@UAEPAXI@Z 01003b10 f i choosem.obj
+ 0001:00002b10       ??_GCTestResults@@UAEPAXI@Z 01003b10 f i choosem.obj
+ 0001:00002b40       ?GetMessageMap@CChooseModem@@MBEPBUAFX_MSGMAP@@XZ 01003b40 f   choosem.obj
+ 0001:00002b50       ?OnInitDialog@CChooseModem@@MAEHXZ 01003b50 f   choosem.obj
+ 0001:00002dd0       ?SetForegroundWindow@CWnd@@QAEHXZ 01003dd0 f i choosem.obj
+ 0001:00002df0       ?SetCurSel@CComboBox@@QAEHH@Z 01003df0 f i choosem.obj
+ 0001:00002e20       ?SetItemData@CComboBox@@QAEHHK@Z 01003e20 f i choosem.obj
+ 0001:00002e50       ?AddString@CComboBox@@QAEHPBD@Z 01003e50 f i choosem.obj
+ 0001:00002e80       ?OnCommand@CChooseModem@@MAEHIJ@Z 01003e80 f   choosem.obj
+ 0001:00002fe0       ?GetCurSel@CComboBox@@QBEHXZ 01003fe0 f i choosem.obj
+ 0001:00003010       ?GetItemData@CComboBox@@QBEKH@Z 01004010 f i choosem.obj
+ 0001:00003040       ?GetLBText@CComboBox@@QBEHHPAD@Z 01004040 f i choosem.obj
+ 0001:00003070       ?GetLBTextLen@CComboBox@@QBEHH@Z 01004070 f i choosem.obj
+ 0001:000030a0       ?DataTransfer@@YGHXZ       010040a0 f   datatran.obj
+ 0001:00003480       ??BCString@@QBEPBDXZ       01004480 f i datatran.obj
+ 0001:00003480       ?Status@DataFilePackage@@QAEKXZ 01004480 f i datatran.obj
+ 0001:00003490       ?LengthPrefixed@DataFilePackage@@QAEXH@Z 01004490 f i datatran.obj
+ 0001:000034b0       ??_GDataFilePackage@@QAEPAXI@Z 010044b0 f i datatran.obj
+ 0001:000034e0       ??_GFileTransactor@@QAEPAXI@Z 010044e0 f i datatran.obj
+ 0001:00003510       ??0FileTransactor@@QAE@AAVDataFilePackage@@0@Z 01004510 f   datapack.obj
+ 0001:00003540       ??1FileTransactor@@QAE@XZ  01004540 f   datapack.obj
+ 0001:00003560       ?__Init@FileTransactor@@IAEXXZ 01004560 f   datapack.obj
+ 0001:00003660       ?__Release@FileTransactor@@IAEXXZ 01004660 f   datapack.obj
+ 0001:000036a0       ?StatusCommError@FileTransactor@@QAEHPAX@Z 010046a0 f   datapack.obj
+ 0001:00003820       ?SetTimeouts@FileTransactor@@IAEHXZ 01004820 f   datapack.obj
+ 0001:000038e0       ?ReadData@FileTransactor@@IAEHXZ 010048e0 f   datapack.obj
+ 0001:00003aa0       ?ProcessInputData@FileTransactor@@IAEHXZ 01004aa0 f   datapack.obj
+ 0001:00003b30       ?WriteData@FileTransactor@@IAEHXZ 01004b30 f   datapack.obj
+ 0001:00003c80       ?ProcessOutputData@FileTransactor@@IAEHXZ 01004c80 f   datapack.obj
+ 0001:00003d60       ?ExchangeData@FileTransactor@@QAEHK@Z 01004d60 f   datapack.obj
+ 0001:00003d90       ?Reset@FileTransactor@@QAEXXZ 01004d90 f   datapack.obj
+ 0001:00003e10       ?TransferData@FileTransactor@@QAEHK@Z 01004e10 f   datapack.obj
+ 0001:000040e0       ?CheckCRC@FileTransactor@@QAEHXZ 010050e0 f   datapack.obj
+ 0001:00004110       ??0DataFilePackage@@QAE@PADH@Z 01005110 f   datapack.obj
+ 0001:00004130       ??1DataFilePackage@@QAE@XZ 01005130 f   datapack.obj
+ 0001:00004150       ?__Init@DataFilePackage@@IAEXPADH@Z 01005150 f   datapack.obj
+ 0001:00004340       ?__Release@DataFilePackage@@IAEXXZ 01005340 f   datapack.obj
+ 0001:00004390       ?StatusLastError@FileTransactor@@IAEHXZ 01005390 f   datapack.obj
+ 0001:00004390       ?StatusLastError@DataFilePackage@@IAEHXZ 01005390 f   datapack.obj
+ 0001:00004410       ?Generate@DataFilePackage@@QAEPAEXZ 01005410 f   datapack.obj
+ 0001:00004500       ?FillPacket@DataFilePackage@@IAEHPAEH@Z 01005500 f   datapack.obj
+ 0001:00004670       ?SetLength@DataFilePackage@@QAEXK@Z 01005670 f i datapack.obj
+ 0001:00004690       ?Reset@DataFilePackage@@QAEXXZ 01005690 f   datapack.obj
+ 0001:000046d0       ?BytesToRead@DataFilePackage@@QAEKXZ 010056d0 f   datapack.obj
+ 0001:000046f0       ?SpeakerVolumeTest@@YGJK@Z 010056f0 f   intdata.obj
+ 0001:000049a0       ?SpeakerVolumeProc@@YGHPAUHWND__@@IIJ@Z 010059a0 f   intdata.obj
+ 0001:00004a50       ?SpeakerModeTest@@YGJK@Z   01005a50 f   intdata.obj
+ 0001:00004cd0       ?SpeakerModeProc@@YGHPAUHWND__@@IIJ@Z 01005cd0 f   intdata.obj
+ 0001:00004d80       ?SetSpeakerVolume@@YGHPAVLine@@KK@Z 01005d80 f   intdata.obj
+ 0001:00004ec0       ?SetSpeakerMode@@YGHPAVLine@@KK@Z 01005ec0 f   intdata.obj
+ 0001:00005020       ?TonePulseTest@@YGJK@Z     01006020 f   intdata.obj
+ 0001:00005410       ?TonePulseProc@@YGHPAUHWND__@@IIJ@Z 01006410 f   intdata.obj
+ 0001:000054c0       ?BlindDialTest@@YGJK@Z     010064c0 f   intdata.obj
+ 0001:000056f0       ?BlindDialProc@@YGHPAUHWND__@@IIJ@Z 010066f0 f   intdata.obj
+ 0001:000057a0       ?ExtendedProtocolProc@@YGHPAUHWND__@@IIJ@Z 010067a0 f   intdata.obj
+ 0001:00005860       ?ProtocolHangupProc@@YGHPAUHWND__@@IIJ@Z 01006860 f   intdata.obj
+ 0001:00005970       ?ExtendedProtocolTest@@YGJK@Z 01006970 f   intdata.obj
+ 0001:00005a70       ?FillProtocolList@@YGHPAUHWND__@@@Z 01006a70 f   intdata.obj
+ 0001:00005c00       ?ConnectSelectedProtocol@@YGHPAUHWND__@@@Z 01006c00 f   intdata.obj
+ 0001:00005fc0       ?OriginalVolumeAndMode@@YGHH@Z 01006fc0 f   intdata.obj
+ 0001:00006180       ?CallsetupTimeoutTest@@YGJK@Z 01007180 f   intdata.obj
+ 0001:00006840       ?CallsetupTimeoutProc@@YGHPAUHWND__@@IIJ@Z 01007840 f   intdata.obj
+ 0001:000068f0       ?InitLogging@@YGHPAD@Z     010078f0 f   logging.obj
+ 0001:00006a90       ?CloseLogging@@YGHXZ       01007a90 f   logging.obj
+ 0001:00006ad0       ?WriteToLog@@YAXHPADZZ     01007ad0 f   logging.obj
+ 0001:00006bd0       ?AddToResults@@YGHPAD0@Z   01007bd0 f   logging.obj
+ 0001:00006bf0       ?AddToProperties@@YGHPAVCTestResults@@PADH@Z 01007bf0 f   logging.obj
+ 0001:00006c30       ?WriteTapiError@@YGXPADJ@Z 01007c30 f   logging.obj
+ 0001:00006c60       ?WriteToWindow@@YGHPAD@Z   01007c60 f   logging.obj
+ 0001:00006cc0       ?ReplaceSel@CEdit@@QAEXPBDH@Z 01007cc0 f i logging.obj
+ 0001:00006cf0       ?SetSel@CEdit@@QAEXHHH@Z   01007cf0 f i logging.obj
+ 0001:00006d40       ?FormatTime@@YGPADK@Z      01007d40 f   logging.obj
+ 0001:00006e40       ?CreateObject@CMainFrame@@SGPAVCObject@@XZ 01007e40 f   mainfrm.obj
+ 0001:00006eb0       ??2CObject@@SGPAXI@Z       01007eb0 f i mainfrm.obj
+ 0001:00006ed0       ?_GetBaseClass@CMainFrame@@KGPAUCRuntimeClass@@XZ 01007ed0 f   mainfrm.obj
+ 0001:00006ee0       ?GetRuntimeClass@CMainFrame@@UBEPAUCRuntimeClass@@XZ 01007ee0 f   mainfrm.obj
+ 0001:00006ef0       ?_GetBaseMessageMap@CMainFrame@@KGPBUAFX_MSGMAP@@XZ 01007ef0 f   mainfrm.obj
+ 0001:00006f00       ?GetMessageMap@CMainFrame@@MBEPBUAFX_MSGMAP@@XZ 01007f00 f   mainfrm.obj
+ 0001:00006f10       ??0CMainFrame@@IAE@XZ      01007f10 f   mainfrm.obj
+ 0001:00006f80       ??_GCMainFrame@@UAEPAXI@Z  01007f80 f i mainfrm.obj
+ 0001:00006f80       ??_ECMainFrame@@UAEPAXI@Z  01007f80 f i mainfrm.obj
+ 0001:00006fb0       ??1CMainFrame@@UAE@XZ      01007fb0 f   mainfrm.obj
+ 0001:00007020       ?OnCreate@CMainFrame@@IAEHPAUtagCREATESTRUCTA@@@Z 01008020 f   mainfrm.obj
+ 0001:00007090       ?OnViewModemProperties@CMainFrame@@IAEXXZ 01008090 f   mainfrm.obj
+ 0001:00007110       ?CheckMenuItem@CMenu@@QAEIII@Z 01008110 f i mainfrm.obj
+ 0001:00007140       ?GetMenuState@CMenu@@QBEIII@Z 01008140 f i mainfrm.obj
+ 0001:00007170       ?GetSubMenu@CMenu@@QBEPAV1@H@Z 01008170 f i mainfrm.obj
+ 0001:000071a0       ?GetMenu@CWnd@@QBEPAVCMenu@@XZ 010081a0 f i mainfrm.obj
+ 0001:000071c0       ?OnViewTestResults@CMainFrame@@IAEXXZ 010081c0 f   mainfrm.obj
+ 0001:00007240       ?OnTestCompression@CMainFrame@@IAEXXZ 01008240 f   mainfrm.obj
+ 0001:00007270       ?OnTestSpeedTest@CMainFrame@@IAEXXZ 01008270 f   mainfrm.obj
+ 0001:000072a0       ?OnTestSendFile@CMainFrame@@IAEXXZ 010082a0 f   mainfrm.obj
+ 0001:000072d0       ?OnTestErrorControl@CMainFrame@@IAEXXZ 010082d0 f   mainfrm.obj
+ 0001:00007300       ?OnTestTonedial@CMainFrame@@IAEXXZ 01008300 f   mainfrm.obj
+ 0001:00007340       ?OnTestSpeedadjust@CMainFrame@@IAEXXZ 01008340 f   mainfrm.obj
+ 0001:00007380       ?OnTestForcederrorcontrol@CMainFrame@@IAEXXZ 01008380 f   mainfrm.obj
+ 0001:000073b0       ?OnTestFlowcontrolsoft@CMainFrame@@IAEXXZ 010083b0 f   mainfrm.obj
+ 0001:000073e0       ?OnTestFlowcontrolhard@CMainFrame@@IAEXXZ 010083e0 f   mainfrm.obj
+ 0001:00007410       ?OnTestCellular@CMainFrame@@IAEXXZ 01008410 f   mainfrm.obj
+ 0001:00007440       ?OnTestCcittoverride@CMainFrame@@IAEXXZ 01008440 f   mainfrm.obj
+ 0001:00007470       ?OnTestBlinddial@CMainFrame@@IAEXXZ 01008470 f   mainfrm.obj
+ 0001:000074b0       ?OnTestV23@CMainFrame@@IAEXXZ 010084b0 f   mainfrm.obj
+ 0001:000074f0       ?OnTestCellularSpeed@CMainFrame@@IAEXXZ 010084f0 f   mainfrm.obj
+ 0001:00007520       ?OnInitMenuPopup@CMainFrame@@IAEXPAVCMenu@@IH@Z 01008520 f   mainfrm.obj
+ 0001:000075c0       ?EnableDataModemMenu@@YGXPAVCMenu@@@Z 010085c0 f   mainfrm.obj
+ 0001:00007960       ?EnableMenuItem@CMenu@@QAEIII@Z 01008960 f i mainfrm.obj
+ 0001:00007990       ?EnableInteractiveDataMenu@@YGXPAVCMenu@@@Z 01008990 f   mainfrm.obj
+ 0001:00007a80       ?EnableVoiceModemMenu@@YGXPAVCMenu@@@Z 01008a80 f   mainfrm.obj
+ 0001:00007bc0       ?EnableFileMenu@@YGXPAVCMenu@@@Z 01008bc0 f   mainfrm.obj
+ 0001:00007bf0       ?OnVoicemodemtestsGeneratedigits@CMainFrame@@IAEXXZ 01008bf0 f   mainfrm.obj
+ 0001:00007c20       ?OnVoicemodemtestsHandsetaudio@CMainFrame@@IAEXXZ 01008c20 f   mainfrm.obj
+ 0001:00007c50       ?OnVoicemodemtestsHandsethookswitch@CMainFrame@@IAEXXZ 01008c50 f   mainfrm.obj
+ 0001:00007c80       ?OnVoicemodemtestsLineaudio@CMainFrame@@IAEXXZ 01008c80 f   mainfrm.obj
+ 0001:00007cb0       ?OnVoicemodemtestsMonitordigits@CMainFrame@@IAEXXZ 01008cb0 f   mainfrm.obj
+ 0001:00007ce0       ?OnVoicemodemtestsSpeakerphonehookswitch@CMainFrame@@IAEXXZ 01008ce0 f   mainfrm.obj
+ 0001:00007d10       ?OnVoicemodemtestsSpeakerphonevolumegain@CMainFrame@@IAEXXZ 01008d10 f   mainfrm.obj
+ 0001:00007d40       ?OnDatamodeminteractiveBlinddial@CMainFrame@@IAEXXZ 01008d40 f   mainfrm.obj
+ 0001:00007d70       ?OnDatamodeminteractiveCallsetupTimeout@CMainFrame@@IAEXXZ 01008d70 f   mainfrm.obj
+ 0001:00007da0       ?OnDatamodeminteractiveSpeakermode@CMainFrame@@IAEXXZ 01008da0 f   mainfrm.obj
+ 0001:00007dd0       ?OnDatamodeminteractiveSpeakervolume@CMainFrame@@IAEXXZ 01008dd0 f   mainfrm.obj
+ 0001:00007e00       ?OnDatamodeminteractiveTone@CMainFrame@@IAEXXZ 01008e00 f   mainfrm.obj
+ 0001:00007e30       ?OnDatamodeminteractiveExtendedProtocols@CMainFrame@@IAEXXZ 01008e30 f   mainfrm.obj
+ 0001:00007e60       ?OnDatamodemtestsAll@CMainFrame@@IAEXXZ 01008e60 f   mainfrm.obj
+ 0001:00007f20       ?Create@CDialog@@QAEHIPAVCWnd@@@Z 01008f20 f i mainfrm.obj
+ 0001:00007f50       ?OnFileChangephonenumbers@CMainFrame@@IAEXXZ 01008f50 f   mainfrm.obj
+ 0001:00007ff0       ?OnFileSettings@CMainFrame@@IAEXXZ 01008ff0 f   mainfrm.obj
+ 0001:000080b0       ??1Params2@@UAE@XZ         010090b0 f i mainfrm.obj
+ 0001:000081e0       ?OnTestInactivityTimer@CMainFrame@@QAEXXZ 010091e0 f   mainfrm.obj
+ 0001:00008210       ?OnTestInactivityTimerScale@CMainFrame@@IAEXXZ 01009210 f   mainfrm.obj
+ 0001:00008240       ?OnClose@CMainFrame@@IAEXXZ 01009240 f   mainfrm.obj
+ 0001:000085e0       ?AfxGetApp@@YGPAVCWinApp@@XZ 010095e0 f i mainfrm.obj
+ 0001:000085f0       ?FindWindowA@CWnd@@SGPAV1@PBD0@Z 010095f0 f i mainfrm.obj
+ 0001:00008610       ?ConvertRect@@YG?AVCString@@UtagRECT@@@Z 01009610 f   mainfrm.obj
+ 0001:00008940       ??1MCTGLOBALS@@QAE@XZ      01009940 f i mct96.obj
+ 0001:00008960       ??0MCTGLOBALS@@QAE@XZ      01009960 f i mct96.obj
+ 0001:00008980       ??0CEdit@@QAE@XZ           01009980 f i mct96.obj
+ 0001:000089a0       ??_ECEdit@@UAEPAXI@Z       010099a0 f i mct96.obj
+ 0001:000089a0       ??_GCEdit@@UAEPAXI@Z       010099a0 f i mct96.obj
+ 0001:000089d0       ?_GetBaseMessageMap@CMct96App@@KGPBUAFX_MSGMAP@@XZ 010099d0 f   mct96.obj
+ 0001:000089e0       ?GetMessageMap@CMct96App@@MBEPBUAFX_MSGMAP@@XZ 010099e0 f   mct96.obj
+ 0001:000089f0       ??0CMct96App@@QAE@XZ       010099f0 f   mct96.obj
+ 0001:00008a20       ??_GCMct96App@@UAEPAXI@Z   01009a20 f i mct96.obj
+ 0001:00008a20       ??_ECMct96App@@UAEPAXI@Z   01009a20 f i mct96.obj
+ 0001:00008a50       ??1CMct96App@@UAE@XZ       01009a50 f i mct96.obj
+ 0001:00008ac0       ?InitInstance@CMct96App@@UAEHXZ 01009ac0 f   mct96.obj
+ 0001:000096f0       ??9@YG_NABVCString@@PBD@Z  0100a6f0 f i mct96.obj
+ 0001:00009710       ?MoveWindow@CWnd@@QAEXPBUtagRECT@@H@Z 0100a710 f i mct96.obj
+ 0001:00009750       ??_GLine@@QAEPAXI@Z        0100a750 f i mct96.obj
+ 0001:00009780       ??0CAboutDlg@@QAE@XZ       0100a780 f   mct96.obj
+ 0001:00009810       ??_ECAboutDlg@@UAEPAXI@Z   0100a810 f i mct96.obj
+ 0001:00009810       ??_GCAboutDlg@@UAEPAXI@Z   0100a810 f i mct96.obj
+ 0001:00009840       ??1CAboutDlg@@UAE@XZ       0100a840 f i mct96.obj
+ 0001:000098a0       ?DoDataExchange@CAboutDlg@@MAEXPAVCDataExchange@@@Z 0100a8a0 f   mct96.obj
+ 0001:000098f0       ?GetMessageMap@CAboutDlg@@MBEPBUAFX_MSGMAP@@XZ 0100a8f0 f   mct96.obj
+ 0001:00009900       ?OnAppAbout@CMct96App@@QAEXXZ 0100a900 f   mct96.obj
+ 0001:00009b30       ?ExitInstance@CMct96App@@UAEHXZ 0100ab30 f   mct96.obj
+ 0001:00009cd0       ?RevertRect@@YGXPAUtagRECT@@VCString@@@Z 0100acd0 f   mct96.obj
+ 0001:00009f50       ?GetLength@CString@@QBEHXZ 0100af50 f i mct96.obj
+ 0001:00009f70       ?GetData@CString@@IBEPAUCStringData@@XZ 0100af70 f i mct96.obj
+ 0001:00009f90       ??ACString@@QBEDH@Z        0100af90 f i mct96.obj
+ 0001:00009f90       ?GetAt@CString@@QBEDH@Z    0100af90 f i mct96.obj
+ 0001:00009fb0       ?CreateObject@CMct96Doc@@SGPAVCObject@@XZ 0100afb0 f   mct96doc.obj
+ 0001:0000a020       ?_GetBaseClass@CMct96Doc@@KGPAUCRuntimeClass@@XZ 0100b020 f   mct96doc.obj
+ 0001:0000a030       ?GetRuntimeClass@CMct96Doc@@UBEPAUCRuntimeClass@@XZ 0100b030 f   mct96doc.obj
+ 0001:0000a040       ?_GetBaseMessageMap@CMct96Doc@@KGPBUAFX_MSGMAP@@XZ 0100b040 f   mct96doc.obj
+ 0001:0000a050       ?GetMessageMap@CMct96Doc@@MBEPBUAFX_MSGMAP@@XZ 0100b050 f   mct96doc.obj
+ 0001:0000a060       ??0CMct96Doc@@IAE@XZ       0100b060 f   mct96doc.obj
+ 0001:0000a080       ?IsModified@CDocument@@UAEHXZ 0100b080 f i mct96doc.obj
+ 0001:0000a0a0       ?SetModifiedFlag@CDocument@@UAEXH@Z 0100b0a0 f i mct96doc.obj
+ 0001:0000a0c0       ??_ECMct96Doc@@UAEPAXI@Z   0100b0c0 f i mct96doc.obj
+ 0001:0000a0c0       ??_GCMct96Doc@@UAEPAXI@Z   0100b0c0 f i mct96doc.obj
+ 0001:0000a0f0       ??1CMct96Doc@@UAE@XZ       0100b0f0 f   mct96doc.obj
+ 0001:0000a110       ?OnNewDocument@CMct96Doc@@UAEHXZ 0100b110 f   mct96doc.obj
+ 0001:0000a130       ?Serialize@CMct96Doc@@UAEXAAVCArchive@@@Z 0100b130 f   mct96doc.obj
+ 0001:0000a150       ?IsStoring@CArchive@@QBEHXZ 0100b150 f i mct96doc.obj
+ 0001:0000a170       ?CreateObject@CMct96View@@SGPAVCObject@@XZ 0100b170 f   mct96v.obj
+ 0001:0000a1e0       ?_GetBaseClass@CMct96View@@KGPAUCRuntimeClass@@XZ 0100b1e0 f   mct96v.obj
+ 0001:0000a1f0       ?GetRuntimeClass@CMct96View@@UBEPAUCRuntimeClass@@XZ 0100b1f0 f   mct96v.obj
+ 0001:0000a200       ?_GetBaseMessageMap@CMct96View@@KGPBUAFX_MSGMAP@@XZ 0100b200 f   mct96v.obj
+ 0001:0000a210       ?GetMessageMap@CMct96View@@MBEPBUAFX_MSGMAP@@XZ 0100b210 f   mct96v.obj
+ 0001:0000a220       ??0CMct96View@@IAE@XZ      0100b220 f   mct96v.obj
+ 0001:0000a250       ??_GCMct96View@@UAEPAXI@Z  0100b250 f i mct96v.obj
+ 0001:0000a250       ??_ECMct96View@@UAEPAXI@Z  0100b250 f i mct96v.obj
+ 0001:0000a280       ??1CMct96View@@UAE@XZ      0100b280 f   mct96v.obj
+ 0001:0000a2a0       ?PreCreateWindow@CMct96View@@UAEHAAUtagCREATESTRUCTA@@@Z 0100b2a0 f   mct96v.obj
+ 0001:0000a2c0       ?OnDraw@CMct96View@@UAEXPAVCDC@@@Z 0100b2c0 f   mct96v.obj
+ 0001:0000a2e0       ?GetDocument@CMct96View@@QAEPAVCMct96Doc@@XZ 0100b2e0 f i mct96v.obj
+ 0001:0000a2e0       ?DataLength@DataFilePackage@@QAEKXZ 0100b2e0 f i mct96v.obj
+ 0001:0000a300       ?OnCreate@CMct96View@@IAEHPAUtagCREATESTRUCTA@@@Z 0100b300 f   mct96v.obj
+ 0001:0000a370       ?OnSize@CMct96View@@IAEXIHH@Z 0100b370 f   mct96v.obj
+ 0001:0000a3c0       ?GetClientRect@CWnd@@QBEXPAUtagRECT@@@Z 0100b3c0 f i mct96v.obj
+ 0001:0000a3e0       ??0Params2@@QAE@PAVCWnd@@@Z 0100b3e0 f   params2.obj
+ 0001:0000a5b0       ??0CButton@@QAE@XZ         0100b5b0 f i params2.obj
+ 0001:0000a5d0       ??_GCButton@@UAEPAXI@Z     0100b5d0 f i params2.obj
+ 0001:0000a5d0       ??_ECButton@@UAEPAXI@Z     0100b5d0 f i params2.obj
+ 0001:0000a600       ??_GParams2@@UAEPAXI@Z     0100b600 f i params2.obj
+ 0001:0000a600       ??_EParams2@@UAEPAXI@Z     0100b600 f i params2.obj
+ 0001:0000a630       ?DoDataExchange@Params2@@MAEXPAVCDataExchange@@@Z 0100b630 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@CChooseModem@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@chngnum@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@Params2@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@CAboutDlg@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@CAbortDlg@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a840       ?_GetBaseMessageMap@CTestResults@@KGPBUAFX_MSGMAP@@XZ 0100b840 f   params2.obj
+ 0001:0000a850       ?GetMessageMap@Params2@@MBEPBUAFX_MSGMAP@@XZ 0100b850 f   params2.obj
+ 0001:0000a860       ?OnInitDialog@Params2@@MAEHXZ 0100b860 f   params2.obj
+ 0001:0000b240       ?SetCheck@CButton@@QAEXH@Z 0100c240 f i params2.obj
+ 0001:0000b270       ?OnEnableLogging@Params2@@IAEXXZ 0100c270 f   params2.obj
+ 0001:0000b320       ?GetCheck@CButton@@QBEHXZ  0100c320 f i params2.obj
+ 0001:0000b350       ?OnOK@Params2@@MAEXXZ      0100c350 f   params2.obj
+ 0001:0000bb30       ?InitTapi@@YGHXZ           0100cb30 f   tapi.obj
+ 0001:0000bd20       ?CloseTapi@@YGHXZ          0100cd20 f   tapi.obj
+ 0001:0000bdc0       ?LocalCallbackFunc@@YGXKKKKKK@Z 0100cdc0 f   tapi.obj
+ 0001:0000bed0       ?RemoteCallbackFunc@@YGXKKKKKK@Z 0100ced0 f   tapi.obj
+ 0001:0000bf90       ?HandleLocalLineDevState@@YGXKKK@Z 0100cf90 f   tapi.obj
+ 0001:0000bfa0       ?HandleLocalLineReply@@YGXKKK@Z 0100cfa0 f   tapi.obj
+ 0001:0000bfe0       ?HandleLocalLineCallState@@YGXKKKK@Z 0100cfe0 f   tapi.obj
+ 0001:0000c110       ?HandleLocalLineClose@@YGXKKK@Z 0100d110 f   tapi.obj
+ 0001:0000c130       ?HandleLocalMonitorDigits@@YGXKKK@Z 0100d130 f   tapi.obj
+ 0001:0000c160       ?HandleRemoteLineCallInfo@@YGXKKK@Z 0100d160 f   tapi.obj
+ 0001:0000c160       ?HandleRemoteLineDevState@@YGXKKK@Z 0100d160 f   tapi.obj
+ 0001:0000c160       ?HandleLocalLineCallInfo@@YGXKKK@Z 0100d160 f   tapi.obj
+ 0001:0000c160       ?HandleLocalPhoneState@@YGXKKK@Z 0100d160 f   tapi.obj
+ 0001:0000c170       ?HandleRemoteLineReply@@YGXKKK@Z 0100d170 f   tapi.obj
+ 0001:0000c1b0       ?HandleRemoteLineCallState@@YGXKKKK@Z 0100d1b0 f   tapi.obj
+ 0001:0000c2e0       ?HandleRemoteLineClose@@YGXKKK@Z 0100d2e0 f   tapi.obj
+ 0001:0000c300       ?MakeCall@@YGHPAULineInfo@@0PAD@Z 0100d300 f   tapi.obj
+ 0001:0000c470       ?DropCall@@YGHXZ           0100d470 f   tapi.obj
+ 0001:0000c5a0       ?GetModemRegistryValue@@YGHPAULineInfo@@PADPAKPAE2@Z 0100d5a0 f   tapi.obj
+ 0001:0000c710       ?MapLocalPhoneDevice@@YGHK@Z 0100d710 f   tapi.obj
+ 0001:0000c850       ?MapProtocolString@@YGPBDK@Z 0100d850 f   tapi.obj
+ 0001:0000c8a0       ?HasProtocolSupport@@YGHPAVLine@@K@Z 0100d8a0 f   tapi.obj
+ 0001:0000c9b0       ?ReportCommProperties@@YGHPAX@Z 0100d9b0 f   tapi.obj
+ 0001:0000ce30       ?InitVoiceTapi@@YGHXZ      0100de30 f   tapi.obj
+ 0001:0000d220       ?LineGetID@@YGPAUvarstring_tag@@PAVLine@@KKKKPBD@Z 0100e220 f   tapi.obj
+ 0001:0000d2e0       ?LineGetDevCaps@@YGPAUlinedevcaps_tag@@PAVLine@@KK@Z 0100e2e0 f   tapi.obj
+ 0001:0000d3a0       ?PhoneGetDevCaps@@YGPAUphonecaps_tag@@PAVLine@@KK@Z 0100e3a0 f   tapi.obj
+ 0001:0000d440       ?PhoneGetID@@YGPAUvarstring_tag@@PAVLine@@KPBD@Z 0100e440 f   tapi.obj
+ 0001:0000d4e0       ??0CTestResults@@QAE@PAVCWnd@@@Z 0100e4e0 f   testres.obj
+ 0001:0000d510       ??1CAbortDlg@@UAE@XZ       0100e510 f i testres.obj
+ 0001:0000d510       ??1CTestResults@@UAE@XZ    0100e510 f i testres.obj
+ 0001:0000d510       ??1CChooseModem@@UAE@XZ    0100e510 f i testres.obj
+ 0001:0000d530       ?GetMessageMap@CTestResults@@MBEPBUAFX_MSGMAP@@XZ 0100e530 f   testres.obj
+ 0001:0000d540       ?OnSize@CTestResults@@IAEXIHH@Z 0100e540 f   testres.obj
+ 0001:0000d570       ?OnMouseMove@CTestResults@@IAEXIVCPoint@@@Z 0100e570 f   testres.obj
+ 0001:0000d5b0       ?OnLButtonDown@CTestResults@@IAEXIVCPoint@@@Z 0100e5b0 f   testres.obj
+ 0001:0000d5f0       ?SetCapture@CWnd@@QAEPAV1@XZ 0100e5f0 f i testres.obj
+ 0001:0000d610       ?OnLButtonUp@CWnd@@IAEXIVCPoint@@@Z 0100e610 f i testres.obj
+ 0001:0000d610       ?OnMouseMove@CWnd@@IAEXIVCPoint@@@Z 0100e610 f i testres.obj
+ 0001:0000d610       ?OnLButtonDown@CWnd@@IAEXIVCPoint@@@Z 0100e610 f i testres.obj
+ 0001:0000d610       ?OnSize@CWnd@@IAEXIHH@Z    0100e610 f i testres.obj
+ 0001:0000d630       ?OnLButtonUp@CTestResults@@IAEXIVCPoint@@@Z 0100e630 f   testres.obj
+ 0001:0000d6b0       ?InvalidateRect@CWnd@@QAEXPBUtagRECT@@H@Z 0100e6b0 f i testres.obj
+ 0001:0000d6e0       ?ResizeWindows@CTestResults@@AAEHHG@Z 0100e6e0 f   testres.obj
+ 0001:0000d830       ?OnCreate@CTestResults@@IAEHPAUtagCREATESTRUCTA@@@Z 0100e830 f   testres.obj
+ 0001:0000d880       ?OnCreate@CWnd@@IAEHPAUtagCREATESTRUCTA@@@Z 0100e880 f i testres.obj
+ 0001:0000d8a0       ?AddResult@CTestResults@@QAEHPAD0@Z 0100e8a0 f   testres.obj
+ 0001:0000d940       ?FindStringExact@CListBox@@QBEHHPBD@Z 0100e940 f i testres.obj
+ 0001:0000d970       ?AddString@CListBox@@QAEHPBD@Z 0100e970 f i testres.obj
+ 0001:0000d9a0       ?DeleteString@CListBox@@QAEHI@Z 0100e9a0 f i testres.obj
+ 0001:0000d9d0       ?InsertString@CListBox@@QAEHHPBD@Z 0100e9d0 f i testres.obj
+ 0001:0000da00       ?OnInitDialog@CTestResults@@MAEHXZ 0100ea00 f   testres.obj
+ 0001:0000da30       ?OnCommand@CTestResults@@MAEHIJ@Z 0100ea30 f   testres.obj
+ 0001:0000da70       ?StartSendFileTest@@YGJXZ  0100ea70 f   tests.obj
+ 0001:0000da90       ?MyStartSendFileTest@@YGJXZ 0100ea90 f   tests.obj
+ 0001:0000dc30       ?CellularSpeedTest@@YGJXZ  0100ec30 f   tests.obj
+ 0001:0000dc50       ?MyCellularSpeedTest@@YGJXZ 0100ec50 f   tests.obj
+ 0001:0000de50       ?StartSpeedTest@@YGJXZ     0100ee50 f   tests.obj
+ 0001:0000de70       ?MyStartSpeedTest@@YGJXZ   0100ee70 f   tests.obj
+ 0001:0000e010       ?OriginalBits@@YGXH@Z      0100f010 f   tests.obj
+ 0001:0000e1b0       ?SetPreferred@@YGHPAVLine@@KHK@Z 0100f1b0 f   tests.obj
+ 0001:0000e580       ?GetNegotiated@@YGHPAVLine@@KKHPAH@Z 0100f580 f   tests.obj
+ 0001:0000e690       ?GetSpeed@@YGHPAVLine@@PAXPAK@Z 0100f690 f   tests.obj
+ 0001:0000e720       ?SpeedTest@@YGHK@Z         0100f720 f   tests.obj
+ 0001:0000e860       ?MyModemOptionsTest@@YGJK@Z 0100f860 f   tests.obj
+ 0001:0000f560       ?SetBaud@@YGHPAVLine@@KK@Z 01010560 f   tests.obj
+ 0001:0000f640       ?GetBaud@@YGHPAVLine@@KPAK@Z 01010640 f   tests.obj
+ 0001:0000f720       ?GetTestName@@YGXKPAD@Z    01010720 f   tests.obj
+ 0001:0000f8a0       ?AllAutomatedTest@@YGJK@Z  010108a0 f   tests.obj
+ 0001:0000fbf0       ?ModemOptionsTest@@YGJK@Z  01010bf0 f   tests.obj
+ 0001:0000fc20       ?SpeedAdjustTest@@YGJK@Z   01010c20 f   tests.obj
+ 0001:0000fc50       ?MySpeedAdjustTest@@YGJK@Z 01010c50 f   tests.obj
+ 0001:00010170       ?MyForcedErrorControlTest@@YGJXZ 01011170 f   tests.obj
+ 0001:00010490       ?ForcedErrorControlTest@@YGJXZ 01011490 f   tests.obj
+ 0001:000104b0       ?InactivityTimerTest@@YGJXZ 010114b0 f   tests.obj
+ 0001:000104d0       ?WaitToDisconnect@@YGKK@Z  010114d0 f   tests.obj
+ 0001:00010600       ?MyInactivityTimerTest@@YGJXZ 01011600 f   tests.obj
+ 0001:00010f60       ?InactivityTimerScaleTest@@YGJXZ 01011f60 f   tests.obj
+ 0001:00010f80       ?MyInactivityTimerScaleTest@@YGJXZ 01011f80 f   tests.obj
+ 0001:000112c0       ?GenerateDigitsTest@@YGJK@Z 010122c0 f   vtests.obj
+ 0001:00011380       ?MonitorDigitsTest@@YGJK@Z 01012380 f   vtests.obj
+ 0001:00011440       ?HandsetHookswitchTest@@YGJK@Z 01012440 f   vtests.obj
+ 0001:00011530       ?SpeakerphoneHookswitchTest@@YGJK@Z 01012530 f   vtests.obj
+ 0001:00011910       ?SpeakerphoneVolumeGainTest@@YGJK@Z 01012910 f   vtests.obj
+ 0001:00011d40       ?GenerateDigitsProc@@YGHPAUHWND__@@IIJ@Z 01012d40 f   vtests.obj
+ 0001:00011ed0       ?MonitorDigitsProc@@YGHPAUHWND__@@IIJ@Z 01012ed0 f   vtests.obj
+ 0001:00012150       ?HandsetHookswitchProc@@YGHPAUHWND__@@IIJ@Z 01013150 f   vtests.obj
+ 0001:00012350       ?SpeakerphoneHookswitchProc@@YGHPAUHWND__@@IIJ@Z 01013350 f   vtests.obj
+ 0001:00012400       ?SpeakerphoneVolGainProc@@YGHPAUHWND__@@IIJ@Z 01013400 f   vtests.obj
+ 0001:000124b0       ?MakeVoiceCall@@YGHXZ      010134b0 f   vtests.obj
+ 0001:00012590       ?DropVoiceCall@@YGHXZ      01013590 f   vtests.obj
+ 0001:00012640       ?GenerateDigits@@YGHXZ     01013640 f   vtests.obj
+ 0001:00012690       ?InitVoiceTapiTest@@YGHXZ  01013690 f   vtests.obj
+ 0001:00012700       ?CloseVoiceTapi@@YGHXZ     01013700 f   vtests.obj
+ 0001:00012720       ?MonitorDigits@@YGHH@Z     01013720 f   vtests.obj
+ 0001:00012770       ?SetStaticText@@YGHPAUHWND__@@I@Z 01013770 f   vtests.obj
+ 0001:00012820       ?InitPhoneTapi@@YGHXZ      01013820 f   vtests.obj
+ 0001:000128f0       ?ClosePhoneTapi@@YGHXZ     010138f0 f   vtests.obj
+ 0001:00012910       ?HandsetAudioTest@@YGJK@Z  01013910 f   vtests.obj
+ 0001:000130d0       ?HandsetAudioProc@@YGHPAUHWND__@@IIJ@Z 010140d0 f   vtests.obj
+ 0001:00013180       ?LineAudioTest@@YGJK@Z     01014180 f   vtests.obj
+ 0001:000138d0       ?LineAudioProc@@YGHPAUHWND__@@IIJ@Z 010148d0 f   vtests.obj
+ 0001:00013980       ?PreInitDialog@CDialog@@MAEXXZ 01014980 f   mfc42:MFC42.DLL
+ 0001:00013986       ?OnCancel@CDialog@@MAEXXZ  01014986 f   mfc42:MFC42.DLL
+ 0001:0001398c       ?OnSetFont@CDialog@@UAEXPAVCFont@@@Z 0101498c f   mfc42:MFC42.DLL
+ 0001:00013992       ?OnInitDialog@CDialog@@UAEHXZ 01014992 f   mfc42:MFC42.DLL
+ 0001:00013998       ?DoModal@CDialog@@UAEHXZ   01014998 f   mfc42:MFC42.DLL
+ 0001:0001399e       ?SetOccDialogInfo@CDialog@@MAEHPAU_AFX_OCC_DIALOG_INFO@@@Z 0101499e f   mfc42:MFC42.DLL
+ 0001:000139a4       ?IsFrameWnd@CWnd@@UBEHXZ   010149a4 f   mfc42:MFC42.DLL
+ 0001:000139aa       ?CheckAutoCenter@CDialog@@UAEHXZ 010149aa f   mfc42:MFC42.DLL
+ 0001:000139b0       ?OnChildNotify@CWnd@@MAEHIIJPAJ@Z 010149b0 f   mfc42:MFC42.DLL
+ 0001:000139b6       ?DefWindowProcA@CWnd@@MAEJIIJ@Z 010149b6 f   mfc42:MFC42.DLL
+ 0001:000139bc       ?OnWndMsg@CWnd@@MAEHIIJPAJ@Z 010149bc f   mfc42:MFC42.DLL
+ 0001:000139c2       ?WindowProc@CWnd@@MAEJIIJ@Z 010149c2 f   mfc42:MFC42.DLL
+ 0001:000139c8       ?OnAmbientProperty@CWnd@@UAEHPAVCOleControlSite@@JPAUtagVARIANT@@@Z 010149c8 f   mfc42:MFC42.DLL
+ 0001:000139ce       ?PreTranslateMessage@CDialog@@UAEHPAUtagMSG@@@Z 010149ce f   mfc42:MFC42.DLL
+ 0001:000139d4       ?GetSuperWndProcAddr@CWnd@@MAEPAP6GJPAUHWND__@@IIJ@ZXZ 010149d4 f   mfc42:MFC42.DLL
+ 0001:000139da       ?OnNotify@CWnd@@MAEHIJPAJ@Z 010149da f   mfc42:MFC42.DLL
+ 0001:000139e0       ?OnCommand@CWnd@@MAEHIJ@Z  010149e0 f   mfc42:MFC42.DLL
+ 0001:000139e6       ?EndModalLoop@CWnd@@UAEXH@Z 010149e6 f   mfc42:MFC42.DLL
+ 0001:000139ec       ?ContinueModal@CWnd@@UAEHXZ 010149ec f   mfc42:MFC42.DLL
+ 0001:000139f2       ?WinHelpA@CWnd@@UAEXKI@Z   010149f2 f   mfc42:MFC42.DLL
+ 0001:000139f8       ?GetScrollBarCtrl@CWnd@@UBEPAVCScrollBar@@H@Z 010149f8 f   mfc42:MFC42.DLL
+ 0001:000139fe       ?OnToolHitTest@CWnd@@UBEHVCPoint@@PAUtagTOOLINFOA@@@Z 010149fe f   mfc42:MFC42.DLL
+ 0001:00013a04       ?CalcWindowRect@CWnd@@UAEXPAUtagRECT@@I@Z 01014a04 f   mfc42:MFC42.DLL
+ 0001:00013a0a       ?PreCreateWindow@CWnd@@UAEHAAUtagCREATESTRUCTA@@@Z 01014a0a f   mfc42:MFC42.DLL
+ 0001:00013a10       ?DestroyWindow@CWnd@@UAEHXZ 01014a10 f   mfc42:MFC42.DLL
+ 0001:00013a16       ?Create@CWnd@@UAEHPBD0KABUtagRECT@@PAV1@IPAUCCreateContext@@@Z 01014a16 f   mfc42:MFC42.DLL
+ 0001:00013a1c       ?PreSubclassWindow@CWnd@@UAEXXZ 01014a1c f   mfc42:MFC42.DLL
+ 0001:00013a22       ?GetConnectionHook@CCmdTarget@@MAEPAUIConnectionPoint@@ABU_GUID@@@Z 01014a22 f   mfc42:MFC42.DLL
+ 0001:00013a28       ?GetExtraConnectionPoints@CCmdTarget@@MAEHPAVCPtrArray@@@Z 01014a28 f   mfc42:MFC42.DLL
+ 0001:00013a2e       ?GetInterfaceHook@CCmdTarget@@UAEPAUIUnknown@@PBX@Z 01014a2e f   mfc42:MFC42.DLL
+ 0001:00013a34       ?OnCreateAggregates@CCmdTarget@@UAEHXZ 01014a34 f   mfc42:MFC42.DLL
+ 0001:00013a3a       ?GetEventSinkMap@CCmdTarget@@MBEPBUAFX_EVENTSINKMAP@@XZ 01014a3a f   mfc42:MFC42.DLL
+ 0001:00013a40       ?GetInterfaceMap@CCmdTarget@@MBEPBUAFX_INTERFACEMAP@@XZ 01014a40 f   mfc42:MFC42.DLL
+ 0001:00013a46       ?GetConnectionMap@CCmdTarget@@MBEPBUAFX_CONNECTIONMAP@@XZ 01014a46 f   mfc42:MFC42.DLL
+ 0001:00013a4c       ?GetDispatchMap@CCmdTarget@@MBEPBUAFX_DISPMAP@@XZ 01014a4c f   mfc42:MFC42.DLL
+ 0001:00013a52       ?GetCommandMap@CCmdTarget@@MBEPBUAFX_OLECMDMAP@@XZ 01014a52 f   mfc42:MFC42.DLL
+ 0001:00013a58       ?GetTypeLib@CCmdTarget@@UAEJKPAPAUITypeLib@@@Z 01014a58 f   mfc42:MFC42.DLL
+ 0001:00013a5e       ?GetTypeLibCache@CCmdTarget@@UAEPAVCTypeLibCache@@XZ 01014a5e f   mfc42:MFC42.DLL
+ 0001:00013a64       ?GetTypeInfoCount@CCmdTarget@@UAEIXZ 01014a64 f   mfc42:MFC42.DLL
+ 0001:00013a6a       ?GetDispatchIID@CCmdTarget@@UAEHPAU_GUID@@@Z 01014a6a f   mfc42:MFC42.DLL
+ 0001:00013a70       ?IsInvokeAllowed@CCmdTarget@@UAEHJ@Z 01014a70 f   mfc42:MFC42.DLL
+ 0001:00013a76       ?OnFinalRelease@CWnd@@UAEXXZ 01014a76 f   mfc42:MFC42.DLL
+ 0001:00013a7c       ?OnCmdMsg@CDialog@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 01014a7c f   mfc42:MFC42.DLL
+ 0001:00013a82       ?GetRuntimeClass@CDialog@@UBEPAUCRuntimeClass@@XZ 01014a82 f   mfc42:MFC42.DLL
+ 0001:00013a88       ??0CDialog@@QAE@IPAVCWnd@@@Z 01014a88 f   mfc42:MFC42.DLL
+ 0001:00013a8e       ??3@YAXPAX@Z               01014a8e f   mfc42:MFC42.DLL
+ 0001:00013a94       ??1CDialog@@UAE@XZ         01014a94 f   mfc42:MFC42.DLL
+ 0001:00013a9a       ?PostNcDestroy@CWnd@@MAEXXZ 01014a9a f   mfc42:MFC42.DLL
+ 0001:00013aa0       ?OnOK@CDialog@@MAEXXZ      01014aa0 f   mfc42:MFC42.DLL
+ 0001:00013aa6       ??1CString@@QAE@XZ         01014aa6 f   mfc42:MFC42.DLL
+ 0001:00013aac       ??4CString@@QAEABV0@PBD@Z  01014aac f   mfc42:MFC42.DLL
+ 0001:00013ab2       ??0CString@@QAE@XZ         01014ab2 f   mfc42:MFC42.DLL
+ 0001:00013ab8       ?DDV_MaxChars@@YGXPAVCDataExchange@@ABVCString@@H@Z 01014ab8 f   mfc42:MFC42.DLL
+ 0001:00013abe       ?DDX_Text@@YGXPAVCDataExchange@@HAAVCString@@@Z 01014abe f   mfc42:MFC42.DLL
+ 0001:00013ac4       ?MessageBoxA@CWnd@@QAEHPBD0I@Z 01014ac4 f   mfc42:MFC42.DLL
+ 0001:00013aca       ?GetWindowTextA@CWnd@@QBEXAAVCString@@@Z 01014aca f   mfc42:MFC42.DLL
+ 0001:00013ad0       ?GetDlgItem@CWnd@@QBEPAV1@H@Z 01014ad0 f   mfc42:MFC42.DLL
+ 0001:00013ad6       ?SetWindowTextA@CWnd@@QAEXPBD@Z 01014ad6 f   mfc42:MFC42.DLL
+ 0001:00013adc       ?EndDialog@CDialog@@QAEXH@Z 01014adc f   mfc42:MFC42.DLL
+ 0001:00013ae2       ??2@YAPAXI@Z               01014ae2 f   mfc42:MFC42.DLL
+ 0001:00013ae8       ?GetWindowTextLengthA@CWnd@@QBEHXZ 01014ae8 f   mfc42:MFC42.DLL
+ 0001:00013aee       ?ExitHelpMode@CFrameWnd@@UAEXXZ 01014aee f   mfc42:MFC42.DLL
+ 0001:00013af4       ?DelayUpdateFrameMenu@CFrameWnd@@UAEXPAUHMENU__@@@Z 01014af4 f   mfc42:MFC42.DLL
+ 0001:00013afa       ?GetDefaultAccelerator@CFrameWnd@@UAEPAUHACCEL__@@XZ 01014afa f   mfc42:MFC42.DLL
+ 0001:00013b00       ?OnUpdateFrameMenu@CFrameWnd@@UAEXPAUHMENU__@@@Z 01014b00 f   mfc42:MFC42.DLL
+ 0001:00013b06       ?OnUpdateFrameTitle@CFrameWnd@@UAEXH@Z 01014b06 f   mfc42:MFC42.DLL
+ 0001:00013b0c       ?OnCreateClient@CFrameWnd@@MAEHPAUtagCREATESTRUCTA@@PAUCCreateContext@@@Z 01014b0c f   mfc42:MFC42.DLL
+ 0001:00013b12       ?NegotiateBorderSpace@CFrameWnd@@UAEHIPAUtagRECT@@@Z 01014b12 f   mfc42:MFC42.DLL
+ 0001:00013b18       ?GetMessageBar@CFrameWnd@@UAEPAVCWnd@@XZ 01014b18 f   mfc42:MFC42.DLL
+ 0001:00013b1e       ?OnSetPreviewMode@CFrameWnd@@UAEXHPAUCPrintPreviewState@@@Z 01014b1e f   mfc42:MFC42.DLL
+ 0001:00013b24       ?ActivateFrame@CFrameWnd@@UAEXH@Z 01014b24 f   mfc42:MFC42.DLL
+ 0001:00013b2a       ?RecalcLayout@CFrameWnd@@UAEXH@Z 01014b2a f   mfc42:MFC42.DLL
+ 0001:00013b30       ?GetMessageString@CFrameWnd@@UBEXIAAVCString@@@Z 01014b30 f   mfc42:MFC42.DLL
+ 0001:00013b36       ?GetActiveFrame@CFrameWnd@@UAEPAV1@XZ 01014b36 f   mfc42:MFC42.DLL
+ 0001:00013b3c       ?GetActiveDocument@CFrameWnd@@UAEPAVCDocument@@XZ 01014b3c f   mfc42:MFC42.DLL
+ 0001:00013b42       ?LoadFrame@CFrameWnd@@UAEHIKPAVCWnd@@PAUCCreateContext@@@Z 01014b42 f   mfc42:MFC42.DLL
+ 0001:00013b48       ?SetOccDialogInfo@CWnd@@MAEHPAU_AFX_OCC_DIALOG_INFO@@@Z 01014b48 f   mfc42:MFC42.DLL
+ 0001:00013b4e       ?IsFrameWnd@CFrameWnd@@UBEHXZ 01014b4e f   mfc42:MFC42.DLL
+ 0001:00013b54       ?CheckAutoCenter@CWnd@@UAEHXZ 01014b54 f   mfc42:MFC42.DLL
+ 0001:00013b5a       ?PostNcDestroy@CFrameWnd@@MAEXXZ 01014b5a f   mfc42:MFC42.DLL
+ 0001:00013b60       ?PreTranslateMessage@CFrameWnd@@UAEHPAUtagMSG@@@Z 01014b60 f   mfc42:MFC42.DLL
+ 0001:00013b66       ?EndModalState@CFrameWnd@@UAEXXZ 01014b66 f   mfc42:MFC42.DLL
+ 0001:00013b6c       ?BeginModalState@CFrameWnd@@UAEXXZ 01014b6c f   mfc42:MFC42.DLL
+ 0001:00013b72       ?OnCommand@CFrameWnd@@MAEHIJ@Z 01014b72 f   mfc42:MFC42.DLL
+ 0001:00013b78       ?PreCreateWindow@CFrameWnd@@MAEHAAUtagCREATESTRUCTA@@@Z 01014b78 f   mfc42:MFC42.DLL
+ 0001:00013b7e       ?OnCmdMsg@CFrameWnd@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 01014b7e f   mfc42:MFC42.DLL
+ 0001:00013b84       ??1CStatusBar@@UAE@XZ      01014b84 f   mfc42:MFC42.DLL
+ 0001:00013b8a       ??1CFrameWnd@@UAE@XZ       01014b8a f   mfc42:MFC42.DLL
+ 0001:00013b90       ??0CToolBar@@QAE@XZ        01014b90 f   mfc42:MFC42.DLL
+ 0001:00013b96       ??0CStatusBar@@QAE@XZ      01014b96 f   mfc42:MFC42.DLL
+ 0001:00013b9c       ??0CFrameWnd@@QAE@XZ       01014b9c f   mfc42:MFC42.DLL
+ 0001:00013ba2       ??1CToolBar@@UAE@XZ        01014ba2 f   mfc42:MFC42.DLL
+ 0001:00013ba8       ?EnableDocking@CFrameWnd@@QAEXK@Z 01014ba8 f   mfc42:MFC42.DLL
+ 0001:00013bae       ?SetIndicators@CStatusBar@@QAEHPBIH@Z 01014bae f   mfc42:MFC42.DLL
+ 0001:00013bb4       ?Create@CStatusBar@@QAEHPAVCWnd@@KI@Z 01014bb4 f   mfc42:MFC42.DLL
+ 0001:00013bba       ?OnCreate@CFrameWnd@@IAEHPAUtagCREATESTRUCTA@@@Z 01014bba f   mfc42:MFC42.DLL
+ 0001:00013bc0       ?ShowWindow@CWnd@@QAEHH@Z  01014bc0 f   mfc42:MFC42.DLL
+ 0001:00013bc6       ?FromHandle@CMenu@@SGPAV1@PAUHMENU__@@@Z 01014bc6 f   mfc42:MFC42.DLL
+ 0001:00013bcc       ?OnInitMenuPopup@CFrameWnd@@IAEXPAVCMenu@@IH@Z 01014bcc f   mfc42:MFC42.DLL
+ 0001:00013bd2       ?Create@CDialog@@QAEHPBDPAVCWnd@@@Z 01014bd2 f   mfc42:MFC42.DLL
+ 0001:00013bd8       ??1CButton@@UAE@XZ         01014bd8 f   mfc42:MFC42.DLL
+ 0001:00013bde       ??1CEdit@@UAE@XZ           01014bde f   mfc42:MFC42.DLL
+ 0001:00013be4       ?OnClose@CFrameWnd@@IAEXXZ 01014be4 f   mfc42:MFC42.DLL
+ 0001:00013bea       ?WriteProfileStringA@CWinApp@@QAEHPBD00@Z 01014bea f   mfc42:MFC42.DLL
+ 0001:00013bf0       ??0CString@@QAE@PBD@Z      01014bf0 f   mfc42:MFC42.DLL
+ 0001:00013bf6       ??4CString@@QAEABV0@ABV0@@Z 01014bf6 f   mfc42:MFC42.DLL
+ 0001:00013bfc       ?GetWindowPlacement@CWnd@@QBEHPAUtagWINDOWPLACEMENT@@@Z 01014bfc f   mfc42:MFC42.DLL
+ 0001:00013c02       ?AfxGetModuleState@@YGPAVAFX_MODULE_STATE@@XZ 01014c02 f   mfc42:MFC42.DLL
+ 0001:00013c08       ?FromHandle@CWnd@@SGPAV1@PAUHWND__@@@Z 01014c08 f   mfc42:MFC42.DLL
+ 0001:00013c0e       ??0CString@@QAE@ABV0@@Z    01014c0e f   mfc42:MFC42.DLL
+ 0001:00013c14       ??H@YG?AVCString@@ABV0@PBD@Z 01014c14 f   mfc42:MFC42.DLL
+ 0001:00013c1a       ?PreTranslateMessage@CWnd@@UAEHPAUtagMSG@@@Z 01014c1a f   mfc42:MFC42.DLL
+ 0001:00013c20       ?GetMessageMap@CWnd@@MBEPBUAFX_MSGMAP@@XZ 01014c20 f   mfc42:MFC42.DLL
+ 0001:00013c26       ?OnCmdMsg@CCmdTarget@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 01014c26 f   mfc42:MFC42.DLL
+ 0001:00013c2c       ?GetRuntimeClass@CEdit@@UBEPAUCRuntimeClass@@XZ 01014c2c f   mfc42:MFC42.DLL
+ 0001:00013c32       ??0CWnd@@QAE@XZ            01014c32 f   mfc42:MFC42.DLL
+ 0001:00013c38       ?WinHelpA@CWinApp@@UAEXKI@Z 01014c38 f   mfc42:MFC42.DLL
+ 0001:00013c3e       ?OnDDECommand@CWinApp@@UAEHPAD@Z 01014c3e f   mfc42:MFC42.DLL
+ 0001:00013c44       ?DoWaitCursor@CWinApp@@UAEXH@Z 01014c44 f   mfc42:MFC42.DLL
+ 0001:00013c4a       ?DoMessageBox@CWinApp@@UAEHPBDII@Z 01014c4a f   mfc42:MFC42.DLL
+ 0001:00013c50       ?SaveAllModified@CWinApp@@UAEHXZ 01014c50 f   mfc42:MFC42.DLL
+ 0001:00013c56       ?InitApplication@CWinApp@@UAEHXZ 01014c56 f   mfc42:MFC42.DLL
+ 0001:00013c5c       ?AddToRecentFileList@CWinApp@@UAEXPBD@Z 01014c5c f   mfc42:MFC42.DLL
+ 0001:00013c62       ?OpenDocumentFile@CWinApp@@UAEPAVCDocument@@PBD@Z 01014c62 f   mfc42:MFC42.DLL
+ 0001:00013c68       ?Delete@CWinThread@@UAEXXZ 01014c68 f   mfc42:MFC42.DLL
+ 0001:00013c6e       ?GetMainWnd@CWinThread@@UAEPAVCWnd@@XZ 01014c6e f   mfc42:MFC42.DLL
+ 0001:00013c74       ?ProcessMessageFilter@CWinThread@@UAEHHPAUtagMSG@@@Z 01014c74 f   mfc42:MFC42.DLL
+ 0001:00013c7a       ?ProcessWndProcException@CWinApp@@UAEJPAVCException@@PBUtagMSG@@@Z 01014c7a f   mfc42:MFC42.DLL
+ 0001:00013c80       ?IsIdleMessage@CWinThread@@UAEHPAUtagMSG@@@Z 01014c80 f   mfc42:MFC42.DLL
+ 0001:00013c86       ?OnIdle@CWinApp@@UAEHJ@Z   01014c86 f   mfc42:MFC42.DLL
+ 0001:00013c8c       ?PumpMessage@CWinThread@@UAEHXZ 01014c8c f   mfc42:MFC42.DLL
+ 0001:00013c92       ?PreTranslateMessage@CWinThread@@UAEHPAUtagMSG@@@Z 01014c92 f   mfc42:MFC42.DLL
+ 0001:00013c98       ?Run@CWinApp@@UAEHXZ       01014c98 f   mfc42:MFC42.DLL
+ 0001:00013c9e       ?OnFinalRelease@CCmdTarget@@UAEXXZ 01014c9e f   mfc42:MFC42.DLL
+ 0001:00013ca4       ?GetRuntimeClass@CWinApp@@UBEPAUCRuntimeClass@@XZ 01014ca4 f   mfc42:MFC42.DLL
+ 0001:00013caa       ??0CWinApp@@QAE@PBD@Z      01014caa f   mfc42:MFC42.DLL
+ 0001:00013cb0       ??1CWinApp@@UAE@XZ         01014cb0 f   mfc42:MFC42.DLL
+ 0001:00013cb6       ?SetWindowPos@CWnd@@QAEHPBV1@HHHHI@Z 01014cb6 f   mfc42:MFC42.DLL
+ 0001:00013cbc       ?MoveWindow@CWnd@@QAEXHHHHH@Z 01014cbc f   mfc42:MFC42.DLL
+ 0001:00013cc2       ?GetProfileStringA@CWinApp@@QAE?AVCString@@PBD00@Z 01014cc2 f   mfc42:MFC42.DLL
+ 0001:00013cc8       ??1CCommandLineInfo@@UAE@XZ 01014cc8 f   mfc42:MFC42.DLL
+ 0001:00013cce       ?ProcessShellCommand@CWinApp@@QAEHAAVCCommandLineInfo@@@Z 01014cce f   mfc42:MFC42.DLL
+ 0001:00013cd4       ?ParseCommandLine@CWinApp@@QAEXAAVCCommandLineInfo@@@Z 01014cd4 f   mfc42:MFC42.DLL
+ 0001:00013cda       ??0CCommandLineInfo@@QAE@XZ 01014cda f   mfc42:MFC42.DLL
+ 0001:00013ce0       ?AddDocTemplate@CWinApp@@QAEXPAVCDocTemplate@@@Z 01014ce0 f   mfc42:MFC42.DLL
+ 0001:00013ce6       ??0CSingleDocTemplate@@QAE@IPAUCRuntimeClass@@00@Z 01014ce6 f   mfc42:MFC42.DLL
+ 0001:00013cec       ?LoadStdProfileSettings@CWinApp@@IAEXI@Z 01014cec f   mfc42:MFC42.DLL
+ 0001:00013cf2       ?SetRegistryKey@CWinApp@@IAEXPBD@Z 01014cf2 f   mfc42:MFC42.DLL
+ 0001:00013cf8       ?Enable3dControls@CWinApp@@IAEHXZ 01014cf8 f   mfc42:MFC42.DLL
+ 0001:00013cfe       ?ExitInstance@CWinApp@@UAEHXZ 01014cfe f   mfc42:MFC42.DLL
+ 0001:00013d04       ??H@YG?AVCString@@ABV0@D@Z 01014d04 f   mfc42:MFC42.DLL
+ 0001:00013d0a       ??4CString@@QAEABV0@D@Z    01014d0a f   mfc42:MFC42.DLL
+ 0001:00013d10       ?OnIdle@CDocument@@UAEXXZ  01014d10 f   mfc42:MFC42.DLL
+ 0001:00013d16       ?GetDefaultAccelerator@CDocument@@UAEPAUHACCEL__@@XZ 01014d16 f   mfc42:MFC42.DLL
+ 0001:00013d1c       ?GetDefaultMenu@CDocument@@UAEPAUHMENU__@@XZ 01014d1c f   mfc42:MFC42.DLL
+ 0001:00013d22       ?UpdateFrameCounts@CDocument@@UAEXXZ 01014d22 f   mfc42:MFC42.DLL
+ 0001:00013d28       ?DoFileSave@CDocument@@UAEHXZ 01014d28 f   mfc42:MFC42.DLL
+ 0001:00013d2e       ?DoSave@CDocument@@UAEHPBDH@Z 01014d2e f   mfc42:MFC42.DLL
+ 0001:00013d34       ?PreCloseFrame@CDocument@@UAEXPAVCFrameWnd@@@Z 01014d34 f   mfc42:MFC42.DLL
+ 0001:00013d3a       ?SaveModified@CDocument@@UAEHXZ 01014d3a f   mfc42:MFC42.DLL
+ 0001:00013d40       ?CanCloseFrame@CDocument@@UAEHPAVCFrameWnd@@@Z 01014d40 f   mfc42:MFC42.DLL
+ 0001:00013d46       ?ReleaseFile@CDocument@@UAEXPAVCFile@@H@Z 01014d46 f   mfc42:MFC42.DLL
+ 0001:00013d4c       ?GetFile@CDocument@@UAEPAVCFile@@PBDIPAVCFileException@@@Z 01014d4c f   mfc42:MFC42.DLL
+ 0001:00013d52       ?ReportSaveLoadException@CDocument@@UAEXPBDPAVCException@@HI@Z 01014d52 f   mfc42:MFC42.DLL
+ 0001:00013d58       ?OnCloseDocument@CDocument@@UAEXXZ 01014d58 f   mfc42:MFC42.DLL
+ 0001:00013d5e       ?OnSaveDocument@CDocument@@UAEHPBD@Z 01014d5e f   mfc42:MFC42.DLL
+ 0001:00013d64       ?OnOpenDocument@CDocument@@UAEHPBD@Z 01014d64 f   mfc42:MFC42.DLL
+ 0001:00013d6a       ?DeleteContents@CDocument@@UAEXXZ 01014d6a f   mfc42:MFC42.DLL
+ 0001:00013d70       ?OnChangedViewList@CDocument@@UAEXXZ 01014d70 f   mfc42:MFC42.DLL
+ 0001:00013d76       ?GetNextView@CDocument@@UBEPAVCView@@AAPAU__POSITION@@@Z 01014d76 f   mfc42:MFC42.DLL
+ 0001:00013d7c       ?GetFirstViewPosition@CDocument@@UBEPAU__POSITION@@XZ 01014d7c f   mfc42:MFC42.DLL
+ 0001:00013d82       ?SetPathName@CDocument@@UAEXPBDH@Z 01014d82 f   mfc42:MFC42.DLL
+ 0001:00013d88       ?SetTitle@CDocument@@UAEXPBD@Z 01014d88 f   mfc42:MFC42.DLL
+ 0001:00013d8e       ?OnFinalRelease@CDocument@@UAEXXZ 01014d8e f   mfc42:MFC42.DLL
+ 0001:00013d94       ?OnCmdMsg@CDocument@@UAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 01014d94 f   mfc42:MFC42.DLL
+ 0001:00013d9a       ??0CDocument@@QAE@XZ       01014d9a f   mfc42:MFC42.DLL
+ 0001:00013da0       ??1CDocument@@UAE@XZ       01014da0 f   mfc42:MFC42.DLL
+ 0001:00013da6       ?OnNewDocument@CDocument@@UAEHXZ 01014da6 f   mfc42:MFC42.DLL
+ 0001:00013dac       ?OnEndPrintPreview@CView@@MAEXPAVCDC@@PAUCPrintInfo@@UtagPOINT@@PAVCPreviewView@@@Z 01014dac f   mfc42:MFC42.DLL
+ 0001:00013db2       ?OnEndPrinting@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 01014db2 f   mfc42:MFC42.DLL
+ 0001:00013db8       ?OnPrint@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 01014db8 f   mfc42:MFC42.DLL
+ 0001:00013dbe       ?OnBeginPrinting@CView@@MAEXPAVCDC@@PAUCPrintInfo@@@Z 01014dbe f   mfc42:MFC42.DLL
+ 0001:00013dc4       ?OnPreparePrinting@CView@@MAEHPAUCPrintInfo@@@Z 01014dc4 f   mfc42:MFC42.DLL
+ 0001:00013dca       ?OnUpdate@CView@@MAEXPAV1@JPAVCObject@@@Z 01014dca f   mfc42:MFC42.DLL
+ 0001:00013dd0       ?OnActivateFrame@CView@@MAEXIPAVCFrameWnd@@@Z 01014dd0 f   mfc42:MFC42.DLL
+ 0001:00013dd6       ?OnActivateView@CView@@MAEXHPAV1@0@Z 01014dd6 f   mfc42:MFC42.DLL
+ 0001:00013ddc       ?OnInitialUpdate@CView@@UAEXXZ 01014ddc f   mfc42:MFC42.DLL
+ 0001:00013de2       ?OnPrepareDC@CView@@UAEXPAVCDC@@PAUCPrintInfo@@@Z 01014de2 f   mfc42:MFC42.DLL
+ 0001:00013de8       ?OnDragScroll@CView@@UAEKKVCPoint@@@Z 01014de8 f   mfc42:MFC42.DLL
+ 0001:00013dee       ?OnDropEx@CView@@UAEKPAVCOleDataObject@@KKVCPoint@@@Z 01014dee f   mfc42:MFC42.DLL
+ 0001:00013df4       ?OnDrop@CView@@UAEHPAVCOleDataObject@@KVCPoint@@@Z 01014df4 f   mfc42:MFC42.DLL
+ 0001:00013dfa       ?OnDragLeave@CView@@UAEXXZ 01014dfa f   mfc42:MFC42.DLL
+ 0001:00013e00       ?OnDragOver@CView@@UAEKPAVCOleDataObject@@KVCPoint@@@Z 01014e00 f   mfc42:MFC42.DLL
+ 0001:00013e06       ?OnDragEnter@CView@@UAEKPAVCOleDataObject@@KVCPoint@@@Z 01014e06 f   mfc42:MFC42.DLL
+ 0001:00013e0c       ?OnScrollBy@CView@@UAEHVCSize@@H@Z 01014e0c f   mfc42:MFC42.DLL
+ 0001:00013e12       ?OnScroll@CView@@UAEHIIH@Z 01014e12 f   mfc42:MFC42.DLL
+ 0001:00013e18       ?IsSelected@CView@@UBEHPBVCObject@@@Z 01014e18 f   mfc42:MFC42.DLL
+ 0001:00013e1e       ?PostNcDestroy@CView@@MAEXXZ 01014e1e f   mfc42:MFC42.DLL
+ 0001:00013e24       ?GetScrollBarCtrl@CView@@UBEPAVCScrollBar@@H@Z 01014e24 f   mfc42:MFC42.DLL
+ 0001:00013e2a       ?CalcWindowRect@CView@@UAEXPAUtagRECT@@I@Z 01014e2a f   mfc42:MFC42.DLL
+ 0001:00013e30       ?OnCmdMsg@CView@@MAEHIHPAXPAUAFX_CMDHANDLERINFO@@@Z 01014e30 f   mfc42:MFC42.DLL
+ 0001:00013e36       ??0CView@@IAE@XZ           01014e36 f   mfc42:MFC42.DLL
+ 0001:00013e3c       ??1CView@@UAE@XZ           01014e3c f   mfc42:MFC42.DLL
+ 0001:00013e42       ?PreCreateWindow@CView@@MAEHAAUtagCREATESTRUCTA@@@Z 01014e42 f   mfc42:MFC42.DLL
+ 0001:00013e48       ?Create@CEdit@@QAEHKABUtagRECT@@PAVCWnd@@I@Z 01014e48 f   mfc42:MFC42.DLL
+ 0001:00013e4e       ?OnCreate@CView@@IAEHPAUtagCREATESTRUCTA@@@Z 01014e4e f   mfc42:MFC42.DLL
+ 0001:00013e54       ?Default@CWnd@@IAEJXZ      01014e54 f   mfc42:MFC42.DLL
+ 0001:00013e5a       ?DrawItem@CButton@@UAEXPAUtagDRAWITEMSTRUCT@@@Z 01014e5a f   mfc42:MFC42.DLL
+ 0001:00013e60       ?OnChildNotify@CButton@@MAEHIIJPAJ@Z 01014e60 f   mfc42:MFC42.DLL
+ 0001:00013e66       ?GetRuntimeClass@CButton@@UBEPAUCRuntimeClass@@XZ 01014e66 f   mfc42:MFC42.DLL
+ 0001:00013e6c       ?DDV_MinMaxInt@@YGXPAVCDataExchange@@HHH@Z 01014e6c f   mfc42:MFC42.DLL
+ 0001:00013e72       ?DDX_Text@@YGXPAVCDataExchange@@HAAH@Z 01014e72 f   mfc42:MFC42.DLL
+ 0001:00013e78       ?DDX_Check@@YGXPAVCDataExchange@@HAAH@Z 01014e78 f   mfc42:MFC42.DLL
+ 0001:00013e7e       ?DDX_Control@@YGXPAVCDataExchange@@HAAVCWnd@@@Z 01014e7e f   mfc42:MFC42.DLL
+ 0001:00013e84       ?GetProfileIntA@CWinApp@@QAEIPBD0H@Z 01014e84 f   mfc42:MFC42.DLL
+ 0001:00013e8a       ?WriteProfileInt@CWinApp@@QAEHPBD0H@Z 01014e8a f   mfc42:MFC42.DLL
+ 0001:00013e90       ?EnableWindow@CWnd@@QAEHH@Z 01014e90 f   mfc42:MFC42.DLL
+ 0001:00013e96       ?SetFocus@CWnd@@QAEPAV1@XZ 01014e96 f   mfc42:MFC42.DLL
+ 0001:00013e9c       ?GetDlgItemTextA@CWnd@@QBEHHAAVCString@@@Z 01014e9c f   mfc42:MFC42.DLL
+ 0001:00013ea2       ?LoadStringA@CString@@QAEHI@Z 01014ea2 f   mfc42:MFC42.DLL
+ 0001:00013eb0       _WinMainCRTStartup         01014eb0 f   msvcrt:crtexew.obj
+ 0001:00014060       ??_Etype_info@@UAEPAXI@Z   01015060 f i msvcrt:ti_inst.obj
+ 0001:00014060       ??_Gtype_info@@UAEPAXI@Z   01015060 f i msvcrt:ti_inst.obj
+ 0001:00014080       ___CxxFrameHandler         01015080 f   msvcrt:MSVCRT.dll
+ 0001:00014090       _memset                    01015090 f   msvcrt:MSVCRT.dll
+ 0001:00014096       _strcat                    01015096 f   msvcrt:MSVCRT.dll
+ 0001:0001409c       _strcpy                    0101509c f   msvcrt:MSVCRT.dll
+ 0001:000140a2       _strlen                    010150a2 f   msvcrt:MSVCRT.dll
+ 0001:000140b0       __onexit                   010150b0 f   msvcrt:atonexit.obj
+ 0001:000140e0       _atexit                    010150e0 f   msvcrt:atonexit.obj
+ 0001:00014100       _memcpy                    01015100 f   msvcrt:MSVCRT.dll
+ 0001:00014106       __XcptFilter               01015106 f   msvcrt:MSVCRT.dll
+ 0001:0001410c       __initterm                 0101510c f   msvcrt:MSVCRT.dll
+ 0001:00014120       __setdefaultprecision      01015120 f   msvcrt:fp8.obj
+ 0001:00014140       __matherr                  01015140 f   msvcrt:merr.obj
+ 0001:00014150       __setargv                  01015150 f   msvcrt:dllargv.obj
+ 0001:00014160       __except_handler3          01015160 f   msvcrt:MSVCRT.dll
+ 0001:00014166       ??1type_info@@UAE@XZ       01015166 f   msvcrt:MSVCRT.dll
+ 0001:0001416c       ___dllonexit               0101516c f   msvcrt:MSVCRT.dll
+ 0001:00014172       __controlfp                01015172 f   msvcrt:MSVCRT.dll
+ 0001:00014178       _VerQueryValueA@16         01015178 f   version:VERSION.dll
+ 0001:0001417e       _GetFileVersionInfoA@16    0101517e f   version:VERSION.dll
+ 0001:00014184       _GetFileVersionInfoSizeA@8 01015184 f   version:VERSION.dll
+ 0001:0001418a       ?RPCExceptionFilter@@YGJK@Z 0101518a f   line:line.obj
+ 0001:000141ff       ??0Line@@QAE@PBD@Z         010151ff f   line:line.obj
+ 0001:0001426d       ??1Line@@QAE@XZ            0101526d f   line:line.obj
+ 0001:00014314       ?Init@Line@@QAEHXZ         01015314 f   line:line.obj
+ 0001:00014415       ?Shutdown@Line@@QAEXXZ     01015415 f   line:line.obj
+ 0001:00014416       ?lineAnswer@Line@@QAGJKPBDK@Z 01015416 f   line:line.obj
+ 0001:000144ba       ?lineClose@Line@@QAGJK@Z   010154ba f   line:line.obj
+ 0001:00014599       ?lineDeallocateCall@Line@@QAGJK@Z 01015599 f   line:line.obj
+ 0001:00014610       ?lineDrop@Line@@QAGJKPBDK@Z 01015610 f   line:line.obj
+ 0001:000146b4       ?lineGenerateDigits@Line@@QAGJKKPBDK@Z 010156b4 f   line:line.obj
+ 0001:00014767       ?lineGetDevCaps@Line@@QAGJKKKKPAUlinedevcaps_tag@@@Z 01015767 f   line:line.obj
+ 0001:0001483c       ?lineGetDevConfig@Line@@QAGJKPAUvarstring_tag@@PBD@Z 0101583c f   line:line.obj
+ 0001:000148f6       ?lineGetID@Line@@QAGJKKKKPAUvarstring_tag@@PBD@Z 010158f6 f   line:line.obj
+ 0001:000149e6       ?lineInitialize@Line@@QAGJPAKPAUHINSTANCE__@@P6GXKKKKKK@ZPBD0@Z 010159e6 f   line:line.obj
+ 0001:00014ae6       ?lineMakeCall@Line@@QAGJKPAKPBDKQAUlinecallparams_tag@@@Z 01015ae6 f   line:line.obj
+ 0001:00014c07       ?lineMonitorDigits@Line@@QAGJKK@Z 01015c07 f   line:line.obj
+ 0001:00014c84       ?lineOpen@Line@@QAGJKKPAKKKKKKQAUlinecallparams_tag@@@Z 01015c84 f   line:line.obj
+ 0001:00014de5       ?lineSetDevConfig@Line@@QAGJKQAXKPBD@Z 01015de5 f   line:line.obj
+ 0001:00014e97       ?lineShutdown@Line@@QAGJK@Z 01015e97 f   line:line.obj
+ 0001:00014f8e       ?GetCommConfig@Line@@QAGHPAXPAU_COMMCONFIG@@PAK@Z 01015f8e f   line:line.obj
+ 0001:00015023       ?CloseHandle@Line@@QAGHPAX@Z 01016023 f   line:line.obj
+ 0001:00015098       ?WriteFileSync@Line@@QAGHPAXPBXKPAKPAU_OVERLAPPED@@@Z 01016098 f   line:line.obj
+ 0001:00015152       ?ReadFileSync@Line@@QAGHPAX0KPAKPAU_OVERLAPPED@@@Z 01016152 f   line:line.obj
+ 0001:0001520c       ?SetCommTimeouts@Line@@QAGHPAXPAU_COMMTIMEOUTS@@@Z 0101620c f   line:line.obj
+ 0001:00015287       ?PurgeComm@Line@@QAGHPAXK@Z 01016287 f   line:line.obj
+ 0001:00015302       ?StartRPCServer@@YAHPAUHINSTANCE__@@@Z 01016302 f   line:rpcsrv.obj
+ 0001:0001539f       ?StopRPCServer@@YAXPAUHINSTANCE__@@@Z 0101639f f   line:rpcsrv.obj
+ 0001:000155d2       _remote_LineCallback@28    010165d2 f   line:rpcsrv.obj
+ 0001:0001562c       _remote_PhoneCallback@28   0101662c f   line:rpcsrv.obj
+ 0001:00015686       _MIDL_user_allocate@4      01016686 f   line:rpcsrv.obj
+ 0001:00015697       _MIDL_user_free@4          01016697 f   line:rpcsrv.obj
+ 0001:000156a8       ?phoneClose@Line@@QAGJK@Z  010166a8 f   line:phone.obj
+ 0001:00015737       ?phoneGetDevCaps@Line@@QAGJKKKKPAUphonecaps_tag@@@Z 01016737 f   line:phone.obj
+ 0001:000157ea       ?phoneGetHookSwitch@Line@@QAGJKPAK@Z 010167ea f   line:phone.obj
+ 0001:0001587f       ?phoneGetID@Line@@QAGJKPAUvarstring_tag@@PBD@Z 0101687f f   line:phone.obj
+ 0001:00015926       ?phoneGetStatus@Line@@QAGJKPAUphonestatus_tag@@@Z 01016926 f   line:phone.obj
+ 0001:000159c7       ?phoneInitialize@Line@@QAGJPAKPAUHINSTANCE__@@P6GXKKKKKK@ZPBD0@Z 010169c7 f   line:phone.obj
+ 0001:00015a2a       ?phoneOpen@Line@@QAGJKKPAKKKKK@Z 01016a2a f   line:phone.obj
+ 0001:00015add       ?phoneSetHookSwitch@Line@@QAGJKKK@Z 01016add f   line:phone.obj
+ 0001:00015b78       ?phoneSetStatusMessages@Line@@QAGJKKKK@Z 01016b78 f   line:phone.obj
+ 0001:00015c19       ?phoneSetVolume@Line@@QAGJKKK@Z 01016c19 f   line:phone.obj
+ 0001:00015cb4       ?phoneSetGain@Line@@QAGJKKK@Z 01016cb4 f   line:phone.obj
+ 0001:00015d4f       ?phoneShutdown@Line@@QAGJK@Z 01016d4f f   line:phone.obj
+ 0001:00015dde       ?LogMessage@@YGXPBD@Z      01016dde f   line:logmsg.obj
+ 0001:00015e55       _remote_Initialize@8       01016e55 f   line:remote_c.obj
+ 0001:00015f6f       _remote_Shutdown@4         01016f6f f   line:remote_c.obj
+ 0001:0001600e       _remote_lineClose@8        0101700e f   line:remote_c.obj
+ 0001:000160fb       _remote_lineDeallocateCall@8 010170fb f   line:remote_c.obj
+ 0001:000161e8       _remote_lineDrop@16        010171e8 f   line:remote_c.obj
+ 0001:0001632d       _remote_lineGenerateDigits@24 0101732d f   line:remote_c.obj
+ 0001:00016494       _remote_lineMakeCall@28    01017494 f   line:remote_c.obj
+ 0001:00016654       _remote_lineMonitorDigits@12 01017654 f   line:remote_c.obj
+ 0001:00016757       _remote_lineOpen@44        01017757 f   line:remote_c.obj
+ 0001:0001693c       _remote_lineShutdown@8     0101793c f   line:remote_c.obj
+ 0001:00016a29       _remote_lineAnswer@16      01017a29 f   line:remote_c.obj
+ 0001:00016b6e       _remote_lineGetDevCaps@28  01017b6e f   line:remote_c.obj
+ 0001:00016cfa       _remote_lineGetDevConfig@20 01017cfa f   line:remote_c.obj
+ 0001:00016e8d       _remote_lineGetID@32       01017e8d f   line:remote_c.obj
+ 0001:00017056       _remote_lineInitialize@20  01018056 f   line:remote_c.obj
+ 0001:000171c6       _remote_lineSetDevConfig@20 010181c6 f   line:remote_c.obj
+ 0001:00017345       _remote_phoneClose@8       01018345 f   line:remote_c.obj
+ 0001:00017432       _remote_phoneGetDevCaps@28 01018432 f   line:remote_c.obj
+ 0001:000175c0       _remote_phoneGetHookSwitch@12 010185c0 f   line:remote_c.obj
+ 0001:000176cf       _remote_phoneGetID@20      010186cf f   line:remote_c.obj
+ 0001:00017864       _remote_phoneGetStatus@16  01018864 f   line:remote_c.obj
+ 0001:000179bf       _remote_phoneInitialize@16 010189bf f   line:remote_c.obj
+ 0001:00017b1a       _remote_phoneOpen@32       01018b1a f   line:remote_c.obj
+ 0001:00017c81       _remote_phoneSetHookSwitch@16 01018c81 f   line:remote_c.obj
+ 0001:00017d94       _remote_phoneSetStatusMessages@20 01018d94 f   line:remote_c.obj
+ 0001:00017ebb       _remote_phoneSetVolume@16  01018ebb f   line:remote_c.obj
+ 0001:00017fce       _remote_phoneSetGain@16    01018fce f   line:remote_c.obj
+ 0001:000180e1       _remote_phoneShutdown@8    010190e1 f   line:remote_c.obj
+ 0001:000181ce       _remote_GetCommConfig@16   010191ce f   line:remote_c.obj
+ 0001:00018365       _remote_CloseHandle@8      01019365 f   line:remote_c.obj
+ 0001:00018452       _remote_WriteFileSync@24   01019452 f   line:remote_c.obj
+ 0001:00018619       _remote_ReadFileSync@24    01019619 f   line:remote_c.obj
+ 0001:00018802       _remote_PurgeComm@12       01019802 f   line:remote_c.obj
+ 0001:00018903       _remote_SetCommTimeouts@12 01019903 f   line:remote_c.obj
+ 0001:00018a30       _remote_callback_remote_LineCallback@4 01019a30 f   line:callbk_s.obj
+ 0001:00018b99       _remote_callback_remote_PhoneCallback@4 01019b99 f   line:callbk_s.obj
+ 0001:00018d02       _WinMain@16                01019d02 f   mfcs42:appmodul.obj
+ 0001:00018d1a       ?AfxInitialize@@YGHHK@Z    01019d1a f   mfcs42:appmodul.obj
+ 0001:00018d43       ??0_AFX_TERM_APP_STATE@@QAE@XZ 01019d43 f   mfcs42:appmodul.obj
+ 0001:00018d66       ?AfxWinMain@@YGHPAUHINSTANCE__@@0PADH@Z 01019d66 f   mfc42:MFC42.DLL
+ 0001:00018d6c       _lineAnswer@12             01019d6c f   tapi32:TAPI32.dll
+ 0001:00018d72       _lineClose@4               01019d72 f   tapi32:TAPI32.dll
+ 0001:00018d78       _lineDeallocateCall@4      01019d78 f   tapi32:TAPI32.dll
+ 0001:00018d7e       _lineDrop@12               01019d7e f   tapi32:TAPI32.dll
+ 0001:00018d84       _lineGenerateDigits@16     01019d84 f   tapi32:TAPI32.dll
+ 0001:00018d8a       _lineGetDevCaps@20         01019d8a f   tapi32:TAPI32.dll
+ 0001:00018d90       _lineGetDevConfig@12       01019d90 f   tapi32:TAPI32.dll
+ 0001:00018d96       _lineGetID@24              01019d96 f   tapi32:TAPI32.dll
+ 0001:00018d9c       _lineInitialize@20         01019d9c f   tapi32:TAPI32.dll
+ 0001:00018da2       _lineMakeCall@20           01019da2 f   tapi32:TAPI32.dll
+ 0001:00018da8       _lineMonitorDigits@8       01019da8 f   tapi32:TAPI32.dll
+ 0001:00018dae       _lineOpen@36               01019dae f   tapi32:TAPI32.dll
+ 0001:00018db4       _lineSetDevConfig@16       01019db4 f   tapi32:TAPI32.dll
+ 0001:00018dba       _lineShutdown@4            01019dba f   tapi32:TAPI32.dll
+ 0001:00018dc0       _phoneClose@4              01019dc0 f   tapi32:TAPI32.dll
+ 0001:00018dc6       _phoneGetDevCaps@20        01019dc6 f   tapi32:TAPI32.dll
+ 0001:00018dcc       _phoneGetHookSwitch@8      01019dcc f   tapi32:TAPI32.dll
+ 0001:00018dd2       _phoneGetID@12             01019dd2 f   tapi32:TAPI32.dll
+ 0001:00018dd8       _phoneGetStatus@8          01019dd8 f   tapi32:TAPI32.dll
+ 0001:00018dde       _phoneInitialize@20        01019dde f   tapi32:TAPI32.dll
+ 0001:00018de4       _phoneOpen@28              01019de4 f   tapi32:TAPI32.dll
+ 0001:00018dea       _phoneSetHookSwitch@12     01019dea f   tapi32:TAPI32.dll
+ 0001:00018df0       _phoneSetStatusMessages@16 01019df0 f   tapi32:TAPI32.dll
+ 0001:00018df6       _phoneSetVolume@12         01019df6 f   tapi32:TAPI32.dll
+ 0001:00018dfc       _phoneSetGain@12           01019dfc f   tapi32:TAPI32.dll
+ 0001:00018e02       _phoneShutdown@4           01019e02 f   tapi32:TAPI32.dll
+ 0001:00019f18       __IMPORT_DESCRIPTOR_MFC42  0101af18     mfc42:MFC42.DLL
+ 0001:00019f2c       __IMPORT_DESCRIPTOR_MSVCRT 0101af2c     msvcrt:MSVCRT.dll
+ 0001:00019f40       __IMPORT_DESCRIPTOR_ADVAPI32 0101af40     advapi32:ADVAPI32.dll
+ 0001:00019f54       __IMPORT_DESCRIPTOR_KERNEL32 0101af54     kernel32:KERNEL32.dll
+ 0001:00019f68       __IMPORT_DESCRIPTOR_USER32 0101af68     user32:USER32.dll
+ 0001:00019f7c       __IMPORT_DESCRIPTOR_WINMM  0101af7c     winmm:WINMM.dll
+ 0001:00019f90       __IMPORT_DESCRIPTOR_VERSION 0101af90     version:VERSION.dll
+ 0001:00019fa4       __IMPORT_DESCRIPTOR_TAPI32 0101afa4     tapi32:TAPI32.dll
+ 0001:00019fb8       __IMPORT_DESCRIPTOR_RPCRT4 0101afb8     rpcrt4:RPCRT4.dll
+ 0001:00019fcc       __NULL_IMPORT_DESCRIPTOR   0101afcc     mfc42:MFC42.DLL
+ 0002:00000000       ___xc_a                    0101d000     msvcrt:cinitexe.obj
+ 0002:00000010       ___xc_z                    0101d010     msvcrt:cinitexe.obj
+ 0002:00000014       ___xi_a                    0101d014     msvcrt:cinitexe.obj
+ 0002:00000018       ___xi_z                    0101d018     msvcrt:cinitexe.obj
+ 0002:00000020       ??_R0?AVCObject@@@8        0101d020     abortdlg.obj
+ 0002:00000038       ??_R0?AVCCmdTarget@@@8     0101d038     abortdlg.obj
+ 0002:00000058       ??_R0?AVCWnd@@@8           0101d058     abortdlg.obj
+ 0002:00000070       ??_R0?AVCDialog@@@8        0101d070     abortdlg.obj
+ 0002:00000088       ??_R0?AVCAbortDlg@@@8      0101d088     abortdlg.obj
+ 0002:000000a0       ??_R0?AVchngnum@@@8        0101d0a0     chngnum.obj
+ 0002:000000b8       ??_C@_0DK@NBOG@INFO?3?5You?5must?5enter?5a?5phone?5num@ 0101d0b8     chngnum.obj
+ 0002:000000f4       ??_C@_0DH@IPOF@INFO?3?5You?5must?5enter?5a?5phone?5num@ 0101d0f4     chngnum.obj
+ 0002:00000130       ??_R0?AVCChooseModem@@@8   0101d130     choosem.obj
+ 0002:0000014c       ??_C@_0HA@FCBN@FAIL?3?7?7No?5reference?5modem?5instal@ 0101d14c     choosem.obj
+ 0002:000001bc       ??_C@_0CG@BGID@REFERENCE?5MODEM?5lineInitialize?5f@ 0101d1bc     choosem.obj
+ 0002:000001e4       ??_C@_0HL@BEAM@FAIL?3?7?7No?5test?5modem?5installed?4?5@ 0101d1e4     choosem.obj
+ 0002:00000260       ??_C@_0CB@FDFO@TEST?5MODEM?5lineInitialize?5failed@ 0101d260     choosem.obj
+ 0002:00000284       ??_C@_05OHMA@MCT96?$AA@    0101d284     choosem.obj
+ 0002:0000028c       ??_C@_0BF@FDEJ@Reference?5Modem?3?7?7?$CFs?$AA@ 0101d28c     choosem.obj
+ 0002:000002a4       ??_C@_0BK@GGDB@Memory?5allocation?5failure?$AA@ 0101d2a4     choosem.obj
+ 0002:000002c0       ??_C@_0BA@KOBC@Test?5Modem?3?7?7?$CFs?$AA@ 0101d2c0     choosem.obj
+ 0002:000002d0       ??_C@_0EA@POFG@File?5CRC?5did?5not?5match?4?5?5Data?5wa@ 0101d2d0     comm.obj
+ 0002:00000310       ??_C@_0DB@GCL@FAIL?3?7?7SetCommTimeouts?5failed?5on@ 0101d310     comm.obj
+ 0002:00000344       ??_C@_0CM@DKMK@FAIL?3?7?7SetCommTimeouts?5failed?5on@ 0101d344     comm.obj
+ 0002:00000370       ??_C@_0CI@GHK@FAIL?3?7?7REFERENCE?5MODEM?5PurgeComm@ 0101d370     comm.obj
+ 0002:00000398       ??_C@_0CD@IOE@FAIL?3?7?7TEST?5MODEM?5PurgeComm?5fail@ 0101d398     comm.obj
+ 0002:000003c0       ?szDefaultSendFile@@3PADA  0101d3c0     datatran.obj
+ 0002:000003d0       ?szDefaultRecvFile@@3PADA  0101d3d0     datatran.obj
+ 0002:000003e0       ??_C@_0BD@MBHN@Stop?5File?5Transfer?$AA@ 0101d3e0     datatran.obj
+ 0002:000003f4       ??_C@_0CA@BOBC@Cannot?5create?5transactor?5object?$AA@ 0101d3f4     datatran.obj
+ 0002:00000414       ??_C@_0BF@LKLF@File?5Transfer?5failed?$AA@ 0101d414     datatran.obj
+ 0002:0000042c       ??_C@_0BN@DINE@Cannot?5create?5object?5to?5send?$AA@ 0101d42c     datatran.obj
+ 0002:0000044c       ??_C@_0BA@NHGJ@Sending?5file?5?$CFs?$AA@ 0101d44c     datatran.obj
+ 0002:0000045c       ??_C@_0BE@KIOF@Start?5File?5Transfer?$AA@ 0101d45c     datatran.obj
+ 0002:00000470       ??_C@_0L@PLOG@?5CE_TXFULL?$AA@ 0101d470     datapack.obj
+ 0002:0000047c       ??_C@_0N@FEJM@?5CE_RXPARITY?$AA@ 0101d47c     datapack.obj
+ 0002:0000048c       ??_C@_0L@NOJL@?5CE_RXOVER?$AA@ 0101d48c     datapack.obj
+ 0002:00000498       ??_C@_0M@OPFH@?5CE_OVERRUN?$AA@ 0101d498     datapack.obj
+ 0002:000004a4       ??_C@_07GAJF@?5CE_IOE?$AA@ 0101d4a4     datapack.obj
+ 0002:000004ac       ??_C@_09HPNP@?5CE_FRAME?$AA@ 0101d4ac     datapack.obj
+ 0002:000004b8       ??_C@_09PDCE@?5CE_BREAK?$AA@ 0101d4b8     datapack.obj
+ 0002:000004c4       ??_C@_0M@PANG@CommError?5?3?$AA@ 0101d4c4     datapack.obj
+ 0002:000004d0       ??_C@_0P@HIAP@Read?5?$CFld?5bytes?$AA@ 0101d4d0     datapack.obj
+ 0002:000004e0       ??_C@_0BD@IMNC@Wait?5for?5?$CFld?5bytes?$AA@ 0101d4e0     datapack.obj
+ 0002:000004f4       ??_C@_0BD@HIEG@Received?5?$CFld?5bytes?$AA@ 0101d4f4     datapack.obj
+ 0002:00000508       ??_C@_0BA@JNON@Write?5?$CFld?5bytes?$AA@ 0101d508     datapack.obj
+ 0002:00000518       ??_C@_0P@BOGD@Sent?5?$CFld?5bytes?$AA@ 0101d518     datapack.obj
+ 0002:00000528       ??_C@_0CF@JBCL@Total?5to?5receive?3?5?$CFlu?5?9?5Received@ 0101d528     datapack.obj
+ 0002:00000550       ??_C@_0BO@KFDH@Total?5to?5send?3?5?$CFlu?5?9?5Sent?5?$CFlu?$AA@ 0101d550     datapack.obj
+ 0002:00000570       ??_C@_0BO@MHFC@Total?5to?5receive?5is?50?5bytes?5?$DP?$AA@ 0101d570     datapack.obj
+ 0002:00000590       ??_C@_0BL@DCLO@Total?5to?5send?5is?50?5bytes?5?$DP?$AA@ 0101d590     datapack.obj
+ 0002:000005b0       ?dwVolBits@@3PAKA          0101d5b0     intdata.obj
+ 0002:000005c0       ?dwVolFlags@@3PAKA         0101d5c0     intdata.obj
+ 0002:000005d0       ?dwModeBits@@3PAKA         0101d5d0     intdata.obj
+ 0002:000005e0       ?dwModeFlags@@3PAKA        0101d5e0     intdata.obj
+ 0002:000005f0       ?lpszVolumeNames@@3PAPADA  0101d5f0     intdata.obj
+ 0002:00000600       ?lpszModeNames@@3PAPADA    0101d600     intdata.obj
+ 0002:00000610       ??_C@_04GBOP@DIAL?$AA@     0101d610     intdata.obj
+ 0002:00000618       ??_C@_02HAKO@ON?$AA@       0101d618     intdata.obj
+ 0002:0000061c       ??_C@_09MJE@CALLSETUP?$AA@ 0101d61c     intdata.obj
+ 0002:00000628       ??_C@_03CMJG@OFF?$AA@      0101d628     intdata.obj
+ 0002:0000062c       ??_C@_04DJE@HIGH?$AA@      0101d62c     intdata.obj
+ 0002:00000634       ??_C@_06NELH@MEDIUM?$AA@   0101d634     intdata.obj
+ 0002:0000063c       ??_C@_03HKLE@LOW?$AA@      0101d63c     intdata.obj
+ 0002:00000640       ??_C@_04OKK@FAIL?$AA@      0101d640     intdata.obj
+ 0002:00000648       ??_C@_0CC@JHIG@FAIL?3?7?7Speaker?5volume?5test?5faile@ 0101d648     intdata.obj
+ 0002:0000066c       ??_C@_0BM@DEM@EXITING?5SPEAKER?5VOLUME?5TEST?$AA@ 0101d66c     intdata.obj
+ 0002:00000688       ??_C@_04NOOC@PASS?$AA@     0101d688     intdata.obj
+ 0002:00000690       ??_C@_0CA@IGPH@?7?7Speaker?5volume?5test?5succeeded?$AA@ 0101d690     intdata.obj
+ 0002:000006b0       ??_C@_0DH@IHOJ@FAIL?3?7?7Tester?5reported?5speaker?5v@ 0101d6b0     intdata.obj
+ 0002:000006e8       ??_C@_0DA@FMHO@FAIL?3?7?7Could?5not?5make?5a?5call?4?5?5T@ 0101d6e8     intdata.obj
+ 0002:00000718       ??_C@_0EL@NJBL@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 0101d718     intdata.obj
+ 0002:00000764       ??_C@_0DE@OONP@FAIL?3?7?7Could?5not?5initialize?5TAPI@ 0101d764     intdata.obj
+ 0002:00000798       ??_C@_0EK@ELIG@FAIL?3?7?7Unable?5to?5set?5volume?5to?5?$CF@ 0101d798     intdata.obj
+ 0002:000007e4       ??_C@_0CL@LMMK@?7?7MODEM?5DOES?5NOT?5SUPPORT?5?$CFs?5SPEA@ 0101d7e4     intdata.obj
+ 0002:00000810       ??_C@_0CC@NPJC@?7?7Starting?5speaker?5volume?5?$CFs?5tes@ 0101d810     intdata.obj
+ 0002:00000834       ??_C@_0IB@BGNO@FAIL?3?7?7Cannot?5set?5speaker?5volume@ 0101d834     intdata.obj
+ 0002:000008b8       ??_C@_0P@FNOC@SPEAKER?5VOLUME?$AA@ 0101d8b8     intdata.obj
+ 0002:000008c8       ??_C@_09KEOH@?$DMrunning?$DO?$AA@ 0101d8c8     intdata.obj
+ 0002:000008d4       ??_C@_0BN@KOK@STARTING?5SPEAKER?5VOLUME?5TEST?$AA@ 0101d8d4     intdata.obj
+ 0002:000008f4       ??_C@_0BH@FNPB@Testing?5Speaker?5Volume?$AA@ 0101d8f4     intdata.obj
+ 0002:0000090c       ??_C@_0BK@FACN@FAIL?3?7?7Speake?5mode?5failed?$AA@ 0101d90c     intdata.obj
+ 0002:00000928       ??_C@_0BK@BCDC@EXITING?5SPEAKER?5MODE?5TEST?$AA@ 0101d928     intdata.obj
+ 0002:00000944       ??_C@_0BO@JELJ@?7?7Speaker?5mode?5test?5succeeded?$AA@ 0101d944     intdata.obj
+ 0002:00000964       ??_C@_0DF@LGLL@FAIL?3?7?7Tester?5reported?5speaker?5m@ 0101d964     intdata.obj
+ 0002:0000099c       ??_C@_0EF@NBMK@FAIL?3?7?7Tester?5indicated?5failure?5@ 0101d99c     intdata.obj
+ 0002:000009e4       ??_C@_0EI@LHEM@FAIL?3?7?7UNABLE?5TO?5SET?5MODE?5TO?5?$CFs?0@ 0101d9e4     intdata.obj
+ 0002:00000a2c       ??_C@_0CJ@FFBN@?7?7MODEM?5DOES?5NOT?5SUPPORT?5?$CFs?5SPEA@ 0101da2c     intdata.obj
+ 0002:00000a58       ??_C@_0CA@JMFF@?7?7Starting?5speaker?5mode?5?$CFs?5test?$AA@ 0101da58     intdata.obj
+ 0002:00000a78       ??_C@_0N@IHLP@SPEAKER?5MODE?$AA@ 0101da78     intdata.obj
+ 0002:00000a88       ??_C@_0BL@MMPC@STARTING?5SPEAKER?5MODE?5TEST?$AA@ 0101da88     intdata.obj
+ 0002:00000aa4       ??_C@_0BF@KAJJ@Testing?5Speaker?5Mode?$AA@ 0101daa4     intdata.obj
+ 0002:00000abc       ??_C@_0BL@CCKG@EXITING?5SET?5SPEAKER?5VOLUME?$AA@ 0101dabc     intdata.obj
+ 0002:00000ad8       ??_C@_0BI@GAJD@lineSetDevConfig?5failed?$AA@ 0101dad8     intdata.obj
+ 0002:00000af0       ??_C@_0BI@HJJL@lineGetDevConfig?5failed?$AA@ 0101daf0     intdata.obj
+ 0002:00000b08       ??_C@_0P@OMBO@comm?1datamodem?$AA@ 0101db08     intdata.obj
+ 0002:00000b18       ??_C@_0BM@LCDM@ENTERING?5SET?5SPEAKER?5VOLUME?$AA@ 0101db18     intdata.obj
+ 0002:00000b34       ??_C@_0BJ@FNKN@EXITING?5SET?5SPEAKER?5MODE?$AA@ 0101db34     intdata.obj
+ 0002:00000b50       ??_C@_0BK@LDAD@ENTERING?5SET?5SPEAKER?5MODE?$AA@ 0101db50     intdata.obj
+ 0002:00000b6c       ??_C@_0BO@FPCE@FAIL?3?7?7Tone?5pulse?5test?5failed?$AA@ 0101db6c     intdata.obj
+ 0002:00000b8c       ??_C@_0BI@LDJI@EXITING?5TONE?5PULSE?5TEST?$AA@ 0101db8c     intdata.obj
+ 0002:00000ba4       ??_C@_0BM@MHON@?7?7Tone?5pulse?5test?5succeeded?$AA@ 0101dba4     intdata.obj
+ 0002:00000bc0       ??_C@_01MLA@P?$AA@         0101dbc0     intdata.obj
+ 0002:00000bc4       ??_C@_0ED@BAIP@FAIL?3?7?7TESTER?5SELECTED?5FAIL?5WHEN@ 0101dbc4     intdata.obj
+ 0002:00000c08       ??_C@_0CG@HLGO@?7?7MODEM?5DOES?5NOT?5SUPPORT?5TONE?5DI@ 0101dc08     intdata.obj
+ 0002:00000c30       ??_C@_0DN@PMOM@FAIL?3?7?7TESTER?5SELECTED?5FAIL?5WHEN@ 0101dc30     intdata.obj
+ 0002:00000c70       ??_C@_0BE@PPPL@lineMakeCall?5failed?$AA@ 0101dc70     intdata.obj
+ 0002:00000c84       ??_C@_01KGOM@T?$AA@        0101dc84     intdata.obj
+ 0002:00000c88       ??_C@_0DB@NFBI@FAIL?3?7?7TESTER?5SELECTED?5FAIL?5AT?5B@ 0101dc88     intdata.obj
+ 0002:00000cbc       ??_C@_0L@DKJG@TONE?5PULSE?$AA@ 0101dcbc     intdata.obj
+ 0002:00000cc8       ??_C@_0BJ@NNPG@STARTING?5TONE?5PULSE?5TEST?$AA@ 0101dcc8     intdata.obj
+ 0002:00000ce4       ??_C@_0BD@MNFI@Testing?5Tone?5Pulse?$AA@ 0101dce4     intdata.obj
+ 0002:00000cf8       ??_C@_0BO@KKCF@FAIL?3?7?7Blind?5dial?5test?5failed?$AA@ 0101dcf8     intdata.obj
+ 0002:00000d18       ??_C@_0BI@DHID@EXITING?5BLIND?5DIAL?5TEST?$AA@ 0101dd18     intdata.obj
+ 0002:00000d30       ??_C@_0BM@HMM@?7?7Blind?5dial?5test?5succeeded?$AA@ 0101dd30     intdata.obj
+ 0002:00000d4c       ??_C@_0DM@KOBM@FAIL?3?7?7TESTER?5SELECTED?5FAIL?5WHEN@ 0101dd4c     intdata.obj
+ 0002:00000d88       ??_C@_0DB@NLEB@FAIL?3?7?7TESTER?5SELECTED?5FAIL?5WHEN@ 0101dd88     intdata.obj
+ 0002:00000dbc       ??_C@_0L@JPH@BLIND?5DIAL?$AA@ 0101ddbc     intdata.obj
+ 0002:00000dc8       ??_C@_0BJ@FJON@STARTING?5BLIND?5DIAL?5TEST?$AA@ 0101ddc8     intdata.obj
+ 0002:00000de4       ??_C@_0BD@OAHP@Testing?5Blind?5Dial?$AA@ 0101dde4     intdata.obj
+ 0002:00000df8       ??_C@_0BE@EKNO@Testing?5?$CFs?5Protocol?$AA@ 0101ddf8     intdata.obj
+ 0002:00000e0c       ??_C@_08IALM@ISDN?1GSM?$AA@ 0101de0c     intdata.obj
+ 0002:00000e18       ??_C@_0CG@EICL@FAIL?3?7?7ISDN?1GSM?5Protocols?5test?5f@ 0101de18     intdata.obj
+ 0002:00000e40       ??_C@_0CA@LOAB@EXITING?5ISDN?1GSM?5PROTOCOLS?5TEST?$AA@ 0101de40     intdata.obj
+ 0002:00000e60       ??_C@_0CE@CIDJ@?7?7ISDN?1GSM?5Protocols?5test?5succee@ 0101de60     intdata.obj
+ 0002:00000e84       ??_C@_0BD@BAOL@ISDN?1GSM?5PROTOCOLS?$AA@ 0101de84     intdata.obj
+ 0002:00000e98       ??_C@_0CB@OKEC@STARTING?5ISDN?1GSM?5PROTOCOLS?5TEST@ 0101de98     intdata.obj
+ 0002:00000ebc       ??_C@_0BC@OHOG@comm?1extendedcaps?$AA@ 0101debc     intdata.obj
+ 0002:00000ed0       ??_C@_0BI@OKNH@?7?7?$CC?$CFs?$CC?5protocol?5test?5?$CFs?$AA@ 0101ded0     intdata.obj
+ 0002:00000ee8       ??_C@_0BL@PEFM@?7?7Unknown?5protocol?5test?5?$CFs?$AA@ 0101dee8     intdata.obj
+ 0002:00000f04       ??_C@_06IMAI@failed?$AA@   0101df04     intdata.obj
+ 0002:00000f0c       ??_C@_09LJOM@succeeded?$AA@ 0101df0c     intdata.obj
+ 0002:00000f18       ??_C@_0BL@LBBJ@TEST?5MODEM?5lineDrop?5failed?$AA@ 0101df18     intdata.obj
+ 0002:00000f34       ??_C@_0BI@CCFI@?7?7Testing?5?$CC?$CFs?$CC?5protocol?$AA@ 0101df34     intdata.obj
+ 0002:00000f4c       ??_C@_0BL@CEO@?7?7Testing?5unknown?5protocol?$AA@ 0101df4c     intdata.obj
+ 0002:00000f68       ??_C@_0BF@JJBC@No?5protocol?5selected?$AA@ 0101df68     intdata.obj
+ 0002:00000f80       ??_C@_0CF@JOPH@FAIL?3?7?7Callsetup?5timeout?5test?5fa@ 0101df80     intdata.obj
+ 0002:00000fa8       ??_C@_0BP@FCDD@EXITING?5CALLSETUP?5TIMEOUT?5TEST?$AA@ 0101dfa8     intdata.obj
+ 0002:00000fc8       ??_C@_0CD@INBC@?7?7Callsetup?5timeout?5test?5succeed@ 0101dfc8     intdata.obj
+ 0002:00000fec       ??_C@_0EG@BINP@FAIL?3?7?7TESTER?5SELECTED?5CALLSETUP@ 0101dfec     intdata.obj
+ 0002:00001034       ??_C@_0EF@NBLO@FAIL?3?7?7Timeout?5threshold?5exceede@ 0101e034     intdata.obj
+ 0002:0000107c       ??_C@_0DC@IBGN@FAIL?3?7?7Sending?5the?5file?5failed?4?5@ 0101e07c     intdata.obj
+ 0002:000010b0       ??_C@_0DB@NPNO@FAIL?3?7?7Making?5the?5call?5failed?4?5?5@ 0101e0b0     intdata.obj
+ 0002:000010e4       ??_C@_0DM@BGEB@FAIL?3?7?7Made?5connnection?0?5unable?5@ 0101e0e4     intdata.obj
+ 0002:00001120       ??_C@_0BP@LNIG@PASS?3?7?7Making?5the?5call?5failed?4?$AA@ 0101e120     intdata.obj
+ 0002:00001140       ??_C@_0DF@DNHK@FAIL?3?7?7TAPI?5Initialization?5faile@ 0101e140     intdata.obj
+ 0002:00001178       ??_C@_0BC@DOJN@CALLSETUP?5TIMEOUT?$AA@ 0101e178     intdata.obj
+ 0002:0000118c       ??_C@_0CA@BBIL@STARTING?5CALLSETUP?5TIMEOUT?5TEST?$AA@ 0101e18c     intdata.obj
+ 0002:000011ac       ??_C@_0BK@ECCN@Testing?5Callsetup?5Timeout?$AA@ 0101e1ac     intdata.obj
+ 0002:000011c8       ?lpszLineErrs@@3PAPADA     0101e1c8     logging.obj
+ 0002:00001324       ??_C@_0BD@NCOE@NOMULTIPLEINSTANCE?$AA@ 0101e324     logging.obj
+ 0002:00001338       ??_C@_0N@MENP@INVALFEATURE?$AA@ 0101e338     logging.obj
+ 0002:00001348       ??_C@_0BA@BDBD@BILLINGREJECTED?$AA@ 0101e348     logging.obj
+ 0002:00001358       ??_C@_0P@GKML@ADDRESSBLOCKED?$AA@ 0101e358     logging.obj
+ 0002:00001368       ??_C@_06DNDH@REINIT?$AA@   0101e368     logging.obj
+ 0002:00001370       ??_C@_0BD@OIGA@USERUSERINFOTOOBIG?$AA@ 0101e370     logging.obj
+ 0002:00001384       ??_C@_0O@NADK@UNINITIALIZED?$AA@ 0101e384     logging.obj
+ 0002:00001394       ??_C@_0L@NIIN@TARGETSELF?$AA@ 0101e394     logging.obj
+ 0002:000013a0       ??_C@_0P@DOMA@TARGETNOTFOUND?$AA@ 0101e3a0     logging.obj
+ 0002:000013b0       ??_C@_0BC@EABP@STRUCTURETOOSMALL?$AA@ 0101e3b0     logging.obj
+ 0002:000013c4       ??_C@_0P@DCAF@REQUESTOVERRUN?$AA@ 0101e3c4     logging.obj
+ 0002:000013d4       ??_C@_0BA@OFMB@RESOURCEUNAVAIL?$AA@ 0101e3d4     logging.obj
+ 0002:000013e4       ??_C@_0M@OPBI@RATEUNAVAIL?$AA@ 0101e3e4     logging.obj
+ 0002:000013f0       ??_C@_0BB@NDKO@OPERATIONUNAVAIL?$AA@ 0101e3f0     logging.obj
+ 0002:00001404       ??_C@_0BA@DOKF@OPERATIONFAILED?$AA@ 0101e404     logging.obj
+ 0002:00001414       ??_C@_0O@MOHB@NOTREGISTERED?$AA@ 0101e414     logging.obj
+ 0002:00001424       ??_C@_08FDFN@NOTOWNER?$AA@ 0101e424     logging.obj
+ 0002:00001430       ??_C@_09NNLB@NOREQUEST?$AA@ 0101e430     logging.obj
+ 0002:0000143c       ??_C@_05FEEP@NOMEM?$AA@    0101e43c     logging.obj
+ 0002:00001444       ??_C@_08DLBC@NODRIVER?$AA@ 0101e444     logging.obj
+ 0002:00001450       ??_C@_08FIGG@NODEVICE?$AA@ 0101e450     logging.obj
+ 0002:0000145c       ??_C@_0N@MFCI@NOCONFERENCE?$AA@ 0101e45c     logging.obj
+ 0002:0000146c       ??_C@_0BB@DMK@LINEMAPPERFAILED?$AA@ 0101e46c     logging.obj
+ 0002:00001480       ??_C@_0BC@LHDA@INVALTRANSFERMODE?$AA@ 0101e480     logging.obj
+ 0002:00001494       ??_C@_0O@GKGE@INVALTONEMODE?$AA@ 0101e494     logging.obj
+ 0002:000014a4       ??_C@_0O@KLFK@INVALTONELIST?$AA@ 0101e4a4     logging.obj
+ 0002:000014b4       ??_C@_09JEKO@INVALTONE?$AA@ 0101e4b4     logging.obj
+ 0002:000014c0       ??_C@_0N@NKD@INVALTIMEOUT?$AA@ 0101e4c0     logging.obj
+ 0002:000014d0       ??_C@_0BC@BCJE@INVALTERMINALMODE?$AA@ 0101e4d0     logging.obj
+ 0002:000014e4       ??_C@_0BA@MMCG@INVALTERMINALID?$AA@ 0101e4e4     logging.obj
+ 0002:000014f4       ??_C@_0BB@BILK@INVALREQUESTMODE?$AA@ 0101e4f4     logging.obj
+ 0002:00001508       ??_C@_09MFCI@INVALRATE?$AA@ 0101e508     logging.obj
+ 0002:00001514       ??_C@_0BA@DJKM@INVALPRIVSELECT?$AA@ 0101e514     logging.obj
+ 0002:00001524       ??_C@_0N@NNPJ@INVALPOINTER?$AA@ 0101e524     logging.obj
+ 0002:00001534       ??_C@_0O@LJHI@INVALPARKMODE?$AA@ 0101e534     logging.obj
+ 0002:00001544       ??_C@_0M@JFLE@INVALPARKID?$AA@ 0101e544     logging.obj
+ 0002:00001550       ??_C@_0L@BKOB@INVALPARAM?$AA@ 0101e550     logging.obj
+ 0002:0000155c       ??_C@_0BM@DBHA@inval?5err?5code?5?$CI0x80000031?$CJ?$AA@ 0101e55c     logging.obj
+ 0002:00001578       ??_C@_0P@LEGF@INVALMESSAGEID?$AA@ 0101e578     logging.obj
+ 0002:00001588       ??_C@_0P@EPPL@INVALMEDIAMODE?$AA@ 0101e588     logging.obj
+ 0002:00001598       ??_C@_0P@IOMF@INVALMEDIALIST?$AA@ 0101e598     logging.obj
+ 0002:000015a8       ??_C@_0O@NEHD@INVALLOCATION?$AA@ 0101e5a8     logging.obj
+ 0002:000015b8       ??_C@_0P@DAON@INVALLINESTATE?$AA@ 0101e5b8     logging.obj
+ 0002:000015c8       ??_C@_0BA@JAIH@INVALLINEHANDLE?$AA@ 0101e5c8     logging.obj
+ 0002:000015d8       ??_C@_0N@OIFG@INVALGROUPID?$AA@ 0101e5d8     logging.obj
+ 0002:000015e8       ??_C@_0BA@BHAO@INVALEXTVERSION?$AA@ 0101e5e8     logging.obj
+ 0002:000015f8       ??_C@_0M@LGGC@INVALDIGITS?$AA@ 0101e5f8     logging.obj
+ 0002:00001604       ??_C@_0P@KPGH@INVALDIGITMODE?$AA@ 0101e604     logging.obj
+ 0002:00001614       ??_C@_0P@GOFJ@INVALDIGITLIST?$AA@ 0101e614     logging.obj
+ 0002:00001624       ??_C@_0BA@EKAO@INVALDIALPARAMS?$AA@ 0101e624     logging.obj
+ 0002:00001634       ??_C@_0BC@IJDI@INVALDEVICEHANDLE?$AA@ 0101e634     logging.obj
+ 0002:00001648       ??_C@_0BB@MFMH@INVALDEVICECLASS?$AA@ 0101e648     logging.obj
+ 0002:0000165c       ??_C@_0BB@KPBI@INVALCOUNTRYCODE?$AA@ 0101e65c     logging.obj
+ 0002:00001670       ??_C@_0BH@CIMP@INVALCONSULTCALLHANDLE?$AA@ 0101e670     logging.obj
+ 0002:00001688       ??_C@_0BE@FHKI@INVALCONFCALLHANDLE?$AA@ 0101e688     logging.obj
+ 0002:0000169c       ??_C@_0BC@BHO@INVALCOMPLETIONID?$AA@ 0101e69c     logging.obj
+ 0002:000016b0       ??_C@_09GIDD@INVALCARD?$AA@ 0101e6b0     logging.obj
+ 0002:000016bc       ??_C@_0BD@DOAI@INVALCALLSTATELIST?$AA@ 0101e6bc     logging.obj
+ 0002:000016d0       ??_C@_0P@EJKK@INVALCALLSTATE?$AA@ 0101e6d0     logging.obj
+ 0002:000016e0       ??_C@_0BA@JPNM@INVALCALLSELECT?$AA@ 0101e6e0     logging.obj
+ 0002:000016f0       ??_C@_0BD@PNGO@INVALCALLPRIVILEGE?$AA@ 0101e6f0     logging.obj
+ 0002:00001704       ??_C@_0BA@NOOA@INVALCALLPARAMS?$AA@ 0101e704     logging.obj
+ 0002:00001714       ??_C@_0BA@JJPO@INVALCALLHANDLE?$AA@ 0101e714     logging.obj
+ 0002:00001724       ??_C@_0BD@PJCO@INVALCALLCOMPLMODE?$AA@ 0101e724     logging.obj
+ 0002:00001738       ??_C@_0BA@HMEB@INVALBEARERMODE?$AA@ 0101e738     logging.obj
+ 0002:00001748       ??_C@_0N@NEOI@INVALAPPNAME?$AA@ 0101e748     logging.obj
+ 0002:00001758       ??_C@_0P@MEGH@INVALAPPHANDLE?$AA@ 0101e758     logging.obj
+ 0002:00001768       ??_C@_0BC@GPNE@INVALADDRESSSTATE?$AA@ 0101e768     logging.obj
+ 0002:0000177c       ??_C@_0BB@HHMN@INVALADDRESSMODE?$AA@ 0101e77c     logging.obj
+ 0002:00001790       ??_C@_0P@NPNJ@INVALADDRESSID?$AA@ 0101e790     logging.obj
+ 0002:000017a0       ??_C@_0N@GAJ@INVALADDRESS?$AA@ 0101e7a0     logging.obj
+ 0002:000017b0       ??_C@_05OJNG@INUSE?$AA@    0101e7b0     logging.obj
+ 0002:000017b8       ??_C@_0P@ONLF@INIFILECORRUPT?$AA@ 0101e7b8     logging.obj
+ 0002:000017c8       ??_C@_0BH@LPMP@INCOMPATIBLEEXTVERSION?$AA@ 0101e7c8     logging.obj
+ 0002:000017e0       ??_C@_0BH@DJIO@INCOMPATIBLEAPIVERSION?$AA@ 0101e7e0     logging.obj
+ 0002:000017f8       ??_C@_09JMHL@DIALQUIET?$AA@ 0101e7f8     logging.obj
+ 0002:00001804       ??_C@_0L@DBNJ@DIALPROMPT?$AA@ 0101e804     logging.obj
+ 0002:00001810       ??_C@_0N@HFKI@DIALDIALTONE?$AA@ 0101e810     logging.obj
+ 0002:00001820       ??_C@_0M@CGNK@DIALBILLING?$AA@ 0101e820     logging.obj
+ 0002:0000182c       ??_C@_0P@MELK@CONFERENCEFULL?$AA@ 0101e82c     logging.obj
+ 0002:0000183c       ??_C@_0BC@PMMF@COMPLETIONOVERRUN?$AA@ 0101e83c     logging.obj
+ 0002:00001850       ??_C@_0M@JCPC@CALLUNAVAIL?$AA@ 0101e850     logging.obj
+ 0002:0000185c       ??_C@_0BM@ILEL@inval?5err?5code?5?$CI0x80000004?$CJ?$AA@ 0101e85c     logging.obj
+ 0002:00001878       ??_C@_0BC@MBFO@BEARERMODEUNAVAIL?$AA@ 0101e878     logging.obj
+ 0002:0000188c       ??_C@_0M@MNOC@BADDEVICEID?$AA@ 0101e88c     logging.obj
+ 0002:00001898       ??_C@_09OBJM@ALLOCATED?$AA@ 0101e898     logging.obj
+ 0002:000018a4       ??_C@_07ILPD@SUCCESS?$AA@  0101e8a4     logging.obj
+ 0002:000018ac       ??_C@_0BL@LBIE@LOG?5CREATED?3MCT?5VERSION?3?$CFs?$AA@ 0101e8ac     logging.obj
+ 0002:000018c8       ??_C@_0CI@DPMH@?2StringFileInfo?2040904b0?2Product@ 0101e8c8     logging.obj
+ 0002:000018f0       ??_C@_09DFJI@mct96?4exe?$AA@ 0101e8f0     logging.obj
+ 0002:000018fc       ??_C@_0L@DOII@LOG?5CLOSED?$AA@ 0101e8fc     logging.obj
+ 0002:00001908       ??_C@_08OIHP@?$CFs?$CFc?$CFs?$AN?6?$AA@ 0101e908     logging.obj
+ 0002:00001914       ??_C@_05LLOB@FALSE?$AA@    0101e914     logging.obj
+ 0002:0000191c       ??_C@_04LNAG@TRUE?$AA@     0101e91c     logging.obj
+ 0002:00001924       ??_C@_0BL@KLKM@TAPI?5ERROR?3?5?$CFs?5returned?5?$CFs?$AA@ 0101e924     logging.obj
+ 0002:00001940       ??_C@_0O@ILOK@?$CFlu?30?$CFlu?30?$CFlu?$AA@ 0101e940     logging.obj
+ 0002:00001950       ??_C@_0N@BELN@?$CFlu?30?$CFlu?3?$CFlu?$AA@ 0101e950     logging.obj
+ 0002:00001960       ??_C@_0N@GLID@?$CFlu?3?$CFlu?30?$CFlu?$AA@ 0101e960     logging.obj
+ 0002:00001970       ??_C@_0M@HNMC@?$CFlu?3?$CFlu?3?$CFlu?$AA@ 0101e970     logging.obj
+ 0002:0000197c       ??_C@_0N@EAHN@Invalid?5Time?$AA@ 0101e97c     logging.obj
+ 0002:000019a0       ??_C@_0L@IAGP@CMainFrame?$AA@ 0101e9a0     mainfrm.obj
+ 0002:000019b0       ??_R0?AVCFrameWnd@@@8      0101e9b0     mainfrm.obj
+ 0002:000019c8       ??_R0?AVCMainFrame@@@8     0101e9c8     mainfrm.obj
+ 0002:000019e4       ??_C@_0N@FNKM@LocalWndRect?$AA@ 0101e9e4     mainfrm.obj
+ 0002:000019f4       ??_C@_0BH@DGKP@Local?5Modem?5Properties?$AA@ 0101e9f4     mainfrm.obj
+ 0002:00001a0c       ??_C@_0M@COBJ@TestWndRect?$AA@ 0101ea0c     mainfrm.obj
+ 0002:00001a18       ??_C@_0N@DNFP@Test?5Results?$AA@ 0101ea18     mainfrm.obj
+ 0002:00001a28       ??_C@_08BIGC@Settings?$AA@ 0101ea28     mainfrm.obj
+ 0002:00001a34       ??_C@_0M@OGIO@MainWndRect?$AA@ 0101ea34     mainfrm.obj
+ 0002:00001a40       ??_C@_01KMAE@?0?$AA@       0101ea40     mainfrm.obj
+ 0002:00001a48       ??_R0?AVCEdit@@@8          0101ea48     mct96.obj
+ 0002:00001a60       ??_R0?AVCWinThread@@@8     0101ea60     mct96.obj
+ 0002:00001a80       ??_R0?AVCWinApp@@@8        0101ea80     mct96.obj
+ 0002:00001a98       ??_R0?AVCMct96App@@@8      0101ea98     mct96.obj
+ 0002:00001ab0       ??_C@_0HO@PBO@You?5need?5to?5replace?5this?5beta?5ve@ 0101eab0     mct96.obj
+ 0002:00001b30       ??_C@_0CC@GED@MCT96?5is?5now?5officially?5released@ 0101eb30     mct96.obj
+ 0002:00001b54       ??_C@_0FA@HJBM@REMOTE?5line?5initialization?5faile@ 0101eb54     mct96.obj
+ 0002:00001ba4       ??_C@_0CC@NDOL@LOCAL?5line?5initialization?5failed@ 0101eba4     mct96.obj
+ 0002:00001bc8       ??_C@_0BI@FPAP@Remote?5Machine?5Name?3?7?$CFs?$AA@ 0101ebc8     mct96.obj
+ 0002:00001be0       ??_C@_0BH@GCGK@Local?5Machine?5Name?3?7?$CFs?$AA@ 0101ebe0     mct96.obj
+ 0002:00001bf8       ??_C@_0BG@JPDC@Failed?5to?5create?5log?4?$AA@ 0101ebf8     mct96.obj
+ 0002:00001c10       ??_C@_0HA@FCAI@Could?5not?5start?5the?5RPC?5server?5o@ 0101ec10     mct96.obj
+ 0002:00001c80       ??_C@_0BC@IBFE@RPC?5Server?5failed?$AA@ 0101ec80     mct96.obj
+ 0002:00001c94       ??_C@_09FILD@Microsoft?$AA@ 0101ec94     mct96.obj
+ 0002:00001ca0       ??_R0?AVCAboutDlg@@@8      0101eca0     mct96.obj
+ 0002:00001cb8       ??_C@_01FCOA@?5?$AA@       0101ecb8     mct96.obj
+ 0002:00001cbc       ??_C@_0CF@NACF@?2StringFileInfo?2040904b0?2Company@ 0101ecbc     mct96.obj
+ 0002:00001ce4       ??_C@_0CI@HNBF@?2StringFileInfo?2040904b0?2LegalCo@ 0101ece4     mct96.obj
+ 0002:00001d0c       ??_C@_09MLJL@CMct96Doc?$AA@ 0101ed0c     mct96doc.obj
+ 0002:00001d18       ??_R0?AVCDocument@@@8      0101ed18     mct96doc.obj
+ 0002:00001d30       ??_R0?AVCMct96Doc@@@8      0101ed30     mct96doc.obj
+ 0002:00001d48       ??_C@_0L@CKHD@CMct96View?$AA@ 0101ed48     mct96v.obj
+ 0002:00001d58       ??_R0?AVCView@@@8          0101ed58     mct96v.obj
+ 0002:00001d70       ??_R0?AVCMct96View@@@8     0101ed70     mct96v.obj
+ 0002:00001d8c       ??_C@_0BP@PPL@Logging?5window?5creation?5failed?$AA@ 0101ed8c     mct96v.obj
+ 0002:00001db0       ??_R0?AVParams2@@@8        0101edb0     params2.obj
+ 0002:00001dc8       ??_C@_0N@ONOM@c?3?2mct96?4log?$AA@ 0101edc8     params2.obj
+ 0002:00001dd8       ??_R0?AVCButton@@@8        0101edd8     params2.obj
+ 0002:00001df0       ??_C@_0L@MKKE@VoicePhone?$AA@ 0101edf0     params2.obj
+ 0002:00001dfc       ??_C@_09JILH@TestPhone?$AA@ 0101edfc     params2.obj
+ 0002:00001e08       ??_C@_0P@EJDL@ReferencePhone?$AA@ 0101ee08     params2.obj
+ 0002:00001e18       ??_C@_08DFEK@Detailed?$AA@ 0101ee18     params2.obj
+ 0002:00001e24       ??_C@_0BB@DLMO@InterTestTimeout?$AA@ 0101ee24     params2.obj
+ 0002:00001e38       ??_C@_07OHFK@LogPath?$AA@  0101ee38     params2.obj
+ 0002:00001e40       ??_C@_07FFME@Enabled?$AA@  0101ee40     params2.obj
+ 0002:00001e48       ??_C@_0O@DEHN@ReferenceName?$AA@ 0101ee48     params2.obj
+ 0002:00001e58       ??_C@_0CH@PBOD@You?5must?5enter?5reference?5compute@ 0101ee58     params2.obj
+ 0002:00001e80       ??_C@_0CG@LCCA@You?5must?5enter?5reference?5phone?5n@ 0101ee80     params2.obj
+ 0002:00001ea8       ??_C@_0CB@IKCL@You?5must?5enter?5test?5phone?5number@ 0101eea8     params2.obj
+ 0002:00001ecc       ??_C@_0CP@KL@You?5must?5enter?5a?5path?5and?5filena@ 0101eecc     params2.obj
+ 0002:00001efc       ??_C@_0M@KEKD@MCT96?5Error?$AA@ 0101eefc     params2.obj
+ 0002:00002090       ??_C@_0M@HLGF@Analog?5NRLP?$AA@ 0101f090     tapi.obj
+ 0002:0000209c       ??_C@_0L@NDPN@Analog?5RLP?$AA@ 0101f09c     tapi.obj
+ 0002:000020a8       ??_C@_0BC@FDBP@V?4110?5?$CI57?46K?0GSM?$CJ?$AA@ 0101f0a8     tapi.obj
+ 0002:000020bc       ??_C@_0BC@HDAA@V?4110?5?$CI38?44K?0GSM?$CJ?$AA@ 0101f0bc     tapi.obj
+ 0002:000020d0       ??_C@_0BC@DCDJ@V?4110?5?$CI28?48K?0GSM?$CJ?$AA@ 0101f0d0     tapi.obj
+ 0002:000020e4       ??_C@_0BC@EJLB@V?4110?5?$CI19?42K?0GSM?$CJ?$AA@ 0101f0e4     tapi.obj
+ 0002:000020f8       ??_C@_0BC@HHOF@V?4110?5?$CI14?44K?0GSM?$CJ?$AA@ 0101f0f8     tapi.obj
+ 0002:0000210c       ??_C@_0BC@EAAD@V?4110?5?$CI12?40K?0GSM?$CJ?$AA@ 0101f10c     tapi.obj
+ 0002:00002120       ??_C@_0BB@HPKF@V?4110?5?$CI9?46K?0GSM?$CJ?$AA@ 0101f120     tapi.obj
+ 0002:00002134       ??_C@_0BB@DFFM@V?4110?5?$CI4?48K?0GSM?$CJ?$AA@ 0101f134     tapi.obj
+ 0002:00002148       ??_C@_0BB@HGBH@V?4110?5?$CI2?44K?0GSM?$CJ?$AA@ 0101f148     tapi.obj
+ 0002:0000215c       ??_C@_0BB@NHLC@V?4110?5?$CI1?42K?0GSM?$CJ?$AA@ 0101f15c     tapi.obj
+ 0002:00002170       ??_C@_0BA@ICIF@V?4120?5?$CI56K?0GSM?$CJ?$AA@ 0101f170     tapi.obj
+ 0002:00002180       ??_C@_0BA@HNN@V?4120?5?$CI64K?0GSM?$CJ?$AA@ 0101f180     tapi.obj
+ 0002:00002190       ??_C@_0BA@NKDL@PPP?5?5?5?$CI64K?0GSM?$CJ?$AA@ 0101f190     tapi.obj
+ 0002:000021a0       ??_C@_0BA@FPGD@PPP?5?5?5?$CI56K?0GSM?$CJ?$AA@ 0101f1a0     tapi.obj
+ 0002:000021b0       ??_C@_0O@FBMO@V?4110?5?$CI57?46K?$CJ?$AA@ 0101f1b0     tapi.obj
+ 0002:000021c0       ??_C@_0O@OJPD@V?4110?5?$CI38?44K?$CJ?$AA@ 0101f1c0     tapi.obj
+ 0002:000021d0       ??_C@_0O@KELM@V?4110?5?$CI28?48K?$CJ?$AA@ 0101f1d0     tapi.obj
+ 0002:000021e0       ??_C@_0O@IOOB@V?4110?5?$CI19?42K?$CJ?$AA@ 0101f1e0     tapi.obj
+ 0002:000021f0       ??_C@_0O@EDAM@V?4110?5?$CI14?44K?$CJ?$AA@ 0101f1f0     tapi.obj
+ 0002:00002200       ??_C@_0O@MLIJ@V?4110?5?$CI12?40K?$CJ?$AA@ 0101f200     tapi.obj
+ 0002:00002210       ??_C@_0N@CFPP@V?4110?5?$CI9?46K?$CJ?$AA@ 0101f210     tapi.obj
+ 0002:00002220       ??_C@_0N@HIKH@V?4110?5?$CI4?48K?$CJ?$AA@ 0101f220     tapi.obj
+ 0002:00002230       ??_C@_0N@GAJH@V?4110?5?$CI2?44K?$CJ?$AA@ 0101f230     tapi.obj
+ 0002:00002240       ??_C@_0N@GMIP@V?4110?5?$CI1?42K?$CJ?$AA@ 0101f240     tapi.obj
+ 0002:00002250       ??_C@_0M@HMGI@X?475?5?5?$CIBTX?$CJ?$AA@ 0101f250     tapi.obj
+ 0002:0000225c       ??_C@_0N@GIBH@X?475?5?5?$CIT?470?$CJ?$AA@ 0101f25c     tapi.obj
+ 0002:0000226c       ??_C@_0N@BKIB@X?475?5?5?$CI128K?$CJ?$AA@ 0101f26c     tapi.obj
+ 0002:0000227c       ??_C@_0M@NEOP@X?475?5?5?$CI64K?$CJ?$AA@ 0101f27c     tapi.obj
+ 0002:00002288       ??_C@_0N@PEDG@V?4120?5?$CI128K?$CJ?$AA@ 0101f288     tapi.obj
+ 0002:00002298       ??_C@_0N@KPFI@V?4120?5?$CI112K?$CJ?$AA@ 0101f298     tapi.obj
+ 0002:000022a8       ??_C@_0M@KIEJ@V?4120?5?$CI56K?$CJ?$AA@ 0101f2a8     tapi.obj
+ 0002:000022b4       ??_C@_0M@GDJC@V?4120?5?$CI64K?$CJ?$AA@ 0101f2b4     tapi.obj
+ 0002:000022c0       ??_C@_0BE@NDOA@PPP?5?5?5?$CI128K?0MSCHAP?$CJ?$AA@ 0101f2c0     tapi.obj
+ 0002:000022d4       ??_C@_0BC@FOOA@PPP?5?5?5?$CI128K?0CHAP?$CJ?$AA@ 0101f2d4     tapi.obj
+ 0002:000022e8       ??_C@_0BB@LFN@PPP?5?5?5?$CI128K?0PAP?$CJ?$AA@ 0101f2e8     tapi.obj
+ 0002:000022fc       ??_C@_0N@EMAB@PPP?5?5?5?$CI128K?$CJ?$AA@ 0101f2fc     tapi.obj
+ 0002:0000230c       ??_C@_0BE@INOG@PPP?5?5?5?$CI112K?0MSCHAP?$CJ?$AA@ 0101f30c     tapi.obj
+ 0002:00002320       ??_C@_0BC@MJBB@PPP?5?5?5?$CI112K?0CHAP?$CJ?$AA@ 0101f320     tapi.obj
+ 0002:00002334       ??_C@_0BB@PKKI@PPP?5?5?5?$CI112K?0PAP?$CJ?$AA@ 0101f334     tapi.obj
+ 0002:00002348       ??_C@_0N@BHGP@PPP?5?5?5?$CI112K?$CJ?$AA@ 0101f348     tapi.obj
+ 0002:00002358       ??_C@_0M@FEHK@PPP?5?5?5?$CI64K?$CJ?$AA@ 0101f358     tapi.obj
+ 0002:00002364       ??_C@_0M@JPKB@PPP?5?5?5?$CI56K?$CJ?$AA@ 0101f364     tapi.obj
+ 0002:00002370       ??_C@_0O@IAN@AUTO?5?5?$CI2?5Ch?4?$CJ?$AA@ 0101f370     tapi.obj
+ 0002:00002380       ??_C@_0O@LGON@AUTO?5?5?$CI1?5Ch?4?$CJ?$AA@ 0101f380     tapi.obj
+ 0002:00002390       ??_C@_0GK@FDNM@FAIL?3?7?7Couldn?8t?5get?5comm?5handle?5@ 0101f390     tapi.obj
+ 0002:000023fc       ??_C@_0BJ@JDP@REFERENCE?5MODEM?5lineOpen?$AA@ 0101f3fc     tapi.obj
+ 0002:00002418       ??_C@_0FO@IPCB@FAIL?3?7?7Couldn?8t?5get?5comm?5handle?5@ 0101f418     tapi.obj
+ 0002:00002478       ??_C@_0CJ@CCJI@Verify?5that?5modem?5is?5installed?5c@ 0101f478     tapi.obj
+ 0002:000024a4       ??_C@_0BE@CMHO@TEST?5MODEM?5lineOpen?$AA@ 0101f4a4     tapi.obj
+ 0002:000024b8       ??_C@_0BF@OJDJ@?7?7EXITING?5CLOSE?5TAPI?$AA@ 0101f4b8     tapi.obj
+ 0002:000024d0       ??_C@_0BG@JAAK@?7?7ENTERING?5CLOSE?5TAPI?$AA@ 0101f4d0     tapi.obj
+ 0002:000024e8       ??_C@_0BF@OONE@TEST?5MODEM?5lineReply?$AA@ 0101f4e8     tapi.obj
+ 0002:00002500       ??_C@_0BG@NGHC@TEST?5MODEM?5lineAnswer?$AA@ 0101f500     tapi.obj
+ 0002:00002518       ??_C@_0BO@EHK@TEST?5MODEM?5lineDeallocateCall?$AA@ 0101f518     tapi.obj
+ 0002:00002538       ??_C@_0BD@BPEG@?7?7DETECTED?5DTMF?5?$CFc?$AA@ 0101f538     tapi.obj
+ 0002:0000254c       ??_C@_0BK@IGPB@REFERENCE?5MODEM?5lineReply?$AA@ 0101f54c     tapi.obj
+ 0002:00002568       ??_C@_0CD@JCOI@REFERENCE?5MODEM?5lineDeallocateCa@ 0101f568     tapi.obj
+ 0002:0000258c       ??_C@_0BL@LOBK@REFERENCE?5MODEM?5lineAnswer?$AA@ 0101f58c     tapi.obj
+ 0002:000025a8       ??_C@_0BE@NEBH@?7?7EXITING?5MAKE?5CALL?$AA@ 0101f5a8     tapi.obj
+ 0002:000025bc       ??_C@_0CE@PAKO@?7?7Timed?5out?5waiting?5for?5connecti@ 0101f5bc     tapi.obj
+ 0002:000025e0       ??_C@_0BG@GDFB@?7?7MAKING?5A?5CALL?5TO?5?$CFs?$AA@ 0101f5e0     tapi.obj
+ 0002:000025f8       ??_C@_0BE@HNPA@?7?7EXITING?5DROP?5CALL?$AA@ 0101f5f8     tapi.obj
+ 0002:0000260c       ??_C@_0DP@OCAG@FAIL?3?7?7Timed?5out?5waiting?5for?5cal@ 0101f60c     tapi.obj
+ 0002:0000264c       ??_C@_0CA@KMJF@REFERENCE?5MODEM?5lineDrop?5failed?$AA@ 0101f64c     tapi.obj
+ 0002:0000266c       ??_C@_0BF@EOJA@?7?7ENTERING?5DROP?5CALL?$AA@ 0101f66c     tapi.obj
+ 0002:00002684       ??_C@_0CC@FPLN@Modem?5registry?5value?5?$CFs?5not?5foun@ 0101f684     tapi.obj
+ 0002:000026a8       ??_C@_0BN@PMEI@Modem?5registry?5key?5not?5found?$AA@ 0101f6a8     tapi.obj
+ 0002:000026c8       ??_C@_0BP@DGJJ@DevSpecific?5structure?5is?5empty?$AA@ 0101f6c8     tapi.obj
+ 0002:000026e8       ??_C@_0EA@CDLJ@FAIL?3?7?7Couldn?8t?5get?5line?5device?5@ 0101f6e8     tapi.obj
+ 0002:00002728       ??_C@_0BB@LHI@Max?5DCE?5Rate?5?$CFlu?$AA@ 0101f728     tapi.obj
+ 0002:0000273c       ??_C@_0BB@DGCL@Max?5DTE?5Rate?5?$CFlu?$AA@ 0101f73c     tapi.obj
+ 0002:00002750       ??_C@_0BH@ODJP@Inactivity?5Timeout?5?$CFlu?$AA@ 0101f750     tapi.obj
+ 0002:00002768       ??_C@_0BH@KOKN@CallSetupFailTimer?5?$CFlu?$AA@ 0101f768     tapi.obj
+ 0002:00002780       ??_C@_0BM@JJDD@Supports?5ISDN?1GSM?5Protocols?$AA@ 0101f780     tapi.obj
+ 0002:0000279c       ??_C@_0BG@IML@Supports?5V23?5OVERRIDE?$AA@ 0101f79c     tapi.obj
+ 0002:000027b4       ??_C@_0BD@NFI@Supports?5TONE?5DIAL?$AA@ 0101f7b4     tapi.obj
+ 0002:000027c8       ??_C@_0BG@MLFB@Supports?5SPEED?5ADJUST?$AA@ 0101f7c8     tapi.obj
+ 0002:000027e0       ??_C@_0BL@MGNG@Supports?5FLOW?5CONTROL?5SOFT?$AA@ 0101f7e0     tapi.obj
+ 0002:000027fc       ??_C@_0BL@DDCA@Supports?5FLOW?5CONTROL?5HARD?$AA@ 0101f7fc     tapi.obj
+ 0002:00002818       ??_C@_0BD@IEEO@Supports?5FORCED?5EC?$AA@ 0101f818     tapi.obj
+ 0002:0000282c       ??_C@_0BH@KHGG@Supports?5ERROR?5CONTROL?$AA@ 0101f82c     tapi.obj
+ 0002:00002844       ??_C@_0BC@MNEO@Supports?5CELLULAR?$AA@ 0101f844     tapi.obj
+ 0002:00002858       ??_C@_0BI@HKBF@Supports?5CCITT?5OVERRIDE?$AA@ 0101f858     tapi.obj
+ 0002:00002870       ??_C@_0BE@PAP@Supports?5BLIND?5DIAL?$AA@ 0101f870     tapi.obj
+ 0002:00002884       ??_C@_0BF@MFGM@Supports?5COMPRESSION?$AA@ 0101f884     tapi.obj
+ 0002:0000289c       ??_C@_0BG@FALM@Supports?5Speaker?5Mode?$AA@ 0101f89c     tapi.obj
+ 0002:000028b4       ??_C@_0BI@GGDK@Supports?5Speaker?5Volume?$AA@ 0101f8b4     tapi.obj
+ 0002:000028cc       ??_C@_0BC@GOKA@Supports?5DIALTONE?$AA@ 0101f8cc     tapi.obj
+ 0002:000028e0       ??_C@_0BD@GEEG@Supports?5DIALQUIET?$AA@ 0101f8e0     tapi.obj
+ 0002:000028f4       ??_C@_0BF@JENM@Supports?5DIALBILLING?$AA@ 0101f8f4     tapi.obj
+ 0002:0000290c       ??_C@_0BJ@KKFA@GetCommProperties?5failed?$AA@ 0101f90c     tapi.obj
+ 0002:00002928       ??_C@_08MFAK@wave?1out?$AA@ 0101f928     tapi.obj
+ 0002:00002934       ??_C@_0CA@BIC@?7?7Doesn?8t?5support?5handset?5audio?$AA@ 0101f934     tapi.obj
+ 0002:00002954       ??_C@_07HDII@wave?1in?$AA@ 0101f954     tapi.obj
+ 0002:0000295c       ??_C@_0CJ@LABA@FAIL?3?7?7Could?5not?5open?5LOCAL?5phon@ 0101f95c     tapi.obj
+ 0002:00002988       ??_C@_0EC@IDHD@FAIL?3?7?7Unable?5to?5get?5phone?5devic@ 0101f988     tapi.obj
+ 0002:000029cc       ??_C@_0CC@DKNP@WARNING?3?7?7Phone?5device?5not?5found@ 0101f9cc     tapi.obj
+ 0002:000029f0       ??_C@_0DC@DKKF@WARNING?3?7?7Couldn?8t?5initialize?5LO@ 0101f9f0     tapi.obj
+ 0002:00002a24       ??_C@_0DA@BGID@?7?7Test?5modem?5or?5Unimodem?5does?5no@ 0101fa24     tapi.obj
+ 0002:00002a54       ??_C@_0BB@GAIB@lineGetID?5failed?$AA@ 0101fa54     tapi.obj
+ 0002:00002a68       ??_C@_0BG@KPNI@lineGetDevCaps?5failed?$AA@ 0101fa68     tapi.obj
+ 0002:00002a80       ??_R0?AVCTestResults@@@8   0101fa80     testres.obj
+ 0002:00002a9c       ??_C@_0BH@JDLJ@EXITING?5SEND?5FILE?5TEST?$AA@ 0101fa9c     tests.obj
+ 0002:00002ab4       ??_C@_0BL@LFIJ@?7?7Send?5File?5Test?5succeeded?$AA@ 0101fab4     tests.obj
+ 0002:00002ad0       ??_C@_09LDML@SEND?5FILE?$AA@ 0101fad0     tests.obj
+ 0002:00002adc       ??_C@_0BI@PNDP@STARTING?5SEND?5FILE?5TEST?$AA@ 0101fadc     tests.obj
+ 0002:00002af4       ??_C@_0BM@PDJA@EXITING?5CELLULAR?5SPEED?5TEST?$AA@ 0101faf4     tests.obj
+ 0002:00002b10       ??_C@_0BH@OABA@?7?7Speed?5Test?5succeeded?$AA@ 0101fb10     tests.obj
+ 0002:00002b28       ??_C@_0CM@KIGD@FAIL?3?7?7Speed?5test?5failed?4?5?5Termi@ 0101fb28     tests.obj
+ 0002:00002b54       ??_C@_0CM@JKEH@FAIL?3?7?7Setting?5?$CFs?5failed?4?5?5Termi@ 0101fb54     tests.obj
+ 0002:00002b80       ??_C@_0P@LHA@CELLULAR?5SPEED?$AA@ 0101fb80     tests.obj
+ 0002:00002b90       ??_C@_0BN@PKDG@STARTING?5CELLULAR?5SPEED?5TEST?$AA@ 0101fb90     tests.obj
+ 0002:00002bb0       ??_C@_0BD@LMEC@EXITING?5SPEED?5TEST?$AA@ 0101fbb0     tests.obj
+ 0002:00002bc4       ??_C@_05JMBF@SPEED?$AA@    0101fbc4     tests.obj
+ 0002:00002bcc       ??_C@_0BE@PHKD@STARTING?5SPEED?5TEST?$AA@ 0101fbcc     tests.obj
+ 0002:00002be0       ??_C@_0BH@FKDG@?7?7GetCommConfig?5failed?$AA@ 0101fbe0     tests.obj
+ 0002:00002bf8       ??_C@_0EH@KFJA@FAIL?3?7?7Test?5modem?5speed?5does?5not@ 0101fbf8     tests.obj
+ 0002:00002c40       ??_C@_0EM@FHOD@WARNING?3?7?7Remote?5modem?5speed?5doe@ 0101fc40     tests.obj
+ 0002:00002c8c       ??_C@_0DL@JDN@WARNING?3?7Modem?5speed?5reported?5is@ 0101fc8c     tests.obj
+ 0002:00002cc8       ??_C@_0CC@EPJG@?7?7?7the?5minimum?5requirement?5of?5?$CFl@ 0101fcc8     tests.obj
+ 0002:00002cec       ??_C@_0EE@DCAD@WARNING?3?7The?5maximum?5modem?5speed@ 0101fcec     tests.obj
+ 0002:00002d30       ??_C@_0DM@ILMO@WARNING?3?7Reported?5speed?5does?5not@ 0101fd30     tests.obj
+ 0002:00002d6c       ??_C@_0CF@ECL@?7?7Reference?5modem?5speed?5reported@ 0101fd6c     tests.obj
+ 0002:00002d94       ??_C@_0CA@JMHA@?7?7Test?5modem?5speed?5reported?5?$CFlu?$AA@ 0101fd94     tests.obj
+ 0002:00002db4       ??_C@_0BN@IDMJ@?7?7Could?5not?5get?5modem?5speed?4?$AA@ 0101fdb4     tests.obj
+ 0002:00002dd4       ??_C@_0DC@BAAI@WARNING?3?7Could?5not?5reset?5baudrat@ 0101fdd4     tests.obj
+ 0002:00002e08       ??_C@_0DD@EPMF@WARNING?3?7Could?5not?5reset?5baudrat@ 0101fe08     tests.obj
+ 0002:00002e3c       ??_C@_09OGHA@PASS?1COM?9?$AA@ 0101fe3c     tests.obj
+ 0002:00002e48       ??_C@_0BA@KGCA@EXITING?5?$CFs?5TEST?$AA@ 0101fe48     tests.obj
+ 0002:00002e58       ??_C@_0P@DLAI@?7?7?$CFs?5succeeded?$AA@ 0101fe58     tests.obj
+ 0002:00002e68       ??_C@_0BE@NMOH@?7?7?$CFs?5CLEARED?5passed?$AA@ 0101fe68     tests.obj
+ 0002:00002e7c       ??_C@_0CK@BDAJ@?7?7?7Pass?5allowed?5for?5this?5particu@ 0101fe7c     tests.obj
+ 0002:00002ea8       ??_C@_0DF@ONAK@WARNING?3?7Connection?5made?0?5but?5co@ 0101fea8     tests.obj
+ 0002:00002ee0       ??_C@_0CE@CDOC@FAIL?3?7Test?5modem?5does?5not?5report@ 0101fee0     tests.obj
+ 0002:00002f04       ??_C@_0CN@FIH@FAIL?3?7?7Clearing?5?$CFs?5failed?4?5?5Term@ 0101ff04     tests.obj
+ 0002:00002f34       ??_C@_0BF@NHLI@?7?7Trying?5to?5clear?5?$CFs?$AA@ 0101ff34     tests.obj
+ 0002:00002f4c       ??_C@_0P@PELF@?7?7?$CFs?5ON?5passed?$AA@ 0101ff4c     tests.obj
+ 0002:00002f5c       ??_C@_0EB@DDKN@WARNING?3?7Send?5file?5has?5failed?$CB?5?5@ 0101ff5c     tests.obj
+ 0002:00002fa0       ??_C@_0DC@OEP@FAIL?3?7?7Connection?5made?0?5but?5coul@ 0101ffa0     tests.obj
+ 0002:00002fd4       ??_C@_0DK@LIJG@WARNING?3?7Send?5file?5has?5failed?$CB?5?5@ 0101ffd4     tests.obj
+ 0002:00003010       ??_C@_0CF@GDBN@FAIL?3?7?7Test?5modem?5does?5not?5repor@ 01020010     tests.obj
+ 0002:00003038       ??_C@_0CM@LIOI@WARNING?3?7Reference?5modem?5does?5no@ 01020038     tests.obj
+ 0002:00003064       ??_C@_0BI@HLE@FAIL?3?7?7Terminating?5test?$AA@ 01020064     tests.obj
+ 0002:0000307c       ??_C@_0BD@NLFC@?7?7Trying?5to?5set?5?$CFs?$AA@ 0102007c     tests.obj
+ 0002:00003090       ??_C@_0DA@OMAM@WARNING?3?7Could?5not?5set?5baudrate?5@ 01020090     tests.obj
+ 0002:000030c0       ??_C@_0DB@CLDJ@WARNING?3?7Could?5not?5set?5baudrate?5@ 010200c0     tests.obj
+ 0002:000030f4       ??_C@_0CG@COMA@WARNING?3?7Cannot?5read?5remote?5baud@ 010200f4     tests.obj
+ 0002:0000311c       ??_C@_0CF@GIBM@WARNING?3?7Cannot?5read?5local?5baud?5@ 0102011c     tests.obj
+ 0002:00003144       ??_C@_0DB@OAMJ@WARNING?3?7Testing?5?$CFs?0?5but?5?$CFs?5not?5@ 01020144     tests.obj
+ 0002:00003178       ??_C@_0BB@IJIL@STARTING?5?$CFs?5TEST?$AA@ 01020178     tests.obj
+ 0002:0000318c       ??_C@_0BB@DHKL@lineGetDevConfig?$AA@ 0102018c     tests.obj
+ 0002:000031a0       ??_C@_0N@BHJH@No?5Test?5Name?$AA@ 010201a0     tests.obj
+ 0002:000031b0       ??_C@_0N@JJHJ@V23?5OVERRIDE?$AA@ 010201b0     tests.obj
+ 0002:000031c0       ??_C@_09PFGF@TONE?5DIAL?$AA@ 010201c0     tests.obj
+ 0002:000031cc       ??_C@_0N@FKOD@SPEED?5ADJUST?$AA@ 010201cc     tests.obj
+ 0002:000031dc       ??_C@_0P@FPMI@CCITT?5OVERRIDE?$AA@ 010201dc     tests.obj
+ 0002:000031ec       ??_C@_0BB@BIOO@FLOWCONTROL?5SOFT?$AA@ 010201ec     tests.obj
+ 0002:00003200       ??_C@_0BB@ONBI@FLOWCONTROL?5HARD?$AA@ 01020200     tests.obj
+ 0002:00003214       ??_C@_08PAHE@CELLULAR?$AA@ 01020214     tests.obj
+ 0002:00003220       ??_C@_0O@HKPH@ERROR?5CONTROL?$AA@ 01020220     tests.obj
+ 0002:00003230       ??_C@_0M@HHGK@COMPRESSION?$AA@ 01020230     tests.obj
+ 0002:0000323c       ??_C@_0BC@EKIF@TESTS?5ARE?5RUNNING?$AA@ 0102023c     tests.obj
+ 0002:00003250       ??_C@_0BK@OADN@EXITING?5SPEED?5ADJUST?5TEST?$AA@ 01020250     tests.obj
+ 0002:0000326c       ??_C@_0BO@IKKG@?7?7SPEED?5ADJUST?5TEST?5succeeded?$AA@ 0102026c     tests.obj
+ 0002:0000328c       ??_C@_0BN@CP@?7?7SPEED?5ADJUST?5OFF?5SUCCEEDED?$AA@ 0102028c     tests.obj
+ 0002:000032ac       ??_C@_0DP@IALF@FAIL?3?7?7Should?5not?5have?5been?5able@ 010202ac     tests.obj
+ 0002:000032ec       ??_C@_0GL@FMGH@?7?7IN?5THE?5FOLLOWING?5TEST?0?5THE?5MOD@ 010202ec     tests.obj
+ 0002:00003358       ??_C@_0DF@OCNI@FAIL?3?7?7Could?5not?5set?5SPEED?5ADJUS@ 01020358     tests.obj
+ 0002:00003390       ??_C@_0BM@OGPC@?7?7SPEED?5ADJUST?5ON?5SUCCEEDED?$AA@ 01020390     tests.obj
+ 0002:000033ac       ??_C@_0CG@HOFC@FAIL?3?7?7SHOULD?5HAVE?5CONNECTED?5AT?5@ 010203ac     tests.obj
+ 0002:000033d4       ??_C@_0BD@ICM@?7?7CONNECTED?5AT?5?$CFlu?$AA@ 010203d4     tests.obj
+ 0002:000033e8       ??_C@_0DM@JIDM@FAIL?3?7?7Could?5not?5get?5the?5connect@ 010203e8     tests.obj
+ 0002:00003424       ??_C@_0CO@DINM@FAIL?3?7?7Could?5not?5make?5call?4?5?5Ter@ 01020424     tests.obj
+ 0002:00003454       ??_C@_0DA@ENLH@FAIL?3?7?7Could?5not?5set?5SPEED?5ADJUS@ 01020454     tests.obj
+ 0002:00003484       ??_C@_0BL@HKND@ENTERING?5SPEED?5ADJUST?5TEST?$AA@ 01020484     tests.obj
+ 0002:000034a0       ??_C@_0CC@EBMI@EXITING?5FORCED?5ERROR?5CONTROL?5TES@ 010204a0     tests.obj
+ 0002:000034c4       ??_C@_0CB@FNBA@?7?7FORCED?5ERROR?5CONTROL?5succeeded@ 010204c4     tests.obj
+ 0002:000034e8       ??_C@_0CF@EFHA@?7?7FORCED?5ERROR?5CONTROL?5OFF?5SUCCE@ 010204e8     tests.obj
+ 0002:00003510       ??_C@_0DA@EFML@WARNING?3?7?7Should?5not?5have?5been?5a@ 01020510     tests.obj
+ 0002:00003540       ??_C@_0CF@BEMM@?7?7THE?5TEST?5MODEM?5SHOULD?5THEN?5HAN@ 01020540     tests.obj
+ 0002:00003568       ??_C@_0DF@NJK@?7?7IN?5THE?5FOLLOWING?5TEST?0?5THE?5MOD@ 01020568     tests.obj
+ 0002:000035a0       ??_C@_0DI@JEPJ@FAIL?3?7?7Could?5not?5clear?5ERROR?5CON@ 010205a0     tests.obj
+ 0002:000035d8       ??_C@_0DI@OPFM@FAIL?3?7?7Could?5not?5set?5FORCED?5ERRO@ 010205d8     tests.obj
+ 0002:00003610       ??_C@_0CE@LJCH@?7?7FORCED?5ERROR?5CONTROL?5ON?5SUCCEE@ 01020610     tests.obj
+ 0002:00003634       ??_C@_0DE@CPHI@WARNING?3?7?7Error?5control?5reported@ 01020634     tests.obj
+ 0002:00003668       ??_C@_0CP@CNMI@FAIL?3?7?7Error?5control?5not?5on?4?5?5Te@ 01020668     tests.obj
+ 0002:00003698       ??_C@_0BF@OBKF@FORCED?5ERROR?5CONTROL?$AA@ 01020698     tests.obj
+ 0002:000036b0       ??_C@_0CD@LPPN@ENTERING?5FORCED?5ERROR?5CONTROL?5TE@ 010206b0     tests.obj
+ 0002:000036d4       ??_C@_0BK@LNMD@Stop?5timer?5at?5?$CF02ld?3?$CF02ld?$AA@ 010206d4     tests.obj
+ 0002:000036f0       ??_C@_0BL@GBBA@Start?5timer?5at?5?$CF02ld?3?$CF02ld?$AA@ 010206f0     tests.obj
+ 0002:0000370c       ??_C@_0CH@BHBA@Wait?5?$CFld?5secs?5for?5disconnected?5m@ 0102070c     tests.obj
+ 0002:00003734       ??_C@_0BO@EAKE@EXITING?5INACTIVITY?5TIMER?5TEST?$AA@ 01020734     tests.obj
+ 0002:00003754       ??_C@_0BP@MLLE@?7?7Inactivity?5Timer?5Test?5FAILED?$AA@ 01020754     tests.obj
+ 0002:00003774       ??_C@_0BP@NGNN@?7?7Inactivity?5Timer?5Test?5PASSED?$AA@ 01020774     tests.obj
+ 0002:00003794       ??_C@_0CI@CELF@FAIL?3?7?7Inactivity?5setting?5reset?5@ 01020794     tests.obj
+ 0002:000037bc       ??_C@_0DC@JNKN@WARNING?3?7Inactivity?5timeout?5over@ 010207bc     tests.obj
+ 0002:000037f0       ??_C@_0CD@OFLK@PASS?3?7?7Inactivity?5timeout?5overru@ 010207f0     tests.obj
+ 0002:00003814       ??_C@_0DA@ODNI@InactivityTimeout?5set?5to?5?$CFld?5?$CIgr@ 01020814     tests.obj
+ 0002:00003844       ??_C@_0DL@OAKG@FAIL?3?7?7Disconnected?5while?5Inacti@ 01020844     tests.obj
+ 0002:00003880       ??_C@_0CD@HBJM@InactivityTimeout?5set?5to?5max?5?$CI?$CFl@ 01020880     tests.obj
+ 0002:000038a4       ??_C@_0BI@IFHM@PASS?3?7?7Still?5connected?4?$AA@ 010208a4     tests.obj
+ 0002:000038bc       ??_C@_0DG@LOLI@FAIL?3?7?7Disconnected?5while?5Inacti@ 010208bc     tests.obj
+ 0002:000038f4       ??_C@_0BG@EJDC@InactivityTimeout?5OFF?$AA@ 010208f4     tests.obj
+ 0002:0000390c       ??_C@_0CD@IFMF@PASS?3?7?7Disconnected?5within?5limit@ 0102090c     tests.obj
+ 0002:00003930       ??_C@_0CL@GKBD@FAIL?3?7?7Disconnected?5earlier?5than@ 01020930     tests.obj
+ 0002:0000395c       ??_C@_0DL@CLLD@FAIL?3?7?7Timeout?5exceeded?4?5Inactiv@ 0102095c     tests.obj
+ 0002:00003998       ??_C@_0CC@LBJB@InactivityTimeout?5set?5to?5?$CFld?5sec@ 01020998     tests.obj
+ 0002:000039bc       ??_C@_0DE@FKNB@Cannot?5find?5InactivityScale?5key?0@ 010209bc     tests.obj
+ 0002:000039f0       ??_C@_0BA@JKLA@InactivityScale?$AA@ 010209f0     tests.obj
+ 0002:00003a00       ??_C@_0BP@JKDI@Remote?5lineSetDevConfig?5failed?$AA@ 01020a00     tests.obj
+ 0002:00003a20       ??_C@_0BP@IDDA@Remote?5lineGetDevConfig?5failed?$AA@ 01020a20     tests.obj
+ 0002:00003a40       ??_C@_0BB@HKLE@INACTIVITY?5TIMER?$AA@ 01020a40     tests.obj
+ 0002:00003a54       ??_C@_0BP@PIEO@STARTING?5INACTIVITY?5TIMER?5TEST?$AA@ 01020a54     tests.obj
+ 0002:00003a74       ??_C@_0CE@PDGG@EXITING?5INACTIVITY?5TIMER?5SCALE?5T@ 01020a74     tests.obj
+ 0002:00003a98       ??_C@_0CF@PGII@?7?7Inactivity?5Timer?5Scale?5Test?5PA@ 01020a98     tests.obj
+ 0002:00003ac0       ??_C@_0EH@NNCA@FAIL?3?7?7Examine?5INF?5file?5for?5test@ 01020ac0     tests.obj
+ 0002:00003b08       ??_C@_0EG@NNLO@FAIL?3?7?7Timeout?5threshold?5exceede@ 01020b08     tests.obj
+ 0002:00003b50       ??_C@_0BH@ONFN@INACTIVITY?5TIMER?5SCALE?$AA@ 01020b50     tests.obj
+ 0002:00003b68       ??_C@_0CF@OMOL@STARTING?5INACTIVITY?5TIMER?5SCALE?5@ 01020b68     tests.obj
+ 0002:00003b90       ??_C@_0BN@NLNK@EXITING?5GENERATE?5DIGITS?5TEST?$AA@ 01020b90     vtests.obj
+ 0002:00003bb0       ??_C@_0CA@FHDB@FAIL?3?7?7Generating?5Digits?5failed?$AA@ 01020bb0     vtests.obj
+ 0002:00003bd0       ??_C@_0BA@POIA@GENERATE?5DIGITS?$AA@ 01020bd0     vtests.obj
+ 0002:00003be0       ??_C@_0BO@DBND@STARTING?5GENERATE?5DIGITS?5TEST?$AA@ 01020be0     vtests.obj
+ 0002:00003c00       ??_C@_0BM@HCKJ@EXITING?5MONITOR?5DIGITS?5TEST?$AA@ 01020c00     vtests.obj
+ 0002:00003c1c       ??_C@_0CA@PPHG@FAIL?3?7?7Monitoring?5Digits?5failed?$AA@ 01020c1c     vtests.obj
+ 0002:00003c3c       ??_C@_0P@BELO@MONITOR?5DIGITS?$AA@ 01020c3c     vtests.obj
+ 0002:00003c4c       ??_C@_0BN@HLAP@STARTING?5MONITOR?5DIGITS?5TEST?$AA@ 01020c4c     vtests.obj
+ 0002:00003c6c       ??_C@_0CA@NNF@EXITING?5HANDSET?5HOOKSWITCH?5TEST?$AA@ 01020c6c     vtests.obj
+ 0002:00003c8c       ??_C@_0CB@KENC@FAIL?3?7?7Handset?5hookswitch?5failed@ 01020c8c     vtests.obj
+ 0002:00003cb0       ??_C@_0BD@KLKG@HANDSET?5HOOKSWITCH?$AA@ 01020cb0     vtests.obj
+ 0002:00003cc4       ??_C@_0CB@FJJG@STARTING?5HANDSET?5HOOKSWITCH?5TEST@ 01020cc4     vtests.obj
+ 0002:00003ce8       ??_C@_0CL@IMFL@FAIL?3?7?7Could?5not?5init?5tapi?5for?5v@ 01020ce8     vtests.obj
+ 0002:00003d14       ??_C@_0CG@PPEM@FAIL?3?7?7Speakerphone?5hookswitch?5f@ 01020d14     vtests.obj
+ 0002:00003d3c       ??_C@_0CF@KJGJ@EXITING?5SPEAKERPHONE?5HOOKSWITCH?5@ 01020d3c     vtests.obj
+ 0002:00003d64       ??_C@_0CN@CJIK@FAIL?3?7?7Still?5reporting?5speakerph@ 01020d64     vtests.obj
+ 0002:00003d94       ??_C@_0DB@KPOF@FAIL?3?7?7Did?5not?5report?5that?5speak@ 01020d94     vtests.obj
+ 0002:00003dc8       ??_C@_0CF@LAG@FAIL?3?7?7Reported?5speakerphone?5on?5@ 01020dc8     vtests.obj
+ 0002:00003df0       ??_C@_0CL@EGH@FAIL?3?7?7Could?5not?5set?5speakerphon@ 01020df0     vtests.obj
+ 0002:00003e1c       ??_C@_0CN@EHKI@FAIL?3?7?7Did?5not?5report?5speakerpho@ 01020e1c     vtests.obj
+ 0002:00003e4c       ??_C@_0CN@LIBB@FAIL?3?7?7Did?5not?5report?5speakerpho@ 01020e4c     vtests.obj
+ 0002:00003e7c       ??_C@_0BD@IMKK@phoneSetHookSwitch?$AA@ 01020e7c     vtests.obj
+ 0002:00003e90       ??_C@_0BO@NFOM@FAIL?3?7?7Making?5the?5call?5failed?$AA@ 01020e90     vtests.obj
+ 0002:00003eb0       ??_C@_0BI@HEHP@SPEAKERPHONE?5HOOKSWITCH?$AA@ 01020eb0     vtests.obj
+ 0002:00003ec8       ??_C@_0CG@JIHG@STARTING?5SPEAKERPHONE?5HOOKSWITCH@ 01020ec8     vtests.obj
+ 0002:00003ef0       ??_C@_0CJ@EOJL@FAIL?3?7?7Speakerphone?5volume?5?1?5gai@ 01020ef0     vtests.obj
+ 0002:00003f1c       ??_C@_0CG@FIOL@EXITING?5SPEAKERPHONE?5VOLUME?5GAIN@ 01020f1c     vtests.obj
+ 0002:00003f44       ??_C@_0CH@IFMP@?7?7Speakerphone?5volume?5?1?5gain?5suc@ 01020f44     vtests.obj
+ 0002:00003f6c       ??_C@_0N@FAJI@phoneSetGain?$AA@ 01020f6c     vtests.obj
+ 0002:00003f7c       ??_C@_0P@HDDE@phoneSetVolume?$AA@ 01020f7c     vtests.obj
+ 0002:00003f8c       ??_C@_0BJ@JIBH@SPEAKERPHONE?5VOLUME?5GAIN?$AA@ 01020f8c     vtests.obj
+ 0002:00003fa8       ??_C@_0CH@HNNK@STARTING?5SPEAKERPHONE?5VOLUME?5GAI@ 01020fa8     vtests.obj
+ 0002:00003fd0       ??_C@_0BI@NFLG@Testing?5Generate?5Digits?$AA@ 01020fd0     vtests.obj
+ 0002:00003fe8       ??_C@_0CM@NGCB@Could?5not?5monitor?5digits?4?5?5Termi@ 01020fe8     vtests.obj
+ 0002:00004014       ??_C@_0BH@BEKN@Testing?5Monitor?5Digits?$AA@ 01021014     vtests.obj
+ 0002:0000402c       ??_C@_0CH@LEJC@FAIL?3?7?7Reported?5handset?5still?5of@ 0102102c     vtests.obj
+ 0002:00004054       ??_C@_0CG@LGDF@FAIL?3?7?7Did?5not?5report?5handset?5of@ 01021054     vtests.obj
+ 0002:0000407c       ??_C@_0BL@HFFM@Testing?5Handset?5Hookswitch?$AA@ 0102107c     vtests.obj
+ 0002:00004098       ??_C@_0CA@DDOF@Testing?5Speakerphone?5Hookswitch?$AA@ 01021098     vtests.obj
+ 0002:000040b8       ??_C@_0CB@IIII@Testing?5Speakerphone?5Volume?1Gain@ 010210b8     vtests.obj
+ 0002:000040dc       ??_C@_0BK@IBME@?7?7EXITING?5MAKE?5VOICE?5CALL?$AA@ 010210dc     vtests.obj
+ 0002:000040f8       ??_C@_0BD@JJDP@LOCAL?5lineMakeCall?$AA@ 010210f8     vtests.obj
+ 0002:0000410c       ??_C@_0EA@ONID@FAIL?3?7?7Timed?5out?5waiting?5for?5cal@ 0102110c     vtests.obj
+ 0002:0000414c       ??_C@_0BL@HNGF@?7?7ENTERING?5MAKE?5VOICE?5CALL?$AA@ 0102114c     vtests.obj
+ 0002:00004168       ??_C@_0BK@PCNM@?7?7EXITING?5DROP?5VOICE?5CALL?$AA@ 01021168     vtests.obj
+ 0002:00004184       ??_C@_0DH@CMAG@Timed?5out?5waiting?5for?5call?5to?5dr@ 01021184     vtests.obj
+ 0002:000041bc       ??_C@_08BFIM@lineDrop?$AA@ 010211bc     vtests.obj
+ 0002:000041c8       ??_C@_0BL@OHN@?7?7ENTERING?5DROP?5VOICE?5CALL?$AA@ 010211c8     vtests.obj
+ 0002:000041e4       ??_C@_0BD@PFJE@lineGenerateDigits?$AA@ 010211e4     vtests.obj
+ 0002:000041f8       ??_C@_0M@BHGG@123456789?$CD?$CK?$AA@ 010211f8     vtests.obj
+ 0002:00004204       ??_C@_0P@OCJC@LOCAL?5lineOpen?$AA@ 01021204     vtests.obj
+ 0002:00004214       ??_C@_0BC@HBPP@lineMonitorDigits?$AA@ 01021214     vtests.obj
+ 0002:00004228       ??_C@_0BG@HIGM@phoneSetStatusMessage?$AA@ 01021228     vtests.obj
+ 0002:00004240       ??_C@_09FGDH@phoneOpen?$AA@ 01021240     vtests.obj
+ 0002:0000424c       ??_C@_0BM@GGJM@FAIL?3?7?7Handset?5audio?5failed?$AA@ 0102124c     vtests.obj
+ 0002:00004268       ??_C@_0BL@JDHH@EXITING?5HANDSET?5AUDIO?5TEST?$AA@ 01021268     vtests.obj
+ 0002:00004284       ??_C@_0BK@JMKP@?7?7Handset?5audio?5succeeded?$AA@ 01021284     vtests.obj
+ 0002:000042a0       ??_C@_0DO@JNDO@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 010212a0     vtests.obj
+ 0002:000042e0       ??_C@_0CF@GDAC@FAIL?3?7?7Failed?5to?5play?5to?5wave?5de@ 010212e0     vtests.obj
+ 0002:00004308       ??_C@_0EC@BKAL@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 01021308     vtests.obj
+ 0002:0000434c       ??_C@_0DO@NPAK@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 0102134c     vtests.obj
+ 0002:0000438c       ??_C@_0CG@DNOH@FAIL?3?7?7Failed?5to?5open?5wave?5out?5d@ 0102138c     vtests.obj
+ 0002:000043b4       ??_C@_0CD@JGFJ@FAIL?3?7?7Failed?5to?5close?5wave?5devi@ 010213b4     vtests.obj
+ 0002:000043d8       ??_C@_0EE@NIJP@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 010213d8     vtests.obj
+ 0002:0000441c       ??_C@_0BP@ELPJ@Count?5not?5start?5recording?5wave?$AA@ 0102141c     vtests.obj
+ 0002:0000443c       ??_C@_0CB@NPGN@FAIL?3?7?7Recording?5the?5wave?5failed@ 0102143c     vtests.obj
+ 0002:00004460       ??_C@_0DO@PIK@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 01021460     vtests.obj
+ 0002:000044a0       ??_C@_0ED@MKHB@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 010214a0     vtests.obj
+ 0002:000044e4       ??_C@_0CC@OLDP@FAIL?3?7?7Failed?5to?5open?5wave?5devic@ 010214e4     vtests.obj
+ 0002:00004508       ??_C@_0DC@LDLP@Could?5not?5get?5wave?5out?5ID?5for?5ph@ 01021508     vtests.obj
+ 0002:0000453c       ??_C@_0DB@MNGI@Could?5not?5get?5wave?5in?5ID?5for?5pho@ 0102153c     vtests.obj
+ 0002:00004570       ??_C@_0O@CJJA@HANDSET?5AUDIO?$AA@ 01021570     vtests.obj
+ 0002:00004580       ??_C@_0BM@DFKJ@STARTING?5HANDSET?5AUDIO?5TEST?$AA@ 01021580     vtests.obj
+ 0002:0000459c       ??_C@_0BG@NKFH@Testing?5Handset?5Audio?$AA@ 0102159c     vtests.obj
+ 0002:000045b4       ??_C@_0BJ@NJMC@FAIL?3?7?7Line?5audio?5failed?$AA@ 010215b4     vtests.obj
+ 0002:000045d0       ??_C@_0BI@DJHH@EXITING?5LINE?5AUDIO?5TEST?$AA@ 010215d0     vtests.obj
+ 0002:000045e8       ??_C@_0BH@LKJP@?7?7Line?5audio?5succeeded?$AA@ 010215e8     vtests.obj
+ 0002:00004600       ??_C@_0EH@LL@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 01021600     vtests.obj
+ 0002:00004648       ??_C@_0BP@JLGK@Could?5not?5start?5recording?5wave?$AA@ 01021648     vtests.obj
+ 0002:00004668       ??_C@_0DB@PACF@Could?5not?5get?5wave?5out?5ID?5for?5li@ 01021668     vtests.obj
+ 0002:0000469c       ??_C@_0DA@CHNJ@Could?5not?5get?5wave?5in?5ID?5for?5lin@ 0102169c     vtests.obj
+ 0002:000046cc       ??_C@_0IK@JHNF@FAIL?3?7?7TESTER?5INDICATED?5FAILURE?5@ 010216cc     vtests.obj
+ 0002:00004758       ??_C@_0DG@DMLC@FAIL?3?7?7Failed?5to?5make?5a?5voice?5ca@ 01021758     vtests.obj
+ 0002:00004790       ??_C@_0L@PEOL@LINE?5AUDIO?$AA@ 01021790     vtests.obj
+ 0002:0000479c       ??_C@_0BJ@FHBJ@STARTING?5LINE?5AUDIO?5TEST?$AA@ 0102179c     vtests.obj
+ 0002:000047b8       ??_R0?AVtype_info@@@8      010217b8     msvcrt:ti_inst.obj
+ 0002:000047d0       ___defaultmatherr          010217d0     msvcrt:merr.obj
+ 0002:000047d8       ??_C@_0N@JDIH@ncacn_ip_tcp?$AA@ 010217d8     line:line.obj
+ 0002:000047e8       ??_C@_0BM@LGCH@RPC?5Exception?3?5UNKNOWN_IF?$AN?6?$AA@ 010217e8     line:line.obj
+ 0002:00004804       ??_C@_0EH@KKOO@Can?8t?5find?5remote?5machine?4?5?5Chec@ 01021804     line:line.obj
+ 0002:0000484c       ??_C@_0BD@BKNB@SERVER?5UNAVAILABLE?$AA@ 0102184c     line:line.obj
+ 0002:00004860       ??_C@_0CE@HAIK@RPC?5Exception?3?5SERVER_UNAVAILABL@ 01021860     line:line.obj
+ 0002:00004884       ??_C@_0BE@LPIJ@RPC?5Exception?3?5?$CFd?$AN?6?$AA@ 01021884     line:line.obj
+ 0002:00004898       ??_C@_0N@JKAE@Line?3?5exit?$AN?6?$AA@ 01021898     line:line.obj
+ 0002:000048a8       ??_C@_0O@FLOG@Line?3?5enter?$AN?6?$AA@ 010218a8     line:line.obj
+ 0002:000048b8       ??_C@_0O@JGBO@?$HOLine?3?5exit?$AN?6?$AA@ 010218b8     line:line.obj
+ 0002:000048c8       ??_C@_0P@IDOK@?$HOLine?3?5enter?$AN?6?$AA@ 010218c8     line:line.obj
+ 0002:000048d8       ??_C@_0BL@JOBH@remote_Initialize?5failed?$AN?6?$AA@ 010218d8     line:line.obj
+ 0002:000048f4       ??_C@_0CF@JJFM@RpcBindingFromStringBinding?5fail@ 010218f4     line:line.obj
+ 0002:0000491c       ??_C@_0BP@DDGL@remote_lineInitialize?5failed?$AN?6?$AA@ 0102191c     line:line.obj
+ 0002:0000495c       ??_C@_0BK@LNCL@StartRPCServer?3?5success?$AN?6?$AA@ 0102195c     line:rpcsrv.obj
+ 0002:00004978       ??_C@_0CG@MHFP@StartRPCServer?3?5CreateThread?5fai@ 01021978     line:rpcsrv.obj
+ 0002:000049a0       ??_C@_0CN@MJJJ@StartRPCServer?3?5RpcServerRegiste@ 010219a0     line:rpcsrv.obj
+ 0002:000049d0       ??_C@_0BG@GBLO@StopRPCServer?3?5exit?$AN?6?$AA@ 010219d0     line:rpcsrv.obj
+ 0002:000049e8       ??_C@_0BH@OCBN@StopRPCServer?3?5enter?$AN?6?$AA@ 010219e8     line:rpcsrv.obj
+ 0002:00004a00       ??_C@_0BM@CODL@RPCServerThreadProc?3?5exit?$AN?6?$AA@ 01021a00     line:rpcsrv.obj
+ 0002:00004a1c       ??_C@_0BI@BAKA@CallbackWndProc?3?5exit?$AN?6?$AA@ 01021a1c     line:rpcsrv.obj
+ 0002:00004a34       ??_C@_0BJ@LOGM@CallbackWndProc?3?5enter?$AN?6?$AA@ 01021a34     line:rpcsrv.obj
+ 0002:00004a50       ??_C@_0BM@GDKK@remote_LineCallback?3?5exit?$AN?6?$AA@ 01021a50     line:rpcsrv.obj
+ 0002:00004a6c       ??_C@_0BN@CABP@remote_LineCallback?3?5enter?$AN?6?$AA@ 01021a6c     line:rpcsrv.obj
+ 0002:00004a8c       ??_C@_0BN@HHAC@remote_PhoneCallback?3?5exit?$AN?6?$AA@ 01021a8c     line:rpcsrv.obj
+ 0002:00004aac       ??_C@_0BO@JNAL@remote_PhoneCallback?3?5enter?$AN?6?$AA@ 01021aac     line:rpcsrv.obj
+ 0002:00004ad8       _remote_line_ClientIfHandle 01021ad8     line:remote_c.obj
+ 0002:00004adc       ??_C@_04JCBD@2000?$AA@     01021adc     line:remote_c.obj
+ 0002:00004af0       _remote_callback_ServerIfHandle 01021af0     line:callbk_s.obj
+ 0002:00004b08       _remote_callback_DispatchTable 01021b08     line:callbk_s.obj
+ 0002:00004b14       ??_C@_04DIIE@2001?$AA@     01021b14     line:callbk_s.obj
+ 0002:00004b20       ??_C@_00A@?$AA@            01021b20     chngnum.obj
+ 0002:00004bc0       ?gpDlg@@3PAVCAbortDlg@@A   01021bc0     mainfrm.obj
+ 0002:00004bc8       ?pLocalPropertiesWnd@@3PAVCTestResults@@A 01021bc8     mct96.obj
+ 0002:00004bd0       ?theApp@@3VCMct96App@@A    01021bd0     mct96.obj
+ 0002:00004c98       ?g@@3UMCTGLOBALS@@A        01021c98     mct96.obj
+ 0002:00004df8       ?pRemotePropertiesWnd@@3PAVCTestResults@@A 01021df8     mct96.obj
+ 0002:00004dfc       ?pTestResultsWnd@@3PAVCTestResults@@A 01021dfc     mct96.obj
+ 0002:00004e18       __afxForceSTDAFX           01021e18     mfcs42:stdafx.obj
+ 0002:00004e1c       __dowildcard               01021e1c     msvcrt:wildcard.obj
+ 0002:00004e20       __newmode                  01021e20     msvcrt:_newmode.obj
+ 0002:00004e24       __commode                  01021e24     msvcrt:xncommod.obj
+ 0002:00004e28       __fmode                    01021e28     msvcrt:xtxtmode.obj
+ 0002:00004e58       ?_afxTermAppState@@3V_AFX_TERM_APP_STATE@@A 01021e58     mfcs42:appmodul.obj
+ 0002:00004e5c       __adjust_fdiv              01021e5c     <common>
+ 0002:00004e60       ___onexitend               01021e60     <common>
+ 0002:00004e64       ___onexitbegin             01021e64     <common>
+
+ entry point at        0001:00013eb0
+
+ Static symbols
+
+ 0001:000088f0       _$E205                     010098f0 f   mct96.obj
+ 0001:00008900       _$E202                     01009900 f   mct96.obj
+ 0001:00008910       _$E204                     01009910 f   mct96.obj
+ 0001:00008930       _$E203                     01009930 f   mct96.obj
+ 0001:00008a70       _$E210                     01009a70 f   mct96.obj
+ 0001:00008a80       _$E207                     01009a80 f   mct96.obj
+ 0001:00008a90       _$E209                     01009a90 f   mct96.obj
+ 0001:00008ab0       _$E208                     01009ab0 f   mct96.obj
+ 0001:00018d56       _$E352                     01019d56 f   mfcs42:appmodul.obj
+ 0001:00018d5b       _$E351                     01019d5b f   mfcs42:appmodul.obj
+ 0001:000153f2       ?RPCServerThreadProc@@YGKPAX@Z 010163f2 f   line:rpcsrv.obj
+ 0001:00015411       ?CreateCallbackWindow@@YGHPAUHINSTANCE__@@@Z 01016411 f   line:rpcsrv.obj
+ 0001:0001549e       ?DestroyCallbackWindow@@YGXPAUHINSTANCE__@@@Z 0101649e f   line:rpcsrv.obj
+ 0001:000154ca       ?CallbackWndProc@@YGJPAUHWND__@@IIJ@Z 010164ca f   line:rpcsrv.obj
+
+ 593 bytes saved through ICF
+

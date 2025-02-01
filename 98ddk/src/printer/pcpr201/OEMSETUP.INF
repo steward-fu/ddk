@@ -1,0 +1,26 @@
+[io.device]
+; (printers, plotters, etc.)
+; The filename is followed by
+;
+; -- the descriptive string which will appear in Control Panel and
+;    which will   appear in WIN.INI
+; -- 1 or 2 strings indicating the scaling for this device
+;
+; There   may be more than one line for a   driver,   corresponding to different
+; printers.
+
+1:PCPR201.DRV,"NEC PC-PR201/45L","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/60","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201G","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/60A","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201GS","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/63","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/63A","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/65A","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201X","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201J","DEVICESPECIFIC"
+1:PCPR201.DRV,"NEC PC-PR201/80LA","DEVICESPECIFIC"
+
+[io.dependent]
+PCPR201.DRV = 1:unidrv.hlp,1:unidrv.dll,1:iconlib.dll,1:dmcolor.dll
+

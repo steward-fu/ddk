@@ -1,0 +1,513 @@
+
+
+;Copyright (c) 1993-1998, Microsoft Corporation
+
+[version]
+CatalogFile=keyboard.cat
+LayoutFile= Layout.inf, Layout1.inf, Layout2.inf
+signature="$CHICAGO$"
+Class=Keyboard
+ClassGUID={4d36e96b-e325-11ce-bfc1-08002be10318}
+Provider=%MS%
+
+[DestinationDirs]
+MS_KBD_ENH_CopyFiles = 10,system32\drivers
+MS_KBD_ENH_DelFiles  = 11    ; LDID_SYS
+KBD_VxDs             = 22    ; LDID_VMM32
+KBD_VxDs_Del         = 11    ; LDID_SYS
+USBKBD.CopyFiles     = 10,system32\drivers
+USBKBD.DelFiles      = 11    ; LDID_SYS
+HIDKeyboard.Copy     = 11    ; LDID_SYS   
+
+
+[ClassInstall]
+Addreg=KeyboardReg
+
+[KeyboardReg]
+HKR,,,,%KeyboardClassName%
+HKR,,Icon,,"-3"
+
+; Device IDs to exclude from Setup pick list
+[ControlFlags]
+ExcludeFromSelect=*PNP030b                      ; Special default ID
+
+[Manufacturer]
+%Std-Keyboards%=MS_KBD
+%MICROSOFT%=MICROSOFT_KBD
+%ALPS%=ALPS_KBD
+%CHERRY%=CHERRY_KBD
+%FUJITSU%=FUJITSU_KBD
+%KEYTRONIC%=KEYTRONIC_KBD
+%PHILIPS%=PHILIPS_KBD
+%SILITEK%=SILITEK_KBD
+%NMB%=NMB_KBD
+%STSL%=STSL_KBD
+%ACER%=ACER_KBD
+%CHICONY%=CHICONY_KBD
+%BTC%=BTC_KBD
+%FOCUS%=FOCUS_KBD
+%JINGMOLD%=JINGMOLD_KBD
+%MAXISWITCH%=MAXISWITCH_KBD
+%MONTEREY%=MONTEREY_KBD
+%ORTEK%=ORTEK_KBD
+%SAMSUNG%=SAMSUNG_KBD
+%FORWARD%=FORWARD_KBD
+%SUH%=SUH_KBD
+%SEJIN%=SEJIN_KBD
+%SUPERGATE%=SUPERGATE_KBD
+%SOLIDYEAR%=SOLIDYEAR_KBD
+%NEC%=NEC_KBD
+%QTRONIX%=QTRONIX_KBD
+
+[MS_KBD]
+%*PNP0300.DeviceDesc%   = PC_XT_83_Inst,*PNP0300        ;PC/XT (83-Key)
+%*PNP0301.DeviceDesc%   = PC_AT_84_Inst,*PNP0301        ;PC/AT (84-Key)
+%*PNP0302.DeviceDesc%   = PC_XT_84_Inst,*PNP0302        ;PC/XT (84-Key)
+%*PNP0303.DeviceDesc%   = PC_AT_Enh_Inst,*PNP0303       ;PC/AT Enh(101/102-Key)
+%*PNP0304.DeviceDesc%   = Olivetti_83_Inst,*PNP0304     ;Olivetti (83-Key)
+%*PNP0305.DeviceDesc%   = Olivetti_102_Inst,*PNP0305    ;Olivetti (102-Key)
+%*PNP0306.DeviceDesc%   = Olivetti_86_Inst,*PNP0306     ;Olivetti (86-Key)
+%*PNP0309.DeviceDesc%   = Olivetti_101_102_Inst,*PNP0309;Olivetti (101/102-Key)
+%*PNP030a.DeviceDesc%   = ATT_302_Inst,*PNP030a         ;AT&T 302
+%*PNP030b.DeviceDesc%   = PC_AT_Enh_Inst,*PNP030b       ;Default keyboard
+%*CPQA0D7.DeviceDesc%   = PC_AT_Enh_Inst,*CPQA0D7
+
+
+;
+; This is the compatible id for HID keyboards;
+; it will be matched when the primary id is not recognized.
+;
+%HID_DEVICE_SYSTEM_KEYBOARD%=HIDKeyboard,HID_DEVICE_SYSTEM_KEYBOARD
+
+
+[MICROSOFT_KBD]
+%USB\VID_045E&PID_000B.DeviceDesc%=USBKBD, USB\VID_045E&PID_000B
+
+[ALPS_KBD]
+%USB\VID_0433&PID_ABAB.DeviceDesc%=USBKBD, USB\VID_0433&PID_ABAB
+
+[CHERRY_KBD]
+%USB\VID_046A&PID_0001.DeviceDesc%=USBKBD, USB\VID_046A&PID_0001
+
+[KEYTRONIC_KBD]
+%USB\VID_03F9&PID_0100.DeviceDesc%=USBKBD, USB\VID_03F9&PID_0100
+%USB\VID_03F9&PID_0101.DeviceDesc%=USBKBD, USB\VID_03F9&PID_0101
+%USB\VID_03F9&PID_0102&MI_00.DeviceDesc%=USBKBD, USB\VID_03F9&PID_0102&MI_00
+
+[PHILIPS_KBD]
+%USB\VID_0471&PID_0401.DeviceDesc%=USBKBD, USB\VID_0471&PID_0401
+%USB\VID_0471&PID_0402&MI_00.DeviceDesc%=USBKBD, USB\VID_0471&PID_0402&MI_00
+%USB\VID_0471&PID_0601&MI_00.DeviceDesc%=USBKBD, USB\VID_0471&PID_0601&MI_00
+
+[FUJITSU_KBD]
+%USB\VID_0430&PID_0002&MI_00.DeviceDesc%=USBKBD, USB\VID_0430&PID_0002&MI_00
+
+[SILITEK_KBD]
+%USB\VID_047B&PID_0001.DeviceDesc%=USBKBD, USB\VID_047B&PID_0001
+%USB\VID_047B&PID_0002&MI_00.DeviceDesc%=USBKBD, USB\VID_047B&PID_0002&MI_00
+
+
+[NMB_KBD]
+; %USB\VID_0446&PID_6782.DeviceDesc%=USBKBD, USB\VID_0446&PID_6782
+%USB\VID_0446&PID_6781&MI_00.DeviceDesc%=USBKBD, USB\VID_0446&PID_6781&MI_00
+
+[STSL_KBD]
+%USB\VID_05FA&PID_3303&MI_00.DeviceDesc%=USBKBD, USB\VID_05FA&PID_3303&MI_00
+%USB\VID_05FA&PID_3302.DeviceDesc%=USBKBD, USB\VID_05FA&PID_3302
+
+[ACER_KBD]
+%USB\VID_04A5&PID_0001.DeviceDesc%=USBKBD, USB\VID_04A5&PID_0001
+%USB\VID_04A5&PID_0002.DeviceDesc%=USBKBD, USB\VID_04A5&PID_0002
+%USB\VID_04A5&PID_0003&MI_00.DeviceDesc%=USBKBD, USB\VID_04A5&PID_0003&MI_00
+
+[CHICONY_KBD]
+%USB\VID_04F2&PID_0002.DeviceDesc%=USBKBD, USB\VID_04F2&PID_0002
+%USB\VID_04F2&PID_0001&MI_00.DeviceDesc%=USBKBD, USB\VID_04F2&PID_0001&MI_00
+
+[BTC_KBD]
+%USB\VID_046E&PID_0100.DeviceDesc%=USBKBD, USB\VID_046E&PID_0100
+%USB\VID_046E&PID_6782&MI_00.DeviceDesc%=USBKBD, USB\VID_046E&PID_6782&MI_00
+
+[FOCUS_KBD]
+%USB\VID_05B2&PID_6200.DeviceDesc%=USBKBD, USB\VID_05B2&PID_6200
+%USB\VID_05B2&PID_7200&MI_00.DeviceDesc%=USBKBD, USB\VID_05B2&PID_7200&MI_00
+
+[JINGMOLD_KBD]
+%USB\VID_05AF&PID_9167.DeviceDesc%=USBKBD, USB\VID_05AF&PID_9167
+%USB\VID_05AF&PID_9267&MI_00.DeviceDesc%=USBKBD, USB\VID_05AF&PID_9267&MI_00
+
+[MAXISWITCH_KBD]
+%USB\VID_04C3&PID_1101.DeviceDesc%=USBKBD, USB\VID_04C3&PID_1101
+%USB\VID_04C3&PID_1102&MI_00.DeviceDesc%=USBKBD, USB\VID_04C3&PID_1102&MI_00
+%USB\VID_04C3&PID_2101.DeviceDesc%=USBKBD, USB\VID_04C3&PID_2101
+%USB\VID_04C3&PID_2102&MI_00.DeviceDesc%=USBKBD, USB\VID_04C3&PID_2102&MI_00
+
+[MONTEREY_KBD]
+%USB\VID_0566&PID_2800.DeviceDesc%=USBKBD, USB\VID_0566&PID_2800
+%USB\VID_0566&PID_2801&MI_00.DeviceDesc%=USBKBD, USB\VID_0566&PID_2801&MI_00
+
+[SAMSUNG_KBD]
+%USB\VID_055D&PID_6780.DeviceDesc%=USBKBD, USB\VID_055D&PID_6780
+%USB\VID_055D&PID_6781&MI_00.DeviceDesc%=USBKBD, USB\VID_055D&PID_6781&MI_00
+%USB\VID_055D&PID_0001.DeviceDesc%=USBKBD,USB\VID_055D&PID_0001
+
+[FORWARD_KBD]
+%USB\VID_05BC&PID_0002.DeviceDesc%=USBKBD, USB\VID_05BC&PID_0002
+%USB\VID_05BC&PID_0001&MI_00.DeviceDesc%=USBKBD, USB\VID_05BC&PID_0001&MI_00
+
+[SUH_KBD]
+%USB\VID_0500&PID_0002.DeviceDesc%=USBKBD, USB\VID_0500&PID_0002
+%USB\VID_0500&PID_0001&MI_00.DeviceDesc%=USBKBD, USB\VID_0500&PID_0001&MI_00
+
+[SEJIN_KBD]
+%USB\VID_0510&PID_0001.DeviceDesc%=USBKBD, USB\VID_0510&PID_0001
+%USB\VID_0510&PID_1000&MI_00.DeviceDesc%=USBKBD, USB\VID_0510&PID_1000&MI_00
+
+[SUPERGATE_KBD]
+%USB\VID_05D5&PID_6782&MI_00.DeviceDesc%=USBKBD, USB\VID_05D5&PID_6782&MI_00
+
+[ORTEK_KBD]
+%USB\VID_05A4&PID_9722.DeviceDesc%=USBKBD, USB\VID_05A4&PID_9722
+%USB\VID_05A4&PID_9720&MI_00.DeviceDesc%=USBKBD, USB\VID_05A4&PID_9720&MI_00
+
+[SOLIDYEAR_KBD]
+%USB\VID_060B&PID_2101&MI_00.DeviceDesc%=USBKBD, USB\VID_060B&PID_2101&MI_00
+
+[NEC_KBD]
+%USB\VID_0409&PID_0014&MI_00.DeviceDesc%=USBKBD, USB\VID_0409&PID_0014&MI_00
+%USB\VID_0409&PID_0011&MI_00.DeviceDesc%=USBKBD, USB\VID_0409&PID_0011&MI_00
+
+[QTRONIX_KBD]
+%USB\VID_05C7&PID_2001.DeviceDesc%=USBKBD, USB\VID_05C7&PID_2001
+%USB\VID_05C7&PID_6001.DeviceDesc%=USBKBD, USB\VID_05C7&PID_6001
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;  Install section for HID keyboards  ;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[HIDKeyboard]
+CopyFiles=HIDKeyboard.Copy
+AddReg=HIDKeyboard.AddReg
+
+[HIDKeyboard.Copy]
+kbdhid.vxd
+
+[HIDKeyboard.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,"kbdhid.vxd"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+[SysCfgClasses]
+Keyboard, %*PNP0303.DeviceDesc%,ROOT,,%KeyboardClassName%
+
+[*PNP0300.det]
+LogConfig       = kbdlc
+
+[*PNP0301.det]
+LogConfig       = kbdlc
+
+[*PNP0302.det]
+LogConfig       = kbdlc
+
+[*PNP0303.det]
+LogConfig       = kbdlc
+
+[*PNP0304.det]
+LogConfig       = kbdlc
+
+[*PNP0305.det]
+LogConfig       = kbdlc
+
+[*PNP0306.det]
+LogConfig       = kbdlc
+
+[*PNP0309.det]
+LogConfig       = kbdlc
+
+[*PNP030a.det]
+LogConfig       = kbdlc
+
+[*PNP030b.det]
+LogConfig       = kbdlc
+
+
+[PC_XT_83_Inst]         ;*PNP0300
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = PC_XT_83_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[PC_AT_84_Inst]         ;*PNP0301
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = PC_AT_84_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[PC_AT_84_Inst.PosDup]
+*PNP0303
+
+[PC_XT_84_Inst]         ;*PNP0302
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = PC_XT_84_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[PC_AT_Enh_Inst]        ;*PNP0303
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = PC_AT_Enh_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[Olivetti_83_Inst]      ;*PNP0304
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = Olivetti_83_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[Olivetti_102_Inst]     ;*PNP0305
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = Olivetti_102_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[Olivetti_86_Inst]      ;*PNP0306
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = Olivetti_86_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[Olivetti_101_102_Inst] ;*PNP0309
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = Olivetti_101_102_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[ATT_302_Inst]          ;*PNP030a
+LogConfig       = kbdlc
+CopyFiles=MS_KBD_ENH_CopyFiles, KBD_VxDs
+DelFiles        = MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = ATT_302_Inis, Keyb.Common.Inis
+AddReg          = Keyb.Common.Reg, MS_KBD_AddReg
+DelReg          = MS_KBD_DelReg
+
+[USBKBD]                ;All HID Keyboards
+CopyFiles=USBKBD.CopyFiles, MS_KBD_ENH_CopyFiles, KBD_VxDs
+AddReg          = USBKBD.AddReg, Keyb.Common.Reg
+DelFiles        = USBKBD.DelFiles, MS_KBD_ENH_DelFiles, KBD_VxDs_Del
+UpdateInis      = Keyb.Common.Inis
+
+[kbdlc]
+ConfigPriority=HARDWIRED
+IOConfig=60-60(ffff::)
+IOConfig=64-64(ffff::)
+IRQConfig=1
+
+[MS_KBD_ENH_CopyFiles]
+hidvkd.sys
+hidclass.sys
+hidparse.sys
+
+[MS_KBD_ENH_DelFiles]
+hidvkd.sys
+hidclass.sys
+hidparse.sys
+
+[USBKBD.CopyFiles]
+hidmini.sys
+hidclass.sys
+hidparse.sys
+
+[USBKBD.DelFiles]
+hidmini.sys
+hidclass.sys
+hidparse.sys
+
+[MS_KBD_AddReg]
+HKR,,DriverDesc,,"Keyboard Driver"
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,"hidvkd.sys"
+
+[MS_KBD_DelReg]
+
+[USBKBD.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,"hidmini.sys"
+
+[PC_XT_83_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0300.DeviceDesc%"
+system.ini,keyboard,,"subtype=42"
+system.ini,keyboard,,"type=1"
+
+[PC_AT_84_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0301.DeviceDesc%"
+system.ini,keyboard,,"subtype=0"
+system.ini,keyboard,,"type=3"
+
+[PC_XT_84_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0302.DeviceDesc%"
+system.ini,keyboard,,"subtype="
+system.ini,keyboard,,"type=1"
+
+[PC_AT_Enh_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0303.DeviceDesc%"
+system.ini,keyboard,,"subtype="
+system.ini,keyboard,,"type=4"
+
+[Olivetti_83_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0304.DeviceDesc%"
+system.ini,keyboard,,"subtype="
+system.ini,keyboard,,"type=1"
+
+[Olivetti_102_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0305.DeviceDesc%"
+system.ini,keyboard,,"subtype=1"
+system.ini,keyboard,,"type=2"
+
+[Olivetti_86_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0306.DeviceDesc%"
+system.ini,keyboard,,"subtype=10"
+system.ini,keyboard,,"type=3"
+
+[Olivetti_101_102_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP0309.DeviceDesc%"
+system.ini,keyboard,,"subtype=40"
+system.ini,keyboard,,"type=4"
+
+[ATT_302_Inis]
+system.ini,boot.description,,"keyboard.typ=%*PNP030a.DeviceDesc%"
+system.ini,keyboard,,"subtype=4"
+system.ini,keyboard,,"type=1"
+
+[Keyb.Common.Inis]
+system.ini,keyboard,,"keyboard.dll="
+system.ini,boot,,"keyboard.drv=keyboard.drv"
+
+; Install *vkd unless "device=alrvkd.386", "keyboard=alrvkd.386", "device=vkd.386", or "keyboard=vkd.386" is already present
+system.ini, 386enh, "keyboard=alrvkd.386", "~SetupTemp~=*",3
+system.ini, 386enh, "device=alrvkd.386", "~SetupTemp~=*",3
+system.ini, 386enh, "keyboard=vkd.386", "~SetupTemp~=*",3
+system.ini, 386enh, "device=vkd.386", "~SetupTemp~=*",3
+system.ini, 386enh,, "keyboard=*vkd"
+system.ini, 386enh, "~SetupTemp~=*", "keyboard=*vkd",3
+
+[Keyb.Common.Reg]
+
+[KBD_VxDs]
+
+
+[KBD_VxDs_Del]
+vkd.386
+
+
+[Strings]
+KeyboardClassName       = "Keyboard"
+MS                      = "Microsoft"
+MICROSOFT               = "Microsoft"
+Std-Keyboards           = "(Standard keyboards)"
+ALPS                    = "ALPS"
+FUJITSU                 = "Fujitsu"
+KEYTRONIC               = "Key Tronic"
+PHILIPS                 = "Philips"
+CHERRY                  = "Cherry GmbH"
+SILITEK                 = "Silitek"
+NMB                     = "NMB"
+STSL                    = "STSL"
+ACER                    = "Acer"
+BTC                     = "BTC"
+FOCUS                   = "Focus"
+JINGMOLD                = "Jing Mold"
+MAXISWITCH              = "Maxi Switch, Inc."
+MONTEREY                = "Monterey"
+ORTEK                   = "Ortek"
+CHICONY                 = "Chicony"
+FORWARD                 = "Forward"
+SAMSUNG                 = "Samsung"
+SEJIN                   = "Sejin"
+SUPERGATE               = "SUPERGATE"
+SUH                     = "SUH"
+SOLIDYEAR               = "Solid Year"
+NEC               	= "NEC"
+QTRONIX			= "Qtronix"
+*PNP0300.DeviceDesc     = "PC/XT Keyboard (83-Key)"
+*PNP0301.DeviceDesc     = "PC/AT Keyboard (84-Key)"
+*PNP0302.DeviceDesc     = "PC/XT Keyboard (84-Key)"
+*PNP0303.DeviceDesc     = "Standard 101/102-Key or Microsoft Natural Keyboard"
+*PNP0304.DeviceDesc     = "Olivetti Keyboard (83-Key)"
+*PNP0305.DeviceDesc     = "Olivetti Keyboard (102-Key)"
+*PNP0306.DeviceDesc     = "Olivetti Keyboard (86-Key)"
+*PNP0309.DeviceDesc     = "Olivetti Keyboard (A101/102-Key)"
+*PNP030a.DeviceDesc     = "AT&T 302 Keyboard"
+*PNP030b.DeviceDesc     = "PC/AT Enhanced Keyboard (101/102-Key)" ; default
+*CPQA0D7.DeviceDesc     = "Compaq Enhanced Keyboard"
+USB\VID_0433&PID_ABAB.DeviceDesc = "ALPS USB Keyboard"
+USB\VID_03F9&PID_0100.DeviceDesc = "Key Tronic USB Keyboard"
+USB\VID_0471&PID_0401.DeviceDesc = "Philips Semiconductors CICT USB Keyboard"
+USB\VID_0471&PID_0402&MI_00.DeviceDesc = "Philips Semiconductors CICT USB Keyboard"
+USB\VID_0471&PID_0601&MI_00.DeviceDesc = "Philips USB Wireless Keyboard"
+USB\VID_046A&PID_0001.DeviceDesc = "Cherry GmbH USB Keyboard"
+USB\VID_047B&PID_0001.DeviceDesc = "Silitek USB Keyboard"
+USB\VID_047B&PID_0002&MI_00.DeviceDesc="Silitek USB Keyboard"
+USB\VID_04A5&PID_0001.DeviceDesc = "API Generic USB K/B"
+USB\VID_04A5&PID_0002.DeviceDesc = "API Ergo USB K/B"
+USB\VID_04A5&PID_0003&MI_00.DeviceDesc= "API Generic USB K/B"
+USB\VID_03F9&PID_0101.DeviceDesc = "Key Tronic USB Keyboard"
+USB\VID_03F9&PID_0102&MI_00.DeviceDesc = "Key Tronic USB Keyboard"
+USB\VID_0446&PID_6782.DeviceDesc = "NMB USB Keyboard"
+USB\VID_0446&PID_6781&MI_00.DeviceDesc = "NMB USB Keyboard with PS/2 Mouse Port"
+USB\VID_05FA&PID_3303&MI_00.DeviceDesc = "STSL USB Keyboard with PS/2 Mouse Port"
+USB\VID_05FA&PID_3302.DeviceDesc = "STSL USB Keyboard"
+
+USB\VID_04F2&PID_0002.DeviceDesc = "Chicony USB Keyboard"
+USB\VID_04F2&PID_0001&MI_00.DeviceDesc = "Chicony USB Keyboard"
+USB\VID_046E&PID_0100.DeviceDesc = "BTC USB Keyboard"
+USB\VID_046E&PID_6782&MI_00.DeviceDesc = "BTC USB Keyboard"
+USB\VID_05B2&PID_6200.DeviceDesc = "Focus USB Keyboard"
+USB\VID_05B2&PID_7200&MI_00.DeviceDesc = "Focus USB Keyboard"
+USB\VID_05AF&PID_9167.DeviceDesc = "KB 9151B - 678"
+USB\VID_05AF&PID_9267&MI_00.DeviceDesc = "KB 9251B - 678"
+USB\VID_04C3&PID_1101.DeviceDesc = "Maxi Switch, Inc. #1101"
+USB\VID_04C3&PID_1102&MI_00.DeviceDesc = "Maxi Switch, Inc. #1102"
+USB\VID_04C3&PID_2101.DeviceDesc = "Maxi Switch, Inc. #2101"
+USB\VID_04C3&PID_2102&MI_00.DeviceDesc = "Maxi Switch, Inc. #2102"
+USB\VID_0566&PID_2800.DeviceDesc = "MIC USB K/B"
+USB\VID_0566&PID_2801&MI_00.DeviceDesc = "MIC USB K/B M"
+USB\VID_05A4&PID_9722.DeviceDesc = "ORTEK Keyboard"
+USB\VID_05A4&PID_9720&MI_00.DeviceDesc = "ORTEK Keyboard"
+USB\VID_0430&PID_0002&MI_00.DeviceDesc="Fujitsu USB Composite Keyboard"
+USB\VID_055D&PID_6780.DeviceDesc = "Samsung USB Keyboard V1"
+USB\VID_055D&PID_6781&MI_00.DeviceDesc = "Samsung USB Keyboard V2"
+USB\VID_055D&PID_0001.DeviceDesc="Samsung USB Keyboard"
+USB\VID_05BC&PID_0002.DeviceDesc = "Forward USB K/B"
+USB\VID_05BC&PID_0001&MI_00.DeviceDesc = "Forward USB K/B with PS/2 Mouse"
+USB\VID_0500&PID_0002.DeviceDesc = "SUH DART-2 USB Keyboard"
+USB\VID_0500&PID_0001&MI_00.DeviceDesc = "SUH DART USB Keyboard"
+USB\VID_0510&PID_0001.DeviceDesc = "Sejin USB Keyboard"
+USB\VID_0510&PID_1000&MI_00.DeviceDesc="Sejin USB Keyboard with PS/2 Mouse Port"
+USB\VID_05D5&PID_6782&MI_00.DeviceDesc = "SUPERGATE USB Keyboard with PS/2 Mouse Port"
+USB\VID_045E&PID_000B.DeviceDesc = "Microsoft USB Natural Keyboard"
+USB\VID_060B&PID_2101&MI_00.DeviceDesc = "Solid Year USB Keyboard with PS/2 Mouse Port"
+USB\VID_0409&PID_0014&MI_00.DeviceDesc = "NEC PC98-NX 106/109 USB Keyboard"
+USB\VID_0409&PID_0011&MI_00.DeviceDesc = "NEC PC98 Series Layout USB Keyboard"
+USB\VID_05C7&PID_2001.DeviceDesc = "Qtronix USB Keyboard"
+USB\VID_05C7&PID_6001.DeviceDesc = "Qtronix USB Ten-Keypad"
+
+HID_DEVICE_SYSTEM_KEYBOARD="HID-compliant keyboard"
+
+

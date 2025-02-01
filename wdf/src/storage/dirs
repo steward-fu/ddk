@@ -1,0 +1,10 @@
+DIRS= \
+     class \
+     filters \
+     miniide \
+     msahci \
+     msdsm \
+     ramdisk \
+     sfloppy \
+     StorportMiniports \
+     tools

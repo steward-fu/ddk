@@ -1,0 +1,9 @@
+#include <ntverp.h>
+
+#define	VER_FILETYPE				VFT_DLL
+#define	VER_FILESUBTYPE				VFT2_UNKNOWN
+#define VER_FILEDESCRIPTION_STR 	"ATI WDM TVTuner MiniDriver"
+#define VER_INTERNALNAME_STR		"atitunep.sys"
+#define VER_ORIGINALFILENAME_STR	"atitunep.sys"
+
+#include "common.ver"

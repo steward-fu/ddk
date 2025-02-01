@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>FILTER</TITLE>
+<META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</HEAD>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" leftmargin="8">
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE">FILTER</A> </H2>
+
+<span style="color:#FF0000">[This is preliminary documentation and subject to change.]</span> 
+
+<H3>SUMMARY</H3></FONT><FONT FACE="Verdana" SIZE=2><P>
+WDM "value-add" filter drivers are covered in this sample. <P>
+FILTER is a code shell for a WDM filter ("value-add") driver. A filter driver loads either above or below the actual driver for a device object. The role of a filter driver is to add value by doing additional processing on the data passing through it. The source compiles into Filter.sys. <P>
+This is a working filter driver, but it does no value-add data processing. FILTER merely passes all data through it transparently. It implements all required Plug and Play and power functionality required of WDM drivers, making it a useful starting point for your value-add filter driver. <P>
+
+<H3>BUILDING THE SAMPLE</H3></FONT><FONT FACE="Verdana" SIZE=2><P>
+Run the <B>build</B> command to build the sample. To make your device add the filter driver, edit the .inf installation script, following the directions in Inf.txt. Wdm.h is the only required header for this sample. Both checked and free builds are available. 
+<P>
+FILTER works on all Windows&#174; 2000 platforms, including X86 and Alpha. The code is also 64-bit compliant. The sample produces one binary, builds properly with Microsoft Visual C&#174; 6.0, and supports Plug and Play and Power Management. 
+<P>
+<H3>TOOLS</H3></FONT><FONT FACE="Verdana" SIZE=2><P>
+No performance tools, debugger extensions, or control panel app extensions are available. 
+<H3>RESOURCES</H3></FONT><FONT FACE="Verdana" SIZE=2><P>
+For more information, see <A HREF="http://msdn.microsoft.com/developer/">Microsoft Developer Network</A> and Microsoft Systems Journal articles by Walter Oney (November&#150;December 1997) and Ervin Peretz (January 1999). 
+<P>
+For tools and other resources, see <A HREF="http://www.microsoft.com/msj/">http://www.microsoft.com/msj/</A>. 
+
+
+<H3>CODE TOUR</H3>
+<H4>File Manifest</H4>
+</FONT><U><PRE>File&#9;&#9;Description
+</U>
+Filter.htm&#9;The documentation for this sample (this file)
+Makefile&#9;Makefile required to build the driver. 
+Sources&#9;	The generic file for building the code sample. 
+Filter.c&#9;Initialization and dispatch code
+Pnp.c&#9;	Plug and Play code 
+Power.c&#9;	Power Management code 
+Util.c&#9;	Utility functions
+Filter.h&#9;Header  
+Filter.rc&#9;Resources file 
+Inf.txt&#9;	Guide to .inf installation script changes required to load Filter 
+
+</pre>
+
+</FONT><P ALIGN="CENTER"><A HREF="#top"><FONT FACE="Verdana" SIZE=2>Top of page</FONT></A><FONT FACE="Verdana" SIZE=2> </P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 WIDTH=624>
+<TR><TD VALIGN="MIDDLE" BGCOLOR="#00ffff" HEIGHT=2>
+<P></TD>
+</TR>
+</TABLE>
+
+<FONT FACE="MS Sans Serif" SIZE=1><P>&copy; 1999 Microsoft Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT></BODY>
+</HTML>

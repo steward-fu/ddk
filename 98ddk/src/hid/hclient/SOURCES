@@ -1,0 +1,53 @@
+!IF 0
+
+Copyright (c) 1989  Microsoft Corporation
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+
+Author:
+
+    Kenneth Ray DEC-1996
+
+!ENDIF
+
+TARGETNAME=hclient
+TARGETTYPE=PROGRAM
+TARGETPATH=$(BASEDIR)\lib
+UMTYPE=windows
+UMENTRY=winmain
+UMBASE=0x01000000
+
+C_DEFINES=
+MSC_OPTIMIZATION=
+MCS_WARNING_LEVEL= /W3/WX
+
+
+INCLUDES=..\inc;  \
+         $(BASEDIR)\inc; \
+         $(BASEDIR)\inc\win98\inc;
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\hid.lib  \
+                        $(BASEDIR)\lib\*\free\setupapi.lib \
+                        $(MSVCDIR)\lib\comdlg32.lib
+                
+
+SOURCES= hclient.c \
+         pnp.c \
+         report.c \
+         strings.c \
+         logpnp.c \
+         buffers.c \
+         debug.c \
+         ecdisp.c \
+         extcalls.c \
+         hclient.rc 

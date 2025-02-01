@@ -1,0 +1,19 @@
+
+TARGETNAME=TESTAPP
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+UMTYPE=windows
+UMENTRY=winmain
+UMBASE=0x01000000
+CRT_LIB_PATH=$(MSVCDIR)\lib
+USE_LIBCMT=TRUE
+
+INCLUDES=..\sys; \
+         $(BASEDIR)\inc;
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\comctl32.lib
+
+SOURCES=testapp.c \
+		testapp.rc
+

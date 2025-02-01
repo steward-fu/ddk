@@ -1,0 +1,24 @@
+TARGETNAME=hpsjusd
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+DLLENTRY=DllEntryPoint
+
+TARGETLIBS= \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib \
+			  $(MSVCDIR)\lib\uuid.lib \
+			  $(MSVCDIR)\lib\ole32.lib
+
+INCLUDES=..\..\inc;
+
+
+SOURCES=hpsjusd.rc \
+        hpsjusd.cpp \
+        device.cpp
+
+USE_CRTDLL=1
+
+DLLBASE=0x1c300000
+

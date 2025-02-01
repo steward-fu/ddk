@@ -1,0 +1,8 @@
+DIRS= \
+     booklet \
+     color \
+     common \
+     nup \
+     scaling \
+     watermark \
+     xdcont

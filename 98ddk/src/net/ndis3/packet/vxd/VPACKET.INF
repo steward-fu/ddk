@@ -1,0 +1,122 @@
+
+; VPACKET.INF
+;
+; VPACKET Transport
+;
+; Copyright 1996, Microsoft Corporation
+
+[version]
+signature="$CHICAGO$"
+Class=NetTrans
+provider=%V_MS%
+
+[Manufacturer]
+%V_MS%=MS
+
+[MS]
+%VPACKET.DeviceDesc%=   VPACKET.ndi, VPACKET                    ;VPACKET Driver
+
+
+;****************************************************************************
+; VPACKET
+;****************************************************************************
+[VPACKET.ndi]
+CopyFiles=VPACKET.CopyFiles
+AddReg=VPACKET.ndi.reg
+DeviceID=VPACKET
+MaxInstance=8
+
+[VPACKET.ndi.reg]
+HKR,Ndi,DeviceID,,VPACKET
+HKR,Ndi,MaxInstance,,8
+HKR,Ndi,NdiInstaller,,"MyNdi.dll,MyNdiProc"
+
+; NDIS info
+HKR,NDIS,LogDriverName,,"VPACKET"
+HKR,NDIS,MajorNdisVersion,1,03
+HKR,NDIS,MinorNdisVersion,1,0A
+
+; Interfaces
+HKR,Ndi\Interfaces,DefUpper,,""
+HKR,Ndi\Interfaces,DefLower,,"ndis3"
+HKR,Ndi\Interfaces,UpperRange,,""
+HKR,Ndi\Interfaces,LowerRange,,"ndis3"
+
+; Install-Remove Sections
+HKR,Ndi\Install,,,"VPACKET.Install"
+HKR,Ndi\Remove,,,"VPACKET.Remove"
+
+; Context help
+HKR,Ndi,HelpText,,%VPACKET_HELP%
+
+; Need for advanced page
+HKR,Ndi\Params\None,ParamDesc,,%PARAM_NONE%
+HKR,Ndi\Params\None,default,,""
+HKR,Ndi\Params\None,type,,keyonly
+
+; Need for driver page
+HKR,,ProviderName,,"DSH Team 1"
+HKR,,Driver,,"vpacket.vxd"
+
+[VPACKET.Install]
+AddReg=VPACKET.AddReg
+DelReg=VPACKET.Ins.DelReg
+CopyFiles=VPACKET.CopyFiles.sys, VPACKET.CopyFiles.win
+
+[VPACKET.AddReg]
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,"vpacket.vxd"
+
+[VPACKET.CopyFiles]
+myndi.dll
+packet32.dll
+
+[VPACKET.CopyFiles.inf]
+vpacket.inf
+
+[VPACKET.CopyFiles.sys]
+vpacket.vxd
+;;;;;;;;;;;;;;;;;
+;;; vpacket.sym is only needed in debugging environments
+;;;;;;;;;;;;;;;;;
+;;;vpacket.sym
+
+[VPACKET.CopyFiles.win]
+
+[VPACKET.Remove]
+DelReg=VPACKET.Rmv.DelReg
+DelFiles=VPACKET.CopyFiles.sys, VPACKET.CopyFiles.win, VPACKET.CopyFiles.inf
+
+[VPACKET.Rmv.DelReg]
+
+;****************************************************************************
+; Destination Directories
+;****************************************************************************
+[DestinationDirs]
+VPACKET.CopyFiles.sys   = 11 ; LDID_SYS
+VPACKET.CopyFiles.win   = 25 ; LDID_SHARED
+VPACKET.CopyFiles.inf   = 17 ; LDID_INF
+
+[SourceDisksNames]
+
+[SourceDisksFiles]
+
+;****************************************************************************
+; Localizable Strings
+;****************************************************************************
+[strings]
+V_MS="Microsoft"
+V_CLASSNAME="Network Protocol"
+
+; Devices
+VPACKET.DeviceDesc="Sample Packet Driver"
+
+; Parameters
+PARAM_YES="Yes"
+PARAM_NO="No"
+PARAM_OFF="Off"
+PARAM_NONE="None"
+
+; Context help
+VPACKET_HELP="Packet Driver is the sample protocol you use to connect to your own miniport."
+

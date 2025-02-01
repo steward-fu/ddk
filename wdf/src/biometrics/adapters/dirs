@@ -1,0 +1,4 @@
+DIRS= \
+     engine_adapter \
+     sensor_adapter \
+     storage_adapter

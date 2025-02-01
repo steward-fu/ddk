@@ -1,0 +1,14 @@
+#include <version.h>
+
+#ifndef UNDEFINED_DEVICE_ID
+#define UNDEFINED_DEVICE_ID 0x00000
+#endif
+
+#define VER_FILETYPE              VFT_VXD
+#define VER_FILESUBTYPE           UNDEFINED_DEVICE_ID
+#define VER_FILEDESCRIPTION_STR   "S3VSMP Virtual Display Driver (Version 4.0)"
+#define VER_INTERNALNAME_STR      "S3VSMP"
+#define VER_LEGALCOPYRIGHT_YEARS  "1988-" VER_COPYRIGHT_CURRENT_YEAR
+#define VER_ORIGINALFILENAME_STR  "S3VSMP.VXD"
+
+#include "common.ver"

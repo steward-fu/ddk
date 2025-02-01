@@ -1,0 +1,46 @@
+<XML>
+<HTMLHelpCollection>
+<masterchm value="w98gs"/>
+<masterlangid value=1033/>
+<samplelocation value=""/>
+<collectionnum value=1/>
+<refcount value=0/>
+<version value=0/>
+<Folders>
+<Folder>
+	<TitleString value="Windows 98 DDK"/>
+	<FolderOrder value=1/>
+	<Folder>
+		<TitleString value="=pm_w98gs"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+	<Folder>
+		<TitleString value="=pm_win98ddk"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+	<Folder>
+		<TitleString value="=pm_other"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+	<Folder>
+		<TitleString value="=pm_scddk"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+	<Folder>
+		<TitleString value="=pm_dxddk"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+	<Folder>
+		<TitleString value="=pm_bpcddk"/>
+		<FolderOrder value=1/>
+		<LangId value=1033/>
+	</Folder>
+</Folder>
+</Folders>
+</HTMLHelpCollection>
+</XML>

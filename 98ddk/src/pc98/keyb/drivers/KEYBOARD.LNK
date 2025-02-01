@@ -1,0 +1,6 @@
+trap tabs init toascii xlatjp enable setspeed oemscan getname wep mapvirt vkscan
+keyboard.exe/align:16
+keyboard/map
+libw /NOD
+keyboard.def
+

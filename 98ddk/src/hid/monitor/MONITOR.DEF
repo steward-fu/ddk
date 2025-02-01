@@ -1,0 +1,5 @@
+LIBRARY         MONITOR
+DESCRIPTION     'USB Monitor'
+
+EXPORTS
+

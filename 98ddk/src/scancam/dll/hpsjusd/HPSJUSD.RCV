@@ -1,0 +1,23 @@
+/*****************************************************************/
+/**         Microsoft Windows                                   **/
+/**     Copyright (C) Microsoft Corp., 1996-1997                **/
+/*****************************************************************/
+
+
+#ifndef WINNT
+#include <version.h>
+#else
+#include <windows.h>
+#include <ntverp.h>
+#endif
+
+#define VER_FILETYPE            VFT_DLL
+#define VER_FILESUBTYPE         VFT_UNKNOWN
+#define VER_FILEDESCRIPTION_STR     "Still Image Devices DLL"
+#define VER_INTERNALNAME_STR        "HPSJUSD"
+#define VER_LEGALCOPYRIGHT_YEARS    "1996-1997"
+#define VER_ORIGINALFILENAME_STR    "HPSJUSD.DLL"
+
+#include <common.ver>
+
+

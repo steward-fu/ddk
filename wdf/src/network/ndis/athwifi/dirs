@@ -1,0 +1,7 @@
+DIRS= \
+     driver \
+     extap \
+     extsta \
+     hvl \
+     hw \
+     mpdbg

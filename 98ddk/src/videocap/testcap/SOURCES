@@ -1,0 +1,17 @@
+TARGETNAME=testcap
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+#NTDUMPAMAP=TRUE
+
+INCLUDES= ..\..\stream\inc;
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib 
+
+SOURCES= \
+		capmain.c \
+		capvideo.c \
+		capxfer.c \
+		capprop.c \
+		capirq.c

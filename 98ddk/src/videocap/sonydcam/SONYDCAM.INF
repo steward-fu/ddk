@@ -1,0 +1,74 @@
+; SONYDCAM.INF -- This file contains descriptions of the 1394 Sony Desktop
+;                 camera
+;
+;*** Created 10/2/95  (Creation Date)
+
+[Version]
+signature="$CHICAGO$"
+Class=Camera
+Provider=%Msft%
+LayoutFile=LAYOUT.INF
+
+[SourceDisksNames]
+1="DDK SONYDCAM Sample","",1
+
+[SourceDisksFiles]
+sonydcam.sys=1
+
+[DestinationDirs]
+defaultdestdir=11
+
+[DefaultInstall]
+UpdateInis  = Sony.Links
+
+; =================== Class Sections ===========================
+
+[ClassInstall]
+Addreg=CameraClassReg
+
+[CameraClassReg]
+HKR,,,,%CameraClassName%
+HKR,,Icon,,-21
+
+
+; =================== Table of content =========================
+
+[Manufacturer]
+%SonyMfg%=Sony
+
+; =================== Sony ========================
+
+[Sony]
+%1394\A02D&100.DeviceDesc%=Sony.Device,1394\A02D&100
+
+[Sony.Device]
+AddReg=Sony.AddReg, Camera.AddReg
+CopyFiles=Sony.CopyFiles
+
+[Sony.AddReg]
+HKR,,NTMPDriver,,sonydcam.sys
+
+[Sony.CopyFiles]
+sonydcam.sys
+stream.sys
+ks.sys
+ksuser.dll
+msyuv.dll
+
+[Sony.Links]
+system.ini, drivers32,,"VIDC.S422=msyuv.dll"
+
+; =================== Generic ==================================
+
+[Camera.AddReg]
+HKR,,DevLoader,,*NTKERN
+
+[ControlFlags]
+CopyFilesOnly=1394\A02D&100
+
+[Strings]
+Msft="Microsoft"
+CameraClassName="Camera device"
+
+SonyMfg="Sony"
+1394\A02D&100.DeviceDesc="Sony 1394 CCM-DS250 Desktop Camera"

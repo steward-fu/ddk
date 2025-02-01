@@ -1,0 +1,79 @@
+Consumer Devices
+NORMAL
+00	Unassigned
+01	Consumer Control
+02	Numeric Key Pad
+03-1F	Reserved
+20	+10
+21	+100
+22	AM/PM
+23-3F	Reserved
+30	Power
+31	Reset
+32	Sleep
+33	Sleep After
+34	Sleep Mode
+35	Illumination
+36	Function Buttons
+37-3F	Reserved
+40	Menu
+41	Menu  Pick
+42	Menu Up
+43	Menu Down
+44	Menu Left
+45	Menu Right
+46	Menu Escape
+47	Menu Value Increase
+48	Menu Value Decrease
+49-5F	Reserved
+60	Data On Screen
+61	Closed Caption
+62	Closed Caption Select
+63	VCR/TV
+64	Broadcast Mode
+65	Snapshot
+66-7F	Reserved
+80	Selection
+81	Assign Selection
+82	Mode Step
+83	Recall Last
+84	Enter Channel
+85	Order Movie
+86	Channel
+87	Media Selection
+88	Media Select Computer
+89	Media Select TV
+8A	Media Select WWW
+8B	Media Select DVD
+8C	Media Select Telephone
+8D	Media Select Program Guide
+8E	Media Select Video Phone
+8F	Media Select Games
+90	Media Select Messages
+91	Media Select CD
+92	Media Select VCR
+93	Media Select Tuner
+94	Quit
+95	Help
+96-AF	Reserved
+B0	Play
+B1	Pause
+B2	Record
+B3	Fast Forward
+B4	Rewind
+B5	Scan Next Track
+B6	Scan Previous Track
+B7	Stop
+B8	Eject
+B9	Random Play
+BA	Select Disc
+BB	Enter Disc
+BC-DF	Reserved
+E0	Volume
+E1	Balance
+E2	Mute
+E3	Bass
+E4	Treble
+E5	Bass Boost
+E6	Surround Mode
+E7-FFFF	Reserved

@@ -1,0 +1,28 @@
+Generic Desktop
+NORMAL
+00	Undefined
+01	Pointer
+02	Mouse
+03	Reserved
+04	Joystick
+05	Game Pad
+06	Keyboard
+07	Keypad
+08-2F	Reserved
+30	X
+31	Y
+32	Z
+33	Rx
+34	Ry
+35	Rz
+36	Slider
+37	Dial
+38	Wheel
+39	Hat switch
+3A	Counted Buffer
+3B	Byte Count
+3C-7F	Reserved
+80	System Controls
+81	System Power
+82	System Sleep
+83-FFFF	Reserved

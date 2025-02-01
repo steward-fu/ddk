@@ -1,0 +1,33 @@
+
+#include <mindrvrc.h>
+#include "CANON10V.rcv"
+
+1      RC_TABLES   PRELOAD MOVEABLE        CANON10V.GPC
+
+1      RC_FONT     LOADONCALL DISCARDABLE  PFM\MINCHO.PFM
+2      RC_FONT     LOADONCALL DISCARDABLE  PFM\MINCHO2.PFM
+3      RC_FONT     LOADONCALL DISCARDABLE  PFM\GOTHIC.PFM
+4      RC_FONT     LOADONCALL DISCARDABLE  PFM\GOTHIC2.PFM
+5      RC_FONT     LOADONCALL DISCARDABLE  PFM\MOHITSU.PFM
+6      RC_FONT     LOADONCALL DISCARDABLE  PFM\MOHITSU2.PFM
+7      RC_FONT     LOADONCALL DISCARDABLE  PFM\COUR05.PFM
+8      RC_FONT     LOADONCALL DISCARDABLE  PFM\COUR06.PFM
+9      RC_FONT     LOADONCALL DISCARDABLE  PFM\COUR10.PFM
+10     RC_FONT     LOADONCALL DISCARDABLE  PFM\COUR12.PFM
+11     RC_FONT     LOADONCALL DISCARDABLE  PFM\COUR15.PFM
+12     RC_FONT     LOADONCALL DISCARDABLE  PFM\COURPS.PFM
+
+
+STRINGTABLE
+
+BEGIN
+       1                  "Canon Bubble-Jet BJ-10v"
+       2                  "Canon Bubble-Jet BJ-10v Custom"
+       3                  "Canon Bubble-Jet BJ-10v Lite"
+       4                  "Canon Bubble-Jet BJ-10v Select"
+       5                  "Canon Bubble-Jet BJ-15v"
+       257                "%d x %d"
+       258                "ÏÆ­±ÙÌ¨°ÄÞ"
+       259                "µ°Ä¼°ÄÌ¨°ÀÞ"
+       260                "Ê¶Þ·Ì¨°ÀÞ"
+END

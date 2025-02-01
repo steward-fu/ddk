@@ -1,0 +1,21 @@
+o dpCapsFE
+
+FEC_WIFE_ABLE   equ 0000000010000000b   ; can handle WIFE font as Engine font
+FEC_EUDC_ABLE   equ 0000000100000000b   ; can handle EUDC in device font.
+
+These two flags are mainly for printer driver.
+
+If FEC_WIFE_ABLE is set, WIFE font is handles as same way as EngineRealized TrueType font. WIFE font can be realized by EngineRealizeFont DDI and can be printed by EngineGetGlyphBmp DDI.
+Otherwise, WIFE font is handled as raster font, and WIFE font is printed via BitBlt.
+
+If FEC_EUDC_ABLE is set, printer driver has to handle EUDC printing.
+Otherwise EUDC is printed via BitBlt and printer driver doesn't have to take care of EUDC.
+EUDC can be included in TrueType font and printer device font and these two type of EUDC has to be printed correctly.
+
+
+o Unitool.exe for Fe mini drivers
+If you refer Far East Mini driver sample codes in \ddk\printer\samples, you should use \ddk\tools\unitool.exe, not \ddk\printer\bin\unitool.exe.
+
+
+o PPD file support
+To make PPD file for FE Windows 95, you will refer to Jppdguid.doc for Japanese reader, Feppdgui.doc for English reader.

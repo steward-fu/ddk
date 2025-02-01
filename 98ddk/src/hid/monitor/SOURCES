@@ -1,0 +1,36 @@
+TARGETNAME=monitor
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+DLLENTRY=Entry32
+NO_NTDLL=1
+
+MCS_OPTIMIZATION= /Oi
+MCS_WARNING_LEVEL= /W3 /WX
+
+INCLUDES=..\inc;  \
+         $(BASEDIR)\inc;
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\hid.lib  \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\setupapi.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\shell32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\comctl32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\cfgmgr32.lib \
+           $(BASEDIR)\lib\*\free\msvcrt.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\gdi32.lib \
+           $(MSVCDIR)\lib\uuid.lib
+
+SOURCES=monitor.rc \
+        mem.c  \
+        map.c    \
+        mapcf.c   \
+        mappsx.c \
+        monitor.c  \
+        pnp.c	   \
+        assert.c   \
+        common.c
+
+DLLBASE=0x1c300000

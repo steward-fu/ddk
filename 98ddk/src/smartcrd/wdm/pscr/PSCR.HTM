@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>MYSAMPLE - Title That Will Appear in the Main TOC of the DDK Docs</TITLE>
+</HEAD>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" leftMargin=8>
+
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE">PSCR.SYS – PCMCIA Smart Card Driver</A></H2>
+<H3>SUMMARY</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>This driver is used for the SCM PCMCIA smart card reader. </P>
+<P>This driver implements ‘Plug and Play’ and ‘Power Management’ </P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>BUILDING PSCR.SYS</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>To build the pscr.sys driver simply select either the checked or free DDK environment, change to the directory bulltlp3 and type build.&nbsp;This driver uses services provided by the smart card driver library (smclib.sys), which are explained in detail in the accompanied documentation.</P>
+<P>To install the driver, simply insert the reader into a pcmcia slot. The ‘Found new hardware’ wizard will pop up and you need to provide the inf-file (on a floppy) and the driver file, which will then be copied to your system32\drivers directory. The driver will then be started automatically. To stop the driver, you can either eject the reader or select the taskbar icon to stop the driver. The driver will not unload as long as you have ifdtest.exe running and connected to the driver. </P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>Tools</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>Microsoft offers a test tool (ifdtest.exe), which allows you to directly use a smart card reader from the command line. Normally, the smart card resource manager is connected to a reader. In order to use ifdtest.exe, you must stop the smart card resource manager (scardsvr.exe). This can be done from a command line, by typing ‘net stop scardsvr’. Ifdtest.exe is also used for the smart card reader logo test.</P>
+<P>Ifdtest.exe can be downloaded from </FONT><A HREF="http://www.microsoft.com/hwtest">http://www.microsoft.com/hwtest</A><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"> (follow the links for smart cards). In order to get YOUR smart card reader logo’ed, you need to order special test smart cards. Information on how to obtain test smart cards can also be found on the above web page.</P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Verdana"><H3>RESOURCES</H3>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>ISO 7816 part 3 describes smart cards and smart card protocols in detail. Also, please, refer to the PC99 handbook for smart card reader requirements.</P>
+</FONT><FONT FACE="Verdana"><H3>CODE TOUR</H3>
+<H4>File Manifest</H4>
+</FONT><PRE>&nbsp;
+<U>Files         Description
+</U>PSCR.HTM      The Sample Tour documentation for this sample (this file).
+<FONT FACE="Courier">SOURCES       The generic file for building the code sample.
+MAKEFILE      Makefile required to build the driver
+MAKEFILE.INC  Additional makefile required to build the driver
+PSCR.INF      The INF file for installing the code sample.
+PSCRCB.CB     Source file containing the callback functions for the smart card library
+PSCRCB.H      Function prototypes for above file
+PSCRCMD.C     This implements the reader commands
+PSCRLOG.MC    Includes the error messages for this driver
+PSCRNT.C      The main source file (load, unload, PnP, Power mgnt.)
+PSCRNT.H      Data definitions and prototypes for the above file
+PSCRRDWR.C    Implements read / write operations
+PSCRRDWR.H    Data definitions and constant definitions for this reader
+PSCRVERS.H    Driver specific version information
+</FONT><FONT FACE="Verdana"> </PRE>
+</FONT><H4>Programming Tour</H4>
+<FONT FACE="Verdana" SIZE=2><P>The major topics covered in this tour are: </P>
+
+<UL>
+<LI>Plug and Play </LI>
+<LI>Power Management </LI></UL>
+
+<P>Plug and Play</P>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>With PCMCIA Plug and Play is fairly easy to implement, since the PCMCIA bus supports device insertion and removal detection by design. However, please keep in mind, that when a user removes a PCMCIA card from the slot, there could be still an application connected to the device. This means, you should fail all subsequent requests, but you need to prevent that the driver unloads as long as the connection exists. You should defer unloading of the driver until the connection has been closed.</P>
+</FONT><FONT FACE="Verdana" SIZE=2><P>Power Management</P>
+</FONT><FONT FACE="Verdana" SIZE=2 COLOR="#ff0000"><P>Power Management is described in detail in the DDK documentation. There is, however, on thing specific to smart card readers. How to deal with smart card insertions/removals while the system is in stand by or hibernation mode. </P>
+<P>Your reader won’t see any card insertion or removal events in these modes, because the bus might not even have power. So you need to save the card state before your reader goes into stand by/hibernation mode. After the system comes back from these modes, you need to determine what the state of the card is now. You need to complete card tracking calls whenever there was a card in the reader before stand by/hibernation mode OR whenever there is a card in the reader after these modes. This is necessary, because the user could have changed the card while the system is in a low-power mode. </P>
+</FONT><P>&nbsp;</P>
+<P ALIGN="CENTER"><A HREF="http://devkits/ddk/doctemplate.htm#top"><FONT FACE="Verdana" SIZE=2>Top of page</FONT></A><FONT FACE="Verdana" SIZE=2> </P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 WIDTH=624>
+<TR><TD VALIGN="MIDDLE" BGCOLOR="#00ffff" HEIGHT=2>
+<P></TBODY></TD>
+</TR>
+</TABLE>
+
+<FONT FACE="MS Sans Serif" SIZE=1><P>&copy; 1998 Microsoft Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT></BODY>
+</HTML>

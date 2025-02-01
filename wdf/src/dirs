@@ -1,0 +1,29 @@
+DIRS= \
+     1394 \
+     audio \
+     AVStream \
+     biometrics \
+     bth \
+     filesys \
+     general \
+     hid \
+     input \
+     ir \
+     mmedia \
+     network \
+     print \
+     sd \
+     SensorsAndLocation \
+     serial \
+     setup \
+     sideshow \
+     smartcrd \
+     storage \
+     swtuner \
+     test \
+     usb \
+     video \
+     videocap \
+     wia \
+     wmi \
+     wpd

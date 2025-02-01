@@ -1,0 +1,43 @@
+[Version]
+Signature=$CHICAGO$
+Class=SmartCardReader
+Provider="Bull"
+LayoutFile=layout.inf
+
+[ClassInstall]
+CopyFiles=SmclibCopyFiles
+AddReg=SmclibAddReg
+
+[SmclibCopyFiles]
+SMCLIB.VXD,,
+
+[SmclibAddReg]
+HKLM, System\CurrentControlSet\Services\VxD\SMCLIB,StaticVxD,,"SMCLIB.VXD"
+HKLM, System\CurrentControlSet\Services\VxD\SMCLIB,Start,1,00
+
+[Manufacturer]
+"Bull"=BULL
+
+[DestinationDirs]
+DefaultDestDir=11
+
+[BULL]
+"SmarTLP3 Smart Card Reader"=BullSmarTLP3Install, SERENUM\BUL8030
+
+[BullSmarTLP3Install]
+AddReg=SmarTLP3AddReg
+CopyFiles=SmarTLP3CopyFiles
+Reboot
+
+[SmarTLP3AddReg]
+HKR,,DriverDesc,,"Bull SmarTLP3 Smart Card Reader"
+HKR,,DevLoader,,"BULLTLP3.VXD"
+
+[SmarTLP3CopyFiles]
+BULLTLP3.VXD,,
+
+[SourceDisksFiles]
+BULLTLP3.VXD
+
+[SourceDisksNames]
+1="Bull Smart Card Reader Install Disk",,

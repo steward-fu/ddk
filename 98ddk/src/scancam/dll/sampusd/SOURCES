@@ -1,0 +1,25 @@
+TARGETNAME=sampusd
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+DLLENTRY=DllEntryPoint
+NO_NTDLL=1
+
+TARGETLIBS= \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib \
+              $(MSVCDIR)\lib\ole32.lib                     \
+              $(MSVCDIR)\lib\uuid.lib                     \
+
+INCLUDES=..\..\inc;
+
+
+SOURCES=sampusd.rc \
+        sampusd.cpp \
+        device.cpp
+
+USE_CRTDLL=1
+
+DLLBASE=0x1c300000
+

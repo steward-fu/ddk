@@ -1,0 +1,28 @@
+TARGETNAME=smmhook
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+NO_NTDLL=1
+
+TARGETLIBS= \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\rasapi32.lib \
+              $(BASEDIR)\lib\win98\tapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\gdi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib 
+
+INCLUDES= ..\..\net\inc;
+
+
+SOURCES= \
+                smmhook.c \
+                smmthrd.c  \
+                util.c \
+                terminal.c
+
+
+
+USE_CRTDLL=1
+
+DLLBASE=0x1c300000

@@ -1,0 +1,84 @@
+;   S3VSMP.INF file for S3 ViRGE Sample Windows 98 display driver
+
+[Version]
+Signature=$CHICAGO$
+Class=DISPLAY
+Provider=%Mfg%
+
+[DestinationDirs]
+DefaultDestDir=11
+S3V.Ini         =10
+
+[Manufacturer]
+%S3%     =Mfg.S3
+
+[Mfg.S3]
+%PCI\VEN_5333&DEV_8A01.DeviceDesc%=S3V,PCI\VEN_5333&DEV_8A01   ; S3 ViRGE(DX/GX) PCI"
+%PCI\VEN_5333&DEV_883D.DeviceDesc%=S3V,PCI\VEN_5333&DEV_883D   ; S3 ViRGE/VX PCI"
+%PCI\VEN_5333&DEV_5631.DeviceDesc%=S3V,PCI\VEN_5333&DEV_5631   ; S3 ViRGE PCI
+
+; -------------- S3V
+[S3V]
+CopyFiles=S3V.Copy, S3V.Ini
+DelReg=Prev.DelReg
+AddReg=S3V_AddReg
+
+[S3V.Copy]
+S3VSMP.drv,,,8
+s3vsmp.vxd,,,8
+s3vsmp.dll,,,8
+
+[S3V.Ini]
+5631_hwc.ini
+5631_swc.ini
+5631_dig.ini
+
+[S3V_AddReg]
+HKR,,Ver,,4.0
+HKR,,DevLoader,,*vdd
+HKR,DEFAULT,Mode,,"8,640,480"
+HKR,DEFAULT,drv,,S3VSMP.drv
+HKR,DEFAULT,drv2,,S3VSMP.drv
+HKR,DEFAULT,vdd,,"*vdd,*vflatd"
+HKR,DEFAULT,minivdd,,s3vsmp.vxd
+HKR,DEFAULT,RefreshRate,,-1
+HKR,DEFAULT,DDC,,1
+HKR,"MODES\4\640,480",drv,,vga.drv
+HKR,"MODES\4\640,480",vdd,,*vdd
+HKR,"MODES\8\640,480",,,"60,72,75,85"
+HKR,"MODES\8\800,600",,,"56,60,72,75,85"
+HKR,"MODES\8\1024,768",,,"43,60,70,75,85"
+HKR,"MODES\8\1152,864",,,"43,60,70,75,85"
+HKR,"MODES\8\1280,1024",,,"45,60,72,75"
+HKR,"MODES\8\1600,1200"
+HKR,"MODES\16\640,480"
+HKR,"MODES\16\800,600"
+HKR,"MODES\16\1024,768"
+HKR,"MODES\16\1152,864"
+HKR,"MODES\16\1280,1024"
+HKR,"MODES\16\1600,1200"
+HKR,"MODES\24\640,480"
+HKR,"MODES\24\800,600"
+HKR,"MODES\24\1024,768"
+HKR,"MODES\24\1280,1024"
+HKR,"MODES\24\1600,1200"
+HKR,"MODES\32\640,480"
+HKR,"MODES\32\800,600"
+HKR,"MODES\32\1024,768"
+HKR,"MODES\32\1152,864"
+HKR,"MODES\32\1600,1200"
+
+[SourceDisksNames]
+1="S3 ViRGE Sample Windows 98 Display Driver",,0
+
+[SourceDisksFiles]
+s3vsmp.vxd=1
+S3VSMP.DRV=1
+S3VSMP.DLL=1
+
+[Strings]
+Mfg="Sample Driver Shipment Corp."
+S3="S3"
+PCI\VEN_5333&DEV_5631.DeviceDesc="S3 ViRGE 325 PCI"
+PCI\VEN_5333&DEV_883D.DeviceDesc="S3 ViRGE/VX 988 PCI"
+PCI\VEN_5333&DEV_8A01.DeviceDesc="S3 ViRGE(DX/GX)385 PCI"

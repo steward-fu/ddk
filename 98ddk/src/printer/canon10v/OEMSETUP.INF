@@ -1,0 +1,19 @@
+[io.device]
+; (printers, plotters, etc.)
+; The filename is followed by
+;
+; -- the descriptive string which will appear in Control Panel and
+;    which will   appear in WIN.INI
+; -- 1 or 2 strings indicating the scaling for this device
+;
+; There   may be more than one line for a   driver,   corresponding to different
+; printers.
+
+1:CANON10V.DRV,"Canon Bubble-Jet BJ-10v","DEVICESPECIFIC"
+1:CANON10V.DRV,"Canon Bubble-Jet BJ-10v Custom","DEVICESPECIFIC"
+1:CANON10V.DRV,"Canon Bubble-Jet BJ-10v Lite","DEVICESPECIFIC"
+1:CANON10V.DRV,"Canon Bubble-Jet BJ-10v Select","DEVICESPECIFIC"
+1:CANON10V.DRV,"Canon Bubble-Jet BJ-15v","DEVICESPECIFIC"
+
+[io.dependent]
+CANON10V.DRV = 1:UNIDRV.HLP,1:ICONLIB.DLL,1:UNIDRV.DLL

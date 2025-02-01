@@ -1,0 +1,35 @@
+TARGETNAME=bt829
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+#NTDUMPAMAP=TRUE
+
+
+INCLUDES=$(BASEDIR)\inc;  \
+	..\..\stream\inc; \
+	..\atishare;
+
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib \
+	    $(BASEDIR)\lib\*\free\dxapi.lib \
+	    $(BASEDIR)\lib\*\$(DDKBUILDENV)\atishare.lib
+
+
+SOURCES=capmain.c    \
+	capprop.c    \
+	capvideo.c   \
+	capvport.c   \
+	compreg.cpp  \
+	ddraw.c      \
+	decoder.cpp  \
+	device.cpp   \
+	ourcrt.cpp   \
+	regbase.cpp  \
+	regfield.cpp \
+	register.cpp \
+	scaler.cpp   \
+	xbar.cpp     \
+	bt829.rc
+
+C_DEFINES=-DMSC
+USER_C_FLAGS=-TP

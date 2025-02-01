@@ -1,0 +1,19 @@
+[io.device]
+; (printers, plotters, etc.)
+; The filename is followed by
+;
+; -- the descriptive string which will appear in Control Panel and
+;    which will   appear in WIN.INI
+; -- 1 or 2 strings indicating the scaling for this device
+;
+; There   may be more than one line for a   driver,   corresponding to different
+; printers.
+
+1:ESCPAGE.DRV,"Epson LP-7000G","DEVICESPECIFIC"
+1:ESCPAGE.DRV,"Epson LP-3000","DEVICESPECIFIC"
+1:ESCPAGE.DRV,"Epson LP-2000","DEVICESPECIFIC"
+1:ESCPAGE.DRV,"Epson LP-8000","DEVICESPECIFIC"
+
+[io.dependent]
+ESCPAGE.DRV = 1:UNIDRV.HLP,1:ICONLIB.DLL,1:UNIDRV.DLL
+

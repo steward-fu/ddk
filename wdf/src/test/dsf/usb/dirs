@@ -1,0 +1,6 @@
+DIRS= \
+     GenericHID \
+     inputkbd \
+     softhiddevice \
+     softusbaudio \
+     softusbloopback

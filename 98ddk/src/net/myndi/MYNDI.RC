@@ -1,0 +1,48 @@
+#include <windows.h>
+#include "resource.h"
+#include "myndi.rcv"
+
+STRINGTABLE
+BEGIN
+	IDS_NOMEM					"Out of memory"
+	IDS_ERR_ASSERT				"ASSERT!\n\r\n\r%s : %u"
+	
+	IDS_CAPTION					"MYNDI"
+	IDS_VNBT_TITLE				"NetBIOS"
+	
+	IDS_NDIBIND_UPPER_FIRST		"Upper (First)"
+	IDS_NDIBIND_UPPER_NEXT		"Upper Next"
+	IDS_NDIBIND_LOWER_FIRST		"Lower (First)"
+	IDS_NDIBIND_LOWER_NEXT		"Lower Next"
+	
+	IDS_EDGE_ALL				"All"
+	IDS_EDGE_UPPER				"Upper"
+	IDS_EDGE_LOWER				"Lower"
+	IDS_EDGE_UPPERRANGE			"Upper Range"
+	IDS_EDGE_LOWERRANGE			"Lower Range"
+	IDS_EDGE_REQUIRELOWER		"Require Lower"
+	IDS_EDGE_REQUIREANY			"Require Any"
+	IDS_EDGE_EXCLUDELOWER		"Exclude Lower"
+	IDS_EDGE_EXCLUDEANY			"Exclude Any"
+	IDS_EDGE_ORGUPPER			"Original Upper"
+	IDS_EDGE_ORGLOWER			"Original Lower"
+	IDS_EDGE_END				"End"
+	
+	IDS_CLASS_NET    			"Net"
+	IDS_CLASS_TRANS				"NetTrans"
+	IDS_CLASS_CLIENT			"NetClient"
+	IDS_CLASS_SERVICE			"NetService"
+	IDS_CLASS_UNKNOWN			"Unknown"
+END
+
+
+IDD_VNBT_DIALOG DIALOG DISCARDABLE 0, 0, 220, 200
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+	LTEXT		"NetBIOS support allows you to run NetBIOS applications over my packet protocol.",
+				-1, 14, 14, 200, 24
+	CONTROL		"I want to &enable NetBIOS over packet protocol",
+				IDD_VNBT, "Button",
+				BS_AUTOCHECKBOX | WS_TABSTOP, 14, 46, 181, 10
+END				

@@ -1,0 +1,23 @@
+Things to change when changing versions:
+
+The build number (low word) must always be increassing. Ie, you can't go
+from 4.00.950 to 4.10.001. You must go 4.00.950 to 4.10.1xxx.
+
+DDK_Version in dev\ddk\inc\vmm.h must be same as
+dev\sdk\inc16\version.h high word of VER_PRODUCTVERSION_DW.
+
+MIN_GRAB_VERSION MAY be updated in dos\dos386\vmdosapp\tty.h if we
+don't want to support older grabber.
+
+CONFIGMG_VERSION, PNPDRVS_Major_Ver, PNPDRVS_Minor_Ver must be
+updated in dev\ddk\inc\configmg.h.
+
+DDK_Version must be updated in toolsrc\devlib\devlib.c., devlib.exe
+must be build and put on dev\ddk\bin. Note that since we have only
+one toolsrc, we need to build devlib twice with different
+DDK_Version.
+
+Need to fix av\motown\verinfo\verinfo.h & av\motown\build\makefile to deal
+with different number of digits in version number.
+
+PYS

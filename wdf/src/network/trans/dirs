@@ -1,0 +1,5 @@
+DIRS= \
+     ddproxy \
+     inspect \
+     msnmntr \
+     stmedit

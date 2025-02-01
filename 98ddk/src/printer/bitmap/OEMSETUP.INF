@@ -1,0 +1,40 @@
+
+;This inf file can be used to install a minidriver in a WIN 95 system if 
+;it happends to be the first printer in the system.
+
+;It will install the Bitmap Driver in the DDK as an OEM printer.
+
+[Version]
+Signature="$CHICAGO$"
+ver=00.00.00
+Class=Printer
+Provider=%MS%
+LayoutFile=layout.inf
+
+[SourceDiskNames]
+1="Vendor Supplied",,0001
+
+[Manufacturer]
+DDKBitmap=DDKBitmap
+
+[DDKBitmap]
+"Bitmap driver from DDK"=Bitmap1
+
+[Bitmap1]
+DriverFile=bitmap.drv
+DataFile=bitmap.drv 
+CopyFiles=@bitmap.DRV,UNI
+
+[UNI]
+UNIDRV.DLL
+
+[SourceDiskFiles]
+Bitmap.drv=1
+
+[DestinationDirs]
+DefaultDestDir=11
+
+
+[Strings]
+MS="Microsoft"
+

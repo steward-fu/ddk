@@ -1,0 +1,35 @@
+TARGETNAME=cplsvr1
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+DLLENTRY=DllMain
+
+USE_CRTDLL=1
+
+DLLBASE=0x1c300000
+
+
+INCLUDES=$(BASEDIR)\src\input\inc
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\user32.lib \
+           $(BASEDIR)\lib\*\free\kernel32.lib \
+           $(BASEDIR)\lib\*\free\gdi32.lib \
+           $(BASEDIR)\src\input\lib\dinput.lib \
+           $(MSVCDIR)\lib\ole32.lib \
+           $(MSVCDIR)\lib\oleaut32.lib \
+           $(MSVCDIR)\lib\uuid.lib
+
+TARGETPATH=$(BASEDIR)\lib
+
+
+SOURCES=cplsvr1.rc   \
+        button.cpp	 \
+        cplsvr1.cpp	 \
+        dicputil.cpp \
+        pages.cpp
+
+
+
+
+USER_C_FLAGS=/MT
+C_DEFINES=/DW32 /DWIN32
+

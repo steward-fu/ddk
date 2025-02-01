@@ -1,0 +1,146 @@
+[Version]
+Signature="$WINDOWS NT$"
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Class=SYSTEM
+Provider=%MSFT%
+
+[SourceDisksNames]
+1101="Gameenum Install Disk","",,\
+
+[SourceDisksFiles]
+GAMEENUM.SYS=1101
+GAMEENUM.EXE=1101
+
+[DestinationDirs]
+DefaultDestDir=12
+GamePort_DeviceDriver.Copy=10,system32\drivers
+GamePort_DeviceExe.Copy=11
+HidGame_DeviceDll.CopyFiles=11
+HidGame_Device.CopyFiles=10,system32\drivers
+
+[ControlFlags]
+ExcludeFromSelect = HID_GAMEPORT
+
+[Manufacturer]
+%CLMfgName%=Microsoft
+
+[Microsoft]
+;
+; NOTE:  We omit hardware IDs for each of these devices, so that the user will
+;        be able to supply an OEM-supplied driver with fuller functionality at
+;        the "Found New Hardware" popup.
+;
+%GamePort.DeviceDesc%=GamePort_Device,,*PNPB02F ; a standard joystick port
+%HidGame.DeviceDesc%=HidGame_Device,Game\AnalogJoystick,GAMEPORT ; a standard joystick hid dev
+
+;================================
+; Win98 installation sections
+;================================
+[GamePort_Device]
+CopyFiles=GamePort_DeviceDriver.Copy, GamePort_DeviceExe.Copy
+AddReg=GamePort_Device.AddReg
+DelReg=GamePort_Device.DelReg
+LogConfig=BasicJoyStick.LC0   ; ,BasicJoystick.LC1
+
+[GamePort_DeviceDriver.Copy]
+gameenum.sys
+
+[GamePort_DeviceExe.Copy]
+gameenum.exe
+
+[GamePort_Device.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,"gameenum.sys"
+
+;[GamePort_Device.DelReg]
+;HKR,,Driver
+
+[HidGame_Device]
+CopyFiles=HidGame_Device.CopyFiles, HidGame_DeviceDll.CopyFiles
+
+[HidGame_Device.CopyFiles]
+hidgame.sys
+hidclass.sys
+hidparse.sys
+
+[HidGame_DeviceDll.CopyFiles]
+hid.dll
+
+
+;================================
+; NT installation sections
+;================================
+[GamePort_Device.NT]
+CopyFiles=GamePort_Device.CopyFiles.NT, GamePort_DeviceExe.Copy
+LogConfig=BasicJoyStick.LC0   ; ,BasicJoystick.LC1
+
+[GamePort_Device.CopyFiles.NT]
+gameenum.sys
+
+[GamePort_Device.NT.Services]
+AddService = gameenum,%SPSVCINST_ASSOCSERVICE%,GamePort_Service_Inst
+
+[HidGame_Device.NT]
+CopyFiles=HidGame_Device.CopyFiles.NT, HidGame_DeviceDll.CopyFiles
+
+[HidGame_Device.CopyFiles.NT]
+hidgame.sys
+hidclass.sys
+hidparse.sys
+
+[HidGame_Device.NT.Services]
+AddService = hidgame,%SPSVCINST_ASSOCSERVICE%,HidGame_Service_Inst
+
+[BasicJoyStick.LC0]
+ConfigPriority=HARDWIRED
+IOConfig=201-201(3ff::)
+
+;[BasicJoyStick.LC1]
+;ConfigPriority=HARDWIRED
+;IOConfig=200-207(3ff::)
+
+;=================================
+; NT Service Installation sections
+;=================================
+[GamePort_Service_Inst]
+DisplayName    = %gameport.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 1                  ; SERVICE_SYSTEM_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\gameenum.sys
+LoadOrderGroup = Extended Base
+
+[HidGame_Service_Inst]
+DisplayName    = %hidgame.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 1                  ; SERVICE_SYSTEM_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\hidgame.sys
+LoadOrderGroup = Extended Base
+
+;=====================================
+; Common logical configuration section
+;=====================================
+
+[BasicJoyStick.LC0]
+ConfigPriority=HARDWIRED
+IOConfig=201-201(3ff::)
+
+;=================
+; Localizable text
+;=================
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+MSFT = "Microsoft"
+MediaClassName = "Sound, video and game controllers"
+CLMfgName = "Microsoft Windows"
+DiskId = "Joystick port Installation and Drivers Disk"
+
+GamePort.DeviceDesc = "Game Port Enumerator"
+HidGame.DeviceDesc = "Microsoft Hid to Joystick Port Enabler"
+V_INTERNAL = "Creative Labs Stereo Music Synthesizer"
+
+gameport.SvcDesc = "Game Port Enumerator"
+hidgame.SvcDesc = "Microsoft Hid to Joystick Port Enabler"
+

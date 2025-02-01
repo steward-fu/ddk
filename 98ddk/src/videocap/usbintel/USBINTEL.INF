@@ -1,0 +1,94 @@
+;
+; USBINTEL.INF  -- This file contains installation information 
+; for Intel USBDCam
+;               
+
+[Version]
+signature="$CHICAGO$"
+
+Class=Image
+ClassGUID={6bdd1fc6-810f-11d0-bec7-08002be2092f}
+Provider=%Msft%
+
+[ControlFlags]
+; All PnP devices should be excluded from manual AddDevice Applet list
+ExcludeFromSelect=*
+
+[Manufacturer]
+%IntelMfg%=Intel
+
+[DestinationDirs]
+Intel.USBDCam.Files.Ext = 10,System32\Drivers
+
+[Intel]
+%USB\VID_04C8&PID_0720.DeviceDesc%=Intel.USBDCam,USB\VID_04C8&PID_0720
+
+[Intel.USBDCam]
+AddReg=     Intel.USBDCam.AddReg
+CopyFiles=Intel.USBDCam.Files.Ext
+
+[Intel.USBDCam.NT]
+AddReg=     Intel.USBDCam.AddReg
+CopyFiles=Intel.USBDCam.Files.Ext
+
+[Intel.USBDCam.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbintel.sys
+HKR,,PageOutWhenUnopened,3,01
+HKR,,PowerDownWhenUnopened,3,01
+HKR,,DontSuspendIfStreamsAreRunning,3,01
+HKLM,Software\INTEL\Ucam,"TWAIN Use Button",0x10001,00,00,00,00
+
+[Intel.USBDCam.Interfaces]
+AddInterface=%KSCATEGORY_CAPTURE%,GLOBAL,Intel.USBDCam.Interface
+
+[Intel.USBDCam.NT.Interfaces]
+AddInterface=%KSCATEGORY_CAPTURE%,GLOBAL,Intel.USBDCam.Interface
+
+[Intel.USBDCam.Interface]
+AddReg=Intel.USBDCam.Intf.AddReg
+         
+[Intel.USBDCam.Intf.AddReg]
+HKR,,CLSID,,%ProxyVCap.CLSID%
+HKR,,FriendlyName,,%USB\VID_04C8&PID_0720.DeviceDesc%
+; HKR,,ExtensionDLL,,%Intel.ExtensionDLL%
+
+[Intel.USBDCam.NT.Services]
+AddService = DCamUSBIntel,0x00000002,Intel.USBDCam.ServiceInstall
+
+[Intel.USBDCam.ServiceInstall]
+DisplayName   = %USB\VID_04C8&PID_0720.DeviceDesc%
+ServiceType   = %SERVICE_KERNEL_DRIVER%
+StartType     = %SERVICE_DEMAND_START%
+ErrorControl  = %SERVICE_ERROR_NORMAL%
+ServiceBinary = %10%\System32\Drivers\UsbIntel.sys
+
+[Intel.USBDCam.Files.Ext]
+USBINTEL.sys
+
+[Strings]
+
+;----------------
+; Non-Localizable
+;----------------
+
+; note: only register value is case sensitive, key is not.
+ProxyVCap.CLSID="{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_CAPTURE="{65E8773D-8F56-11D0-A3B9-00A0C9223196}"
+SERVICE_KERNEL_DRIVER=1
+; PnP should use demand start
+SERVICE_DEMAND_START=3
+SERVICE_ERROR_NORMAL=1
+
+; IHV's extension DLL
+; Intel.ExtensionDLL = "???.dll"
+
+;----------------
+; Localizable
+;----------------
+
+Msft="Microsoft"
+
+IntelMfg="Intel"
+USB\VID_04C8&PID_0720.DeviceDesc="DDK Version, USB Video Camera for Intel Proshare technology"
+

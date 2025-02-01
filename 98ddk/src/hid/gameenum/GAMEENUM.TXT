@@ -1,0 +1,33 @@
+GAMEENUM consists of two components:
+1. GAMEENUM.SYS, a game port enumerator
+2. GAMEENUM.EXE, an application that communicates with the enumerator
+via an ioctl interface.
+
+
+GAMEENUM.SYS
+------------
+
+This code illustrates a sample WDM bus driver. The following files
+are included:
+
+gameenum.c     Routines for enumerating the bus
+gameenum.h     Data structures for the bus
+gameenum.rc    Resource script defining the type and placement of
+               bus components
+pnp.c          Plug-and-Play routines for bus driver
+
+The behavior of the various routines is documented in code comments.
+
+
+GAMEENUM.EXE
+------------
+
+This code illustrates a sample control panel simulator 
+application. The following files are included:
+
+game.h         Data structures
+gameenum.rc    Resource script
+locate.c       Routines
+select.c       Routines
+
+The behavior of the various routines is documented in code comments.

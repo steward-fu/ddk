@@ -1,0 +1,26 @@
+
+TARGETNAME=CONPACK
+TARGETTYPE=PROGRAM
+USE_CRTDLL=1
+
+INCLUDES=$(BASEDIR)\inc; \
+         $(BASEDIR)\src\net\ndis3\packet\inc; \
+         $(BASEDIR)\src\net\ndis3\packet\console; \
+         ..\..\..\inc
+
+TARGETLIBS=$(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\packet32.lib
+
+
+TARGETPATH=$(BASEDIR)\lib
+
+SOURCES= conpack.c
+
+UMTYPE=console
+UMENTRY=main
+UMBASE=0x01000000
+
+USER_C_FLAGS=/MT
+C_DEFINES=/DW32 /DWIN32
+

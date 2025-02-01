@@ -1,0 +1,5 @@
+DIRS= \
+     bus \
+     filter \
+     func \
+     toastmon

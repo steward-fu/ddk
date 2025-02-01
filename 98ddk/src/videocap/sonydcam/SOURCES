@@ -1,0 +1,31 @@
+#############################################################################
+#
+#       Copyright (C) Microsoft Corporation 1997
+#       All Rights Reserved.
+#                                                                          
+#       Sources for 1394 DCam device
+#
+##########################################################################
+TARGETNAME=sonydcam
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+DRIVERTYPE=WDM
+
+USER_C_FLAGS    =  /Oi
+C_DEFINES       = -DPNP_POWER
+#USE_MAPSYM      = 1
+
+MSC_WARNING_LEVEL= /W3 /WX
+
+INCLUDES=..\inc;$(BASEDIR)\src\1394\inc
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\stream.lib \
+           $(BASEDIR)\lib\*\free\ksguid.lib
+
+SOURCES=		\
+	sonydcam.c 	\
+	dcampkt.c	\
+	dbg.c		\
+	sonydcam.rc
+	

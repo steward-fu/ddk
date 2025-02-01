@@ -1,0 +1,6 @@
+DIRS= \
+     errhandler \
+     imgfilter \
+     segfilter \
+     uiext2 \
+     usd

@@ -1,0 +1,23 @@
+MAJORCOMP=ntos
+MINORCOMP=dd
+
+DRIVERTYPE=WDM
+TARGETNAME=Pscr
+TARGETTYPE=DRIVER
+TARGETPATH=$(BASEDIR)\lib
+TARGETLIBS=..\bin\$(DDKBUILDENV)\smclib.lib
+
+#INCLUDES=$(BASEDIR)\private\ntos\inc;$(BASEDIR)\public\sdk\inc;..\..\inc
+INCLUDES=$(BASEDIR)\inc;..\..\inc
+
+
+NTTARGETFILE0=PscrLog.h
+
+SOURCES=pscrlog.rc \
+	PscrNT.c \
+	PscrCB.c \
+	PscrCmd.c \
+	PscrRdWr.c 
+
+
+

@@ -1,0 +1,5 @@
+DIRS= \
+     exe \
+     kmdf \
+     umdf \
+     umdfSocketEcho

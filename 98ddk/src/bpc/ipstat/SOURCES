@@ -1,0 +1,22 @@
+TARGETNAME=ipstat
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+#USE_CRTDLL=1
+
+CRT_LIB_PATH=$(MSVCDIR)\lib
+
+INCLUDES=$(BASEDIR)\inc; \
+                    $(BASEDIR)\inc\win98; \
+                    $(BASEDIR)\src\bpc\inc
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\setupapi.lib \
+           $(BASEDIR)\lib\*\free\ksuser.lib \
+           $(BASEDIR)\src\bpc\lib\icodecd.lib
+
+SOURCES=ipstat.cpp
+
+UMTYPE=console
+#UMENTRY=winmain
+UMBASE=UMBASE=0x01000000

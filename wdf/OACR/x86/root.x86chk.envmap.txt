@@ -1,0 +1,6 @@
+<PathSubstitutions>
+%BASEDIR%|c:\winddk\7600.16385.1
+<EnvOptions>
+%_PREFAST_CYCLOMATIC%|2147483647
+%PREFAST_DRIVERS%|0
+%PREFASTMODEL%|c:\\winddk\\7600.16385.1\bin\x86\oacr\prefast\x86\bin\plugins\DriversModel.xml;c:\\winddk\\7600.16385.1\bin\x86\oacr\prefast\x86\bin\plugins\SuppModel.xml

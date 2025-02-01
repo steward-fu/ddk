@@ -1,0 +1,14 @@
+TARGETNAME=codec
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+INCLUDES=$(BASEDIR)\stream\inc
+
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib 
+
+SOURCES= \
+		codmain.c \
+		codvideo.c \
+		coddebug.c \
+		codprop.c \

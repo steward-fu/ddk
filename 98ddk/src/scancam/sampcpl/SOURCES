@@ -1,0 +1,26 @@
+TARGETNAME=sampcpl
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+TARGETEXT=cpl
+
+UMTYPE=windows
+DLLENTRY=DllEntryPoint
+NO_NTDLL=1
+USE_CRTDLL=1
+
+TARGETLIBS=$(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib                     \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib                     \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib                       \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\gdi32.lib                        \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\shell32.lib                      \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\comctl32.lib                     \
+           $(BASEDIR)\lib\*\$(DDKBUILDENV)\sti.lib                          \
+           $(MSVCDIR)\lib\comdlg32.lib                     \
+
+INCLUDES=..\inc
+
+DLLBASE=0x70100000
+
+SOURCES=sampcpl.rc \
+        sampcpl.cpp
+

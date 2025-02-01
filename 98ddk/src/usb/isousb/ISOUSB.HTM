@@ -1,0 +1,404 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+
+<TITLE>Handling Isochronous Data Transfer in a USB Minidriver</TITLE>
+</HEAD>
+<BODY>
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" leftmargin="8">
+
+<FONT FACE="Verdana"><H2><A NAME="MYSAMPLE"></H2>
+<H2>ISOUSB -</FONT><FONT FACE="Verdana" SIZE=2></FONT><FONT FACE="Verdana">
+ Handling Isochronous Data Transfer in a USB Minidriver</A></H2>
+<H3>SUMMARY</H3>
+
+
+<FONT size=2>
+<P>This  document and the associated sample source code describe how to handle the
+transfer of isochronous data to and from a USB peripheral using the USB Driver
+Interface (USBDI). </P>
+<P>In addition to handling isochronous data transfers, the sample source code
+demonstrates the correct way to handle Plug and Play and power management I/O Request
+ Packets (IRPs), which are the basic I/O Manager structures used to communicate with
+  the minidriver. See the Microsoft Windows&nbsp;NT&nbsp;5.0 DDK for background information
+  on the IRPs discussed in this sample. Also see the BulkUsb sample code and documentation
+  for an example of a similar USB minidriver designed around Bulk mode IO. This sample is
+  closely related to the BulkUsb sample , and was in fact
+  developed and tested on the same hardware. For this reason, to avoid repetition, where functionality
+  of the IsoUsb sample is the same as in the BulkUsb sample, the reader will be referred to the
+  BulkUsb documentation. In particular, the two samples have virtually identical Power management
+  and Plug and Play logic. The logic for  symbolic linkage with the Operating System, and
+  CreateFile/ReadFile/WriteFile/CloseHandle-based IO is also virtually identical in the two samples.
+  </P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What is the USB Driver Interface?</P>
+</B></I></FONT><FONT size=2><P>USBDI is part of the WDM layered architecture for the
+ Windows&nbsp;98 and Windows&nbsp;NT&nbsp;5.0 operating systems and is the interface
+ offered to kernel-mode minidrivers by the operating system USB driver stack. A portion
+ of the WDM layered architecture, with the USB driver interface highlighted, is shown
+ in Figure 1.</P>
+</FONT><B><I><FONT FACE="Arial" size=2><P>Figure 1. USB Driver Interface and the USB
+Driver Stack</P>
+</B></I></FONT><FONT size=2><P><IMG SRC="IsoUsb.gif" ></P>
+</FONT><FONT SIZE=2><P>The following modules are shown in Figure 1:</P>
+
+<UL>
+</FONT><FONT size=2><LI>Hidclass.sys is the Human Interface Device (HID) class driver
+that sends and receives HID reports to and from its minidrivers.</LI>
+<LI>Hidusb.sys is the HID device driver that sends and receives HID reports over the
+ USB bus.</LI>
+<LI>IsoUsb.sys is the sample minidriver. </LI>
+<LI>Usbd.sys is the USB class driver.</LI>
+<LI>Uhcd.sys and Openhci.sys are USB host controller drivers (Openhci.sys for the
+ Open Host Controller Interface or UHCD.SYS for the Universal Host Controller Driver).</LI>
+<LI>PCI Enumerator takes care of loading the USB stack driver components when a USB
+bus is detected on a platform and always loads at least the other core components.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT SIZE=2><P>A USB minidriver communicates with the USB stack through an
+IRP interface. There are two basic methods and both are used by IsoUsb.sys:</P>
+
+<UL>
+</FONT><FONT size=2><LI>The USB minidriver device driver passes USB request block
+ (URB) structures to the next-lower driver as a parameter in an IRP with MajorFunction
+  set to IRP_MJ_INTERNAL_DEVICE_CONTROL and the next IRP stack
+  location Parameters.DeviceIoControl.IoControlCode field set to
+   IOCTL_INTERNAL_USB_SUBMIT_URB. </LI>
+<LI>The USB minidriver device driver passes an IRP with MajorFunction set to
+ IRP_MJ_INTERNAL_DEVICE_CONTROL and the next IRP stack location
+ Parameters.DeviceIoControl.IoControlCode field set to one of the IOCTL_INTERNAL_USB_ other
+  function codes.</LI></UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What is Isochronous Data Transfer?</P>
+</B></I></FONT><FONT size=2><P>The USB standard defines four data transfer types: control,
+ isochronous, interrupt, and bulk. All USB peripherals must support the control transfer
+ type for configuration, command, and status information. Each of the remaining three data
+ transfer types targets a particular category of USB peripheral. Bulk data transfers 
+  are generated or consumed in relatively large and bursty quantities .
+ Interrupt data transfers are for data such as characters or coordinates with human perceptible
+ echo or feedback response characteristics.
+ Isochronous or streaming real-time data transfers occupy a prenegotiated amount of USB bandwidth
+  with a   prenegotiated delivery latency. The isochronous transfer type
+  targets USB devices such as video cameras or USB speakers that move large
+  amounts of time-stamped data to or from the PC over USB.</P>
+<P>The USB device used for this sample is a generic Intel i82930 USB evaluation board
+programmed with a simple loopback test using a 64-KB circular buffer. None of the code
+in the IsoUsb sample is specific to this particular controller chip, except for some
+checked-build-only debug dumps indicating manufacturer-specific information from the
+USB_DEVICE_DESCRIPTOR obtained from the USB stack through USBDI at StartDevice() time.
+The URBs used to communicate with the USB stack use abstracted chip-independent device
+characteristics as defined in the URB request types and structures in Usbdi.h.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>What Does the IsoUsb sample Do?</P>
+</B></I></FONT><FONT size=2><P>This sample consists of two parts: a USB minidriver (IsoUsb.sys)
+ and a console application (RwIso.exe). They are described individually in this section.
+ It is intended that driver writers apply the methods illustrated in this sample to their
+  own devices. The sample code is heavily commented to improve its usefulness.</P>
+<B><P>IsoUsb.sys USB Minidriver</P>
+</B><P>IsoUsb.sys is a USB Isochronous I/O sample minidriver that transfers isochronous data
+ packets to and from an Intel i82930 USB peripheral microcontroller over USB. This
+  minidriver also performs the power management and Plug and Play tasks that are required
+  of any WDM USB minidriver. The particular device test board we used is part of the Intel
+   USB developer’s kit. Information on obtaining the kit is available from Intel’s developer
+    web site at http://developer.intel.com. </P>
+<P>The individual source code files that make up the IsoUsb minidriver sample
+and their functions are the following:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=599>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IsoUsb.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains DriverEntry and code that builds the dispatch
+table to functions that handle the IRPs and AddDevice request. URBs are
+ sent to the USB driver stack from routines in IsoUsb.c.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IsoPwr.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle power management IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IsoPnp.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle Plug and Play IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IoctlIso.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle miscellaneous IRPs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>OcrwIso.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle basic Read/Write I/O IRPs to perform short,
+non-continuous isochronous data transfers.</FONT></TD>
+</TR>
+
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IsoStrm.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains code to handle long, continuous isochronous data transfers by 
+continually 'recycling' a pair of IRPs, insuring one is always available.
+ </FONT></TD>
+</TR>
+
+
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IusbDbg.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains the functions used for debug output.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT size=2><P>The following header files are available in the same
+directory:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=615>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>Iso82930.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines DeviceExtension for instances of IsoUsb devices
+and the ISOUSB_RW_CONTEXT structure used for tracking information on Read/Write
+IRP processing. </FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>IsoUsb.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines the IsoUsb.sys IOCTLs.</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>GuidIso.h</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Defines the globally unique identifier (GUID) used to generate
+symbolic links to driver instances created from user mode.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><B><FONT size=2><P>RwIso.exe Console Application</P>
+</B><P>RwIso.exe is a console application used to initiate isochronous transfer and
+ to obtain a dump of information on the device’s I/O endpoints (named pipes)
+ from USBDI. The application also demonstrates how to use GUID-based device names
+  and pipe names generated by the operating system using the SetupDi<I>XXX</I> user-mode APIs.
+   The source code file that makes up the RwIso console application sample and
+   its function is the following:</P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=590>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<FONT SIZE=2><P>RwIso.c</FONT></TD>
+<TD WIDTH="83%" VALIGN="TOP">
+<FONT SIZE=2><P>Contains source code for a simple console application to test
+ writing to a Isochronous mode output pipe and reading from a Isochronous mode input pipe.
+ For the Read/Write test, various command-line switches allow for either single or multiple iterations
+ of the read/write test with or without data dumps, as well as a dump of
+  information on all the endpoints (named pipes) available on the device.
+  A special test function is provided to start a continuous Isochronous input stream from the
+  device and have it run for a specified number of seconds then stop. On our test
+  board, we have no meaningful data actually streaming from the  device; the point is
+  simply to demonstrate the technique of continually recycling a pair of IRPS for constant
+  throughput.</FONT></TD>
+</TR>
+</TABLE>
+
+<FONT size=2><P ALIGN="RIGHT"></P>
+</FONT><FONT size=2><P>The following steps briefly describe the operation of the
+ USB isochronous I/O minidriver. The sample minidriver routines mentioned here are described
+ in greater detail in the comments of the sample source code and in routine-specific
+ comments later in this article. It is helpful here to follow along in the sample code.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P> Loading The Driver</P>
+</B></I></FONT><FONT size=2><P>When IsoUsb.sys is loaded by the operating system,
+the minidriver’s <B>DriverEntry</B> routine (in IsoUsb.c) is called to set the
+Dispatch entry points for the MajorFunction IRPs that it handles and for AddDevice.</P>
+<P>Notice that no resources are allocated here, because it should not be assumed
+ that a Plug and Play device is actually plugged in at driver load time. Resource
+  allocation and the creation of the Functional Device Object (FDO) do not occur
+   until the device is detected by the USB stack. At this point, Plug and Play
+    Manager calls the minidriver’s <B>IsoUsb_PnPAddDevice</B> routine (in Isopnp.c),
+	 which in turn calls the following functions:</P>
+<B><P>IsoUsb_CreateDeviceObject</B> (in IsoUsb.c) is called to create the FDO and a
+ DeviceExtension. Notice that <B>IsoUsb_SymbolicLink</B> (in IsoUsb.c) is called here
+  to create and initialize a GUID-based symbolic link to the device that is used to
+  open/create instances of the minidriver from user mode.</P>
+<B><P>IsoUsb_QueryCapabilities</B> (in IsoPwr.c) is called to learn which system power
+ states are to be mapped to which device power states for honoring IRP_MJ_POWER IRPs.
+ To do this, an IRP is created by IsoUsb.sys using IoAllocateIrp() and set up with
+  MajorFunction = IRP_MJ_PNP and MinorFunction = IRP_MN_QUERY_CAPABILITIES. This IRP
+  is sent to the PDO, which is represented by the USB class driver, using IoCallDriver().
+   A DEVICE_CAPABILITIES structure describing the device’s power capabilities is returned
+   and saved in the FDO’s device extension.</P>
+<B><P>IsoUsb_SelfSuspendOrActivate</B> (in IsoPwr.c) is called to try to power down
+the device until data transfer is actually requested. This is because there may be a
+significant time between device detection and the first time an application actually
+uses the device for I/O—for example, if a USB camera is kept plugged in at all times
+but used only occasionally. IsoUsb.sys attempts to power down the device when no I/O
+pipes are actually open on it.</P>
+<P>After the USB stack assigns any resources to the device, it sends an IRP_MN_START_DEVICE
+ that is handled by this minidriver’s <B>IsoUsb_ProcessPnPIrp</B> routine (in Isopnp.c).
+  Several additional minor Plug and Play IRPs are used by Plug and Play Manager to ensure
+   the orderly stopping and removal of devices for purposes such as resource balancing.
+    See the &quot;Stopping and Removing the Device&quot; section later in this article
+	 for a discussion of how these minor Plug and Play IRPs are handled by
+	  <B>IsoUsb_ProcessPnPIrp</B>.</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P> Opening the Device and Performing File IO</P>
+</B></I></FONT><FONT size=2><P>At this point the minidriver is operational;
+let’s talk about what needs to be done to start isochronous data transfer. RwIso.exe
+can initiate data transfer via two distinct methods. The first is
+by making CreateFile, ReadFile, WriteFile, and CloseHandle calls from
+ within its <B>main</B> function. 
+ Please refer to the "Bulk I/O Operation: Opening The Device" section in the BulkUsb documentation
+ for a discussion on
+ how the symbolic linkages are built up, and also see the description there of the pipes
+ supported on our test board ( Both samples were developed on the same hardware ). In IsoUsb,
+ the ReadFile/WriteFile handlers in OcrwIso.c work much the same as their Bulk IO counterparts in
+ BulkUsb (OcrwBlk.c),
+ allocating and freeing IRP  and URB ( USB Request Blocks ) structures for each IO request,
+ and synchronously returning  to User mode with no furthur processing until more user-mode requests
+ are made. There is little differerence in the interaction with USBDI except for using the URB
+ flags  URB_FUNCTION_ISOCH_TRANSFER instead of URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+   in USBDI IO requests. The other few URB_xxx request types used are the same as in the
+   BulkUsb sample; see BulkUsb.htm as well as code comments in both samples
+<P>
+IsoUsb also defines a couple of special IOCTLS for starting and stopping a test
+Isochronous stream that runs continuously for a specified number of seconds.
+This is the heart of the IsoUsb sample. The main technique being illustrated here is a 
+means of insuring that the minidriver
+itself does not introduce any additional 'accidental' stream latency in the handling of a
+continuous time-critical isochronous data stream to or from the device. For as long as the
+stream is continuously running, a single pair of IRPS (and their associated URBS for communicating
+with USBDI) are recycled; this eliminates the need for constant allocation and freeing
+of IRP and URB data structures for the handling of every stream data block. The details
+are discussed below in the section on IOCTL_ISOUSB_START_ISO_STREAM.
+
+
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P> Handling IOCTLs</P>
+</I></FONT><FONT size=2><P>IsoUsb_ProcessIOCTL</B> (in Ioctlblk.c) is the entry-point
+ that is registered to handle IRP_MJ_DEVICE_CONTROL IRPs. Notice that there are
+  circumstances under which <B>IsoUsb_ProcessIOCTL</B> can refuse to accept an
+   I/O Control (IOCTL) request, such as if a device is removed. The IOCTLs
+   handled by this function are described in this section and are defined in
+   IsoUsb.h. All the discussed driver-defined structures are defined in Iso82930.h.</P>
+<P>IsoUsb.h defines 5 IOCTLs for user-mode applications to access the driver
+ using DeviceIoControl() calls.</P>
+
+ <UL>
+
+ <LI>IOCTL_ISOUSB_START_ISO_STREAM -- 
+
+ When the driver receives this ioctl from RwIso.exe,
+  <B>IsoUsb_StartIsoStream</B> is called to initiate a continuous stream from the device.
+  
+  A driver-defined stream descriptor structure,ISOUSB_STREAM_OBJECT ,
+   is allocated  that contains an array of two ISOUSB_TRANSFER_OBJECT structures.
+   These two transfer objects encapsulate the two sets of IRP/URB pairs that will be 
+   kept endlessly recycling. IsoUsb_StartIsoStream next opens the Isochrounous input pipe
+   ( on our test board this is pipe #5 of 6 ) . Note that the User App in this sample
+   does not make a CreateFile() call to open the pipe or a CloseHandle() call
+   to close it; we just 'hard-code' the use of this pipe, and the IOCTL_ISOUSB_STOP_ISO_STREAM
+   logic internally closes it . Next a KEVENT object is initialized which is signalled whenever
+   the count of pending Isochrnous stream IO IRPs goes to zero ( from a possible maximum of
+   two: one for each of our transfer objects ). IOCTL_ISOUSB_STOP_ISO_STREAM will wait on this 
+   event before completing and returning to the user.
+
+   A defferred timeout procedure, <B>IsoUsb_StreamTimeoutDPC()</B> is set up to check for
+    stream timeouts and errors, although
+   in this sample the routine does little except reschedule itself whenever it is invoked.
+   One suggested enhancement to the logic of this  mindriver would be to time-stamp the
+   transfer object each time it is submitted. <B>IsoUsb_StreamTimeoutDPC()</B> would then
+   iterate through the transfer objects and see if any had pending IRPS that were too old.
+
+<B>IsoUsb_StartTransfer</B> is then called on each of the two ISOUSB_TRANSFER_OBJECT structures.
+For each transfer object IsoUsb_StartTransfer allocates an IRP to be  used to pass the
+ request through the NT driver stack, and a URB (USB Request Block ) for communication with USBDI.
+Once the IRP/URB pair is allocated and initialized, the initial stream IO request is generated
+by a call to <B>IsoUsb_InitializeStreamUrb</B> which sets up the URB for a call to USBDI.
+<B>IoCallDriver()</B> is called on the IRP with the completion routine set to
+<B>IsoUsb_IsoIrp_Complete</B>. The way the recycling of the transfer object IRP/URB pairs works
+is that unless there have been errors  or the user has
+submitted a IOCTL_ISOUSB_STOP_ISO_STREAM  since the last  transfer,
+<B>IsoUsb_IsoIrp_Complete</B> always resubmits the IRP to the stack and the URB to USBDI.
+It also calls <B>IsoUsb_ProcessTransfer</B> on each completed request.This is
+where a driver for a real device would collect and/or process data in the buffers,
+but this sample just checks for errors. Specifically, it checks the IRP stastus field, the
+URB header status field, and then walks through the URB's list of packets checking the status
+of  each. USBD breaks up transfers internally to 8-byte packets.
+<B>IsoUsb_ProcessTransfer</B> and <B>IsoUsb_IsoIrp_Complete</B> also collect statistics on
+total number of packets processed, total bytes processed,total number of errors, 
+ and total number of times transfer objects were recycled.
+
+<p>
+
+ </LI>
+
+
+ <LI>IOCTL_ISOUSB_STOP_ISO_STREAM -- 
+
+ When the driver receives this ioctl from RwIso.exe,
+  <B>IsoUsb_StopIsoStream</B> is called to terminate streaming from the device.
+  A flag is reset in the stream object, "IsoStreamStarted", so that <B>IsoUsb_IsoIrp_Complete</B>
+  will not resubmit the the transfers upon next completion. This flag also tells
+  <B>IsoUsb_StreamTimeoutDPC()</B> not to reschedule itself. One this is done, we wait for the
+  "NoPendingIrpEvent" to be signalled by <B>IsoUsb_IsoIrp_Complete</B>.
+  Next we free the IRPS, URBS, and data buffers in the transfer objects, as well as freeing the
+  stream object itself. Finally, the Isochrounous pipe is closed and we power the device down to
+  D3 until more IO is requested.
+  
+ <p>
+
+ </LI>
+
+
+
+<P><LI>IOCTL_ISOUSB_GET_CONFIG_DESCRIPTOR calls <B>IsoUsb_GetConfigDescriptor</B>
+to get a copy of the USB configuration descriptor that IsoUsb.sys saves at
+ AddDevice time, and then returns a copy of the descriptor in the user-mode I/O buffer.
+  The configuration descriptor is parsed by RwIso.exe to provide a nicely
+   formatted console dump of the device configuration and endpoints (named pipes).</LI></P>
+</FONT><FONT SIZE=2>
+
+ </UL>
+<P>The other two IOCTLs are not used by this sample console application,
+but may be used by a more sophisticated application to deal with certain
+user-mode device errors:</P>
+ <UL>
+
+</FONT><FONT size=2><LI>IOCTL_ISOUSB_RESET_DEVICE calls <B>IsoUsb_ResetDevice</B>.</LI>
+<LI>IOCTL_ISOUSB_RESET_PIPE calls <B>IsoUsb_ResetPipe</B>. Both of
+these functions are called internally by IsoUsb.sys in its read/write
+logic as part of normal error handling. <B>IsoUsb_ResetDevice</B> attempts
+ a complete reset of the USB port, while <B>IsoUsb_ResetPipe </B>only deals
+ with error conditions on a particular pipe.</LI>
+ 
+ 
+ </UL>
+
+</FONT><FONT size=2><P ALIGN="RIGHT">&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial" SIZE=4><P>Supporting References for
+ IsoUsb Sample Minidriver</P>
+</B></I></FONT><FONT SIZE=2><P>The following additional materials will
+ help you understand this sample minidriver:</P>
+
+<UL>
+</FONT>
+<I><FONT size=2>
+<LI>USB Specification Version 1.0</I>, as well as the
+clarifications and enhancements to the core specification recommended by the USB
+ Device Working Group. These documents are available on the web at http://www.usb.org.</LI>
+ 
+<I><LI>Microsoft Windows NT&nbsp;5.0 DDK</I>, available through MSDN Professional
+ membership, contains references to WDM core services used by IsoUsb.sys, as well
+  as reference material for IRPs that IsoUsb.sys handles.</LI>
+<I><LI>WDM USB Driver Interface</I> contains background information on the USB
+driver interface. This document is available on the web
+at http://www.microsoft.com/hwdev/wdmusb.htm.</LI>
+
+<I><FONT size=2>
+<LI>Handling Asynchronous Bulk Data Transfer in a USB Minidriver</I>, (BulkUsb.htm),
+located in the same section of
+ the ddk as this document.</LI></UL>
+
+
+</FONT><FONT FACE="MS Sans Serif" size=2><P>&copy; 1998 Microsoft
+Corporation</FONT><FONT FACE="Verdana" SIZE=2> </P></FONT>
+
+</FONT><FONT SIZE=2></FONT></BODY>
+</HTML>

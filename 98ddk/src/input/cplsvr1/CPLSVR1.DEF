@@ -1,0 +1,7 @@
+LIBRARY         CPLSVR1
+DESCRIPTION     "Gaming Controller PropertySheet Sample 1"
+
+EXPORTS
+    DllCanUnloadNow     PRIVATE
+    DllGetClassObject   PRIVATE
+

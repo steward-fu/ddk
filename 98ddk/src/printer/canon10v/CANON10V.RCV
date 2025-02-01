@@ -1,0 +1,18 @@
+/********************************************************************/
+/*        CANON10V.RCV                                              */
+/*        Version control data generated from layouts.dat           */
+/********************************************************************/
+#include <version.h>
+
+
+#define VER_FILETYPE                    VFT_DRV
+#define VER_FILESUBTYPE                 VFT2_DRV_PRINTER
+#define VER_FILEDESCRIPTION_STR         "Canon BJ-10v printer driver"
+#define VER_INTERNALNAME_STR            "CANON10V"
+#define VER_LEGALCOPYRIGHT_YEARS        "1991-1998"
+#define VER_ORIGINALFILENAME_STR        "CANON10V.DRV"
+#define VER_LEGALCOPYRIGHT_STR          "Copyright(C) Microsoft Corp. " VER_LEGALCOPYRIGHT_YEARS
+
+
+
+#include <common.ver>

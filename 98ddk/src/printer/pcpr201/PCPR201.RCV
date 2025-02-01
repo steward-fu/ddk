@@ -1,0 +1,18 @@
+/********************************************************************/
+/*        PCPR201.RCV                                               */
+/*        Version control data generated from layouts.dat           */
+/********************************************************************/
+#include <version.h>
+
+
+#define VER_FILETYPE                    VFT_DRV
+#define VER_FILESUBTYPE                 VFT2_DRV_PRINTER
+#define VER_FILEDESCRIPTION_STR         "NEC PC-PR201 printer driver"
+#define VER_INTERNALNAME_STR            "PCPR201"
+#define VER_LEGALCOPYRIGHT_YEARS        "1991-1998"
+#define VER_ORIGINALFILENAME_STR        "PCPR201.DRV"
+#define VER_LEGALCOPYRIGHT_STR          "Copyright(C) Microsoft Corp. " VER_LEGALCOPYRIGHT_YEARS
+
+
+
+#include <common.ver>

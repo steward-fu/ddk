@@ -1,0 +1,65 @@
+[Version]
+Signature="$CHICAGO$"
+Class=USB
+provider=%MSFT%
+LayoutFile=layout.inf
+
+[SourceDisksNames]
+1="DDK BULKUSB Sample","",1
+
+[SourceDisksFiles]
+bulkusb.sys=1
+
+[Manufacturer]
+%MfgName%=Microsoft
+
+[Microsoft]
+%USB\VID_045E&PID_930A.DeviceDesc%=BULKUSB.Dev, USB\VID_045E&PID_930A
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+BULKUSB.Files.Ext = 10,System32\Drivers
+BULKUSB.Files.Inf = 10,INF
+
+[BULKUSB.Dev]
+CopyFiles=BULKUSB.Files.Ext, BULKUSB.Files.Inf
+AddReg=BULKUSB.AddReg
+
+[BULKUSB.Dev.NT]
+CopyFiles=BULKUSB.Files.Ext, BULKUSB.Files.Inf
+AddReg=BULKUSB.AddReg
+
+[BULKUSB.Dev.NT.Services]
+Addservice = BULKUSB, 0x00000002, BULKUSB.AddService
+
+[BULKUSB.AddService]
+DisplayName    = %BULKUSB.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\BULKUSB.sys
+LoadOrderGroup = Base
+
+[BULKUSB.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,BULKUSB.sys
+HKLM,"System\Currentcontrolset\Services\BulkUsb\Parameters","MaximumTransferSize",0x10001,4096
+HKLM,"System\Currentcontrolset\Services\BulkUsb\Parameters","DebugLevel",0x10001,2
+
+
+[BULKUSB.Files.Ext]
+BULKUSB.sys
+
+[BULKUSB.Files.Inf]
+BulkUsb.Inf
+
+
+;---------------------------------------------------------------;
+
+[Strings]
+MSFT="Microsoft"
+MfgName="Intel"
+USB\VID_045E&PID_930A.DeviceDesc="BulkUsb.Sys Intel 82930 USB Bulk IO Test Board"
+BULKUSB.SvcDesc="BulkUsb.Sys i82930 Bulk IO test driver"

@@ -1,0 +1,7 @@
+DIRS= \
+     extend \
+     microcam \
+     microdrv \
+     sti \
+     wiacam \
+     wiadriverex

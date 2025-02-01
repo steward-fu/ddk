@@ -1,0 +1,685 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <TITLE>Getting Started With the Windows 98 DDK </TITLE>
+</HEAD>
+<BODY LINK="#0000FF">
+
+<CENTER><B><I><FONT FACE="Arial"><FONT SIZE=+2>Microsoft Windows 98
+Driver Development Kit</FONT></FONT></I></B></CENTER>
+
+<CENTER><B><I><FONT FACE="Arial"><FONT SIZE=+1>July 1999 MSDN Release</FONT></FONT>
+</I></B></CENTER>
+
+<H1>
+Getting Started</H1>
+
+<H3>
+Contents</H3>
+
+<CENTER><B>[<A HREF="install.htm#NOW">Go To Install the DDK</A>]</B></CENTER>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<TR>
+<TD WIDTH="5%"></TD>
+
+<TD WIDTH="95%"><B><FONT><A HREF="install.htm#INSTALL">Installing
+the Windows 98 DDK</A></FONT></B></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%"></TD>
+
+<TD WIDTH="95%"><B><FONT><A HREF="install.htm#SETUP">Setting Up
+and Using the Windows 98 Driver Build Environment</A></FONT></B></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%"></TD>
+
+<TD WIDTH="95%"><B><FONT><A HREF="install.htm#BUILD">Starting to
+Build Your Own WDM Drivers</A></FONT></B></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%"></TD>
+
+<TD WIDTH="95%"><B><FONT><A HREF="install.htm#INFO">Information
+at http://www.microsoft.com</A></FONT></B></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%"></TD>
+
+<TD WIDTH="95%"><B><FONT><A HREF="install.htm#NOTES">Release Notes</A></FONT></B></TD>
+</TR>
+</TABLE>
+
+<H3>
+Disclaimer</H3>
+<FONT>This document is for informational purposes only. MICROSOFT
+MAKES NO WARRANTIES, EXPRESS OR IMPLIED, IN THIS DOCUMENT.</FONT>
+
+<P><FONT>Microsoft may have patents, patent applications, trademarks,
+copyrights, or other intellectual property rights covering subject matter
+in this document. Except as expressly provided in any written license agreement
+from Microsoft, the furnishing of this document does not give you any license
+to these patents, trademarks, copyrights, or other intellectual property.</FONT>
+
+<P><FONT>Information in this document is subject to change without
+notice and is provided for informational purposes only. The entire risk
+of the use or results of the use of this document remains with the user,
+and Microsoft Corporation makes no warranties, either express or implied.
+The names of companies, products, people, characters, and/or data mentioned
+herein are fictitious and are in no way intended to represent any real
+individual, company, product, or event, unless otherwise noted. Complying
+with all applicable copyright laws is the responsibility of the user. No
+part of this document may be reproduced or transmitted in any form or by
+any means, electronic or mechanical, for any purpose, without the express
+written permission of Microsoft Corporation.</FONT>
+
+<P><FONT>ActiveSync, ActiveX, BackOffice, Direct3D, DirectAnimation,
+DirectDraw, DirectInput, DirectMusic, DirectPlay, DirectShow, DirectSound,
+DirectX, MSDN, Microsoft, MS-DOS, MS, Outlook, Visual C++, Win32, Windows,
+and Windows NT are either registered trademarks or trademarks of Microsoft
+Corporation in the United States and/or other countries. Other product
+and company names mentioned herein may be the trademarks of their respective
+owners.</FONT>
+
+<P><FONT><B>&copy;1999 Microsoft Corporation.
+All rights reserved.</B></FONT>
+<BR>
+<HR width="90%">
+<H2>
+Introduction</H2>
+<FONT>This document describes the contents of the Microsoft&reg;
+Windows&reg; 98 Driver Development Kit (DDK), which includes information about
+building drivers based on Microsoft Windows&reg; Driver Model (WDM). Topics
+include:</FONT>
+<UL>
+<LI>
+<FONT>System requirements and instructions for installing the Windows
+98 DDK.</FONT></LI>
+
+<LI>
+<FONT>Instructions for using the Setenv.bat batch file provided
+with the Windows 98 DDK to set up the device driver build environment.</FONT></LI>
+
+<LI>
+<FONT>Instructions and tips for getting started building WDM drivers.</FONT></LI>
+</UL>
+
+<H2>
+<A NAME="INSTALL"></A>Installing the Windows 98 DDK</H2>
+<FONT>This section describes how to install the Windows 98 DDK.</FONT>
+
+<P><FONT>These notation conventions are used in this section:</FONT>
+<UL>
+<LI>
+<FONT>%98DDK% — root directory of the installed Windows 98 DDK.</FONT></LI>
+
+<LI>
+<FONT>%MSTOOLS% — root directory of the Microsoft Platform SDK
+(if it is installed; it is optional).</FONT></LI>
+
+<LI>
+<FONT>%VCPPDEV% — root directory of the installed Microsoft Visual
+C++&reg; development environment.</FONT></LI>
+</UL>
+
+<H3>
+System Requirements</H3>
+<FONT>The minimum requirements for using the DDK include this software
+and hardware:</FONT>
+<UL>
+<LI>
+<FONT>Microsoft Windows 98 operating system final release.</FONT></LI>
+
+<LI>
+<FONT>Microsoft Visual C++ version 4.2 or 5.0 (including service packs) for x86-based systems. 
+Microsoft VC++ version 5.0 (including service packs) is required
+to compile the video capture samples. Note that Visual C++ 6.0 is not supported for any of 
+the samples.</FONT></LI>
+
+<BR><FONT><B>Important: </B>You must install the Visual C++ compiler/development
+environment <B>before</B> you install the Windows 98 DDK. Otherwise, the
+Setenv.bat file in the Windows 98 DDK will not set up the correct environment
+when you run it. For more information, see "Setting Up and Using the Windows
+98 Driver Build Environment."</FONT>
+<LI>
+<FONT>Microsoft Internet Explorer version 4.01 or greater for the DDK documentation set.</FONT></LI>
+
+<LI>
+<FONT>CD-ROM drive, if installing from CD or testing CD drivers.</FONT></LI>
+
+<LI>
+<FONT>16 MB RAM.</FONT></LI>
+
+<LI>
+<FONT>82 MB hard disk space for the full installation (32 MB of
+hard disk space for a minimum installation, which does not include the
+sample driver source code, Help files, or other documentation files).</FONT></LI>
+
+<LI>
+<FONT>Legacy Driver Samples:&nbsp; The legacy driver samples require
+a 16-bit compiler and linker.&nbsp; They have been tested under VC 1.52 and VC 1.51.&nbsp;
+If you don't already have the VC 1.52 compiler, you can obtain it from the following sources:
+<OL><LI> VC 1.52 is found on Disk 3 (16-bit DDKs) of the MSDN Platform Archive series.  This series
+is obtained by filling out the special request card that came supplied in your first MSDN package.
+<LI>When you receive VC 4.2, there is a special request card that you can use to request VC 1.52.
+<LI>VC1.52 comes supplied as part of the VC 4.0 package.</FONT></LI>
+</OL></UL>
+<FONT>Note that all the sample drivers included with the Windows
+98 DDK build without the Microsoft Platform SDK being installed. However,
+once you start building your own driver, you might need header files from
+the Platform SDK that are not on this release of the Windows 98 DDK. You
+can either copy the required header file or files from the Platform SDK
+to the appropriate Include directory under either %98DDK% or %VCPPDEV%,
+or you can install the Platform SDK and edit the Setenv.bat file in %98DDK%\BIN
+to run the Setenv.bat file that is installed in %MSTOOLS%.</FONT>
+
+<P><FONT SIZE=+1>Using the Setup Program to Install the DDK</FONT>
+<OL>
+<LI>
+<FONT>Run <B>Setup.exe</B> from the Windows 98 DDK compact disc,
+or download the self-extracting executable file, which will begin setup.exe
+upon completion of the uncompression.</FONT></LI>
+
+<BR><FONT>Setup.exe is a Windows-based application that you can
+run either from the Start/Run button or from an MS-DOS&reg; Prompt.</FONT>
+<LI>
+<FONT>Click <B>Next</B> to install the DDK.</FONT></LI>
+
+<LI>
+<FONT>Read the Software License Agreement and, if you agree with
+its terms, select "I accept the Agreement" and click <B>Next</B>.</FONT></LI>
+
+<LI>
+<FONT>Select the setup functions you prefer, and then click <B>Next</B>.</FONT></LI>
+
+<LI>
+<FONT>Select the drive and directory where you want to install
+the Windows 98 DDK, and then click <B>Next</B>.&nbsp; <B>Note:</B>&nbsp;
+The Windows 98 DDK cannot be installed in a directory that does not follow
+8.3 naming convention.&nbsp; Also, the Windows 98 DDK should not be installed
+over a previous version of the Windows 98 DDK.&nbsp;&nbsp; This will cause
+problems with the build environment and command line tools included in
+Visual C++.</FONT></LI>
+
+<LI>
+<FONT>Select the component groups you want to install. Use the
+<B>Details </B>button to select or deselect sub-components. (By default,
+all sub-components are selected when you select a component area.) Click
+<B>Next</B>.</FONT></LI>
+
+<LI>
+<FONT>Verify that the appropriate components will be installed,
+and then click <B>Next</B>.</FONT></LI>
+
+<LI>
+<FONT>When the installation of components is completed, click <B>Next</B>,
+and then click <B>Exit</B>.</FONT></LI>
+</OL>
+<B><FONT>Installation Notes</FONT></B>
+
+<P><FONT>The Setup program installs the selected Windows 98 DDK
+components in the specified installation directory and creates program
+folders.</FONT>
+
+<P><FONT>You should increase your environment space because the
+Windows 98 DDK, compiler, and assembler (and the optional Platform SDK)
+all use additional environment space for storage of search paths.</FONT>
+
+<P><FONT><B>Note:</B> The Windows 98 DDK uses the current VCVars.Bat
+as part of creating the build environment.&nbsp; This includes setting
+your current path to include the installation source of VC.&nbsp; You may
+want to delete the line <I>vcsource=</I>&lt;Install Path&gt; from %DDKRoot%\Bin\DDKVars.Bat
+if you installed from over a network.&nbsp; Doing so may reduce the time
+required to build the drivers.</FONT>
+
+<P><B><FONT>To increase the environment space:</FONT></B>
+<UL>
+<LI>
+<FONT>Add the following command to your Config.sys file (or change
+the line already there):</FONT></LI>
+</UL>
+
+<DIR><B><FONT>shell=c:\command.com /p /e:4096</FONT></B></DIR>
+<FONT>This command gives you an environment of 4,096 bytes. If
+you receive "out of environment space" messages, you should increase the
+environment further.</FONT>
+
+<P><A NAME="SETUP"></A><FONT SIZE=+2>Setting Up and Using the Windows 98
+Driver Build Environment</FONT>
+
+<P><FONT>This section provides instructions for establishing a
+WDM driver build environment and using the Build utility to build drivers.</FONT>
+
+<P><FONT SIZE=+1>Using SETENV.BAT to Set Up the Driver Build Environment</FONT>
+
+<P><FONT>A program folder named "Development Kits\Windows 98 DDK" 
+is created. This folder contains
+items called Free Build Environment and Checked Build Environment. Each
+time you restart the operating system, before you build a driver, click
+one or the other of these program folder items. These items call Setenv.bat
+in %98DDK%\BIN to create the driver build environment with the correct
+environment variables.</FONT>
+
+<P><B><FONT>To run SETENV.BAT manually:</FONT></B>
+<UL>
+<LI>
+<FONT>Use the following syntax at the MS-DOS Prompt or in the Start/Run
+box:</FONT></LI>
+</UL>
+<FONT FACE="Courier New"><FONT SIZE=+0>setenv <I>%98DDK%</I> [free
+| checked]</FONT></FONT>
+
+<P><FONT>For example, from the C:\98ddk\bin> prompt, type <B>setenv
+C:\98ddk free</B></FONT>
+
+<P><FONT>The first argument, &lt;<I>destination</I>>, specifies
+the directory where the DDK is installed. Note that in the case of default
+setup, the destination is \98ddk. The optional second argument specifies
+the target build environment; the default type is <B>free</B>.</FONT>
+
+<P><B><FONT>To remove your VC++ install directory from the search
+path:</FONT></B>
+<UL>
+<LI>
+<FONT>Remove <B>set vcsource</B> from the %98DDK%\bin\ddkvars.bat
+file.</FONT></LI>
+</UL>
+<FONT SIZE=+1>Using the Build Utility to Build Drivers</FONT>
+
+<P><FONT>WDM drivers are built using the <B>Build</B> utility,
+which uses a set of rules and project files that specify how drivers should
+be created. The <B>Build</B> utility is used to build WDM drivers on both
+Windows 98 and Windows NT&reg; platforms.</FONT>
+
+<P><FONT>This section summarizes the structure of the driver build
+tree and the file components in that tree upon which the <B>Build</B> utility
+depends. You need to know this information to build your own WDM drivers.
+For a detailed version of this information, see the Windows NT 4.0 or Windows 2000 DDK
+documentation about the <B>Build</B> utility. Also, a working example of
+a WDM driver build tree, with all the correct component files, is available
+on your hard disk after the Windows 98 DDK is installed. The driver build
+tree root is at %98DDK%\src. Look at the contents the Makefile.def in %98DDK%\inc
+and at the contents of the various <I>Dirs</I> and <I>Sources</I> files
+scattered throughout the driver build trees. Use these as examples for
+your own work.</FONT>
+
+<P><FONT>The <I>Dirs</I> file specifies which directories in the
+subtrees contain source code files to be built. For 16bit samples the %98DDK%\inc\master.mk 
+needs to be modified to reference the path of your 16bit compiler. Set the C16_ROOT to point 
+to the base directory of the 16bit compiler (ex: C16_TOOLS=C:\MSVC). It is not recommend to have the 
+16bit tools in the path due to possible conflicts with multiple linkers and compilers. 
+<P>The 
+<I>Sources</I> file specifies which source files are required to build a driver in each subdirectory.</FONT>
+
+<P><B><FONT>To build one or more drivers in a driver build tree:</FONT></B>
+<UL>
+<LI>
+<FONT>Make a subdirectory in the driver build tree of the current
+directory, and then run the <B>Build</B> utility.</FONT></LI>
+</UL>
+<FONT>The <B>Build</B> utility builds all the driver source code
+in subdirectories at or below the current directory in the build tree (if
+that source code is referenced by <I>Dirs</I> and <I>Sources</I> files).</FONT>
+
+<P><FONT>An example of this is described in "Verifying Your Windows
+98 DDK Installation" below, where the Build utility is run with the current
+directory at the root of the Windows 98 DDK sample driver build tree (%98DDK%\src).
+This causes all the sample drivers on the Windows 98 DDK to be built. For Example, if
+you are only interested in building the sample drivers for the Audio device
+class, set the current directory to %98DDK%\src\audio and then run the
+Build utility.</FONT>
+
+<P><FONT SIZE=+1>Verifying Your Windows 98 DDK Installation</FONT>
+
+<P><FONT>A form of the <B>build</B> command that is often used
+is <B>build -cZ;</B> this causes the Build utility to do a scan of dependency
+files, perform a clean build, and create an error log.</FONT>
+
+<P><B><FONT>To verify your installation:</FONT></B>
+<UL>
+<LI>
+<FONT>Run<B> build -cZ</B> from the \&lt;<I>destination</I>>\<B>src</B>
+directory to build the complete set of installed sample driver sources.</FONT></LI>
+</UL>
+<FONT>This can take 30 or more minutes to complete. This utility
+automatically establishes file dependencies, building all dependent files
+before building the driver.</FONT>
+<P><FONT>If the build does not complete or reports excessive compile errors, you will need to confirm 
+that the installation steps listed above were followed correctly.</FONT>
+
+<P><FONT>After the drivers are built, the binaries are in <B>%98DDK%\lib\i386\[free|checked]</B></FONT>
+
+<P><A NAME="BUILD"></A><FONT SIZE=+2>Starting to Build Your Own WDM Drivers</FONT>
+
+<P><FONT>Once you have built the sample drivers to verify the Windows
+98 DDK installation, you can start building your own WDM driver. This section
+gives some tips about doing that. Note that much of the detailed information
+about building kernel-mode drivers in the Windows NT 4.0 or Windows 2000 DDK also applies
+to building WDM drivers.</FONT>
+
+<P><FONT>The debugger tool provided on the Windows 98 DDK is the
+Windows System Debugger (Wdeb386.exe). For detailed information how to
+install and use Wdeb386.exe, see "About Windows System Debugger" in the
+Windows 98 DDK documentation&nbsp; under <I>Windows 98 DDK / Related Driver
+Documentation / Windows 95 Documentation / Programmer's Guide / WDEB386
+System Debugger</I>.</FONT><FONT></FONT>
+
+<P><FONT>If your driver will consist of multiple binaries, or the
+source will be kept in multiple directories, you might need to create a
+<I>Dirs</I> file specifying which directories are to be built and in what
+order. Each separate binary requires a <I>Sources</I> file describing which
+files are to be compiled/linked to create the driver.</FONT>
+
+<P><FONT>Each driver directory also contains a <I>Makefile</I>.
+<B>Build</B> spawns the <B>Nmake</B> utility for each source file listed
+in sources, and <B>Nmake</B> uses the <I>Makefile</I> to generate dependency
+and command lists. The standard <I>Makefile</I> file in a driver source
+code directory directs <B>Nmake</B> to the master Nmake macro definition
+file, Makefile.def. This file defines the flags for the build tools such
+as the compiler and linker. Makefile.def simplifies the creation of platform-independent
+driver projects and is similar to the Ntwin32.mak file in the Microsoft
+Platform SDK.</FONT>
+
+<P><FONT>After you have <I>Dirs</I>, <I>Sources</I>, and Makefile
+files created, the next step is to run the <B>Build</B> utility that parses
+the sources file and spawns <B>Nmake</B> for each source file. The <B>Nmake</B>
+utility evaluates the macros in Makefile.def and spawns the C compiler
+with the proper switches. After the compile stages are completed, <B>Build</B>
+spawns <B>Nmake</B> again to link the objects and complete the driver building
+phase.</FONT>
+
+<P><FONT>If your <I>Sources</I> file is correct, running <B>Build
+-cZ</B> is all that is required to compile and link your driver. Using
+<B>Build</B> and Makefile.def removes the guesswork of which compiler switches
+are required, which arguments the linker requires, and so on.</FONT>
+
+<P><FONT>During driver development, you will need to build free
+and checked versions of your driver. This is controlled by environment
+variable settings that are interpreted by <B>Build</B> and <B>Nmake</B>.
+These variables are set by Setenv.bat, as discussed earlier. To build a
+free driver, run <B>Build</B> from the free environment. To build a checked
+driver, run <B>Build</B> from the checked environment.</FONT>
+
+<P><FONT><B>Important:</B> Not all WDM-specific libraries are available
+in checked form on the DDK CD. When you build a checked version of your
+driver, you might have to explicitly reference the path to the free form
+of those libraries in the <B>TARGETLIBS</B> line of the <I>Sources</I>
+file for your driver.</FONT>
+
+<P><FONT>Debug binaries and components are provided for Windows
+98 in the \dbg_sym directory on the Windows 98 DDK distribution CD.</FONT>
+
+<P><FONT>Template files (.tpl) for <I>Dirs</I>, <I>Sources</I>,
+<I>Makefile</I>, and other files can be found on the Windows 98 DDK distribution
+CD, in the directory \98DDK\DDK\DOC\BUILD. As stated earlier, working versions
+of these files can be found in driver source subdirectories of the DDK.
+Examining these files along with Makefile.def (located in the %98DDK%\INC
+directory) provides additional information.</FONT>
+
+<H2>
+<A NAME="INFO"></A>Information at www.Microsoft.com</H2>
+
+<P><FONT>The <B>Hardware Development Web Site at <A HREF="http://www.microsoft.com/hwdev">http://www.microsoft.com/hwdev</A></B>
+provides connections to information from Microsoft to help with hardware
+and driver development. This Web site provides the following:</FONT>
+<UL>
+<LI>
+<FONT>Driver development information for Plug and Play, power management,
+manageability, NDIS 5.0, WDM, and specific device classes such as audio,
+imaging, and so on.</FONT></LI>
+
+<LI>
+<FONT>Third-party driver development and training resources.</FONT></LI>
+
+<LI>
+<FONT>Advice from "Dr. Iver" on special driver topics, such as
+WDM, Plug and Play, and power management.</FONT></LI>
+
+<LI>
+<FONT>Specifications for power management, Plug and Play, and other
+special topics.</FONT></LI>
+</UL>
+<FONT>The <B>Microsoft Developers Network Web site at <A HREF="http://msdn.microsoft.com/developer">http://msdn.microsoft.com/developer</A>
+</B>provides information from Microsoft to help with software development.
+This Web site provides the following:</FONT>
+<UL>
+<LI>
+<FONT>Downloads for service packs or patches for Microsoft development
+tools.</FONT></LI>
+
+<LI>
+<FONT>Special developer tools for MSDN Online Members to try out
+and evaluate, designed to compliment and integrate with the Microsoft programming
+environments you already use.</FONT></LI>
+
+<LI>
+<FONT>Up-to-date SDK releases.</FONT></LI>
+
+<LI>
+<FONT>Access to user groups, chats, event information, the MSDN
+Library Online, and a host of products and technologies for developers.</FONT></LI>
+</UL>
+<FONT>The <B>Microsoft DirectX Web site at <A HREF="http://www.microsoft.com/directx">http://www.microsoft.com/directx</A>
+</B>provides information for DirectX hardware and software developers,
+including:</FONT>
+<UL>
+<LI>
+<FONT>Microsoft DirectX SDK download.</FONT></LI>
+
+<LI>
+<FONT>Connections to technical articles, support information, news
+groups, and so on.</FONT></LI>
+</UL>
+<FONT>The <B>DDK Web site at <A HREF="http://www.microsoft.com/ddk/">http://www.microsoft.com/ddk/</A>.</FONT></B><FONT>
+This Web site provides information and resources for driver development,
+including:</FONT>
+<UL>
+<LI>
+<FONT>The most current DDK available, publicly downloadable.</FONT></LI>
+
+<LI>
+<FONT>Current documentation for the DDK, downloadable or browseable
+online.</FONT></LI>
+
+<LI>
+<FONT>Announcements of new DDK developments.</FONT></LI>
+
+<LI>
+<FONT>Feedback for reporting bugs, suggesting content, and rating the DDK.</FONT></LI>
+
+</UL>
+
+<FONT>The <B>DDK Developer Support Web site at <A HREF="http://support.microsoft.com/support/">http://support.microsoft.com/support/</A>.</FONT></B><FONT>
+This Web site provides more information and resources for developing and maintaining drivers including:</FONT>
+<UL>
+<LI>
+<FONT>Additional driver samples.</FONT></LI>
+
+<LI>
+<FONT>Tools for device drivers and debugging.</FONT></LI>
+
+<LI>
+<FONT>FAQs for Windows driver development.</FONT></LI>
+</UL>
+
+
+<HR width="90%">
+<H2>
+<A NAME="NOTES"></A>Release Notes</H2>
+<H3>Internet Explorer Required for Documentation</H3>
+<FONT COLOR="#804040">This refresh of the Windows 98 DDK does not include Microsoft Internet Explorer, 
+which is required for full functionality.  If the setup program does not detect IE 4.01 or greater installed on the system, the documentation will not be installed.  
+The latest version of Microsoft Internet Explorer can be downloaded separately from the web at <A HREF="http://www.microsoft.com/ie">http://www.microsoft.com/ie</A>.</FONT>
+
+<H3>
+Visual Studio Service Pack 3 recommended</H3>
+<FONT COLOR="#804040">If you are using Visual C++ version 5.0, some warnings may occur unless you have installed Visual Studio version 5.0 Service Pack 3. 
+This can be downloaded from <A HREF="http://msdn.microsoft.com/visualc/downloads/updates.asp">msdn.microsoft.com/visualc/downloads/updates.asp</A>.</FONT>
+
+<H3>
+PC98 samples require source from other samples</H3>
+<FONT COLOR="#804040">The PC98 samples do not build properly unless the src\display, src\keyb and src\net samples are also installed. </FONT>
+
+<H3>
+Information on creating IrDA drivers</H3>
+<FONT COLOR="#804040">For information on creating infrared (IrDA) miniport drivers for Windows 98, please consult the Windows 2000 Driver Development Kit.</FONT>
+
+<H3>
+Information on creating WDM Audio drivers</H3>
+<FONT COLOR="#804040">For information on creating WDM Audio drivers for Windows 98, please consult the Windows 2000 Driver Development Kit.</FONT>
+
+<H3>
+Information on creating WDM DVD drivers</H3>
+<FONT COLOR="#804040">For information on creating WDM DVD drivers for Windows 98, please consult the Windows 2000 Driver Development Kit.</FONT>
+
+<H3>
+Information on creating 1394 drivers</H3>
+<FONT COLOR="#804040">For information on creating 1394 drivers for Windows 98, please consult the Windows 2000 Driver Development Kit.</FONT>
+
+<H3>
+Information on creating Modem drivers</H3>
+<FONT COLOR="#804040">For information on creating Modem drivers for Windows 98, please use the tool provided in this kit, and full information can be found in the Windows 2000 Driver Development Kit.</FONT>
+
+<H3>
+Content in the %DDKRoot%\src\PC98 is unsupported</H3>
+<FONT COLOR="#804040">The samples provided in the %DDKRoot%\src\PC98\ directories are specific to Japanese hardware.  This development is not supported by the DDK Developer Support Team. </FONT>
+
+<H3>
+Release Notes for the WDM Video Capture Testcap sample driver</H3>
+<FONT COLOR="#804040"> 
+<p>
+
+The Testcap video capture driver has been used as the protype for a number of drivers which turn off stream class synchronization.  A problem in the sample driver has been discovered, which occurs randomly, and results in DirectShow graphs which are unable to complete the transition to the Stopped state after Running successfully.  
+</P>
+Here's the failure sequence:
+<ol>
+<li>Start a graph containing testcap connected to a video renderer.
+<li> Press stop
+<li>KsProxy sends one more read request down to the driver on Thread1 which happens to suspend immediately after checking to see if the stream is stopped, but before adding the SRB to the queue.
+<li>KsProxy sets the stream state to stopped on Thread2.  Stream class cancels all outstanding IO for the stream. It also tries to cancel the SRB which Thread1 has not yet placed into the queue, but this attempt fails (since the SRB is not yet in the queue).
+<li>Thread1 resumes, adding the SRB to the queue.
+<li>The graph is hung, waiting for the IO to complete (which never happens).
+</ol>
+<P>
+Since stream class delivers command and data SRBs to separate driver entry points, testcap creates separate queues for commands and data, and protects each queue with a separate spinlock.  So one possible fix is to use a single queue for both, or to use a common spinlock for both (although this could adversely affect performance).  
+</P><P>
+A much simpler fix is to detect the condition and recover.  Thus, the following highlighted lines have been added to capvideo.c, at roughly line 570:
+</P>
+ <pre>   case SRB_READ_DATA:
+
+        // Rule:
+        // Only accept read requests when in either the Pause or Run
+        // States.  If Stopped, immediately return the SRB.
+
+        if (pStrmEx->KSState == KSSTATE_STOP) {
+            CompleteStreamSRB (pSrb);
+            break;
+        }
+
+        //
+        // Put this read request on the pending queue
+        //<pre></pre>
+
+        VideoQueueAddSRB (pSrb);</pre>
+<b>
+<pre>        // Since another thread COULD HAVE MODIFIED THE STREAM STATE
+        // in the midst of adding it to the queue, check the stream
+        // state again, and cancel the SRB if necessary.  Note that
+        // this race condition was NOT handled in the original DDK
+        // release of testcap!
+
+        if (pStrmEx->KSState == KSSTATE_STOP) {
+            VideoQueueCancelOneSRB (
+                pStrmEx,
+                pSrb);
+        }</pre></b>
+        ...  
+
+</FONT>
+
+
+<H3>
+Release Notes for the Broadcast Architecture Driver Development Kit (DDK)</H3>
+<FONT COLOR="#804040">The Broadcast Architecture samples that  use the Icodec.lib library only compile under the 
+Microsoft Visual C++  version 5.0. This is because the samples use the Microsoft® Foundation Classes (MFC), 
+which change between versions of Visual C++. For more information, see the Readme.txt file provided with each sample.</FONT>
+
+<H3>Visual C++ 4.2 Errors</H3>
+<FONT COLOR="#804040">
+If compiling the DDK under VC 4.2 checked three samples will fail on the link step with a cvpack CK1007
+ error (invalid Types table in module xxx). This is due to some minor differences in the library files 
+that were compiled with VC 5.0.
+<UL>
+<LI>%DDKROOT%\src\hid\monitor</LI>
+<BR><FONT COLOR=#404080  SIZE=-1>To correct this problem link with \msvc\lib\shell32.lib</FONT>
+<LI>%DDKROOT%\src\net\ndis3\packet\dll</LI>
+<BR><FONT  COLOR=#404080 SIZE=-1>To correct this problem link with \msvc\lib\libc.lib</FONT>
+</UL>
+</FONT>
+
+
+<H3>
+Legacy Documentation</H3>
+<FONT COLOR="#804040">Windows 98 continues to support Windows 95 driver
+technologies. We have included updated documentation from the Windows 95
+DDK and selected documentation from the Windows 3.1 DDK as a convenience
+to developers still using these technologies.</FONT>
+<H3>
+Legacy Drivers</H3>
+<FONT COLOR="#804040">Drivers that build in the Windows 95 DDK are adaptable
+to the new Windows 98 DDK with just a few modifications to the makefile.
+Any new 16 bit Win 98 driver will also need this modification.
+The necessary changes are:</FONT>
+<OL>
+<LI>
+<FONT COLOR="#804040">Insert !include $(BASEDIR)\inc\master.mk as the first
+line in the makefile.</FONT></LI>
+
+<LI>
+<FONT COLOR="#804040">Change all references to 16-bit compile tools to
+$(CL16) for cl.exe, $(LINK16) for link.exe and $(RC16) for rc.exe.</FONT></LI>
+
+<LI>
+<FONT COLOR="#804040">Include and lib paths can be defined using $(INC32),
+$(INC16), $(C16_ROOT)\include, $(LIB32), $(LIB16), $(C16_ROOT)\lib. C16_ROOT
+is defined in master.mk as the base dir of your 16-bit compile tools.</FONT></LI>
+
+<LI>
+<FONT COLOR="#804040">If you want to use build.exe to make your driver,
+add the following around the link step.</FONT></LI>
+
+<UL>
+<LI>
+<FONT COLOR="#804040">!ifndef PASS0ONLY</FONT></LI>
+
+<LI>
+<FONT COLOR="#804040">link step commands</FONT></LI>
+
+<LI>
+<FONT COLOR="#804040">!endif</FONT></LI>
+</UL>
+<FONT COLOR="#804040">Echo's can be inserted where command names aren't
+explicit so build can count compiles and links (see an existing legacy
+makefile on how this is done). Add your driver sub directory name to the
+<I>Dirs</I> file in order for a recursive build to work.</FONT></OL>
+<BR>
+
+<HR width="90%">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<TR>
+<TD WIDTH="33%"></TD>
+
+<TD WIDTH="33%">
+<CENTER><B>[<A NAME="NOW" href="setup.exe">Install DDK</A>]</B></CENTER>
+</TD>
+
+<TD WIDTH="34%"></TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

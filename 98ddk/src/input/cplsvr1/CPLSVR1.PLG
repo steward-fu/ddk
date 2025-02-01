@@ -1,0 +1,17 @@
+--------------------Configuration: CPLSVR1 - Win32 Debug--------------------
+Begining build with project "H:\98ddk\CPLSVR1\CPLSVR1.DSP", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"CPLSVR1_/CPLSVR1.pch" /YX /Fo"CPLSVR1_/" /Fd"CPLSVR1_/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"CPLSVR1_/Cplsvr1.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"CPLSVR1_/CPLSVR1.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib dinput.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"CPLSVR1_/CPLSVR1.pdb" /debug /machine:I386 /def:".\Cplsvr1.def" /out:"CPLSVR1.dll" /implib:"CPLSVR1_/CPLSVR1.lib" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+
+
+
+CPLSVR1.dll - 0 error(s), 0 warning(s)

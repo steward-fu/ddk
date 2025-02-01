@@ -1,0 +1,23 @@
+TARGETNAME=atixbar
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+#NTDUMPAMAP=TRUE
+
+
+INCLUDES=$(BASEDIR)\inc;  \
+	..\..\stream\inc; \
+	..\atishare;
+
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\stream.lib \
+			$(BASEDIR)\lib\*\free\ksguid.lib \
+	    $(BASEDIR)\lib\*\free\dxapi.lib \
+	    $(BASEDIR)\lib\*\$(DDKBUILDENV)\atishare.lib
+
+
+SOURCES=atixbar.cpp  \
+	wdmxbar.cpp  \
+	xbarprop.cpp
+
+C_DEFINES=-DMSC
+USER_C_FLAGS=-TP

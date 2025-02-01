@@ -1,0 +1,11 @@
+DIRS= \
+     ac97 \
+     ddksynth \
+     dmusuart \
+     fmsynth \
+     gfxswap.xp \
+     mpu401 \
+     msvad \
+     sb16 \
+     stdunk \
+     sysfx

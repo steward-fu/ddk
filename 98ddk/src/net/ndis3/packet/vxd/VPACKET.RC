@@ -1,0 +1,37 @@
+
+#include <version.h>
+#define Not_VxD
+#include <vmm.h>
+
+
+/*-----------------------------------------------*/
+/* the following lines are specific to this file */
+/*-----------------------------------------------*/
+
+/* VER_FILETYPE, VER_FILESUBTYPE, VER_FILEDESCRIPTION_STR
+ * and VER_INTERNALNAME_STR must be defined before including COMMON.VER
+ * The strings don't need a '\0', since common.ver has them.
+ */
+#define	VER_FILETYPE	VFT_VXD
+/* possible values:		VFT_UNKNOWN
+				VFT_APP
+				VFT_DLL
+				VFT_DRV
+				VFT_FONT
+				VFT_VXD
+				VFT_STATIC_LIB
+*/
+
+#define VER_FILESUBTYPE 		UNDEFINED_DEVICE_ID
+
+#define VER_FILEDESCRIPTION_STR 	"Sample Packet Driver (Version 1.0)"
+#define VER_INTERNALNAME_STR		"VPacket"
+#define VER_LEGALCOPYRIGHT_YEARS	"1995-1997"
+#define VER_LEGALCOPYRIGHT_STR          "Copyright \251 Microsoft Corporation" VER_LEGALCOPYRIGHT_YEARS
+#define VER_ORIGINALFILENAME_STR	"VPacket.Vxd"
+#define VER_PRODUCTNAME_STR		"Microsoft\256 Device Driver Kit"
+
+#define VER_COMPANYNAME_STR "Wizard Software"
+
+#include <common.ver>
+

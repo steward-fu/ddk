@@ -1,0 +1,22 @@
+
+TARGETNAME=RwBulk
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+UMTYPE=console
+UMBASE=0x01000000
+
+
+INCLUDES=$(BASEDIR)\inc; \
+		 $(BASEDIR)\src\usb\inc; \
+		 $(BASEDIR)\src\wdm\usb\inc; \
+         ..\sys;      \
+         ..\..\..\inc
+
+
+TARGETLIBS= $(BASEDIR)\lib\*\free\usbd.lib \
+           $(BASEDIR)\lib\*\free\setupapi.lib
+
+SOURCES=      \
+        RwBulk.c  \
+        RwBulk.rc

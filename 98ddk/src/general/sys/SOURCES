@@ -1,0 +1,17 @@
+TARGETNAME=TESTDRV
+TARGETTYPE=DRIVER
+
+
+
+TARGETPATH=$(BASEDIR)\lib
+
+INCLUDES=$(BASEDIR)\inc
+
+C_DEFINES=-DDRIVER
+
+SOURCES=				\
+		drvshell.c		\
+		vector.c		\
+		testdrv.c		\
+		testdrv.rc      \
+        debugwdm.c

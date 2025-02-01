@@ -1,0 +1,21 @@
+TARGETNAME=packet32
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+UMENTRY=dllentry
+NO_NTDLL=1
+NO_PDB=1
+
+TARGETLIBS=   $(BASEDIR)\lib\*\free\libc.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib 
+
+INCLUDES= ..\inc;
+
+C_DEFINES= /Fdpacket32
+L_DEFINES= -debug:full -debugtype:map,coff -def:packet32.def
+
+SOURCES= packet32.c
+
+DLLBASE=0x1c300000

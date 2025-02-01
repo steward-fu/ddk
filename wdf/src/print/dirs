@@ -1,0 +1,14 @@
+DIRS= \
+     asyncnotify \
+     cpsuisam \
+     emf \
+     genprint \
+     mini \
+     monitors \
+     msplot \
+     oemdll \
+     pp \
+     SimplePipelineFilter \
+     tty \
+     XPSDrvSmpl \
+     XpsRasFilter

@@ -1,0 +1,25 @@
+#include <mindrvrc.h>
+#include "tty.rcv"
+
+1      RC_TABLES   PRELOAD MOVEABLE        TTY.GPC
+
+1      RC_FONT     LOADONCALL DISCARDABLE  10cpi.pfm
+2      RC_FONT     LOADONCALL DISCARDABLE  12cpi.pfm
+3      RC_FONT     LOADONCALL DISCARDABLE  17cpi.pfm
+4      RC_FONT     LOADONCALL DISCARDABLE  5cpi.pfm
+5      RC_FONT     LOADONCALL DISCARDABLE  6cpi.pfm
+6      RC_FONT     LOADONCALL DISCARDABLE  8cpi.pfm
+
+1      RC_TRANSTAB  LOADONCALL MOVEABLE     tty.ctt
+
+STRINGTABLE
+
+BEGIN
+       1                  "Generic / Text Only"
+       257                "%d x %d"
+       258                "Std Fanfold 8 1/2 x 12 in"
+       259                "Legal Fanfold 8 1/2 x 12 in"
+       260                "Continuous - Page Break"
+       261                "Continuous - No Page Break"
+       262                "Cut Sheet"
+END

@@ -1,0 +1,29 @@
+;******************************************************************************
+;*
+;* Module:       		ipdetect.exe
+;* File:         		ipdetect.def
+;* Descriptions:		Declares the module parameters for the application
+;* Contains:    		
+;*
+;* Copyright (c) 1996, Microsoft Corporation, all rights reserved
+;*
+;* This document is provided for informational purposes only and Microsoft 
+;* Corporation makes no warranties, either expressed or implied, in this document.
+;* Information in this document may be substantially changed without notice in
+;* subsequent versions of windows and does not represent a commitment on the 
+;* part of Microsoft Corporation. 
+;*
+;*
+;*****************************************************************************/
+
+NAME         IPDETECT
+DESCRIPTION  'IPDETECT Windows Application'
+EXETYPE      WINDOWS
+
+CODE         PRELOAD MOVEABLE DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     1024   ; initial heap size
+; Stack size is passed as argument to linker's /STACK option
+
+

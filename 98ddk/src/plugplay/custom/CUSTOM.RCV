@@ -1,0 +1,18 @@
+#include <version.h>
+
+
+#define VER_FILETYPE                    VFT_DLL
+#define VER_FILESUBTYPE                 VFT_UNKNOWN
+#define VER_FILEDESCRIPTION_STR         "Custom Device Installer Dll\0"
+#define VER_INTERNALNAME_STR            "Custom\0"
+#define VER_LEGALCOPYRIGHT_YEARS        "1997-1998"
+#define VER_ORIGINALFILENAME_STR        "CUSTOM.DLL"
+
+//
+//#define VERSION                     	"3.0a"
+//#define VER_PRODUCTVERSION_STR      	"3.0a\0"
+//#define VER_PRODUCTVERSION          	3,0a,0,000
+//#define VER_PRODUCTVERSION_DW       	(0x030a0000)
+//                                
+
+#include <common.ver>

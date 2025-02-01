@@ -1,0 +1,1 @@
+c:\objchk_wxp_x86\i386\main.obj.oacr.root.x86chk.pft.xml<|>c:\main.c||0

@@ -1,0 +1,33 @@
+[version]
+signature="$CHICAGO$"
+SetupClass=BASE
+
+[DefaultInstall]
+CopyFiles=FakeIme.sys.install, FakeIme.win.install
+AddReg=FakeIME_Reg
+
+[FakeIme.sys.install]
+fakeime.ime,fakeime.ime
+fakeimem.ime,fakeimem.ime
+
+[FakeIme.win.install]
+fakeime.dic
+fakeimem.dic
+
+[DestinationDirs]
+FakeIme.sys.install=11 ; to System
+FakeIme.win.install=25 ; to Windows
+
+
+[FakeIME_Reg]
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0100411","layout file",,kbdjp.kbd
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0100411","layout text",,FakeIME40
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0100411","IME file",,"FAKEIME.IME"
+HKLM,"software\microsoft\fakeime\a"
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0110411","layout file",,kbdjp.kbd
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0110411","layout text",,"FakeIME40 Unicode Edition"
+HKLM,"system\currentcontrolset\control\keyboard layouts\E0110411","IME file",,"FAKEIMEM.IME"
+HKLM,"software\microsoft\fakeime\m"
+
+[SourceDisksNames]
+55="FakeIME Performance4.1.","",1

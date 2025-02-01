@@ -1,0 +1,55 @@
+############################################################################
+#
+#   THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+#   KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+#   IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+#   PURPOSE.
+#
+#  Copyright (C) 1998 Microsoft Corporation.  All Rights Reserved.
+#
+#  File:    sources
+#  Content: NT build file for building Win98 DDK DigiJoy sample
+#
+############################################################################
+
+NAME=DIGIJOY
+
+DESCRIPTION="Gameport Digital Joystick Virtual Device"
+
+TARGETNAME=$(NAME)
+
+TARGETTYPE=NOTARGET
+
+TARGETPATH=obj
+
+NTTARGETFILES=$O\$(NAME).VXD
+
+INCLUDES=$(BASEDIR)\inc\win98\inc;..\inc
+
+NOMASMCOMPATIBILITY=
+
+USE_MAPSYM=
+
+MSC_WARNING_LEVEL=/W3 /WX
+
+!IF "$(DDKBUILDENV)" == "free"
+C_DEFINES=-DRETAIL=1
+ASM_DEFINES=-DRETAIL
+!ELSE
+C_DEFINES=-DDEBUG=1
+ASM_DEFINES=-DDEBUG
+!ENDIF
+
+C_DEFINES = $(C_DEFINES) -DIS_32=1 -DWIN40COMPAT=1 
+ASM_DEFINES = $(ASM_DEFINES) -coff -W3 -WX -Zd -c -Cx \
+            -DMASM6 -DWIN40COMPAT -DIS_32 -DWIN32 -DSTD_CALL -DBLD_COFF 
+
+SOURCES=
+
+i386_SOURCES=\
+            i386\main.c \
+            i386\debug.c \
+            i386\$(NAME).asm \
+            i386\poll.asm \
+            i386\timing.asm
+

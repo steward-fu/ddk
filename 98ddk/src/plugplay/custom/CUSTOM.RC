@@ -1,0 +1,176 @@
+//Microsoft App Studio generated resource script.
+//
+#include "resrc1.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.h"
+#include "version.h"
+
+/////////////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 4,0,0,950
+PRODUCTVERSION 4,0,0,950
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x10001L
+FILETYPE 0x2L
+FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Microsoft Corporation\0"
+            VALUE "FileDescription", "Custom Device Installer Dll\0"
+            VALUE "FileVersion", "4.00.950\0"
+            VALUE "InternalName", "Custom\0"
+            VALUE "LegalCopyright", "Copyright \251 Microsoft Corp. 1997-1998\0"
+            VALUE "OriginalFilename", "CUSTOM.DLL\0"
+            VALUE "ProductName", "Microsoft\256 Windows(TM) Operating System\0"
+            VALUE "ProductVersion", "4.00.950\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252 
+    END
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NOMEM               "Out of memory"
+    IDS_ERR_ASSERT          "ASSERT!\n\r\n\r%s : %u"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CAPTION             "CUSTOM"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DIF_SELECTDEVICE    "DIF_SELECTDEVICE"
+    IDS_DIF_INSTALLDEVICE   "DIF_INSTALLDEVICE"
+    IDS_DIF_ASSIGNRESOURCES "DIF_ASSIGNRESOURCES"
+    IDS_DIF_PROPERTIES      "DIF_PROPERTIES"
+    IDS_DIF_REMOVE          "DIF_REMOVE"
+    IDS_DIF_FIRSTTIMESETUP  "DIF_FIRSTTIMESETUP"
+    IDS_DIF_FOUNDDEVICE     "DIF_FOUNDDEVICE"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DIF_SELECTCLASSDRIVERS "DIF_SELECTCLASSDRIVERS"
+    IDS_DIF_VALIDATECLASSDRIVERS "DIF_VALIDATECLASSDRIVERS"
+    IDS_DIF_INSTALLCLASSDRIVERS "DIF_INSTALLCLASSDRIVERS"
+    IDS_DIF_CALCDISKSPACE   "DIF_CALCDISKSPACE"
+    IDS_DIF_DESTROYPRIVATEDATA "DIF_DESTROYPRIVATEDATA"
+    IDS_DIF_VALIDATEDATA    "DIF_VALIDATEDATA"
+    IDS_DIF_MOVEDEVICE      "DIF_MOVEDEVICE"
+    IDS_DIF_DETECT          "DIF_DETECT"
+    IDS_DIF_INSTALLWIZARD   "DIF_INSTALLWIZARD"
+    IDS_DIF_DESTROYWIZARDDATA "DIF_DESTROYWIZARDDATA"
+    IDS_DIF_PROPERTYCHANGE  "DIF_PROPERTYCHANGE"
+    IDS_DIF_ENABLECLASS     "DIF_ENABLECLASS"
+    IDS_DIF_DETECTVERIFY    "DIF_DETECTVERIFY"
+    IDS_DIF_INSTALLDEVICEFILES "DIF_INSTALLDEVICEFILES"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_DI_INVALID_DEVICE_ID "Incorrectly formed device IDF"
+    IDS_ERR_DI_INVALID_COMPATIBLE_DEVICE_LIST 
+                            "Invalid compatible device list"
+    IDS_ERR_DI_REG_API      "Error returned by Reg API"
+    IDS_ERR_DI_LOW_MEM      "Insufficient memory to complete"
+    IDS_ERR_DI_BAD_DEV_INFO "Device Info struct invalid"
+    IDS_ERR_DI_INVALID_CLASS_INSTALLER "Registry entry / DLL invalid"
+    IDS_ERR_DI_DO_DEFAULT   "Take default action"
+    IDS_ERR_DI_USER_CANCEL  "the user cancelled the operation"
+    IDS_ERR_DI_NOFILECOPY   "No need to copy files (in install)"
+    IDS_ERR_DI_BAD_CLASS_INFO "Class Info Struct invalid"
+    IDS_ERR_DI_BAD_INF      "Bad INF file encountered"
+    IDS_ERR_DI_BAD_MOVEDEV_PARAMS "Bad Move Device Params struct"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_DI_NO_INF       "No INF found on OEM disk"
+    IDS_ERR_DI_BAD_PROPCHANGE_PARAMS "Bad property change param struct"
+    IDS_ERR_DI_BAD_SELECTDEVICE_PARAMS "Bad Select Device Parameters"
+    IDS_ERR_DI_BAD_REMOVEDEVICE_PARAMS "Bad Remove Device Parameters"
+    IDS_ERR_DI_BAD_ENABLECLASS_PARAMS "Bad Enable Class Parameters"
+    IDS_ERR_DI_FAIL_QUERY   "Fail the Enable Class query"
+    IDS_ERR_DI_API_ERROR    "DI API called incorrectly"
+    IDS_ERR_DI_BAD_PATH     "An OEM path was specified incorrectly"
+END
+
+#ifdef APSTUDIO_INVOKED
+//////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resrc1.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""resource.h""\r\n"
+    "#include ""version.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // APSTUDIO_INVOKED
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+IDI_ICON1               ICON    DISCARDABLE     "ICON1.ICO"
+
+#ifndef APSTUDIO_INVOKED
+////////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

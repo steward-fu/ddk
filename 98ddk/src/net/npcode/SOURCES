@@ -1,0 +1,24 @@
+TARGETNAME=mynp
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+NO_NTDLL=1
+
+TARGETLIBS= \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\kernel32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\advapi32.lib \
+              $(BASEDIR)\lib\*\$(DDKBUILDENV)\user32.lib 
+
+INCLUDES= ..\inc;
+
+
+SOURCES= \
+		mynpcaps.c \
+		mynplog.c  \
+        mynpconn.c \
+        mynpenum.c
+
+
+USE_CRTDLL=1
+
+DLLBASE=0x1c300000

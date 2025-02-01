@@ -1,0 +1,110 @@
+#include "..\tty.rc"
+#include <minidriv.h>
+#include <windows.h>
+#include "..\ttydlg.h"
+#include "..\ttyhelp.h"
+
+STRINGTABLE
+
+BEGIN
+       IDS_MSG_NEWMODELID   "Generic model" 
+       IDS_MSG_CAPTION      "Generic / Text Only"
+       IDS_MSG_NEWTTYFILE   "The TTY data file does not exist. TTY will create a new data file."
+       IDS_MSG_OLDTTYFILE   "TTY will now upgrade the data file to the new format."
+       IDS_MSG_FILECORRUPT  "The TTY data file has been corrupted or is missing. TTY will create a new data file."
+       IDS_MSG_NORETAINDATA "TTY is unable to retain printer codes. Windows will use default TTY codes."
+       IDS_MSG_MODELCHANGE  "If you change models, changes to printer codes will be canceled. Do you want to save any changes?"
+       IDS_MSG_NOCREATE     "TTY cannot create a new data file. The disk may be write-protected or full."
+       IDS_MSG_NOCONFIGURE  "There are no more options available for this printer."
+END
+
+TTY_DEVICEOPTIONS_PROPSHEET DIALOG 42, 19, 202, 208
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Device Options"
+FONT 8, "MS Sans Serif"
+
+BEGIN
+    LTEXT           "&Printer model:", IDD_MODELNAME_LABEL, 10, 6, 50, 10
+    COMBOBOX        IDD_MODELNAME, 63, 4, 130, 58, CBS_DROPDOWNLIST | WS_VSCROLL 
+                    | WS_TABSTOP
+    GROUPBOX        "&Device codes", IDD_PRINTERCODE_GROUP, 3, 22, 192, 98, WS_GROUP
+    LTEXT           "&Begin print job:", IDD_BEGINJOB_LABEL, 7, 39, 52, 8
+    CONTROL         "", IDD_BEGINJOB_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 37, 124, 12
+    LTEXT           "&End print job:", IDD_ENDJOB_LABEL, 7, 59, 52, 8
+    CONTROL         "", IDD_ENDJOB_ESC, "pedit", WS_BORDER | WS_TABSTOP,
+                    64, 57, 124, 12
+    LTEXT           "Paper si&ze:", IDD_PAPERSIZE_LABEL, 7, 79, 52, 8
+    CONTROL         "", IDD_PAPERSIZE_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 77, 124, 12
+    LTEXT           "Paper &source:", IDD_PAPERSRC_LABEL, 7, 99, 52, 8
+    CONTROL         "", IDD_PAPERSRC_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 97, 124, 12
+    GROUPBOX        "E&xtended character mapping", IDD_EXTENDEDCHAR_GROUP, 3, 122, 192, 63, WS_GROUP
+    LTEXT           "&On screen:", IDD_SCREENCHAR_LABEL, 10, 135, 38, 8
+    LISTBOX          IDD_SCREENCHAR, 10, 145, 43, 42, LBS_SORT | WS_VSCROLL |
+                     WS_TABSTOP
+    LTEXT           "On pri&nter:", IDD_PRINTCHAR_LABEL, 64, 135, 38, 8
+    CONTROL         "", IDD_PRINTCHAR, "pedit", WS_BORDER | WS_TABSTOP, 
+                     64, 144, 48, 12
+    LTEXT           "&Character mapping:", IDD_CHARMAP_LABEL, 124, 135, 64, 8
+    CONTROL         "&TTY custom", IDD_CUSTOMCHARSET, "Button", 
+                     BS_AUTORADIOBUTTON, 124, 146  66, 10
+    CONTROL         "Code page &437", IDD_437CHARSET, "Button", 
+                     BS_AUTORADIOBUTTON, 124, 159  66, 10
+    CONTROL         "Code page &850", IDD_850CHARSET, "Button", 
+                     BS_AUTORADIOBUTTON, 124, 171, 66, 10
+    PUSHBUTTON      "&Add New Model...", IDD_ADD, 3, 189, 85, 14
+    PUSHBUTTON      "&Remove Current Model", IDD_DELETE, 101, 189, 94, 14
+END
+
+TTY_FONTOPTIONS_PROPSHEET DIALOG 42, 19, 202, 208
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Fonts"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Font codes", IDD_FONTCODE_GROUP, 3, 6, 192, 198, WS_GROUP
+    LTEXT           "Select &10 cpi:", IDD_10CPI_LABEL, 7, 23, 58, 8
+    CONTROL         "", IDD_10CPI_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 21, 124, 12
+    LTEXT           "Select 1&2 cpi:", IDD_12CPI_LABEL, 7, 43, 58, 8
+    CONTROL         "", IDD_12CPI_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 41, 124, 12
+    LTEXT           "Select 1&7 cpi:", IDD_17CPI_LABEL, 7, 63, 58, 8
+    CONTROL         "", IDD_17CPI_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 61, 124, 12
+    LTEXT           "&Double wide on:", IDD_DBLON_LABEL, 7, 83, 58, 8
+    CONTROL         "", IDD_DBLON_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 81, 124, 12
+    LTEXT           "Double &wide off:", IDD_DBLOFF_LABEL, 7, 103, 58, 8
+    CONTROL         "", IDD_DBLOFF_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 101,124, 12
+    LTEXT           "&Bold on:", IDD_BOLDON_LABEL, 7, 123, 46, 8
+    CONTROL         "", IDD_BOLDON_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 121, 124, 12
+    LTEXT           "Bold &off:", IDD_BOLDOFF_LABEL, 7, 143, 46, 8
+    CONTROL         "", IDD_BOLDOFF_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 141, 124, 12
+    LTEXT           "&Underline on:", IDD_ULINEON_LABEL, 7, 163, 46, 8
+    CONTROL         "", IDD_ULINEON_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64, 161, 124, 12
+    LTEXT           "Under&line off:", IDD_ULINEOFF_LABEL, 7, 183, 46, 8
+    CONTROL         "", IDD_ULINEOFF_ESC, "pedit", WS_BORDER | WS_TABSTOP, 
+                    64 181, 124, 12
+END
+
+TTY_ADDMODEL_DLG DIALOG 65, 60, 160, 40
+STYLE DS_MODALFRAME | WS_CAPTION | WS_VISIBLE | WS_SYSMENU | WS_POPUP |  
+      DS_3DLOOK | DS_CONTEXTHELP
+CAPTION "Add New Printer Model"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "&New printer name:", IDD_NEW_MODEL_LABEL, 13, 5, 75, 12  
+    CONTROL         "", IDD_NEW_MODELNAME, "edit", ES_LEFT | WS_BORDER | WS_CHILD, 
+                    14, 17, 75, 12
+    PUSHBUTTON      "OK", IDOK, 113, 4, 42, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 113, 21, 42, 14
+END
+
+
+

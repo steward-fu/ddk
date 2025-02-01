@@ -1,0 +1,26 @@
+TARGETNAME=IsoUsb
+TARGETTYPE=DRIVER
+TARGETPATH=$(BASEDIR)\LIB
+DRIVERTYPE=WDM
+
+
+INCLUDES=$(BASEDIR)\inc; \
+    $(BASEDIR)\src\usb\inc; \
+    $(BASEDIR)\src\wdm\usb\inc; \
+    ..\..\inc
+
+ 
+TARGETLIBS=$(BASEDIR)\lib\*\free\usbd.lib
+
+USE_MAPSYM=1
+
+SOURCES=  \
+    IsoUsb.rc \
+    IusbDbg.c \
+    IsoUsb.c  \
+    IsoPnP.c \
+    IsoPwr.c \
+    IoctlIso.c   \
+    IsoStrm.c \
+    OcrwIso.c
+

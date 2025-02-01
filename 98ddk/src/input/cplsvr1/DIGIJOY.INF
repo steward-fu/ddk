@@ -1,0 +1,236 @@
+;----------------------------------------------------------------------------
+;
+;   THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+;   KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+;   IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+;   PURPOSE.
+;
+;   Copyright (C) 1998 Microsoft Corporation.  All Rights Reserved.
+;
+;   File:       digijoy.inf
+;   Content:    Installation file for Win98 DDK DigiJoy sample
+;               Note, as a sample, this file contains a large number of 
+;               comments which should be removed before retail distribution.
+;
+;----------------------------------------------------------------------------
+
+[version]
+signature="$CHICAGO$"
+provider=%MfgName%
+SetupClass=BASE
+Class=MEDIA
+
+[ClassInstall]
+Addreg=Class.AddReg
+
+[Class.AddReg]
+HKR,,,,%MediaClassName%
+HKR,,Icon,,1
+HKR,,Installer,,MMSys.Cpl
+
+[SourceDisksNames]
+98="Digital Joystick Mini Drivers","InputDrvs", 0
+
+[SourceDisksFiles]
+digijoy.vxd=98
+
+[DestinationDirs]
+digijoy.vxd = 11        ; LDID_SYS
+
+[Manufacturer]
+%MfgName%=DJ
+
+[DJ]
+%DJ.DeviceDesc%=DJ.Install, DJ_Dev0001
+
+[DJ.Install]
+CopyFiles=@digijoy.vxd
+AddReg=DJ.AddReg
+
+[DJ.AddReg]
+; All defined joysticks are described in the registry under their own sub key 
+; under HKLM\SYSTEM\CurrentControlSet\Control\MediaProperties\
+; PrivateProperties\Joystick\OEM.  Devices which can be serviced by the 
+; standard gameport driver require only a string value for friendly name,
+; OEMName and the binary value OEMData, containing DWORD of flags, followed 
+; by the number of buttons.  The DWORD of flags is made from a combination
+; of the JOY_HWS_* flags defined in the mmddk.h and dinput.h files.
+;
+; If a driver is required, this is specified in the string value OEMCallout.
+;
+; For this driver, an additional binary value, OEMComboMapping has been 
+; used to allow the driver to interpret the 16 possible button values into 
+; alternative button and POV combinations.
+; The 16 combinations are stored in order of the binary value of the button 
+; values with each one taking one DWORD.
+; For documentation purposes each type is preceeded by three blocks of 
+; comments, each being four lines of four values.  The first block is the 
+; semantics of the combinations, the second is the DWORD representations 
+; and the third is the DWORD values in low endian byte ordering.
+
+;15 button device, no POVs
+
+; Nothing        b1             b2             b3
+; b4             b5             b6             b7
+; b8             b9             b10            b11
+; b12            b13            b14            b15
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    ff fe 00 04    
+; ff fe 00 08    ff fe 00 10    ff fe 00 20    ff fe 00 40    
+; ff fe 00 80    ff fe 01 00    ff fe 02 00    ff fe 04 00    
+; ff fe 08 00    ff fe 10 00    ff fe 20 00    ff fe 40 00    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    04 00 fe ff    
+; 08 00 fe ff    10 00 fe ff    20 00 fe ff    40 00 fe ff    
+; 80 00 fe ff    00 01 fe ff    00 02 fe ff    00 04 fe ff    
+; 00 08 fe ff    00 10 fe ff    00 20 fe ff    00 40 fe ff    
+
+HKLM,%KEY_OEM%\DJ_1,OEMName,0,%DJ_1_NAME%
+HKLM,%KEY_OEM%\DJ_1,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_1,OEMData,1,00,00,00,00,0f,00,00,00
+HKLM,%KEY_OEM%\DJ_1,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,04,00,fe,ff,08,00,fe,ff,10,00,fe,ff,20,00,fe,ff,40,00,fe,ff,80,00,fe,ff,00,01,fe,ff,00,02,fe,ff,00,04,fe,ff,00,08,fe,ff,00,10,fe,ff,00,20,fe,ff,00,40,fe,ff
+
+;2 independent buttons, 1, 3 way POV (90, 270 and 180)
+
+; Nothing        b1             b2             b1 + b2
+; p0(90)         b1+p0(90)      b2+p0(90)      b1+b2+p0(90)
+; p0(270)        b1+p0(270)     b2+p0(270)     b1+b2+p0(270)
+; p0(180)        b1+p0(180)     b2+p0(180)     b1+b2+p0(180)
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    ff fe 00 03    
+; 23 28 00 00    23 28 00 01    23 28 00 02    23 28 00 03    
+; 69 78 00 00    69 78 00 01    69 78 00 02    69 78 00 03    
+; 46 50 00 00    46 50 00 01    46 50 00 02    46 50 00 03    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    03 00 fe ff    
+; 00 00 28 23    01 00 28 23    02 00 28 23    03 00 28 23    
+; 00 00 78 69    01 00 78 69    02 00 78 69    03 00 78 69    
+; 00 00 50 46    01 00 50 46    02 00 50 46    03 00 50 46    
+
+HKLM,%KEY_OEM%\DJ_2,OEMName,0,%DJ_2_NAME%
+HKLM,%KEY_OEM%\DJ_2,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_2,OEMData,1,06,00,00,00,02,00,00,00
+HKLM,%KEY_OEM%\DJ_2,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,03,00,fe,ff,00,00,28,23,01,00,28,23,02,00,28,23,03,00,28,23,00,00,78,69,01,00,78,69,02,00,78,69,03,00,78,69,00,00,50,46,01,00,50,46,02,00,50,46,03,00,50,46
+
+;0 button 1, 15 way (24 degrees per movement) POV
+
+; Nothing        p0(0)          p0(24)         p0(48)
+; p0(72)         p0(96)         p0(120)        p0(144)
+; p0(168)        p0(192)        p0(216)        p0(240)
+; p0(264)        p0(288)        p0(312)        p0(336)
+
+; ff fe 00 00    00 00 00 00    09 60 00 00    12 C0 00 00    
+; 1C 20 00 00    25 80 00 00    2E E0 00 00    38 40 00 00    
+; 41 A0 00 00    4B 00 00 00    54 60 00 00    5D C0 00 00    
+; 67 20 00 00    70 80 00 00    79 E0 00 00    83 40 00 00    
+
+; 00 00 fe ff    00 00 00 00    00 00 60 09    00 00 C0 12    
+; 00 00 20 1C    00 00 80 25    00 00 E0 2E    00 00 40 38    
+; 00 00 A0 41    00 00 00 4B    00 00 60 54    00 00 C0 5D    
+; 00 00 20 67    00 00 80 70    00 00 E0 79    00 00 40 83    
+
+HKLM,%KEY_OEM%\DJ_3,OEMName,0,%DJ_3_NAME%
+HKLM,%KEY_OEM%\DJ_3,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_3,OEMData,1,06,00,00,00,00,00,00,00
+HKLM,%KEY_OEM%\DJ_3,OEMComboMapping,1,00,00,fe,ff,00,00,00,00,00,00,60,09,00,00,C0,12,00,00,20,1C,00,00,80,25,00,00,E0,2E,00,00,40,38,00,00,A0,41,00,00,00,4B,00,00,60,54,00,00,C0,5D,00,00,20,67,00,00,80,70,00,00,E0,79,00,00,40,83
+
+;3 button; 4, 3 way POVs (POVs @0,120 and 360)
+
+; Nothing        b1             b2             b3
+; p0(0)          p0(120)        p0(240)        p1(0)
+; p1(120)        p1(240)        p2(0)          p2(120)
+; p2(240)        p3(0)          p3(120)        p3(240)
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    ff fe 00 04    
+; 00 00 00 00    2e e0 00 00    5d c0 00 00    00 00 80 00    
+; 2e e0 80 00    5d c0 80 00    00 01 00 00    2e e1 00 00    
+; 5d c1 00 00    00 01 80 00    2e e1 80 00    5d c1 80 00    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    04 00 fe ff    
+; 00 00 00 00    00 00 e0 2e    00 00 c0 5d    00 80 00 00    
+; 00 80 e0 2e    00 80 c0 5d    00 00 01 00    00 00 e1 2e    
+; 00 00 c1 5d    00 80 01 00    00 80 e1 2e    00 80 c1 5d    
+
+HKLM,%KEY_OEM%\DJ_4,OEMName,0,%DJ_4_NAME%
+HKLM,%KEY_OEM%\DJ_4,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_4,OEMData,1,06,00,00,00,03,00,00,00
+HKLM,%KEY_OEM%\DJ_4,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,04,00,fe,ff,00,00,00,00,00,00,e0,2e,00,00,c0,5d,00,80,00,00,00,80,e0,2e,00,80,c0,5d,00,00,01,00,00,00,e1,2e,00,00,c1,5d,00,80,01,00,00,80,e1,2e,00,80,c1,5d
+
+;1 independent button, 3 related buttons and a 4 way POV
+; Nothing        b1             b2             b1 + b2
+; b3             b1+b3          b4             b1+b4      
+; p0(0)          b1+p0(0)       p0(90)         b1+p0(90)
+; p0(180)        b1+p0(180)     p0(270)        b1+p0(270)
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    ff fe 00 03    
+; ff fe 00 04    ff fe 00 05    ff fe 00 08    ff fe 00 09    
+; 00 00 00 00    00 00 00 01    23 28 00 00    23 28 00 01    
+; 46 50 00 00    46 50 00 01    69 78 00 00    69 78 00 01    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    03 00 fe ff    
+; 04 00 fe ff    05 00 fe ff    08 00 fe ff    09 00 fe ff    
+; 00 00 00 00    01 00 00 00    00 00 28 23    01 00 28 23    
+; 00 00 50 46    01 00 50 46    00 00 78 69    01 00 78 69    
+
+HKLM,%KEY_OEM%\DJ_5,OEMName,0,%DJ_5_NAME%
+HKLM,%KEY_OEM%\DJ_5,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_5,OEMData,1,06,00,00,00,04,00,00,00
+HKLM,%KEY_OEM%\DJ_5,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,03,00,fe,ff,04,00,fe,ff,05,00,fe,ff,08,00,fe,ff,09,00,fe,ff,00,00,00,00,01,00,00,00,00,00,28,23,01,00,28,23,00,00,50,46,01,00,50,46,00,00,78,69,01,00,78,69
+
+;7 button; 2, 4 way POV
+; Nothing        b1             b2             p0(270)
+; b3             b5             p1(180)        p0(180)
+; b4             b6             p1(90)         p0(90)
+; p1(270)        b7             p1(0)          p0(0)
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    69 78 00 00    
+; ff fe 00 04    ff fe 00 10    46 50 80 00    46 50 00 00    
+; ff fe 00 08    ff fe 00 20    23 28 80 00    23 28 00 00    
+; 69 78 80 00    ff fe 00 40    00 00 80 00    00 00 00 00    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    00 00 78 69    
+; 04 00 fe ff    10 00 fe ff    00 80 50 46    00 00 50 46    
+; 08 00 fe ff    20 00 fe ff    00 80 28 23    00 00 28 23    
+; 00 80 78 69    40 00 fe ff    00 80 00 00    00 00 00 00    
+
+HKLM,%KEY_OEM%\DJ_6,OEMName,0,%DJ_6_NAME%
+HKLM,%KEY_OEM%\DJ_6,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_6,OEMData,1,06,00,00,00,07,00,00,00
+HKLM,%KEY_OEM%\DJ_6,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,00,00,78,69,04,00,fe,ff,10,00,fe,ff,00,80,50,46,00,00,50,46,08,00,fe,ff,20,00,fe,ff,00,80,28,23,00,00,28,23,00,80,78,69,40,00,fe,ff,00,80,00,00,00,00,00,00
+
+;4 button; 1, 4 way POV
+; Nothing        b1             b2             p0(270)
+; b3             Unassigned     Unassigned     p0(180)
+; b4             Unassigned     Unassigned     p0(90)
+; Unassigned     Unassigned     Unassigned     p0(0)
+
+; ff fe 00 00    ff fe 00 01    ff fe 00 02    69 78 00 00    
+; ff fe 00 04    ff fe 00 00    ff fe 00 00    46 50 00 00    
+; ff fe 00 08    ff fe 00 00    ff fe 00 00    23 28 00 00    
+; ff fe 00 00    ff fe 00 00    ff fe 00 00    00 00 00 00    
+
+; 00 00 fe ff    01 00 fe ff    02 00 fe ff    00 00 78 69    
+; 04 00 fe ff    00 00 fe ff    00 00 fe ff    00 00 50 46    
+; 08 00 fe ff    00 00 fe ff    00 00 fe ff    00 00 28 23    
+; 00 00 fe ff    00 00 fe ff    00 00 fe ff    00 00 00 00    
+
+HKLM,%KEY_OEM%\DJ_7,OEMName,0,%DJ_7_NAME%
+HKLM,%KEY_OEM%\DJ_7,OEMCallout,0,"digijoy.vxd"
+HKLM,%KEY_OEM%\DJ_7,OEMData,1,06,00,00,00,04,00,00,00
+HKLM,%KEY_OEM%\DJ_7,OEMComboMapping,1,00,00,fe,ff,01,00,fe,ff,02,00,fe,ff,00,00,78,69,04,00,fe,ff,00,00,fe,ff,00,00,fe,ff,00,00,50,46,08,00,fe,ff,00,00,fe,ff,00,00,fe,ff,00,00,28,23,00,00,fe,ff,00,00,fe,ff,00,00,fe,ff,00,00,00,00
+
+[Strings]
+;Localized strings
+DJ.DeviceDesc="DigiJoy Win98 sample driver"
+DJ_1_NAME="15 button, no POV device"
+DJ_2_NAME="2 button, (3-way) POV device"
+DJ_3_NAME="0 button, (15-way) POV device"
+DJ_4_NAME="3 button, 4 (3-way) POVs device"
+DJ_5_NAME="4 button, (4-way) POV device"
+DJ_6_NAME="7 button, 2 (4-way) POVs device"
+DJ_7_NAME="4 button, (4-way) POV device"
+
+;Non-localized strings
+MfgName="Microsoft"
+MediaClassName="Sound, video and game controllers"
+KEY_OEM="SYSTEM\CurrentControlSet\Control\MediaProperties\PrivateProperties\Joystick\OEM"

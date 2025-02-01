@@ -1,0 +1,50 @@
+
+#include <mindrvrc.h>
+#include "pcpr201.rcv"
+
+1      RC_TABLES   PRELOAD MOVEABLE        PCPR201.GPC
+
+1      RC_FONT     LOADONCALL DISCARDABLE  PFM\MINCHOA.PFM
+2      RC_FONT     LOADONCALL DISCARDABLE  PFM\MINCHOB.PFM
+3      RC_FONT     LOADONCALL DISCARDABLE  PFM\GOTHIC.PFM
+4      RC_FONT     LOADONCALL DISCARDABLE  PFM\MINCHOOU.PFM
+5      RC_FONT     LOADONCALL DISCARDABLE  PFM\GOTHICOU.PFM
+6      RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN5.PFM
+7      RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN6.PFM
+8      RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN8.PFM
+9      RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN10.PFM
+10     RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN12.PFM
+11     RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMAN17.PFM
+12     RC_FONT     LOADONCALL DISCARDABLE  PFM\ROMANPS.PFM
+
+
+STRINGTABLE
+
+BEGIN
+       1                  "NEC PC-PR201/45L"
+       2                  "NEC PC-PR201/60"
+       3                  "NEC PC-PR201G"
+       4                  "NEC PC-PR201/60A"
+       5                  "NEC PC-PR201GS"
+       6                  "NEC PC-PR201/63"
+       7                  "NEC PC-PR201/63A"
+       8                  "NEC PC-PR201/65A"
+       9                  "NEC PC-PR201/80A"
+       10                 "NEC PC-PR201X"
+       11                 "NEC PC-PR201J"
+       12                 "NEC PC-PR201/80LA"
+       257                "%d x %d"
+       258                "A4 横置き 297 x 210 mm"
+       259                "中央置き用紙"
+       260                "左端置き用紙"
+       261                "10 inch"
+       262                "15 inch"
+       263                "ｼｰﾄｶﾞｲﾄﾞ"
+       264                "ﾀﾞﾌﾞﾙﾋﾞﾝｼｰﾄﾌｨｰﾀﾞ(ﾎｯﾊﾟ1)"
+       265                "ﾀﾞﾌﾞﾙﾋﾞﾝｼｰﾄﾌｨｰﾀﾞ(ﾎｯﾊﾟ2)"
+       266                "ﾄﾗｸﾀﾌｨｰﾀﾞ/ﾌﾟｯｼｭﾄﾗｸﾀ"
+       267                "ｼｰﾄﾌｨｰﾀﾞ(ｼﾝｸﾞﾙﾋﾞﾝ)"
+       268                "ﾊｶﾞｷｶﾞｲﾄﾞ"
+       269                "ｺﾞｼｯｸ ROM ｶｰﾄﾞ"
+       270                "明朝(A) ROM ｶｰﾄﾞ"
+END

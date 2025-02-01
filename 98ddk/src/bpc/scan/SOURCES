@@ -1,0 +1,14 @@
+TARGETNAME=scan
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=PROGRAM
+
+INCLUDES=$(BASEDIR)\inc; \
+                    $(BASEDIR)\inc\win98; \
+                    $(BASEDIR)\src\bpc\inc
+
+TARGETLIBS=$(BASEDIR)\lib\*\free\setupapi.lib \
+           $(BASEDIR)\lib\*\free\ksuser.lib \
+           $(BASEDIR)\src\bpc\lib\icodecd.lib
+
+SOURCES=
+NTTARGETFILE1 = makefile

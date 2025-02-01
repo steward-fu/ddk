@@ -1,0 +1,253 @@
+
+
+
+
+; SCANJET.INF  -- Windows Still Image Setup File
+; Copyright (c) 1997 Microsoft Corporation
+; Manufacturer:  Hewlett-Packard Co.
+[Version]
+CatalogFile=hpscan.cat
+LayoutFile=Layout.inf, Layout1.inf, Layout2.inf
+Signature="$CHICAGO$"
+Class=Image
+ClassGUID={6bdd1fc6-810f-11d0-bec7-08002be2092f}
+Provider=%Msft%
+
+[ControlFlags]
+ExcludeFromSelect=*
+
+[DestinationDirs]
+DefaultDestDir=11                                ; LDID_SYS
+Scsi.Scanner.CopySys32Files=10,system32\drivers  ; LDID_WIN
+Scsi.Scanner.DelWinFiles=10                      ; LDID_WIN
+Scsi.Scanner.DelIOSFiles=12
+Scsi.Scanner.DelStartFiles=10,"Start Menu\Programs\HP Scanning Software"
+DfltDS.CopyFiles=10,TWAIN_32
+
+[Manufacturer]
+%Mfg%=Models
+
+[Models]
+%SCSI\HP______C5110A__________3.DeviceDesc% = C5110A.Scanner,HP______C5110A__________3
+%SCSI\HP______C2520A__________3.DeviceDesc% = C2520A.Scanner,HP______C2520A__________3
+%SCSI\HP______C1130A__________3.DeviceDesc% = C1130A.Scanner,HP______C1130A__________3
+%SCSI\HP______C2570A__________3.DeviceDesc% = C2570A.Scanner,HP______C2570A__________3
+%SCSI\HP______C2500A__________3.DeviceDesc% = C2500A.Scanner,HP______C2500A__________3
+%SCSI\HP______C1790A__________3.DeviceDesc% = C1790A.Scanner,HP______C1790A__________3
+%SCSI\HP______C1750A__________3.DeviceDesc% = C1750A.Scanner,HP______C1750A__________3
+%SCSI\HP______C5190A__________3.DeviceDesc% = C5190A.Scanner,HP______C5190A__________3
+
+[C5190A.Scanner]
+SubClass=StillImage
+DeviceType=1
+Capabilities=3
+Events=C5190A.Events
+DeviceData=C5190A.DeviceData
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C5190A.DeviceData]
+TwainDS="HP PrecisionScan 1.0"
+Model=C5110A
+
+[C5190A.Events]
+GreenButton=%GreenButton%,{AD879F40-0982-11d1-A43B-080009EEBDF6},HP PrecisionScan
+
+[C5110A.Scanner]
+SubClass=StillImage
+DeviceType=1
+Capabilities=3
+Events=C5110A.Events
+DeviceData=C5110A.DeviceData
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles,Scsi.Scanner.DelStartFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C5110A.DeviceData]
+TwainDS="HP PictureScan 3.0"
+Model=C5110A
+
+[C5110A.Events]
+GreenButton=%GreenButton%,{AD879F40-0982-11d1-A43B-080009EEBDF6},HP PictureScan 3.0
+
+[C2520A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C2520A.DeviceData
+DeviceSubType=0x0103
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C2520A.DeviceData]
+Model=C2520A
+
+[C1130A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C1130A.DeviceData
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C1130A.DeviceData]
+Model=C1130A
+
+[C2570A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C2570A.DeviceData
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C2570A.DeviceData]
+Model=C2570A
+
+[C2500A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C2500A.DeviceData
+DeviceSubType=0x0103
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C2500A.DeviceData]
+Model=C2500A
+
+[C1790A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles,Scsi.Scanner.DelIOSFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C1790A.DeviceData
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C1790A.DeviceData]
+Model=C1790A
+
+[C1750A.Scanner]
+SubClass=StillImage
+DeviceType=1
+AddReg=Scsi.Scanner.AddReg
+CopyFiles=Scsi.Scanner.CopyFiles,Scsi.Scanner.CopySys32Files,DfltDS.CopyFiles
+UpdateInis=Scsi.Scanner.CleanIni
+DelFiles=Scsi.Scanner.DelSysFiles
+DelReg=Scsi.Scanner.DelReg
+PropertyPages="hpscnmgr.dll,EnumStiPropPages"
+DeviceData=C1750A.DeviceData
+DeviceSubType=0x0101
+VendorSetup="HPSJInst.dll,SetupHPDS"
+ICMProfiles="sRGB Color Space Profile.icm"
+
+[C1750A.DeviceData]
+Model=C1750A
+
+
+[DfltDS.CopyFiles]
+HPSJSrc.ds
+
+[Scsi.Scanner.AddReg]
+HKR,,HardwareConfig,1,2
+HKR,,DevLoader,,*NTKERN
+HKR,,NTMPDriver,,"scsimap.sys,scsiscan.sys"
+HKR,,USDClass,,"{E9FA3320-7F3F-11D0-90EA-00AA0060F86C}"
+HKCR,CLSID\{E9FA3320-7F3F-11D0-90EA-00AA0060F86C},,,"Hewlett Packard USD"
+HKCR,CLSID\{E9FA3320-7F3F-11D0-90EA-00AA0060F86C}\InProcServer32,,,%11%\hpsjusd.dll
+HKCR,CLSID\{E9FA3320-7F3F-11D0-90EA-00AA0060F86C}\InProcServer32,ThreadingModel,,"Apartment"
+HKLM,System\CurrentControlSet\Services\Class\HpScanJetScanner,NoUseClass,,1
+HKLM,System\CurrentControlSet\Services\VxD\Hpsjvxd,StaticVxD,,Hpsjvxd.vxd
+HKLM,System\CurrentControlSet\Services\VxD\Hpsjvxd,Start,1,00
+HKLM,SOFTWARE\Microsoft\Windows\CurrentVersion\Run,HPSCANMonitor,,%11%\hpsjvxd.exe
+
+[Scsi.Scanner.CopyFiles]
+HPSJInst.dll,,,32
+hpsjusd.dll,,,32
+hpscnmgr.dll,,,32
+reg32.dll,,,32
+hpsjrreg.exe,,,32
+hpscntst.dll,,,32
+hpsj32.dll,,,32
+hpsjvxd.exe,,,32
+hpsjvxd.vxd,,,32
+
+[Scsi.Scanner.CopySys32Files]
+scsiscan.sys
+scsimap.sys
+
+[Scsi.Scanner.CleanIni]
+control.ini,MMCPL,"ScanJet=hpscnmgr.dll",,0
+
+[Scsi.Scanner.DelSysFiles]
+vhpscand.vxd,,,1
+hpsjclas.dll,,,1
+
+; Temporarily delete these files from windows\system during install so it
+; doesn't conflict with new location in windows\system32
+scsiscan.sys,,,1
+scsimap.sys,,,1
+
+[Scsi.Scanner.DelIOSFiles]
+vhpscand.vxd,,,1
+
+[Scsi.Scanner.DelStartFiles]
+"HP ScanJet Button Manager",,,1
+
+[Scsi.Scanner.DelReg]
+HKLM,SOFTWARE\Microsoft\Windows\CurrentVersion\Run,hpsjbmgr
+
+[Strings]
+Msft="Microsoft"
+Mfg="Hewlett-Packard"
+SCSI\HP______C5110A__________3.DeviceDesc = "Hewlett-Packard ScanJet 5p"
+SCSI\HP______C2520A__________3.DeviceDesc = "Hewlett-Packard ScanJet 6100C or 4c/3c"
+SCSI\HP______C1130A__________3.DeviceDesc = "Hewlett-Packard ScanJet 4p"
+SCSI\HP______C2570A__________3.DeviceDesc = "Hewlett-Packard ScanJet 3p"
+SCSI\HP______C2500A__________3.DeviceDesc = "Hewlett-Packard ScanJet IIcx"
+SCSI\HP______C1790A__________3.DeviceDesc = "Hewlett-Packard ScanJet IIp"
+SCSI\HP______C1750A__________3.DeviceDesc = "Hewlett-Packard ScanJet IIc"
+SCSI\HP______C5190A__________3.DeviceDesc = "Hewlett-Packard ScanJet 5100C"
+GreenButton="Green Scan Button Press"
+

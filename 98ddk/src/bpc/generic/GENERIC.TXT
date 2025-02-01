@@ -1,0 +1,3 @@
+The Generic directory contains the files that hardware vendors
+can use to develop, build, and install their own vertical blanking 
+interval (VBI) minidrivers. 

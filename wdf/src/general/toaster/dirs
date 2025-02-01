@@ -1,0 +1,8 @@
+DIRS= \
+     classinstaller \
+     coinstaller \
+     exe \
+     kmdf \
+     toastpkg \
+     umdf \
+     wdm

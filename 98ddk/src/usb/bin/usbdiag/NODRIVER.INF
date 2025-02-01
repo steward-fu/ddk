@@ -1,0 +1,205 @@
+
+; NODRIVER.INF  -- This file contains descriptions of all the device we
+;                 Install nothing for.
+;
+;*** Created 11/7/93  (Creation Date)
+;  PCI CPU-PCI bridge
+;  PCI Viper card
+       
+
+[Version]
+CatalogFile=nodriver.cat
+signature="$CHICAGO$"
+LayoutFile=Layout.inf, Layout1.inf, Layout2.inf
+Class=nodriver
+ClassGUID={4d36e976-e325-11ce-bfc1-08002be10318}
+Provider=%Msft%
+
+; Class Install
+[ClassInstall]
+Addreg=NODRIVERClassReg
+
+[NODRIVERClassReg]
+HKR,,,,%NoneName%
+HKR,,NoInstallClass,,1
+HKR,,SilentInstall,,1
+
+; Table of Contents
+[Manufacturer]
+%BocaMfg%=Boca
+%CompaqMfg%=Compaq
+%IBMMfg%=IBM
+
+%IntelMfg%=Intel
+%MSMfg%=MS
+
+%SierraMfg%=Sierra
+%VLSIMfg%=VLSI
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+USBLOOP.CopyList = 10,system32\drivers
+USBDIAG.CopyList = 10,system32\drivers
+HIDDRIVER.CopyList = 10,system32\drivers 
+USBDIAG.DelFiles=11
+
+[Boca]
+%*BRI0200.DeviceDesc%=NODRIVER,,*BRI0200
+
+[Compaq]
+%*CPQFD17.DeviceDesc%=NODRIVER,,*CPQFD17
+%*CPQAE08.DeviceDesc%=NODRIVER,,*CPQAE08
+%*CPQA0D2.DeviceDesc%=NODRIVER,,*CPQA0D2
+%*CPQA0D4.DeviceDesc%=NODRIVER,,*CPQA0D4
+%*CPQA0D6.DeviceDesc%=NODRIVER,,*CPQA0D6
+%*CPQA0E1.DeviceDesc%=NODRIVER,,*CPQA0E1
+%*CPQA0E2.DeviceDesc%=NODRIVER,,*CPQA0E2
+%*CPQA0E4.DeviceDesc%=NODRIVER,,*CPQA0E4
+%*CPQA0EF.DeviceDesc%=NODRIVER,,*CPQA0EF
+
+[IBM]
+%*IBM36E0.DeviceDesc%=NODRIVER,,*IBM36E0
+%*IBM36F2.DeviceDesc%=NODRIVER,,*IBM36F2
+%*IBM36F1.DeviceDesc%=NODRIVER,,*IBM36F1
+%*IBM0020.DeviceDesc%=NODRIVER,,*IBM0020
+
+
+[Intel]
+%Intel.TestCard%=NODRIVER,,PCI\VEN_8086&DEV_C453
+%Intel.TestCard%=NODRIVER,,PCI\VEN_8086&DEV_8453
+%Intel.TestCard%=NODRIVER,,PCI\VEN_8086&DEV_4453
+%Intel.TestCard%=NODRIVER,,PCI\VEN_8086&DEV_0453
+%USB\VID_8086&PID_9890.DeviceDesc%=USBLOOP, USB\VID_8086&PID_9890 ; 82930 board
+
+
+[MS]
+%USB\0000.DeviceDesc%=HIDDRIVER,, USB\0000 ; 82930 board
+%USB\VID_FFFF&PID_FFFF.DeviceDesc%=USBDIAG, USB\VID_FFFF&PID_FFFF
+
+
+
+[Sierra]
+%ISAPNP\SSC0001_DEV0001.DeviceDesc%=NODRIVER,,ISAPNP\SSC0001_DEV0001
+%ISAPNP\SSC0101_DEV0001.DeviceDesc%=NODRIVER,,ISAPNP\SSC0101_DEV0001
+%ISAPNP\SSC0000_DEV0001.DeviceDesc%=NODRIVER,,ISAPNP\SSC0000_DEV0001
+
+[VLSI]
+%PCI\VEN_1004&DEV_0105.DeviceDesc%=NODRIVER,,PCI\VEN_1004&DEV_0105
+
+[NODRIVER]
+
+[ControlFlags]
+ExcludeFromSelect=*BRI0200
+ExcludeFromSelect=*CPQFD17
+ExcludeFromSelect=*CPQAE08
+ExcludeFromSelect=*CPQA0D2
+ExcludeFromSelect=*CPQA0D4
+ExcludeFromSelect=*CPQA0D6
+ExcludeFromSelect=*CPQA0E1
+ExcludeFromSelect=*CPQA0E2
+ExcludeFromSelect=*CPQA0E4
+ExcludeFromSelect=*CPQA0EF
+ExcludeFromSelect=*IBM36E0
+ExcludeFromSelect=*IBM36F2
+ExcludeFromSelect=*IBM36F1
+ExcludeFromSelect=*IBM0020
+
+ExcludeFromSelect=PCI\VEN_8086&DEV_C453
+ExcludeFromSelect=PCI\VEN_8086&DEV_8453
+ExcludeFromSelect=PCI\VEN_8086&DEV_4453
+ExcludeFromSelect=PCI\VEN_8086&DEV_0453
+ExcludeFromSelect=USB\VID_8086&PID_9890
+ExcludeFromSelect=USB\VID_FFFF&PID_FFFF
+
+ExcludeFromSelect=ISAPNP\SSC0001_DEV0001
+ExcludeFromSelect=ISAPNP\SSC0101_DEV0001
+ExcludeFromSelect=PCI\VEN_1004&DEV_0105
+
+[USBLOOP]
+CopyFiles=USBLOOP.CopyList
+AddReg=USBLOOP.AddReg
+DelFiles=USBDIAG.DelFiles
+
+[USBLOOP.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbloop.sys
+
+[USBLOOP.CopyList]
+usbloop.sys
+
+[USBDIAG]
+CopyFiles=USBDIAG.CopyList
+AddReg=USBDIAG.AddReg
+DelFiles=USBDIAG.DelFiles
+
+[USBDIAG.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbdiag.sys
+
+[USBDIAG.CopyList]
+USBDIAG.sys
+hidparse.sys
+
+
+[USBDIAG.DelFiles]
+usbdiag.sys,,,1
+usbloop.sys,,,1
+hidparse.sys,,,1
+hidusb.sys,,,1
+hidclass.sys,,,1
+
+[HIDDRIVER]
+CopyFiles=HIDDRIVER.CopyList
+AddReg=HIDDRIVER.AddReg
+DelFiles=USBDIAG.DelFiles
+
+[HIDDRIVER.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,hidusb.sys
+
+[HIDDRIVER.CopyList]
+hidusb.sys
+
+[Strings]
+Msft="Microsoft"
+NoneName="Other detected devices"
+
+BocaMfg="Boca Research"
+*BRI0200.DeviceDesc="Boca Complete Office Communicator (Voice)"
+
+CompaqMfg="Compaq"
+*CPQFD17.DeviceDesc="Compaq SCSI Tape Adapter"
+*CPQAE08.DeviceDesc="Compaq Deskpro Thermal Sensor"
+*CPQA0D2.DeviceDesc="Compaq Modem Audio"
+*CPQA0D4.DeviceDesc="Compaq Modem Audio"
+*CPQA0D6.DeviceDesc="Compaq Presario Bezel Volume Control"
+*CPQA0E1.DeviceDesc="Compaq TV Tuner"
+*CPQA0E2.DeviceDesc="Compaq TV Tuner"
+*CPQA0E4.DeviceDesc="Compaq Modem Audio"
+*CPQA0EF.DeviceDesc="Compaq Deskpro Thermal Sensor"
+
+IBMMfg="IBM"
+*IBM36E0.DeviceDesc="Mwave DSP Processor"
+*IBM36F2.DeviceDesc="Mwave SoundBlaster Compatibility"
+*IBM36F1.DeviceDesc="Mwave Midi Synthesizer"
+*IBM0020.DeviceDesc="InfraRed connector on the King ISA Plug and Play PCMCIA Controller"
+
+
+IntelMfg="Intel"
+Intel.TestCard="Intel PCI Test Card"
+USB\VID_8086&PID_9890.DeviceDesc="Intel USB 82930 Test Board"
+
+MSMfg="Microsoft"
+USB\0000.DeviceDesc="USB HID Device"
+USB\VID_FFFF&PID_FFFF.DeviceDesc="USB Diagnostic Device"
+
+
+SierraMfg="Sierra Semiconductor"
+ISAPNP\SSC0001_DEV0001.DeviceDesc="Sierra Quartet Combo System (Voice)"
+ISAPNP\SSC0101_DEV0001.DeviceDesc="Sierra SQ3465 (Voice)"
+ISAPNP\SSC0000_DEV0001.DeviceDesc="Sierra SQ3228 DMA channel"
+
+VLSIMfg="VLSI"
+PCI\VEN_1004&DEV_0105.DeviceDesc="VLSI VL82C147 PCI IrDA Controller"

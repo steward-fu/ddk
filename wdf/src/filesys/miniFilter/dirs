@@ -1,0 +1,11 @@
+DIRS= \
+     cancelSafe \
+     cdo \
+     ctx \
+     MetadataManager \
+     minispy \
+     nullFilter \
+     passThrough \
+     scanner \
+     simrep \
+     swapBuffers

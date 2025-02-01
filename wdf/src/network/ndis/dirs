@@ -1,0 +1,11 @@
+DIRS= \
+     athwifi \
+     filter \
+     mux \
+     ndisprot \
+     ndisprot_kmdf \
+     ndiswdm \
+     netvmini \
+     passthru \
+     usbnwifi \
+     xframeii
