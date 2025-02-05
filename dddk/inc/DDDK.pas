@@ -1564,6 +1564,27 @@ PFN_WDFREQUESTCOMPLETEWITHINFORMATION = ^FN_WDFREQUESTCOMPLETEWITHINFORMATION;
 FN_WDFREQUESTRETRIEVEOUTPUTMEMORY = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; Memory : PWDFMEMORY) : NTSTATUS; stdcall;
 PFN_WDFREQUESTRETRIEVEOUTPUTMEMORY = ^FN_WDFREQUESTRETRIEVEOUTPUTMEMORY;
 
+FN_WDFREQUESTRETRIEVEUNSAFEUSEROUTPUTBUFFER = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; MinimumRequiredLength : ULONG; OutputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+PFN_WDFREQUESTRETRIEVEUNSAFEUSEROUTPUTBUFFER = ^FN_WDFREQUESTRETRIEVEUNSAFEUSEROUTPUTBUFFER;
+
+FN_WDFREQUESTGETINFORMATION = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST) : ULONG; stdcall;
+PFN_WDFREQUESTGETINFORMATION = ^FN_WDFREQUESTGETINFORMATION;
+
+FN_WDFREQUESTSETINFORMATION = procedure(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; Information : ULONG); stdcall;
+PFN_WDFREQUESTSETINFORMATION = ^FN_WDFREQUESTSETINFORMATION;
+
+FN_WDFREQUESTRETRIEVEUNSAFEUSERINPUTBUFFER = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; MinimumRequiredLength : ULONG; InputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+PFN_WDFREQUESTRETRIEVEUNSAFEUSERINPUTBUFFER = ^FN_WDFREQUESTRETRIEVEUNSAFEUSERINPUTBUFFER;
+
+FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORWRITE = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+PFN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORWRITE = ^FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORWRITE;
+
+FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORREAD = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+PFN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORREAD = ^FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORREAD;
+
+FN_WDFMEMORYGETBUFFER = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Memory : WDFMEMORY; BufferSize : PULONG) : Pointer; stdcall;
+PFN_WDFMEMORYGETBUFFER = ^FN_WDFMEMORYGETBUFFER;
+
 FN_WDFMEMORYCOPYFROMBUFFER = function(DriverGlobals : PWDF_DRIVER_GLOBALS; DestinationMemory : WDFMEMORY; DestinationOffset : ULONG; Buffer : Pointer; NumBytesToCopyFrom : ULONG) : NTSTATUS; stdcall;
 PFN_WDFMEMORYCOPYFROMBUFFER = ^FN_WDFMEMORYCOPYFROMBUFFER;
 
@@ -1682,6 +1703,13 @@ function WdfRequestRetrieveInputWdmMdl(Request : WDFREQUEST; Mdl : PPMDL) : NTST
 function KeSetEvent(Event : PRKEVENT; Increment : KPRIORITY; Wait : BOOLEAN) : LONG; stdcall;
 function KeReadStateSemaphore(Semaphore : PRKSEMAPHORE) : LONG; stdcall;
 function KeReleaseSemaphore(Semaphore : PRKSEMAPHORE; Increment : KPRIORITY; Adjustment : LONG; Wait : BOOLEAN) : LONG; stdcall;
+function WdfRequestRetrieveUnsafeUserOutputBuffer(Request : WDFREQUEST; MinimumRequiredLength : ULONG; OutputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+function WdfRequestRetrieveUnsafeUserInputBuffer(Request : WDFREQUEST; MinimumRequiredLength : ULONG; InputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+function WdfRequestProbeAndLockUserBufferForWrite(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+function WdfRequestProbeAndLockUserBufferForRead(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+function WdfMemoryGetBuffer(Memory : WDFMEMORY; BufferSize : PULONG) : Pointer; stdcall;
+procedure WdfRequestSetInformation(Request : WDFREQUEST; Information : ULONG); stdcall;
+function WdfRequestGetInformation(Request : WDFREQUEST) : ULONG; stdcall;
 
 implementation
 var
@@ -2040,6 +2068,69 @@ var
 begin
     func := PPointer(Integer(WdfFunctions) + WdfRequestRetrieveOutputMemoryTableIndex * sizeof(ULONG))^;
     Result := func(WdfDriverGlobals, Request, Memory);
+end;
+
+function WdfRequestRetrieveUnsafeUserOutputBuffer(Request : WDFREQUEST; MinimumRequiredLength : ULONG; OutputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+var
+    func : FN_WDFREQUESTRETRIEVEUNSAFEUSEROUTPUTBUFFER;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestRetrieveUnsafeUserOutputBufferTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Request, MinimumRequiredLength, OutputBuffer, Length);
+end;
+
+procedure WdfRequestSetInformation(Request : WDFREQUEST; Information : ULONG); stdcall;
+var
+    func : FN_WDFREQUESTSETINFORMATION;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestSetInformationTableIndex * sizeof(ULONG))^;
+    func(WdfDriverGlobals, Request, Information);
+end;
+
+function WdfRequestGetInformation(Request : WDFREQUEST) : ULONG; stdcall;
+var
+    func : FN_WDFREQUESTGETINFORMATION;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestGetInformationTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Request);
+end;
+
+function WdfRequestRetrieveUnsafeUserInputBuffer(Request : WDFREQUEST; MinimumRequiredLength : ULONG; InputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
+var
+    func : FN_WDFREQUESTRETRIEVEUNSAFEUSERINPUTBUFFER;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestRetrieveUnsafeUserInputBufferTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Request, MinimumRequiredLength, InputBuffer, Length);
+end;
+
+function WdfRequestProbeAndLockUserBufferForWrite(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+var
+    func : FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORWRITE;
+
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestProbeAndLockUserBufferForWriteTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Request, Buffer, Length, MemoryObject);
+end;
+
+function WdfRequestProbeAndLockUserBufferForRead(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
+var
+    func : FN_WDFREQUESTPROBEANDLOCKUSERBUFFERFORREAD;
+
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfRequestProbeAndLockUserBufferForReadTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Request, Buffer, Length, MemoryObject);
+end;
+
+function WdfMemoryGetBuffer(Memory : WDFMEMORY; BufferSize : PULONG) : Pointer; stdcall;
+var
+    func : FN_WDFMEMORYGETBUFFER;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfMemoryGetBufferTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Memory, BufferSize);
 end;
 
 function WdfIoQueueCreate(Device : WDFDEVICE; Config : PWDF_IO_QUEUE_CONFIG; QueueAttributes : PWDF_OBJECT_ATTRIBUTES; Queue : PWDFQUEUE) : NTSTATUS; stdcall;
