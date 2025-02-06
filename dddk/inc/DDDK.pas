@@ -17,6 +17,9 @@ interface
 const
 NtKernel = 'ntoskrnl.exe';
 
+WdfExecutionLevelInheritFromParent = 1;
+WdfSynchronizationScopeInheritFromParent = 1;
+
 STATUS_SUCCESS = $00000000;
 STATUS_UNSUCCESSFUL = $C0000001;
 STATUS_NOT_IMPLEMENTED = $C0000002;
@@ -795,6 +798,17 @@ end;
 OBJECT_ATTRIBUTES = ^TObjectAttributes;
 POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
 
+TWDF_TIMER_CONFIG = packed record
+    Size : ULONG;
+    EvtTimerFunc : Pointer;
+    Period : ULONG;
+    AutomaticSerialization : Word;
+    TolerableDelay : ULONG;
+    UseHighResolutionTimer : Word;
+end;
+WDF_TIMER_CONFIG = TWDF_TIMER_CONFIG;
+PWDF_TIMER_CONFIG = ^WDF_TIMER_CONFIG;
+
 PClientId = ^TClientId;
 TClientId = packed record
     UniqueProcess : Cardinal;
@@ -1570,6 +1584,18 @@ PFN_WDFREQUESTRETRIEVEUNSAFEUSEROUTPUTBUFFER = ^FN_WDFREQUESTRETRIEVEUNSAFEUSERO
 FN_WDFREQUESTGETINFORMATION = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST) : ULONG; stdcall;
 PFN_WDFREQUESTGETINFORMATION = ^FN_WDFREQUESTGETINFORMATION;
 
+FN_WDFTIMERCREATE = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Config : Pointer; Attributes : Pointer; Timer : Pointer) : LONG; stdcall;
+PFN_WDFTIMERCREATE = ^FN_WDFTIMERCREATE;
+
+FN_WDFTIMERSTART = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Timer : WDFTIMER; DueTime : Int64) : BOOLEAN; stdcall;
+PFN_WDFTIMERSTART = ^FN_WDFTIMERSTART;
+
+FN_WDFTIMERSTOP = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Timer : WDFTIMER; Wait : BOOLEAN) : BOOLEAN; stdcall;
+PFN_WDFTIMERSTOP = ^FN_WDFTIMERSTOP;
+
+FN_WDFDEVICEWDMGETDEVICEOBJECT = function(DriverGlobals : PWDF_DRIVER_GLOBALS; Device : WDFDEVICE) : Pointer; stdcall;
+PFN_WDFDEVICEWDMGETDEVICEOBJECT = ^FN_WDFDEVICEWDMGETDEVICEOBJECT;
+
 FN_WDFREQUESTSETINFORMATION = procedure(DriverGlobals : PWDF_DRIVER_GLOBALS; Request : WDFREQUEST; Information : ULONG); stdcall;
 PFN_WDFREQUESTSETINFORMATION = ^FN_WDFREQUESTSETINFORMATION;
 
@@ -1647,6 +1673,9 @@ procedure KeAcquireSpinLock(SpinLock : PKSPIN_LOCK; oldIrql : PKIRQL); stdcall;
 procedure KeReleaseSpinLock(SpinLock : PKSPIN_LOCK; oldIrql : KIRQL); stdcall;
 procedure KeInitializeEvent(Event : PRKEVENT; nType : EVENT_TYPE; State : BOOLEAN); stdcall;
 procedure KeInitializeSemaphore(Semaphore : PRKSEMAPHORE; Count : LONG; Limit : LONG); stdcall;
+procedure WdfRequestSetInformation(Request : WDFREQUEST; Information : ULONG); stdcall;
+procedure WDF_TIMER_CONFIG_INIT_PERIODIC(Config : PWDF_TIMER_CONFIG; EvtTimerFunc : Pointer; Period : ULONG); stdcall;
+procedure WDF_OBJECT_ATTRIBUTES_INIT(Attributes : PWDF_OBJECT_ATTRIBUTES); stdcall;
 
 function KeServiceDescriptorTable : PServiceDescriptorEntry; 
 function IoCreateDevice(DriverObject : PDriverObject; DeviceExtensionSize : Cardinal; DeviceName : PUnicodeString; DeviceType : TDeviceType; DeviceCharacteristics : Cardinal; Reserved : Boolean; var DeviceObject : PDeviceObject) : NTSTATUS; stdcall;
@@ -1708,8 +1737,11 @@ function WdfRequestRetrieveUnsafeUserInputBuffer(Request : WDFREQUEST; MinimumRe
 function WdfRequestProbeAndLockUserBufferForWrite(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
 function WdfRequestProbeAndLockUserBufferForRead(Request : WDFREQUEST; Buffer : Pointer; Length : ULONG; MemoryObject : Pointer) : LONG; stdcall;
 function WdfMemoryGetBuffer(Memory : WDFMEMORY; BufferSize : PULONG) : Pointer; stdcall;
-procedure WdfRequestSetInformation(Request : WDFREQUEST; Information : ULONG); stdcall;
 function WdfRequestGetInformation(Request : WDFREQUEST) : ULONG; stdcall;
+function WdfDeviceWdmGetDeviceObject(Device : WDFDEVICE) : Pointer; stdcall;
+function WdfTimerCreate(Config : Pointer; Attributes : Pointer; Timer : Pointer) : LONG; stdcall;
+function WdfTimerStart(Timer : WDFTIMER; DueTime : Int64) : BOOLEAN; stdcall;
+function WdfTimerStop(Timer : WDFTIMER; Wait : BOOLEAN) : BOOLEAN; stdcall;
 
 implementation
 var
@@ -2097,6 +2129,42 @@ begin
     Result := func(WdfDriverGlobals, Request);
 end;
 
+function WdfTimerCreate(Config : Pointer; Attributes : Pointer; Timer : Pointer) : LONG; stdcall;
+var
+    func : FN_WDFTIMERCREATE;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfTimerCreateTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Config, Attributes, Timer);
+end;
+
+function WdfTimerStart(Timer : WDFTIMER; DueTime : Int64) : BOOLEAN; stdcall;
+var
+    func : FN_WDFTIMERSTART;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfTimerStartTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Timer, DueTime);
+end;
+
+function WdfTimerStop(Timer : WDFTIMER; Wait : BOOLEAN) : BOOLEAN; stdcall;
+var
+    func : FN_WDFTIMERSTOP;
+
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfTimerStopTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Timer, Wait);
+end;
+
+function WdfDeviceWdmGetDeviceObject(Device : WDFDEVICE) : Pointer; stdcall;
+var
+    func : FN_WDFDEVICEWDMGETDEVICEOBJECT;
+    
+begin
+    func := PPointer(Integer(WdfFunctions) + WdfDeviceWdmGetDeviceObjectTableIndex * sizeof(ULONG))^;
+    Result := func(WdfDriverGlobals, Device);
+end;
+
 function WdfRequestRetrieveUnsafeUserInputBuffer(Request : WDFREQUEST; MinimumRequiredLength : ULONG; InputBuffer : Pointer; Length : Pointer) : LONG; stdcall;
 var
     func : FN_WDFREQUESTRETRIEVEUNSAFEUSERINPUTBUFFER;
@@ -2373,12 +2441,10 @@ var
 begin 
     flag := pMDL^.MdlFlags;
     flag := flag and (MDL_MAPPED_TO_SYSTEM_VA or MDL_SOURCE_IS_NONPAGED_POOL);
-    if flag > 0 then
-    begin
-    Result := pMDL^.MappedSystemVa;
-    end else
-    begin
-    Result := MmMapLockedPagesSpecifyCache(pMDL, KernelMode, MmCached, Nil, 0, Priority);
+    if flag > 0 then begin
+        Result := pMDL^.MappedSystemVa;
+    end else begin
+        Result := MmMapLockedPagesSpecifyCache(pMDL, KernelMode, MmCached, Nil, 0, Priority);
     end;
 end;
 
@@ -2389,27 +2455,27 @@ end;
 
 procedure memset(dst  : Pointer; val  : Char; len  : ULONG); stdcall;
 var
-    i  : ULONG;
-    d  : PChar;
+    i : ULONG;
+    d : PChar;
     
 begin
     d := dst;
     for i := 0 to (len - 1) do begin
-    d[i] := val;
+        d[i] := val;
     end;
 end;
 
 procedure memcpy(dst  : Pointer; src  : Pointer; len  : ULONG); stdcall;
 var
-    i  : ULONG;
-    s  : PChar;
-    d  : PChar;
+    i : ULONG;
+    s : PChar;
+    d : PChar;
     
 begin
     s := src;
     d := dst;
     for i := 0 to (len - 1) do begin
-    d[i] := s[i];
+        d[i] := s[i];
     end;
 end;
 
@@ -2420,9 +2486,8 @@ var
 begin
     s := src;
     Result := 0;
-    while Integer(s[Result]) > 0 do
-    begin
-    Result := Result + 1
+    while Integer(s[Result]) > 0 do begin
+        Result := Result + 1
     end;
 end;
 
@@ -2462,40 +2527,38 @@ var
 begin
     LJ := 0;
     
-    //we fill our local arguments array
-    for LI :=0 to High(Args) do
-    begin
-    with Args[LI] do
-    begin
-    case VType of
-    vtInteger : LArgs[LJ] := VInteger;
-    vtBoolean : LArgs[LJ] := Cardinal(VBoolean);
-    vtChar : LArgs[LJ] := Cardinal(VChar);
-    vtString : LArgs[LJ] := Cardinal(PChar(VString));
-    vtPChar : LArgs[LJ] := Cardinal(VPChar);
-    vtPointer : LArgs[LJ] := Cardinal(VPointer);
-    vtAnsiString : LArgs[LJ] := Cardinal(PChar(VAnsiString));
-    vtCurrency : LArgs[LJ] := Cardinal(VCurrency);
-    vtVariant : LArgs[LJ] := Cardinal(VVariant);
-    else LArgs[LJ] := $DEADBEEF;
-    end;
-    end;
-    Inc(LJ);
+    // we fill our local arguments array
+    for LI := 0 to High(Args) do begin
+        with Args[LI] do begin
+            case VType of
+            vtInteger : LArgs[LJ] := VInteger;
+            vtBoolean : LArgs[LJ] := Cardinal(VBoolean);
+            vtChar : LArgs[LJ] := Cardinal(VChar);
+            vtString : LArgs[LJ] := Cardinal(PChar(VString));
+            vtPChar : LArgs[LJ] := Cardinal(VPChar);
+            vtPointer : LArgs[LJ] := Cardinal(VPointer);
+            vtAnsiString : LArgs[LJ] := Cardinal(PChar(VAnsiString));
+            vtCurrency : LArgs[LJ] := Cardinal(VCurrency);
+            vtVariant : LArgs[LJ] := Cardinal(VVariant);
+            else LArgs[LJ] := $DEADBEEF;
+            end;
+        end;
+        Inc(LJ);
     end;
 
     LJ := High(Args);
-    //and we simulate the calling convetion using lowlevel
+    // and we simulate the calling convetion using lowlevel
     asm
     lea eax, LArgs
     mov ecx, LJ
     jmp @cmp_args_end
-    @args_loop:
+@args_loop:
     push dword ptr [eax+4*ecx]
     dec ecx
-    @cmp_args_end:
+@cmp_args_end:
     cmp ecx, -001h
     jnz @args_loop
-    @make_call:
+@make_call:
     push Format
     call krnlDbgPrint
 
@@ -2507,8 +2570,27 @@ begin
     end
 end;
 
-function DbgMsg(Format : PChar; Args : array of const) : NTSTATUS; 
+function DbgMsg(Format : PChar; Args : array of const) : NTSTATUS;
 begin
     Result := DbgPrint(Format,Args);
 end;
+
+procedure WDF_TIMER_CONFIG_INIT_PERIODIC(Config : PWDF_TIMER_CONFIG; EvtTimerFunc : Pointer; Period : ULONG); stdcall;
+begin
+    RtlZeroMemory(Config, SizeOf(WDF_TIMER_CONFIG));
+    Config.Size := SizeOf(WDF_TIMER_CONFIG);
+    Config.EvtTimerFunc := EvtTimerFunc;
+    Config.Period := Period;
+    Config.AutomaticSerialization := 1;
+    Config.TolerableDelay := 0;
+end;
+
+procedure WDF_OBJECT_ATTRIBUTES_INIT(Attributes : PWDF_OBJECT_ATTRIBUTES); stdcall;
+begin
+    RtlZeroMemory(Attributes, SizeOf(WDF_OBJECT_ATTRIBUTES));
+    Attributes.Size := SizeOf(WDF_OBJECT_ATTRIBUTES);
+    Attributes.ExecutionLevel := WdfExecutionLevelInheritFromParent;
+    Attributes.SynchronizationScope := WdfSynchronizationScopeInheritFromParent;
+end;
+
 end.
